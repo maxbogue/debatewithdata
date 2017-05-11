@@ -1,10 +1,8 @@
 import json
 
-from flask import g, jsonify, make_response, redirect, request, session, url_for, Flask
+from flask import g, jsonify, make_response, redirect, request, session, url_for
 
-app = Flask(__name__)
-app.config.from_pyfile('default_settings.cfg')
-app.config.from_pyfile('local_settings.cfg')
+from models import app
 
 SUMMARY = '''Economic inequality refers to the income and wealth differences between individuals in a population. This discussion is about the amount of inequality, not about whether there should be any inequality. The Gini index is a way of measuring the income distribution of a population on a scale from 0 (everyone earns the same amount) to 1 (one person earns everything, everyone else gets nothing). The Gini index of the United States has been steadily rising since around 1970.
 
