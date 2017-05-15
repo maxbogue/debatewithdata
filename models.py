@@ -59,8 +59,16 @@ class User(db.Model):
 
     @staticmethod
     def verify_token(auth_token):
-        payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
-        return User.query.get(payload['sub'])
+        try:
+            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
+        except jwt.DecodeError:
+            raise ValueError('Malformed or invalid auth token.')
+        except jwt.ExpiredSignatureError:
+            raise ValueError('Expired auth token.')
+        user = User.query.get(payload['sub'])
+        if user is None:
+            raise ValueError('User for auth token does not exist.')
+        return user
 
     def __init__(self, username, password, email):
         self.username = _validate_username(username)

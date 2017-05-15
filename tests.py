@@ -1,4 +1,5 @@
 import unittest
+from datetime import timedelta
 
 from flask_testing import TestCase
 
@@ -51,6 +52,8 @@ class AuthTest(TestCase):
 
     def test_auth_token(self):
         u1 = User.register(USERNAME, PASSWORD, EMAIL)
+        with self.assertRaises(ValueError):
+            User.verify_token(u1.gen_auth_token(timedelta(seconds=-1)))
         auth_token = u1.gen_auth_token()
         u2 = User.verify_token(auth_token)
         self.assertEqual(u1, u2)
