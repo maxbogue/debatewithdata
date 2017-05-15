@@ -39,6 +39,10 @@ class AuthTest(TestCase):
         self.assertEqual(USERNAME, u.username)
         self.assertNotEqual(PASSWORD, u.password)
 
+        # Duplicate username.
+        with self.assertRaises(ValueError):
+            User.register(USERNAME, PASSWORD, EMAIL)
+
     def test_login(self):
         u1 = User.register(USERNAME, PASSWORD, EMAIL)
         with self.assertRaises(ValueError):
