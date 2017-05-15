@@ -79,14 +79,15 @@ class User(db.Model):
                                       bcrypt.gensalt()).decode()
         self.email = email
 
-    def gen_auth_token(self, duration=timedelta(seconds=30)):
+    def gen_auth_token(self, duration=timedelta(seconds=30), key=None):
         payload = {
             'exp': datetime.utcnow() + duration,
             'iat': datetime.utcnow(),
             'sub': self.username
         }
-        return jwt.encode(
-            payload, app.config.get('SECRET_KEY'), algorithm='HS256')
+        if not key:
+            key = app.config['SECRET_KEY']
+        return jwt.encode(payload, key, algorithm='HS256')
 
     def __repr__(self):
         return '<User %s (email=%s)>' % (self.username, self.email)
