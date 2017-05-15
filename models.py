@@ -1,4 +1,6 @@
-import bcrypt, datetime, jwt, string
+import bcrypt, jwt, string
+from datetime import datetime, timedelta
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -27,6 +29,11 @@ def _validate_username(username):
     return username
 
 
+def _validate_password(password):
+    if len(password) < 8:
+        raise ValueError('Invalid password.')
+
+
 class User(db.Model):
     __tablename__ = 'dwd_user'
 
@@ -37,15 +44,16 @@ class User(db.Model):
     @staticmethod
     def login(username, password):
         user = User.query.get(username)
-        if user and bcrypt.checkpw(password.encode(), user.password):
+        if user and bcrypt.checkpw(password.encode(), user.password.encode()):
             return user
-        return None
+        raise ValueError('Invalid username or password.')
 
     @staticmethod
     def register(username, password, email):
         user = User(username, password, email)
         if User.query.get(user.username):
             raise ValueError('User already exists.')
+        db.session.add(user)
         db.session.commit()
         return user
 
@@ -56,14 +64,15 @@ class User(db.Model):
 
     def __init__(self, username, password, email):
         self.username = _validate_username(username)
+        _validate_password(password)
         self.password = bcrypt.hashpw(password.encode(),
                                       bcrypt.gensalt()).decode()
         self.email = email
 
-    def gen_auth_token(self):
+    def gen_auth_token(self, duration=timedelta(seconds=30)):
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=30),
-            'iat': datetime.datetime.utcnow(),
+            'exp': datetime.utcnow() + duration,
+            'iat': datetime.utcnow(),
             'sub': self.username
         }
         return jwt.encode(
