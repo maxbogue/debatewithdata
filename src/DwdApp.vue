@@ -1,5 +1,5 @@
 <template>
-<div class="container" v-cloak>
+<div class="container">
   <dwd-header></dwd-header>
   <router-view></router-view>
 </div>
@@ -25,8 +25,5 @@ export default {
   border: 1px solid #ddd;
   color: #222;
   padding: 0;
-}
-[v-cloak] {
-  display: none;
 }
 </style>

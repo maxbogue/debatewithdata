@@ -22,7 +22,8 @@ Then you can set up the server:
     echo '\nFLASK_APP="routes.py"\nexport FLASK_APP' >> env/bin/activate
     . env/bin/activate
     pip install --upgrade pip setuptools
-    pip install flask flask-sqlalchemy flask-migrate psycopg2 bcrypt
+    pip install flask flask-sqlalchemy flask-migrate psycopg2 bcrypt pre-commit
+    pre-commit install
     flask db init
     flask db upgrade
     flask run

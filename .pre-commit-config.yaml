@@ -1,0 +1,8 @@
+-   repo: git://github.com/pre-commit/mirrors-yapf
+    sha: 'v0.16.0'
+    hooks:
+    -   id: yapf
+-   repo: git://github.com/pre-commit/mirrors-eslint
+    sha: 'v3.14.0'
+    hooks:
+    -   id: eslint

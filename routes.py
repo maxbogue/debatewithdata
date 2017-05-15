@@ -15,7 +15,9 @@ ARGUMENT1B = '''test1b'''
 ARGUMENT2A = '''test2a'''
 ARGUMENT2B = '''test2b'''
 
+
 @app.route('/')
+@app.route('/login')
 def index():
     return make_response(open('index.html').read())
 
@@ -23,21 +25,17 @@ def index():
 @app.route('/api/issue/us-economic-inequality', methods=['GET'])
 def node_all():
     return jsonify({
-        'title': 'US Economic Inequality',
-        'summary': SUMMARY,
-        'arguments': [
-            [
-                {
-                    'content': ARGUMENT1A
-                }, {
-                    'content': ARGUMENT1B,
-                }
-            ], [
-                {
-                    'content': ARGUMENT2A,
-                }, {
-                    'content': ARGUMENT2B,
-                }
-            ]
-        ]
+        'title':
+            'US Economic Inequality',
+        'summary':
+            SUMMARY,
+        'arguments': [[{
+            'content': ARGUMENT1A
+        }, {
+            'content': ARGUMENT1B,
+        }], [{
+            'content': ARGUMENT2A,
+        }, {
+            'content': ARGUMENT2B,
+        }]]
     })
