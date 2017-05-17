@@ -2,7 +2,7 @@ import json
 
 from flask import g, jsonify, make_response, redirect, request, session, url_for
 
-from models import app
+from models import app, User
 
 SUMMARY = '''Economic inequality refers to the income and wealth differences between individuals in a population. This discussion is about the amount of inequality, not about whether there should be any inequality. The Gini index is a way of measuring the income distribution of a population on a scale from 0 (everyone earns the same amount) to 1 (one person earns everything, everyone else gets nothing). The Gini index of the United States has been steadily rising since around 1970.
 
@@ -18,8 +18,33 @@ ARGUMENT2B = '''test2b'''
 
 @app.route('/')
 @app.route('/login')
+@app.route('/register')
 def index():
     return make_response(open('index.html').read())
+
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    try:
+        data = request.get_json()
+        user = User.login(data['username'], data['password'])
+        responseData = {'auth_token': user.gen_auth_token()}
+        return make_response(jsonify(responseData)), 200
+    except ValueError as e:
+        responseData = {'message': str(e)}
+        return make_response(jsonify(responseData)), 400
+
+
+@app.route('/api/register', methods=['POST'])
+def register():
+    try:
+        data = request.get_json()
+        user = User.register(data['username'], data['password'], data['email'])
+        responseData = {'auth_token': user.gen_auth_token()}
+        return make_response(jsonify(responseData)), 200
+    except ValueError as e:
+        responseData = {'message': str(e)}
+        return make_response(jsonify(responseData)), 400
 
 
 @app.route('/api/issue/us-economic-inequality', methods=['GET'])

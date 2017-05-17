@@ -62,7 +62,8 @@ class User(db.Model):
     @staticmethod
     def verify_token(auth_token):
         try:
-            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
+            payload = jwt.decode(auth_token.encode(),
+                                 app.config.get('SECRET_KEY'))
         except jwt.DecodeError:
             raise ValueError('Malformed or invalid auth token.')
         except jwt.ExpiredSignatureError:
@@ -87,7 +88,7 @@ class User(db.Model):
         }
         if not key:
             key = app.config['SECRET_KEY']
-        return jwt.encode(payload, key, algorithm='HS256')
+        return jwt.encode(payload, key, algorithm='HS256').decode()
 
     def __repr__(self):
         return '<User %s (email=%s)>' % (self.username, self.email)

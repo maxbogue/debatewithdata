@@ -1,7 +1,9 @@
 <template>
-<div class="container">
+<div>
   <dwd-header></dwd-header>
-  <router-view></router-view>
+  <div class="container content">
+    <router-view></router-view>
+  </div>
 </div>
 </template>
 
@@ -20,10 +22,9 @@ export default {
 </script>
 
 <style>
-.container {
-  background: #fff;
-  border: 1px solid #ddd;
-  color: #222;
-  padding: 0;
+.content {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
 }
 </style>

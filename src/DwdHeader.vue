@@ -1,6 +1,10 @@
 <template>
-<header>
-  <h1>DebateWithData</h1>
+<header class="navbar navbar-inverse navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <a href="/" class="navbar-brand">DebateWithData</a>
+    </div>
+  </div>
 </header>
 </template>
 
