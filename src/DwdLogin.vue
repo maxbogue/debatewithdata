@@ -8,32 +8,27 @@
          v-model="username" />
   <input type="password"
          class="form-control"
+         placeholder="password"
          v-model="password" />
   <button type="submit" class="btn btn-default">
     Submit
   </button>
+  <div v-if="error">{{ error }}</div>
 </form>
 </template>
 
 <script>
+import auth from './auth';
+
 export default {
   data: () => ({
     'username': '',
-    'password': ''
+    'password': '',
+    'error': '',
   }),
   methods: {
     submit: function () {
-      let payload = {
-        'username': this.username,
-        'password': this.password
-      };
-      this.$http.post('/api/login', payload).then(response => {
-        localStorage.setItem('auth_token', response.data.auth_token);
-        let next = new URLSearchParams(window.document.URL).get('next');
-        window.location.replace(next || '/');
-      }, response => {
-        console.log(response.data.message);
-      });
+      auth.login(this);
     }
   },
 };

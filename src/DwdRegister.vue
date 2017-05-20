@@ -17,29 +17,23 @@
   <button type="submit" class="btn btn-default">
     Submit
   </button>
+  <div v-if="error">{{ error }}</div>
 </form>
 </template>
 
 <script>
+import auth from './auth';
+
 export default {
   data: () => ({
     'username': '',
     'password': '',
     'email': '',
+    'error': '',
   }),
   methods: {
     submit: function () {
-      let payload = {
-        'username': this.username,
-        'password': this.password,
-        'email': this.email,
-      }
-      this.$http.post('/api/register', payload).then(response => {
-        localStorage.setItem('auth_token', response.data.auth_token);
-        window.location.replace('/');
-      }, response => {
-        console.log(response.data.message);
-      })
+      auth.register(this);
     }
   },
 };

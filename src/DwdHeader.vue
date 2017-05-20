@@ -1,20 +1,45 @@
 <template>
-<header class="navbar navbar-inverse navbar-static-top">
-  <div class="container">
-    <div class="navbar-header">
-      <a href="/" class="navbar-brand">DebateWithData</a>
-    </div>
-  </div>
-</header>
+<navbar placement="top" type="inverse">
+  <router-link slot="brand" to="/" title="Home" class="navbar-brand">DebateWithData</router-link>
+  <template v-if="!username">
+    <li slot="right">
+      <router-link to="/login" title="Login">Login</router-link>
+    </li>
+    <li slot="right">
+      <router-link to="/register" title="Register">Register</router-link>
+    </li>
+  </template>
+  <template v-else>
+    <li slot="right">
+      <router-link to="/account" title="Account">
+        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ username }}
+      </router-link>
+    </li>
+    <li slot="right">
+      <router-link to="/logout" title="Logout">Logout</router-link>
+    </li>
+  </template>
+</navbar>
 </template>
 
 <script>
+import { navbar } from 'vue-strap';
+import auth from './auth';
+
 export default {
-  data: () => ({
-  }),
-  computed: {
+  components: {
+    navbar,
   },
-  methods: {
+  data: () => ({
+    username: '',
+  }),
+  created: function () {
+    this.username = auth.getUsername();
+  },
+  watch: {
+    '$route': function () {
+      this.username = auth.getUsername();
+    },
   },
 };
 </script>

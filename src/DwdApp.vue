@@ -12,12 +12,6 @@ import DwdHeader from './DwdHeader.vue';
 
 export default {
   components: { DwdHeader },
-  data: () => ({
-  }),
-  computed: {
-  },
-  methods: {
-  },
 };
 </script>
 

@@ -18,6 +18,7 @@ ARGUMENT2B = '''test2b'''
 
 @app.route('/')
 @app.route('/login')
+@app.route('/logout')
 @app.route('/register')
 def index():
     return make_response(open('index.html').read())
