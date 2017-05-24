@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from flask_testing import TestCase
 
-from models import app, db, User
+from debatewithdata.models import app, db, User
 
 TEST_SECRET_KEY = 'not so secret'
 TEST_DB_URI = 'postgresql://dwd_test:egg@localhost:5432/dwd_test'

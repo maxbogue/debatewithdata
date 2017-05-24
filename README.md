@@ -19,7 +19,7 @@ Now you must set the [`SQLALCHEMY_DATABASE_URI`][db-config] variable in your
 Then you can set up the server:
 
     python3 -m venv env
-    echo '\nFLASK_APP="routes.py"\nexport FLASK_APP' >> env/bin/activate
+    echo '\nexport FLASK_APP=routes.py\nexport PYTHONPATH=$PYTHONPATH:/var/www' >> env/bin/activate
     . env/bin/activate
     pip install --upgrade pip setuptools
     pip install flask flask-sqlalchemy flask-migrate psycopg2 bcrypt pre-commit

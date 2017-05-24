@@ -5,7 +5,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-app = Flask(__name__)
+app = Flask("dwd")
 app.config.from_pyfile('default_settings.cfg')
 app.config.from_pyfile('local_settings.cfg')
 
