@@ -13,6 +13,7 @@ Create the database:
     GRANT ALL PRIVILEGES ON DATABASE dwd TO dwd;
     \password dwd
     \q
+    sudo -u postgres psql dwd < unique_short_id.sql
 
 Now you must set the [`SQLALCHEMY_DATABASE_URI`][db-config] variable in your
 `local_settings.cfg` file to match the credentials you set for your database.
