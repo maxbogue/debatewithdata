@@ -5,6 +5,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+from debatewithdata.utils import ApiError
+
 app = Flask("dwd")
 app.config.from_pyfile('default_settings.cfg')
 app.config.from_pyfile('local_settings.cfg')
@@ -25,13 +27,13 @@ def _all_valid_chars(s):
 def _validate_username(username):
     username = username.lower()
     if len(username) < 3 or not _all_valid_chars(username):
-        raise ValueError('Invalid username.')
+        raise ApiError('Invalid username.')
     return username
 
 
 def _validate_password(password):
     if len(password) < 8:
-        raise ValueError('Invalid password.')
+        raise ApiError('Invalid password.')
 
 
 class User(db.Model):
@@ -48,13 +50,13 @@ class User(db.Model):
         user = User.query.get(username)
         if user and bcrypt.checkpw(password.encode(), user.password.encode()):
             return user
-        raise ValueError('Invalid username or password.')
+        raise ApiError('Invalid username or password.')
 
     @staticmethod
     def register(username, password, email):
         user = User(username, password, email)
         if User.query.get(user.username):
-            raise ValueError('User already exists.')
+            raise ApiError('User already exists.')
         db.session.add(user)
         db.session.commit()
         return user
@@ -65,12 +67,12 @@ class User(db.Model):
             payload = jwt.decode(auth_token.encode(),
                                  app.config.get('SECRET_KEY'))
         except jwt.DecodeError:
-            raise ValueError('Malformed or invalid auth token.')
+            raise ApiError('Malformed or invalid auth token.')
         except jwt.ExpiredSignatureError:
-            raise ValueError('Expired auth token.')
+            raise ApiError('Expired auth token.')
         user = User.query.get(payload['sub'])
         if user is None:
-            raise ValueError('User for auth token does not exist.')
+            raise ApiError('User for auth token does not exist.')
         return user
 
     def __init__(self, username, password, email):
