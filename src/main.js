@@ -21,6 +21,7 @@ new Vue({
       { path: '/register', component: DwdRegister },
       { path: '/login', component: DwdLogin },
       { path: '/logout', component: DwdLogout },
+      { path: '/:claimId?', component: DwdDebate },
     ],
   }),
 });
