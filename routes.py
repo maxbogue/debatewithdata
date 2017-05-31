@@ -77,6 +77,8 @@ def claim_one(id):
     elif request.method == 'PUT':
         DB[id] = request.get_json()
         save_db()
+        return jsonify(message="success")
     elif request.method == 'DELETE':
         del DB[id]
         save_db()
+        return jsonify(message="success")

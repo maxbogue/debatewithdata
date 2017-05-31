@@ -1,9 +1,7 @@
 <template>
 <div>
   <dwd-header></dwd-header>
-  <div class="container content">
-    <router-view></router-view>
-  </div>
+  <router-view class="container"></router-view>
 </div>
 </template>
 
