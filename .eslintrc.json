@@ -8,6 +8,7 @@
     "parserOptions": {
         "sourceType": "module"
     },
+    "plugins": ["vue"],
     "rules": {
         "no-extra-parens": ["error"],
         "no-prototype-builtins": ["error"],

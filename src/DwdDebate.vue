@@ -11,7 +11,7 @@
     <div class="row">
       <div v-for="point in claim.points"
            :class="{for: point.for === 'for', against: point.for !== 'for'}"
-           class="col-sm-6">
+           class="col-sm-6 col-lg-4">
         {{ point.text }}
       </div>
     </div>
@@ -63,4 +63,10 @@ export default {
 </script>
 
 <style>
+.for {
+  background-color: #80DEEA;
+}
+.against {
+  background-color: #FFE082;
+}
 </style>
