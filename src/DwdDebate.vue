@@ -52,19 +52,10 @@ export default {
       this.allClaims = response.data;
     });
   },
-  watch: {
-    '$route': function () {
-      if (this.node.children.length === 0) {
-        this.startAdding();
-      }
-    },
-  },
 };
 </script>
 
 <style>
-.row > div {
-}
 .claim {
   background-color: #EEEEEE;
   border: 1px solid #757575;
@@ -74,6 +65,10 @@ export default {
 .edit {
   float: right;
   margin-left: 5px;
+}
+.edit:hover {
+  color: #aaa;
+  cursor: pointer;
 }
 .point {
   padding: 15px;

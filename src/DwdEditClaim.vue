@@ -1,34 +1,39 @@
 <template>
 <form @submit.prevent="submit">
-  <div class="row">
-    <bs-input type="textarea"
-              class="col-sm-12"
-              autocomplete="off"
-              placeholder="claim"
-              v-model="text"></bs-input>
-  </div>
-  <div class="row">
-    <div v-for="point in points" class="col-sm-6">
-      <bs-button-group v-model="point.for" type="primary">
-        <bs-radio selected-value="for">For</bs-radio>
-        <bs-radio selected-value="against">Against</bs-radio>
-      </bs-button-group>
-      <bs-input type="textarea"
-             autocomplete="off"
-             placeholder="argument"
-             v-model="point.text" />
+  <div class="row gutter-16">
+    <div class="col-sm-12">
+      <div class="claim">
+        <bs-input type="textarea"
+                  autocomplete="off"
+                  placeholder="claim"
+                  v-model="text"></bs-input>
+      </div>
+    </div>
+    <div v-for="point in points"
+         class="col-sm-6 col-lg-4">
+      <div class="point" :class="[point.for]">
+        <bs-button-group v-model="point.for" type="primary" class="for-chooser">
+          <bs-radio selected-value="for">For</bs-radio>
+          <bs-radio selected-value="against">Against</bs-radio>
+        </bs-button-group>
+        <bs-input type="textarea"
+               autocomplete="off"
+               placeholder="argument"
+               v-model="point.text" />
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <button type="button" :disabled="lastPointEmpty" class="btn btn-default" @click="addPoint">
+        Add point
+      </button>
+      <button type="submit" class="btn btn-default">
+        Submit
+      </button>
+      <button type="button" class="btn btn-default" @click="cancel">
+        Cancel
+      </button>
     </div>
   </div>
-  <button type="button" :disabled="lastPointEmpty" class="btn btn-default" @click="addPoint">
-    Add point
-  </button>
-
-  <button type="submit" class="btn btn-default">
-    Submit
-  </button>
-  <button type="button" class="btn btn-default" @click="cancel">
-    Cancel
-  </button>
 </form>
 </template>
 
@@ -82,4 +87,14 @@ export default {
 </script>
 
 <style>
+.claim > .form-group, .point > .form-group {
+  margin-bottom: 0;
+}
+.for-chooser {
+  margin-bottom: 8px;
+}
+.for-chooser > label {
+  font-size: 10px;
+  padding: 4px 8px;
+}
 </style>
