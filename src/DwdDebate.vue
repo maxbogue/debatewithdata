@@ -2,17 +2,17 @@
 <div>
   <div v-if="error">{{ error }}</div>
   <template v-if="!editing">
-    <div class="row">
+    <div class="row gutter-16">
       <div class="col-sm-12">
-        {{ claim.text }}
-        <button class="btn btn-default" @click="editing = !editing">edit</button>
+        <div class="claim">
+          {{ claim.text }}<span class="glyphicon glyphicon-pencil edit" @click="editing = !editing" aria-hidden="true"></span>
+        </div>
       </div>
-    </div>
-    <div class="row">
       <div v-for="point in claim.points"
-           :class="{for: point.for === 'for', against: point.for !== 'for'}"
            class="col-sm-6 col-lg-4">
-        {{ point.text }}
+        <div class="point" :class="[point.for]">
+          {{ point.text }}
+        </div>
       </div>
     </div>
   </template>
@@ -63,10 +63,34 @@ export default {
 </script>
 
 <style>
+.row > div {
+}
+.claim {
+  background-color: #EEEEEE;
+  border: 1px solid #757575;
+  margin-top: 8px;
+  padding: 15px;
+}
+.edit {
+  float: right;
+  margin-left: 5px;
+}
+.point {
+  padding: 15px;
+}
 .for {
   background-color: #80DEEA;
+  border: 1px solid #00ACC1;
 }
 .against {
   background-color: #FFE082;
+  border: 1px solid #FFB300;
+}
+.gutter-16.row {
+  margin-right: -8px;
+  margin-left: -8px;
+}
+.gutter-16 > [class^="col-"], .gutter-16 > [class^=" col-"] {
+  padding: 8px;
 }
 </style>
