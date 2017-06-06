@@ -9,41 +9,26 @@
                   v-model="text"></bs-input>
       </div>
     </div>
-    <template v-for="i in numPointRows">
-      <div v-if="pointsFor[i-1]" class="col-sm-6">
-        <div class="point for">
-          <bs-input type="textarea"
-                    autocomplete="off"
-                    placeholder="argument"
-                    v-model="pointsFor[i-1].text" />
-          <span class="delete glyphicon glyphicon-trash"
-                aria-hidden="true"
-                @click="pointsFor.splice(i-1, 1)"></span>
-        </div>
-      </div>
-      <div v-if="pointsAgainst[i-1]"
-           class="col-sm-6"
-           :class="{'col-sm-offset-6': !pointsFor[i-1]}">
-        <div class="point against">
-          <bs-input type="textarea"
-                    autocomplete="off"
-                    placeholder="argument"
-                    v-model="pointsAgainst[i-1].text" />
-          <span class="delete glyphicon glyphicon-trash"
-                aria-hidden="true"
-                @click="pointsAgainst.splice(i-1, 1)"></span>
-        </div>
-      </div>
+    <template v-for="pi in pointIndexes">
+      <dwd-point v-for="si in sideIndexes"
+                 v-if="points[si][pi]"
+                 :points="points"
+                 :sideIndex="si"
+                 :pointIndex="pi"
+                 :key="'editPoint-' + si + '-' + pi">
+        <bs-input type="textarea"
+                  autocomplete="off"
+                  placeholder="argument"
+                  v-model="points[si][pi].text" />
+        <span class="delete glyphicon glyphicon-trash"
+              aria-hidden="true"
+              @click="points[si].splice(pi, 1)"></span>
+      </dwd-point>
       <div class="clearfix"></div>
     </template>
-    <div class="col-sm-6">
-      <button type="button" :disabled="lastPointForEmpty" class="btn btn-default" @click="addPointFor">
-        Add point for
-      </button>
-    </div>
-    <div class="col-sm-6">
-      <button type="button" :disabled="lastPointAgainstEmpty" class="btn btn-default" @click="addPointAgainst">
-        Add point against
+    <div v-for="si in sideIndexes" class="col-sm-6">
+      <button type="button" :disabled="lastPointEmpty(si)" class="btn btn-default" @click="addPoint(si)">
+        Add point {{ sideString(si) }}
       </button>
     </div>
     <div class="col-sm-12">
@@ -62,40 +47,38 @@
 import clone from 'clone';
 import { input, buttonGroup, radio } from 'vue-strap';
 
+import DwdPoint from './DwdPoint.vue';
+import { range } from './utils';
+
 export default {
   components: {
     'bs-input': input,
     'bs-button-group': buttonGroup,
     'bs-radio': radio,
+    'dwd-point': DwdPoint,
   },
   props: ['claim'],
   data: () => ({
     text: '',
-    pointsFor: [],
-    pointsAgainst: [],
+    points: [[], []],
   }),
   computed: {
-    lastPointForEmpty: function () {
-      let n = this.pointsFor.length;
-      return n > 0 && !this.pointsFor[n-1].text;
+    pointIndexes: function () {
+      return range(this.points.reduce((acc, pts) => Math.max(acc, pts.length), 0));
     },
-    lastPointAgainstEmpty: function () {
-      let n = this.pointsAgainst.length;
-      return n > 0 && !this.pointsAgainst[n-1].text;
-    },
-    numPointRows: {
-      cache: false,
-      get: function () {
-        return Math.max(this.pointsFor.length, this.pointsAgainst.length);
-      },
+    sideIndexes: function () {
+      return range(this.points.length);
     },
   },
   methods: {
+    lastPointEmpty: function (i) {
+      let n = this.points[i].length;
+      return n > 0 && !this.points[i][n-1].text;
+    },
     submit: function () {
       this.$emit('update', {
         text: this.text,
-        pointsFor: this.pointsFor,
-        pointsAgainst: this.pointsAgainst,
+        points: this.points,
       });
     },
     cancel: function () {
@@ -104,22 +87,17 @@ export default {
     },
     reset: function () {
       this.text = this.claim.text;
-      this.pointsFor = clone(this.claim.pointsFor);
-      this.pointsAgainst = clone(this.claim.pointsAgainst);
+      this.points = clone(this.claim.points);
     },
-    addPointFor: function () {
-      this.pointsFor.push({
+    addPoint: function (i) {
+      this.points[i].push({
         text: '',
       });
-      this.pointsAgainst.push({});
-      this.pointsAgainst.pop();
+      this.points[1-i].push({});
+      this.points[1-i].pop();
     },
-    addPointAgainst: function () {
-      this.pointsAgainst.push({
-        text: '',
-      });
-      this.pointsFor.push({});
-      this.pointsFor.pop();
+    sideString: function (i) {
+      return ['for', 'against'][i];
     },
   },
   mounted: function() {

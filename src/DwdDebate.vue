@@ -8,19 +8,15 @@
           {{ claim.text }}<span class="glyphicon glyphicon-pencil edit" @click="editing = !editing" aria-hidden="true"></span>
         </div>
       </div>
-      <template v-for="i in numPointRows">
-        <div v-if="claim.pointsFor[i-1]" class="col-sm-6">
-          <div class="point for">
-            {{ claim.pointsFor[i-1].text }}
-          </div>
-        </div>
-        <div v-if="claim.pointsAgainst[i-1]"
-             class="col-sm-6"
-             :class="{'col-sm-offset-6': !claim.pointsFor[i-1]}">
-          <div class="point against">
-            {{ claim.pointsAgainst[i-1].text }}
-          </div>
-        </div>
+      <template v-for="pi in pointIndexes">
+        <dwd-point v-for="si in sideIndexes"
+                   v-if="claim.points[si][pi]"
+                   :points="claim.points"
+                   :sideIndex="si"
+                   :pointIndex="pi"
+                   :key="'point-' + si + '-' + pi">
+          {{ claim.points[si][pi].text }}
+        </dwd-point>
         <div class="clearfix"></div>
       </template>
     </div>
@@ -31,10 +27,13 @@
 
 <script>
 import DwdEditClaim from './DwdEditClaim.vue';
+import DwdPoint from './DwdPoint.vue';
+import { range } from './utils';
 
 export default {
   components: {
     DwdEditClaim,
+    DwdPoint,
   },
   data: () => ({
     allClaims: {},
@@ -46,10 +45,13 @@ export default {
       return this.$route.params.claimId;
     },
     claim: function () {
-      return this.allClaims[this.id] || {pointsFor: [], pointsAgainst: []};
+      return this.allClaims[this.id] || { points: [[], []] };
     },
-    numPointRows: function () {
-      return Math.max(this.claim.pointsFor.length, this.claim.pointsAgainst.length);
+    pointIndexes: function () {
+      return range(this.claim.points.reduce((acc, pts) => Math.max(acc, pts.length), 0));
+    },
+    sideIndexes: function () {
+      return range(this.claim.points.length);
     },
   },
   methods: {
@@ -84,18 +86,6 @@ export default {
 .edit:hover {
   color: #aaa;
   cursor: pointer;
-}
-.point {
-  padding: 15px;
-  position: relative;
-}
-.for {
-  background-color: #80DEEA;
-  border: 1px solid #00ACC1;
-}
-.against {
-  background-color: #FFE082;
-  border: 1px solid #FFB300;
 }
 .gutter-16.row {
   margin-right: -8px;
