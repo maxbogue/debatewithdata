@@ -8,12 +8,21 @@
           {{ claim.text }}<span class="glyphicon glyphicon-pencil edit" @click="editing = !editing" aria-hidden="true"></span>
         </div>
       </div>
-      <div v-for="point in claim.points"
-           class="col-sm-6 col-lg-4">
-        <div class="point" :class="[point.for]">
-          {{ point.text }}
+      <template v-for="i in numPointRows">
+        <div v-if="claim.pointsFor[i-1]" class="col-sm-6">
+          <div class="point for">
+            {{ claim.pointsFor[i-1].text }}
+          </div>
         </div>
-      </div>
+        <div v-if="claim.pointsAgainst[i-1]"
+             class="col-sm-6"
+             :class="{'col-sm-offset-6': !claim.pointsFor[i-1]}">
+          <div class="point against">
+            {{ claim.pointsAgainst[i-1].text }}
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </template>
     </div>
   </template>
   <dwd-edit-claim v-else :claim="claim" @update="updateClaim" @cancel="editing = false" />
@@ -33,14 +42,20 @@ export default {
     error: '',
   }),
   computed: {
+    id: function () {
+      return this.$route.params.claimId;
+    },
     claim: function () {
-      return this.allClaims[this.$route.params.claimId] || {};
+      return this.allClaims[this.id] || {pointsFor: [], pointsAgainst: []};
+    },
+    numPointRows: function () {
+      return Math.max(this.claim.pointsFor.length, this.claim.pointsAgainst.length);
     },
   },
   methods: {
     updateClaim: function (newClaim) {
-      this.$http.put('/api/claim/' + this.$route.params.claimId, newClaim).then(function (response) {
-        this.allClaims[this.$route.params.claimId] = newClaim;
+      this.$http.put('/api/claim/' + this.id, newClaim).then(function (response) {
+        this.allClaims[this.id] = newClaim;
         this.editing = false;
       }, function (response) {
         this.error = response.data.message;
@@ -72,6 +87,7 @@ export default {
 }
 .point {
   padding: 15px;
+  position: relative;
 }
 .for {
   background-color: #80DEEA;

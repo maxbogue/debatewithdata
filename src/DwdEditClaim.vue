@@ -9,23 +9,44 @@
                   v-model="text"></bs-input>
       </div>
     </div>
-    <div v-for="point in points"
-         class="col-sm-6 col-lg-4">
-      <div class="point" :class="[point.for]">
-        <bs-button-group v-model="point.for" type="primary" class="for-chooser">
-          <bs-radio selected-value="for">For</bs-radio>
-          <bs-radio selected-value="against">Against</bs-radio>
-        </bs-button-group>
-        <bs-input type="textarea"
-               autocomplete="off"
-               placeholder="argument"
-               v-model="point.text" />
+    <template v-for="i in numPointRows">
+      <div v-if="pointsFor[i-1]" class="col-sm-6">
+        <div class="point for">
+          <bs-input type="textarea"
+                    autocomplete="off"
+                    placeholder="argument"
+                    v-model="pointsFor[i-1].text" />
+          <span class="delete glyphicon glyphicon-trash"
+                aria-hidden="true"
+                @click="pointsFor.splice(i-1, 1)"></span>
+        </div>
       </div>
+      <div v-if="pointsAgainst[i-1]"
+           class="col-sm-6"
+           :class="{'col-sm-offset-6': !pointsFor[i-1]}">
+        <div class="point against">
+          <bs-input type="textarea"
+                    autocomplete="off"
+                    placeholder="argument"
+                    v-model="pointsAgainst[i-1].text" />
+          <span class="delete glyphicon glyphicon-trash"
+                aria-hidden="true"
+                @click="pointsAgainst.splice(i-1, 1)"></span>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </template>
+    <div class="col-sm-6">
+      <button type="button" :disabled="lastPointForEmpty" class="btn btn-default" @click="addPointFor">
+        Add point for
+      </button>
+    </div>
+    <div class="col-sm-6">
+      <button type="button" :disabled="lastPointAgainstEmpty" class="btn btn-default" @click="addPointAgainst">
+        Add point against
+      </button>
     </div>
     <div class="col-sm-12">
-      <button type="button" :disabled="lastPointEmpty" class="btn btn-default" @click="addPoint">
-        Add point
-      </button>
       <button type="submit" class="btn btn-default">
         Submit
       </button>
@@ -50,19 +71,31 @@ export default {
   props: ['claim'],
   data: () => ({
     text: '',
-    points: [],
+    pointsFor: [],
+    pointsAgainst: [],
   }),
   computed: {
-    lastPointEmpty: function () {
-      let n = this.points.length;
-      return n < 1 || !this.points[n-1].text;
+    lastPointForEmpty: function () {
+      let n = this.pointsFor.length;
+      return n > 0 && !this.pointsFor[n-1].text;
+    },
+    lastPointAgainstEmpty: function () {
+      let n = this.pointsAgainst.length;
+      return n > 0 && !this.pointsAgainst[n-1].text;
+    },
+    numPointRows: {
+      cache: false,
+      get: function () {
+        return Math.max(this.pointsFor.length, this.pointsAgainst.length);
+      },
     },
   },
   methods: {
     submit: function () {
       this.$emit('update', {
         text: this.text,
-        points: this.points,
+        pointsFor: this.pointsFor,
+        pointsAgainst: this.pointsAgainst,
       });
     },
     cancel: function () {
@@ -71,13 +104,22 @@ export default {
     },
     reset: function () {
       this.text = this.claim.text;
-      this.points = clone(this.claim.points || []);
+      this.pointsFor = clone(this.claim.pointsFor);
+      this.pointsAgainst = clone(this.claim.pointsAgainst);
     },
-    addPoint: function () {
-      this.points.push({
-        for: 'for',
+    addPointFor: function () {
+      this.pointsFor.push({
         text: '',
       });
+      this.pointsAgainst.push({});
+      this.pointsAgainst.pop();
+    },
+    addPointAgainst: function () {
+      this.pointsAgainst.push({
+        text: '',
+      });
+      this.pointsFor.push({});
+      this.pointsFor.pop();
     },
   },
   mounted: function() {
@@ -96,5 +138,15 @@ export default {
 .for-chooser > label {
   font-size: 10px;
   padding: 4px 8px;
+}
+.delete {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 12px;
+}
+.delete:hover {
+  color: #aaa;
+  cursor: pointer;
 }
 </style>
