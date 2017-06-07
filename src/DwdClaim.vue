@@ -43,10 +43,11 @@ export default {
       return this.$route.params.claimId;
     },
     claim: function () {
-      return this.allClaims[this.id] || { points: [[], []] };
+      return this.$store.state.claims[this.id] || { points: [[], []] };
     },
     pointIndexes: function () {
-      return range(this.claim.points.reduce((acc, pts) => Math.max(acc, pts.length), 0));
+      return range(this.claim.points.reduce(
+          (acc, pts) => Math.max(acc, pts.length), 0));
     },
     sideIndexes: function () {
       return range(this.claim.points.length);
@@ -54,18 +55,15 @@ export default {
   },
   methods: {
     updateClaim: function (newClaim) {
-      this.$http.put('/api/claim/' + this.id, newClaim).then(function (response) {
-        this.allClaims[this.id] = newClaim;
+      this.$store.dispatch('updateClaim', {
+        id: this.id,
+        claim: newClaim,
+      }).then(() => {
         this.editing = false;
-      }, function (response) {
-        this.error = response.data.message;
+      }).catch((error) => {
+        this.error = error;
       });
     },
-  },
-  created: function () {
-    this.$http.get('/api/claim').then(function (response) {
-      this.allClaims = response.data;
-    });
   },
 };
 </script>
