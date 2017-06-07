@@ -10,20 +10,13 @@
       </div>
     </div>
     <template v-for="pi in pointIndexes">
-      <dwd-point v-for="si in sideIndexes"
-                 v-if="points[si][pi]"
-                 :points="points"
-                 :sideIndex="si"
-                 :pointIndex="pi"
-                 :key="'editPoint-' + si + '-' + pi">
-        <bs-input type="textarea"
-                  autocomplete="off"
-                  placeholder="argument"
-                  v-model="points[si][pi].text" />
-        <span class="delete glyphicon glyphicon-trash"
-              aria-hidden="true"
-              @click="points[si].splice(pi, 1)"></span>
-      </dwd-point>
+      <dwd-edit-point v-for="si in sideIndexes"
+                      :points="points"
+                      :sideIndex="si"
+                      :pointIndex="pi"
+                      :key="'editPoint-' + si + '-' + pi"
+                      @delete="deletePoint(si, pi)">
+      </dwd-edit-point>
       <div class="clearfix"></div>
     </template>
     <div v-for="si in sideIndexes" class="col-sm-6">
@@ -47,7 +40,7 @@
 import clone from 'clone';
 import { input, buttonGroup, radio } from 'vue-strap';
 
-import DwdPoint from './DwdPoint.vue';
+import DwdEditPoint from './DwdEditPoint.vue';
 import { range } from './utils';
 
 export default {
@@ -55,7 +48,7 @@ export default {
     'bs-input': input,
     'bs-button-group': buttonGroup,
     'bs-radio': radio,
-    'dwd-point': DwdPoint,
+    DwdEditPoint,
   },
   props: ['claim'],
   data: () => ({
@@ -96,6 +89,9 @@ export default {
       this.points[1-i].push({});
       this.points[1-i].pop();
     },
+    deletePoint: function (si, pi) {
+      this.points[si].splice(pi, 1);
+    },
     sideString: function (i) {
       return ['for', 'against'][i];
     },
@@ -116,15 +112,5 @@ export default {
 .for-chooser > label {
   font-size: 10px;
   padding: 4px 8px;
-}
-.delete {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: 12px;
-}
-.delete:hover {
-  color: #aaa;
-  cursor: pointer;
 }
 </style>

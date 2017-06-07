@@ -5,17 +5,15 @@
     <div class="row gutter-16">
       <div class="col-sm-12">
         <div class="claim">
-          {{ claim.text }}<span class="glyphicon glyphicon-pencil edit" @click="editing = !editing" aria-hidden="true"></span>
+          {{ claim.text }}<span class="glyphicon glyphicon-pencil edit click" @click="editing = !editing" aria-hidden="true"></span>
         </div>
       </div>
       <template v-for="pi in pointIndexes">
         <dwd-point v-for="si in sideIndexes"
-                   v-if="claim.points[si][pi]"
                    :points="claim.points"
                    :sideIndex="si"
                    :pointIndex="pi"
                    :key="'point-' + si + '-' + pi">
-          {{ claim.points[si][pi].text }}
         </dwd-point>
         <div class="clearfix"></div>
       </template>
@@ -83,7 +81,7 @@ export default {
   float: right;
   margin-left: 5px;
 }
-.edit:hover {
+.click:hover {
   color: #aaa;
   cursor: pointer;
 }

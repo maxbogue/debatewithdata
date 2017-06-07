@@ -3,7 +3,7 @@ import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
 
 import DwdApp from './DwdApp.vue';
-import DwdDebate from './DwdDebate.vue';
+import DwdClaim from './DwdClaim.vue';
 import DwdLogin from './DwdLogin.vue';
 import DwdLogout from './DwdLogout.vue';
 import DwdRegister from './DwdRegister.vue';
@@ -17,11 +17,11 @@ new Vue({
   router: new VueRouter({
     mode: 'history',
     routes: [
-      { path: '/', component: DwdDebate },
+      { path: '/', component: DwdClaim },
       { path: '/register', component: DwdRegister },
       { path: '/login', component: DwdLogin },
       { path: '/logout', component: DwdLogout },
-      { path: '/:claimId?', component: DwdDebate },
+      { path: '/:claimId?', component: DwdClaim },
     ],
   }),
 });
