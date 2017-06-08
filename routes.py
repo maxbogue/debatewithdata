@@ -42,7 +42,8 @@ def handle_api_error(err):
 @app.route('/login')
 @app.route('/logout')
 @app.route('/register')
-@app.route('/<claim_id>')
+@app.route('/claims')
+@app.route('/claim/<claim_id>')
 def index(claim_id=None):
     return make_response(open('index.html').read())
 
@@ -75,10 +76,12 @@ def claim_one(id):
     if request.method == 'GET':
         return jsonify(DB[id])
     elif request.method == 'PUT':
+        if id not in DB:
+            raise ApiError('Claim not found.')
         DB[id] = request.get_json()
         save_db()
-        return jsonify(message="success")
+        return jsonify(message='success')
     elif request.method == 'DELETE':
         del DB[id]
         save_db()
-        return jsonify(message="success")
+        return jsonify(message='success')

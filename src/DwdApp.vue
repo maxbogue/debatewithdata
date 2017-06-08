@@ -14,9 +14,4 @@ export default {
 </script>
 
 <style>
-.content {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-}
 </style>

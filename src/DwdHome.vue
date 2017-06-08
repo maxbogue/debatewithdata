@@ -1,33 +1,22 @@
 <template>
-<div>
-  <router-link v-for="(claim, id) in claims"
-               class="claim"
-               :to="'/' + id"
-               :key="id">
-    {{ claim.text }}
-  </router-link>
+<div class="center">
+  <div class="construction against">Under construction!</div>
 </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 export default {
-  data: () => ({
-  }),
-  computed: mapState(['claims']),
-  methods: {
-  },
 };
 </script>
 
 <style>
-a.claim {
-  color: #000;
-  display: block;
+.center {
+  text-align: center;
 }
-a.claim:hover {
-  background-color: #E0E0E0;
-  text-decoration: none;
+.construction {
+  display: inline-block;
+  font-size: 24px;
+  margin-top: 16px;
+  padding: 16px;
 }
 </style>

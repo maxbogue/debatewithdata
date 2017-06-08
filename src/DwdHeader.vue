@@ -1,6 +1,9 @@
 <template>
 <navbar placement="top" type="inverse">
   <router-link slot="brand" to="/" title="Home" class="navbar-brand">DebateWithData</router-link>
+  <li>
+    <router-link to="/claims" title="Claims">Claims</router-link>
+  </li>
   <template v-if="!username">
     <li slot="right">
       <router-link to="/login" title="Login">Login</router-link>
@@ -12,7 +15,7 @@
   <template v-else>
     <li slot="right">
       <router-link to="/account" title="Account">
-        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ username }}
+        <span class="glyphicon glyphicon-user" aria-hidden="true"></span><span> {{ username }}</span>
       </router-link>
     </li>
     <li slot="right">
