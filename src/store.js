@@ -16,6 +16,7 @@ function axiosErrorToString(error) {
 export default new Vuex.Store({
   state: {
     claims: {},
+    user: null,
   },
   mutations: {
     updateClaim: function (state, { id, claim }) {
@@ -23,6 +24,9 @@ export default new Vuex.Store({
     },
     updateClaims: function (state, claims) {
       state.claims = claims;
+    },
+    setUser: function (state, user) {
+      state.user = user;
     },
   },
   actions: {

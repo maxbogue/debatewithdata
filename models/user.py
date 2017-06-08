@@ -86,7 +86,11 @@ class User(db.Model):
         payload = {
             'exp': datetime.utcnow() + duration,
             'iat': datetime.utcnow(),
-            'sub': self.username
+            'sub': self.username,
+            'user': {
+                'created': str(self.created),
+                'email': self.email,
+            },
         }
         if not key:
             key = app.config['SECRET_KEY']

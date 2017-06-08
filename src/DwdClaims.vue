@@ -13,11 +13,9 @@
 import { mapState } from 'vuex';
 
 export default {
-  data: () => ({
-  }),
-  computed: mapState(['claims']),
-  methods: {
-  },
+  computed: mapState([
+    'claims',
+  ]),
 };
 </script>
 

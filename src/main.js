@@ -8,6 +8,7 @@ import DwdHome from './DwdHome.vue';
 import DwdLogin from './DwdLogin.vue';
 import DwdLogout from './DwdLogout.vue';
 import DwdRegister from './DwdRegister.vue';
+import auth from './auth';
 import store from './store';
 
 Vue.use(VueRouter);
@@ -28,6 +29,7 @@ new Vue({
     ],
   }),
   created: function () {
+    this.$store.commit('setUser', auth.getUser());
     this.$store.dispatch('getClaims');
   },
 });

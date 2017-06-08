@@ -1,12 +1,27 @@
+import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import URLSearchParams from 'url-search-params';
+
+import store from './store';
 
 const LOGIN_URL = '/api/login';
 const REGISTER_URL = '/api/register';
 const TOKEN_STORAGE_KEY = 'auth_token';
 
+function getUserFromToken(auth_token) {
+  if (auth_token) {
+    let decoded = jwt_decode(auth_token);
+    let user = decoded.user;
+    user.created = new Date(user.created);
+    user.username = decoded.sub;
+    return user;
+  }
+  return null;
+}
+
 function setAuthToken(auth_token) {
   window.localStorage.setItem(TOKEN_STORAGE_KEY, auth_token);
+  store.commit('setUser', getUserFromToken(auth_token));
 }
 
 function getAuthToken() {
@@ -20,7 +35,7 @@ export default {
       'password': context.password,
       'email': context.email,
     };
-    context.$http.post(REGISTER_URL, payload).then(response => {
+    axios.post(REGISTER_URL, payload).then(response => {
       context.error = '';
       setAuthToken(response.data.auth_token);
       window.location.assign('/');
@@ -33,7 +48,7 @@ export default {
       'username': context.username,
       'password': context.password,
     };
-    context.$http.post(LOGIN_URL, payload).then(response => {
+    axios.post(LOGIN_URL, payload).then(response => {
       context.error = '';
       setAuthToken(response.data.auth_token);
       let next = new URLSearchParams(window.location.search).get('next');
@@ -46,11 +61,7 @@ export default {
     setAuthToken('');
     window.location.replace('/');
   },
-  getUsername: function () {
-    let auth_token = getAuthToken();
-    if (!auth_token) {
-      return '';
-    }
-    return jwt_decode(auth_token).sub || '';
+  getUser: function () {
+    return getUserFromToken(getAuthToken());
   },
 };
