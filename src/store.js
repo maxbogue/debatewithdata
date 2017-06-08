@@ -2,16 +2,9 @@ import axios from 'axios';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-Vue.use(Vuex);
+import { axiosErrorToString } from './utils';
 
-function axiosErrorToString(error) {
-  if (!error.response) {
-    return 'Server not responding';
-  } else if (error.response.status >= 500) {
-    return 'Server error';
-  }
-  return error.response.data.message;
-}
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {

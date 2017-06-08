@@ -1,8 +1,8 @@
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
-import URLSearchParams from 'url-search-params';
 
 import store from './store';
+import { axiosErrorToString } from './utils';
 
 const LOGIN_URL = '/api/login';
 const REGISTER_URL = '/api/register';
@@ -20,7 +20,11 @@ function getUserFromToken(auth_token) {
 }
 
 function setAuthToken(auth_token) {
-  window.localStorage.setItem(TOKEN_STORAGE_KEY, auth_token);
+  if (auth_token) {
+    window.localStorage.setItem(TOKEN_STORAGE_KEY, auth_token);
+  } else {
+    window.localStorage.removeItem(TOKEN_STORAGE_KEY);
+  }
   store.commit('setUser', getUserFromToken(auth_token));
 }
 
@@ -35,31 +39,31 @@ export default {
       'password': context.password,
       'email': context.email,
     };
-    axios.post(REGISTER_URL, payload).then(response => {
-      context.error = '';
-      setAuthToken(response.data.auth_token);
-      window.location.assign('/');
-    }, response => {
-      context.error = response.data.message;
+    return new Promise((resolve, reject) => {
+      axios.post(REGISTER_URL, payload).then((response) => {
+        setAuthToken(response.data.auth_token);
+        resolve();
+      }).catch((error) => {
+        reject(axiosErrorToString(error));
+      });
     });
   },
-  login: function (context) {
+  login: function (username, password) {
     let payload = {
-      'username': context.username,
-      'password': context.password,
+      'username': username,
+      'password': password,
     };
-    axios.post(LOGIN_URL, payload).then(response => {
-      context.error = '';
-      setAuthToken(response.data.auth_token);
-      let next = new URLSearchParams(window.location.search).get('next');
-      window.location.replace(next || '/');
-    }, response => {
-      context.error = response.data.message;
+    return new Promise((resolve, reject) => {
+      axios.post(LOGIN_URL, payload).then((response) => {
+        setAuthToken(response.data.auth_token);
+        resolve();
+      }).catch((error) => {
+        reject(axiosErrorToString(error));
+      });
     });
   },
   logout: function () {
-    setAuthToken('');
-    window.location.replace('/');
+    setAuthToken(null);
   },
   getUser: function () {
     return getUserFromToken(getAuthToken());

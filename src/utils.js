@@ -5,3 +5,12 @@ export function range(n) {
   }
   return r;
 }
+
+export function axiosErrorToString(error) {
+  if (!error.response) {
+    return 'Server not responding';
+  } else if (error.response.status >= 500) {
+    return 'Server error';
+  }
+  return error.response.data.message;
+}

@@ -33,7 +33,12 @@ export default {
   }),
   methods: {
     submit: function () {
-      auth.register(this);
+      auth.register(this.username, this.password, this.email).then(() => {
+        this.error = '';
+        this.$router.replace('/');
+      }).catch((error) => {
+        this.error = error;
+      });
     }
   },
 };

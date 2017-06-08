@@ -18,7 +18,14 @@
 </template>
 
 <script>
+import URLSearchParams from 'url-search-params';
+
 import auth from './auth';
+
+function getNextUrl() {
+  let next = new URLSearchParams(window.location.search).get('next');
+  return next || '/';
+}
 
 export default {
   data: () => ({
@@ -28,8 +35,13 @@ export default {
   }),
   methods: {
     submit: function () {
-      auth.login(this);
-    }
+      auth.login(this.username, this.password).then(() => {
+        this.error = '';
+        this.$router.push(getNextUrl());
+      }).catch((error) => {
+        this.error = error;
+      });
+    },
   },
 };
 </script>

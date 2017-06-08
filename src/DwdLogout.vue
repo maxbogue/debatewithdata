@@ -8,6 +8,7 @@ import auth from './auth';
 export default {
   created: function () {
     auth.logout();
+    this.$router.replace('/');
   },
 };
 </script>
