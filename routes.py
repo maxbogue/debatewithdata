@@ -15,6 +15,8 @@ def load_db():
 
 
 DB = load_db()
+CLAIMS = DB['claims']
+SOURCES = DB['sources']
 
 
 def save_db():
@@ -64,10 +66,10 @@ def register():
 @app.route('/api/claim', methods=['GET', 'POST'])
 def claim_all():
     if request.method == 'GET':
-        return jsonify(DB)
+        return jsonify(CLAIMS)
     elif request.method == 'POST':
         id = ''.join(random.choice(ID_CHARS) for _ in range(12))
-        DB[id] = request.get_json()
+        CLAIMS[id] = request.get_json()
         save_db()
         return jsonify(new_claim_id=id)
 
@@ -75,14 +77,41 @@ def claim_all():
 @app.route('/api/claim/<id>', methods=['GET', 'PUT', 'DELETE'])
 def claim_one(id):
     if request.method == 'GET':
-        return jsonify(DB[id])
+        return jsonify(CLAIMS[id])
     elif request.method == 'PUT':
-        if id not in DB:
+        if id not in CLAIMS:
             raise ApiError('Claim not found.')
-        DB[id] = request.get_json()
+        CLAIMS[id] = request.get_json()
         save_db()
         return jsonify(message='success')
     elif request.method == 'DELETE':
-        del DB[id]
+        del CLAIMS[id]
+        save_db()
+        return jsonify(message='success')
+
+
+@app.route('/api/source', methods=['GET', 'POST'])
+def source_all():
+    if request.method == 'GET':
+        return jsonify(SOURCES)
+    elif request.method == 'POST':
+        id = ''.join(random.choice(ID_CHARS) for _ in range(12))
+        SOURCES[id] = request.get_json()
+        save_db()
+        return jsonify(new_claim_id=id)
+
+
+@app.route('/api/source/<id>', methods=['GET', 'PUT', 'DELETE'])
+def source_one(id):
+    if request.method == 'GET':
+        return jsonify(SOURCES[id])
+    elif request.method == 'PUT':
+        if id not in SOURCES:
+            raise ApiError('Source not found.')
+        SOURCES[id] = request.get_json()
+        save_db()
+        return jsonify(message='success')
+    elif request.method == 'DELETE':
+        del SOURCES[id]
         save_db()
         return jsonify(message='success')
