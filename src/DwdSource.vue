@@ -4,9 +4,9 @@
     <div class="row gutter-16">
       <div class="col-sm-12">
         <div class="source">
-          <div class="url">{{ source.url }}</div>
-          <div>{{ source.text }}</div>
           <span class="glyphicon glyphicon-pencil edit click" @click="editing = !editing" aria-hidden="true"></span>
+          <div class="text">{{ source.text }}</div>
+          <div class="url">{{ source.url }}</div>
         </div>
       </div>
     </div>

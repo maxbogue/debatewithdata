@@ -5,7 +5,8 @@
                  class="source"
                  :to="'/source/' + id"
                  :key="id">
-      {{ source.text }}
+      <div class="text">{{ source.text }}</div>
+      <div class="url">{{ source.url }}</div>
     </router-link>
     <div class="center">
       <span class="add click" @click="adding = true">+</span>
@@ -57,5 +58,13 @@ a.source:hover {
 }
 .add {
   font-size: 32px;
+}
+.source > .text {
+  font-size: 16px;
+  font-weight: 600;
+}
+.source > .url {
+  color: #666;
+  font-size: 12px;
 }
 </style>

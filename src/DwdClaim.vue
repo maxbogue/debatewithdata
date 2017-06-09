@@ -4,7 +4,8 @@
     <div class="row gutter-16">
       <div class="col-sm-12">
         <div class="claim">
-          {{ claim.text }}<span class="glyphicon glyphicon-pencil edit click" @click="editing = !editing" aria-hidden="true"></span>
+          <span class="glyphicon glyphicon-pencil edit click" @click="editing = !editing" aria-hidden="true"></span>
+          <div>{{ claim.text }}</div>
         </div>
       </div>
       <template v-for="pi in pointIndexes">
