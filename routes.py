@@ -39,6 +39,7 @@ def handle_api_error(err):
 
 
 @app.route('/')
+@app.route('/account')
 @app.route('/login')
 @app.route('/logout')
 @app.route('/register')

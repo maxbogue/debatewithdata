@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
+import DwdAccount from './DwdAccount.vue';
 import DwdApp from './DwdApp.vue';
 import DwdClaim from './DwdClaim.vue';
 import DwdClaims from './DwdClaims.vue';
@@ -21,6 +22,7 @@ new Vue({
     mode: 'history',
     routes: [
       { path: '/', component: DwdHome },
+      { path: '/account', component: DwdAccount },
       { path: '/login', component: DwdLogin },
       { path: '/logout', component: DwdLogout },
       { path: '/register', component: DwdRegister },
