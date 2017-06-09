@@ -71,7 +71,7 @@ def claim_all():
         id = ''.join(random.choice(ID_CHARS) for _ in range(12))
         CLAIMS[id] = request.get_json()
         save_db()
-        return jsonify(new_claim_id=id)
+        return jsonify(id=id)
 
 
 @app.route('/api/claim/<id>', methods=['GET', 'PUT', 'DELETE'])
@@ -98,7 +98,7 @@ def source_all():
         id = ''.join(random.choice(ID_CHARS) for _ in range(12))
         SOURCES[id] = request.get_json()
         save_db()
-        return jsonify(new_claim_id=id)
+        return jsonify(id=id)
 
 
 @app.route('/api/source/<id>', methods=['GET', 'PUT', 'DELETE'])
