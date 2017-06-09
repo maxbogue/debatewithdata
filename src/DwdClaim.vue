@@ -19,7 +19,7 @@
       </template>
     </div>
   </template>
-  <dwd-edit-claim v-else :claim="claim" @update="updateClaim" @cancel="editing = false" />
+  <dwd-edit-claim v-else :claim="claim" @commit="updateClaim" @cancel="editing = false" />
 </div>
 </template>
 

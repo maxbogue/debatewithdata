@@ -12,7 +12,7 @@ export default new Vuex.Store({
     user: null,
   },
   mutations: {
-    updateClaim: function (state, { id, claim }) {
+    putClaim: function (state, { id, claim }) {
       state.claims[id] = claim;
     },
     updateClaims: function (state, claims) {
@@ -31,7 +31,17 @@ export default new Vuex.Store({
     updateClaim: function ({ commit }, { id, claim }) {
       return new Promise((resolve, reject) => {
         axios.put('/api/claim/' + id, claim).then(() => {
-          commit('updateClaim', { id, claim });
+          commit('putClaim', { id, claim });
+          resolve();
+        }).catch((error) => {
+          reject(axiosErrorToString(error));
+        });
+      });
+    },
+    addClaim: function ({ commit }, { claim }) {
+      return new Promise((resolve, reject) => {
+        axios.post('/api/claim', claim).then((response) => {
+          commit('putClaim', { id: response.data.new_claim_id, claim });
           resolve();
         }).catch((error) => {
           reject(axiosErrorToString(error));

@@ -1,5 +1,5 @@
 <template>
-<form @submit.prevent="submit">
+<form @submit.prevent="commit">
   <div class="row gutter-16">
     <div class="col-sm-12">
       <div class="claim">
@@ -68,8 +68,8 @@ export default {
       let n = this.points[i].length;
       return n > 0 && !this.points[i][n-1].text;
     },
-    submit: function () {
-      this.$emit('update', {
+    commit: function () {
+      this.$emit('commit', {
         text: this.text,
         points: this.points,
       });
@@ -79,8 +79,10 @@ export default {
       this.$emit('cancel');
     },
     reset: function () {
-      this.text = this.claim.text;
-      this.points = clone(this.claim.points);
+      if (this.claim) {
+        this.text = this.claim.text;
+        this.points = clone(this.claim.points);
+      }
     },
     addPoint: function (i) {
       this.points[i].push({
