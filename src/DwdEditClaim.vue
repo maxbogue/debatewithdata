@@ -1,37 +1,35 @@
 <template>
-<form @submit.prevent="commit">
-  <div class="row gutter-16">
-    <div class="col-sm-12">
-      <div class="claim">
-        <bs-input type="textarea"
-                  autocomplete="off"
-                  placeholder="claim"
-                  v-model="text"></bs-input>
-      </div>
+<form class="row gutter-16" @submit.prevent="commit">
+  <div class="col-sm-12">
+    <div class="claim">
+      <bs-input type="textarea"
+                autocomplete="off"
+                placeholder="claim"
+                v-model="text"></bs-input>
     </div>
-    <template v-for="pi in pointIndexes">
-      <dwd-edit-point v-for="si in sideIndexes"
-                      :points="points"
-                      :sideIndex="si"
-                      :pointIndex="pi"
-                      :key="'editPoint-' + si + '-' + pi"
-                      @delete="deletePoint(si, pi)">
-      </dwd-edit-point>
-      <div class="clearfix"></div>
-    </template>
-    <div v-for="si in sideIndexes" class="col-sm-6">
-      <button type="button" :disabled="lastPointEmpty(si)" class="btn btn-default" @click="addPoint(si)">
-        Add point {{ sideString(si) }}
-      </button>
-    </div>
-    <div class="col-sm-12">
-      <button type="submit" class="btn btn-default">
-        Submit
-      </button>
-      <button type="button" class="btn btn-default" @click="cancel">
-        Cancel
-      </button>
-    </div>
+  </div>
+  <template v-for="pi in pointIndexes">
+    <dwd-edit-point v-for="si in sideIndexes"
+                    :points="points"
+                    :sideIndex="si"
+                    :pointIndex="pi"
+                    :key="'editPoint-' + si + '-' + pi"
+                    @delete="deletePoint(si, pi)">
+    </dwd-edit-point>
+    <div class="clearfix"></div>
+  </template>
+  <div v-for="si in sideIndexes" class="col-sm-6">
+    <button type="button" :disabled="lastPointEmpty(si)" class="btn btn-default" @click="addPoint(si)">
+      Add point {{ sideString(si) }}
+    </button>
+  </div>
+  <div class="col-sm-12">
+    <button type="submit" class="btn btn-default">
+      Submit
+    </button>
+    <button type="button" class="btn btn-default" @click="cancel">
+      Cancel
+    </button>
   </div>
 </form>
 </template>

@@ -1,6 +1,5 @@
 <template>
 <div>
-  <div v-if="error">{{ error }}</div>
   <template v-if="!editing">
     <div class="row gutter-16">
       <div class="col-sm-12">
@@ -19,7 +18,10 @@
       </template>
     </div>
   </template>
-  <dwd-edit-claim v-else :claim="claim" @commit="updateClaim" @cancel="editing = false" />
+  <template v-else>
+    <dwd-edit-claim :claim="claim" @commit="updateClaim" @cancel="editing = false" />
+    <div v-if="error">{{ error }}</div>
+  </template>
 </div>
 </template>
 
@@ -34,7 +36,6 @@ export default {
     DwdPoint,
   },
   data: () => ({
-    allClaims: {},
     editing: false,
     error: '',
   }),
@@ -60,6 +61,7 @@ export default {
         claim: newClaim,
       }).then(() => {
         this.editing = false;
+        this.error = '';
       }).catch((error) => {
         this.error = error;
       });

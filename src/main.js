@@ -9,6 +9,8 @@ import DwdHome from './DwdHome.vue';
 import DwdLogin from './DwdLogin.vue';
 import DwdLogout from './DwdLogout.vue';
 import DwdRegister from './DwdRegister.vue';
+import DwdSource from './DwdSource.vue';
+import DwdSources from './DwdSources.vue';
 import auth from './auth';
 import store from './store';
 
@@ -28,6 +30,8 @@ new Vue({
       { path: '/register', component: DwdRegister },
       { path: '/claims', component: DwdClaims },
       { path: '/claim/:claimId', component: DwdClaim },
+      { path: '/sources', component: DwdSources },
+      { path: '/source/:sourceId', component: DwdSource },
     ],
   }),
   created: function () {

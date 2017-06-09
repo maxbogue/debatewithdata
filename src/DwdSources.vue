@@ -1,18 +1,18 @@
 <template>
 <div>
   <template v-if="!adding">
-    <router-link v-for="(claim, id) in claims"
-                 class="claim"
-                 :to="'/claim/' + id"
+    <router-link v-for="(source, id) in sources"
+                 class="source"
+                 :to="'/source/' + id"
                  :key="id">
-      {{ claim.text }}
+      {{ source.text }}
     </router-link>
     <div class="center">
       <span class="add click" @click="adding = true">+</span>
     </div>
   </template>
   <template v-else>
-    <dwd-edit-claim @commit="addClaim" @cancel="adding = false" />
+    <dwd-edit-source @commit="addSource" @cancel="adding = false" />
     <div v-if="error">{{ error }}</div>
   </template>
 </div>
@@ -21,24 +21,23 @@
 <script>
 import { mapState } from 'vuex';
 
-import DwdEditClaim from './DwdEditClaim.vue';
+import DwdEditSource from './DwdEditSource.vue';
 
 export default {
   components: {
-    DwdEditClaim,
+    DwdEditSource,
   },
   data: () => ({
     adding: false,
     error: '',
   }),
   computed: mapState([
-    'claims',
+    'sources',
   ]),
   methods: {
-    addClaim: function (claim) {
-      this.$store.dispatch('addClaim', { claim }).then(() => {
+    addSource: function (source) {
+      this.$store.dispatch('addSource', { source }).then(() => {
         this.adding = false;
-        this.error = '';
       }).catch((error) => {
         this.error = error;
       });
@@ -48,11 +47,11 @@ export default {
 </script>
 
 <style>
-a.claim {
+a.source {
   color: #000;
   display: block;
 }
-a.claim:hover {
+a.source:hover {
   background-color: #E0E0E0;
   text-decoration: none;
 }

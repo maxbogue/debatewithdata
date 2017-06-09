@@ -20,7 +20,7 @@ export default new Vuex.Store({
       state.claims = claims;
     },
     setSource: function (state, { id, source }) {
-      state.source[id] = source;
+      state.sources[id] = source;
     },
     setSources: function (state, sources) {
       state.sources = sources;
