@@ -19,7 +19,7 @@
     <div class="clearfix"></div>
   </template>
   <div v-for="si in sideIndexes" class="col-sm-6">
-    <button type="button" :disabled="lastPointEmpty(si)" class="btn btn-default" @click="addPoint(si)">
+    <button type="button" :disabled="!canAddPoint(si)" class="btn btn-default" @click="addPoint(si)">
       Add point {{ sideString(si) }}
     </button>
   </div>
@@ -62,9 +62,11 @@ export default {
     },
   },
   methods: {
-    lastPointEmpty: function (i) {
-      let n = this.points[i].length;
-      return n > 0 && !this.points[i][n-1].text;
+    canAddPoint: function (si) {
+      let n = this.points[si].length;
+      if (n === 0) return true;
+      let p = this.points[si][n - 1];
+      return p.claim || p.source || p.text;
     },
     commit: function () {
       this.$emit('commit', {
