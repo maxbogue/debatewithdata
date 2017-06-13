@@ -68,6 +68,11 @@ export default {
       });
     },
   },
+  watch: {
+    $route: function () {
+      this.editing = false;
+    },
+  },
 };
 </script>
 
@@ -81,16 +86,5 @@ export default {
 .edit {
   float: right;
   margin-left: 5px;
-}
-.click:hover {
-  color: #aaa;
-  cursor: pointer;
-}
-.gutter-16.row {
-  margin-right: -8px;
-  margin-left: -8px;
-}
-.gutter-16 > [class^="col-"], .gutter-16 > [class^=" col-"] {
-  padding: 8px;
 }
 </style>

@@ -3,9 +3,9 @@
                    :points="points"
                    :sideIndex="sideIndex"
                    :pointIndex="pointIndex">
-  <div v-if="claim">
-    {{ claim.text }}
-  </div>
+  <template v-if="claim">
+    <div>{{ claim.text }}</div>
+  </template>
   <template v-else-if="source">
     <div class="source-text">{{ source.text }}</div>
     <div class="source-url">{{ source.url }}</div>
@@ -22,8 +22,6 @@ export default {
     DwdPointWrapper,
   },
   props: ['points', 'sideIndex', 'pointIndex'],
-  data: () => ({
-  }),
   computed: {
     point: function () {
       return this.points[this.sideIndex][this.pointIndex];

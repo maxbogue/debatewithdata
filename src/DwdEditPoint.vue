@@ -8,17 +8,31 @@
         @click="$emit('delete')"></span>
   <input type="text"
          autocomplete="off"
-         placeholder="12-letter ID"
-         class="input-text"
-         v-model="text"
+         placeholder="URL, new claim, or 12-letter ID"
+         class="point-input"
+         v-model="input1"
          :class="[inputClass]" />
-  <span v-if="claim">Claim: {{ claim.text }}</span>
-  <span v-else-if="source">Source: {{ source.text }}</span>
-  <span v-else-if="isId">No claim or source with that ID found.</span>
+  <input v-if="isUrl"
+         type="text"
+         autocomplete="off"
+         placeholder="source description"
+         class="point-input"
+         v-model="input2" />
+  <div v-if="claim">
+    <router-link :to="'/claim/' + point.claim">{{ claim.text }}</router-link>
+  </div>
+  <template v-else-if="source">
+    <div class="source-text">{{ source.text }}</div>
+    <div class="source-url">{{ source.url }}</div>
+  </template>
+  <div v-else-if="isId">No claim or source with that ID found.</div>
 </dwd-point-wrapper>
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
+import { isWebUri } from 'valid-url';
+
 import DwdPointWrapper from './DwdPointWrapper.vue';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
@@ -29,20 +43,24 @@ export default {
   },
   props: ['points', 'sideIndex', 'pointIndex'],
   data: () => ({
-    text: '',
+    input1: '',
+    input2: '',
   }),
   computed: {
     point: function () {
       return this.points[this.sideIndex][this.pointIndex];
     },
     isId: function () {
-      return ID_REGEX.test(this.text);
+      return ID_REGEX.test(this.input1);
+    },
+    isUrl: function () {
+      return isWebUri(this.input1);
     },
     claim: function () {
-      return this.isId ? this.$store.state.claims[this.text] : null;
+      return this.isId ? this.$store.state.claims[this.input1] : null;
     },
     source: function () {
-      return this.isId ? this.$store.state.sources[this.text] : null;
+      return this.isId ? this.$store.state.sources[this.input1] : null;
     },
     inputClass: function () {
       if (this.claim || this.source) {
@@ -53,26 +71,40 @@ export default {
       return '';
     },
   },
+  methods: {
+    updatePoint: debounce(function () {
+      delete this.point.newClaim;
+      delete this.point.claim;
+      delete this.point.source;
+      delete this.point.newSource;
+      delete this.point.text;
+      if (this.claim) {
+        this.point.claim = this.input1;
+      } else if (this.source) {
+        this.point.source = this.input1;
+      } else if (this.isUrl) {
+        this.point.newSource = {
+          text: this.input2,
+          url: this.input1,
+        };
+      } else {
+        this.point.newClaim = {
+          text: this.input1,
+        };
+      }
+    }, 100),
+  },
   mounted: function () {
     if (this.point) {
-      this.text = this.point.claim || this.point.source || this.point.text;
+      this.input1 = this.point.claim || this.point.source || this.point.text;
     }
   },
   watch: {
-    text: function () {
-      if (this.claim) {
-        delete this.point.text;
-        delete this.point.source;
-        this.point.claim = this.text;
-      } else if (this.source) {
-        delete this.point.claim;
-        delete this.point.text;
-        this.point.source = this.text;
-      } else {
-        delete this.point.claim;
-        delete this.point.source;
-        this.point.text = this.text;
-      }
+    input1: function () {
+      this.updatePoint();
+    },
+    input2: function () {
+      this.updatePoint();
     },
   },
 };
@@ -85,16 +117,8 @@ export default {
   right: 2px;
   font-size: 12px;
 }
-.input-text {
-  border: 1px solid #666;
-  display: block;
-  padding: 0.5em;
-  transition: width 0.5s;
-  width: 100%;
-}
-.id {
-  display: inline-block;
-  width: 8em;
+.point-input + * {
+  margin-top: 0.5em;
 }
 .valid {
   background-color: #CCFF90;

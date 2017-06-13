@@ -13,6 +13,7 @@ import DwdSource from './DwdSource.vue';
 import DwdSources from './DwdSources.vue';
 import auth from './auth';
 import store from './store';
+import './main.css';
 
 Vue.use(VueRouter);
 

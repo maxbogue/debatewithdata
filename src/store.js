@@ -49,7 +49,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         axios.post('/api/claim', claim).then((response) => {
           commit('setClaim', { id: response.data.id, claim });
-          resolve();
+          resolve(response.data.id);
         }).catch((error) => {
           reject(axiosErrorToString(error));
         });
@@ -74,7 +74,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         axios.post('/api/source', source).then((response) => {
           commit('setSource', { id: response.data.id, source });
-          resolve();
+          resolve(response.data.id);
         }).catch((error) => {
           reject(axiosErrorToString(error));
         });

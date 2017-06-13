@@ -2,10 +2,10 @@
 <form class="row gutter-16" @submit.prevent="commit">
   <div class="col-sm-12">
     <div class="claim">
-      <bs-input type="textarea"
+      <input type="text"
                 autocomplete="off"
                 placeholder="claim"
-                v-model="text"></bs-input>
+                v-model="text"></input>
     </div>
   </div>
   <template v-for="pi in pointIndexes">
@@ -43,9 +43,6 @@ import { range } from './utils';
 
 export default {
   components: {
-    'bs-input': input,
-    'bs-button-group': buttonGroup,
-    'bs-radio': radio,
     DwdEditPoint,
   },
   props: ['claim'],
@@ -69,9 +66,33 @@ export default {
       return p.claim || p.source || p.text;
     },
     commit: function () {
-      this.$emit('commit', {
-        text: this.text,
-        points: this.points,
+      let promises = [];
+      for (let si = 0; si < this.points.length; si++) {
+        for (let pi = 0; pi < this.points[si].length; pi++) {
+          let point = this.points[si][pi];
+          console.log(point);
+          if (point.newClaim) {
+            let promise = this.$store.dispatch('addClaim', {
+              claim: point.newClaim,
+            }).then((id) => {
+              this.points[si][pi] = { claim: id };
+            });
+            promises.push(promise);
+          } else if (point.newSource) {
+            let promise = this.$store.dispatch('addSource', {
+              source: point.newSource,
+            }).then((id) => {
+              this.points[si][pi] = { source: id };
+            });
+            promises.push(promise);
+          }
+        }
+      }
+      Promise.all(promises).then(() => {
+        this.$emit('commit', {
+          text: this.text,
+          points: this.points,
+        });
       });
     },
     cancel: function () {
@@ -105,14 +126,4 @@ export default {
 </script>
 
 <style>
-.claim > .form-group, .point > .form-group {
-  margin-bottom: 0;
-}
-.for-chooser {
-  margin-bottom: 8px;
-}
-.for-chooser > label {
-  font-size: 10px;
-  padding: 4px 8px;
-}
 </style>
