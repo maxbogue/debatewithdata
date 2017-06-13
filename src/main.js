@@ -37,7 +37,6 @@ new Vue({
   }),
   created: function () {
     this.$store.commit('setUser', auth.getUser());
-    this.$store.dispatch('loadClaims');
-    this.$store.dispatch('loadSources');
+    this.$store.dispatch('load');
   },
 });

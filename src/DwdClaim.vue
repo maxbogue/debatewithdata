@@ -27,9 +27,10 @@
 </template>
 
 <script>
+import { range } from 'lodash';
+
 import DwdEditClaim from './DwdEditClaim.vue';
 import DwdPoint from './DwdPoint.vue';
-import { range } from './utils';
 
 export default {
   components: {

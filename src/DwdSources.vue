@@ -59,12 +59,4 @@ a.source:hover {
 .add {
   font-size: 32px;
 }
-.source-text {
-  font-size: 16px;
-  font-weight: 600;
-}
-.source-url {
-  color: #666;
-  font-size: 12px;
-}
 </style>

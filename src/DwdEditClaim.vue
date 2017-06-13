@@ -36,10 +36,9 @@
 
 <script>
 import clone from 'clone';
-import { input, buttonGroup, radio } from 'vue-strap';
+import { range } from 'lodash';
 
 import DwdEditPoint from './DwdEditPoint.vue';
-import { range } from './utils';
 
 export default {
   components: {

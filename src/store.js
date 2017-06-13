@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { forOwn } from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
@@ -6,17 +7,28 @@ import { axiosErrorToString } from './utils';
 
 Vue.use(Vuex);
 
+function sanitizeClaim(claim) {
+  if (!claim.points) {
+    claim.points = [[], []];
+  }
+}
+
 export default new Vuex.Store({
   state: {
+    loaded: false,
     claims: {},
     sources: {},
     user: null,
   },
   mutations: {
+    loaded: function (state) {
+      state.loaded = true;
+    },
     setClaim: function (state, { id, claim }) {
       state.claims[id] = claim;
     },
     setClaims: function (state, claims) {
+      forOwn(claims, sanitizeClaim);
       state.claims = claims;
     },
     setSource: function (state, { id, source }) {
@@ -30,9 +42,15 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    loadClaims: function ({ commit }) {
-      axios.get('/api/claim').then(function (response) {
+    load: function ({ commit }) {
+      let claimsLoaded = axios.get('/api/claim').then(function (response) {
         commit('setClaims', response.data);
+      });
+      let sourcesLoaded = axios.get('/api/source').then(function (response) {
+        commit('setSources', response.data);
+      });
+      Promise.all([claimsLoaded, sourcesLoaded]).then(function () {
+        commit('loaded');
       });
     },
     updateClaim: function ({ commit }, { id, claim }) {
@@ -53,11 +71,6 @@ export default new Vuex.Store({
         }).catch((error) => {
           reject(axiosErrorToString(error));
         });
-      });
-    },
-    loadSources: function ({ commit }) {
-      axios.get('/api/source').then(function (response) {
-        commit('setSources', response.data);
       });
     },
     updateSource: function ({ commit }, { id, source }) {
