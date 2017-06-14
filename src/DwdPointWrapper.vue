@@ -26,7 +26,7 @@ export default {
 
 <style>
 .t2 {
-  padding: 15px;
+  padding: 16px;
   position: relative;
 }
 .t2.side-0 {

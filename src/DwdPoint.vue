@@ -5,10 +5,11 @@
                    :pointIndex="pointIndex">
   <template v-if="claim">
     <div class="source-text">{{ claim.text }}</div>
-    <ul v-if="subPoints.length > 0">
-      <li v-for="sp in subPoints" :class="['side-' + sp.side]">
-        <router-link :to="sp.url">{{ sp.text }}</router-link>
-      </li>
+    <ul v-if="subPoints.length > 0" class="t3">
+      <dwd-sub-point v-for="item in subPoints"
+                     :item="item"
+                     :key="item.claim || item.source">
+      </dwd-sub-point>
     </ul>
   </template>
   <template v-else-if="source">
@@ -23,11 +24,13 @@
 import { clone, map } from 'lodash';
 
 import DwdPointWrapper from './DwdPointWrapper.vue';
+import DwdSubPoint from './DwdSubPoint.vue';
 import { rotate } from './utils';
 
 export default {
   components: {
     DwdPointWrapper,
+    DwdSubPoint,
   },
   props: ['points', 'sideIndex', 'pointIndex'],
   computed: {
@@ -45,34 +48,22 @@ export default {
         return [];
       }
       let setSide = (n) => (p) => {
-        let sp = this.toSubPoint(p);
-        sp.side = n;
-        return sp;
+        let item = clone(p);
+        item.side = n;
+        return item;
       };
       return rotate(map(this.claim.points, (sp, si) => map(sp, setSide(si))));
-    },
-  },
-  methods: {
-    toSubPoint: function (point) {
-      let p = {};
-      if (point.claim) {
-        p = clone(this.$store.state.claims[point.claim]);
-        p.url = '/claim/' + point.claim;
-      } else if (point.source) {
-        p = clone(this.$store.state.sources[point.source]);
-        p.url = '/source/' + point.source;
-      }
-      return p;
     },
   },
 };
 </script>
 
 <style>
-.side-0 {
-  list-style: circle;
+.t3 {
+  margin: 5px 0 0 0;
+  padding-left: 16px;
 }
-.side-1 {
-  list-style: square;
+.t3 li {
+  padding: 0;
 }
 </style>
