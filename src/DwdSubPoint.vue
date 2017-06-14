@@ -44,10 +44,4 @@ export default {
 </script>
 
 <style>
-.side-0 {
-  list-style: circle;
-}
-.side-1 {
-  list-style: square;
-}
 </style>

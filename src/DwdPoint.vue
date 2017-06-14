@@ -4,7 +4,7 @@
                    :sideIndex="sideIndex"
                    :pointIndex="pointIndex">
   <template v-if="claim">
-    <div class="source-text">{{ claim.text }}</div>
+    <router-link :to="'/claim/' + point.claim" class="source-text">{{ claim.text }}</router-link>
     <ul v-if="subPoints.length > 0" class="t3">
       <dwd-sub-point v-for="item in subPoints"
                      :item="item"
@@ -13,8 +13,8 @@
     </ul>
   </template>
   <template v-else-if="source">
-    <div class="source-text">{{ source.text }}</div>
-    <div class="source-url">{{ source.url }}</div>
+    <router-link :to="'/source/' + point.source" class="source-text">{{ source.text }}</router-link>
+    <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
   <span v-else>{{ point.text }}</span>
 </dwd-point-wrapper>
@@ -61,9 +61,22 @@ export default {
 <style>
 .t3 {
   margin: 5px 0 0 0;
-  padding-left: 16px;
+  padding: 0;
 }
 .t3 li {
+  list-style: none;
   padding: 0;
+}
+.t3 li:before {
+  font-family: "Courier New";
+  font-size: 12px;
+  font-weight: 600;
+  padding-right: 5px;
+}
+.t3 li.side-0:before {
+  content: "+";
+}
+.t3 li.side-1:before {
+  content: "-";
 }
 </style>
