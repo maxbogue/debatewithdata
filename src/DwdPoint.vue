@@ -70,9 +70,9 @@ export default {
 
 <style>
 .side-0 {
-  list-style: "+";
+  list-style: circle;
 }
 .side-1 {
-  list-style: "-";
+  list-style: square;
 }
 </style>

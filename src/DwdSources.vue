@@ -2,7 +2,7 @@
 <div>
   <template v-if="!adding">
     <router-link v-for="(source, id) in sources"
-                 class="source"
+                 class="t1"
                  :to="'/source/' + id"
                  :key="id">
       <div class="source-text">{{ source.text }}</div>
@@ -48,14 +48,6 @@ export default {
 </script>
 
 <style>
-a.source {
-  color: #000;
-  display: block;
-}
-a.source:hover {
-  background-color: #E0E0E0;
-  text-decoration: none;
-}
 .add {
   font-size: 32px;
 }

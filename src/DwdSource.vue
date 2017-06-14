@@ -3,10 +3,10 @@
   <template v-if="!editing">
     <div class="row gutter-16">
       <div class="col-sm-12">
-        <div class="source">
-          <span class="glyphicon glyphicon-pencil edit click" @click="editing = !editing" aria-hidden="true"></span>
-          <div class="text">{{ source.text }}</div>
-          <div class="url">{{ source.url }}</div>
+        <div class="t1">
+          <span class="glyphicon glyphicon-pencil edit click" @click="editing = true" aria-hidden="true"></span>
+          <div class="source-text">{{ source.text }}</div>
+          <div class="source-url">{{ source.url }}</div>
         </div>
       </div>
     </div>
@@ -54,12 +54,6 @@ export default {
 </script>
 
 <style>
-.source {
-  background-color: #EEEEEE;
-  border: 1px solid #757575;
-  margin-top: 8px;
-  padding: 15px;
-}
 .edit {
   float: right;
   margin-left: 5px;

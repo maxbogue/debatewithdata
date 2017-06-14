@@ -3,7 +3,7 @@
   <template v-if="!editing">
     <div class="row gutter-16">
       <div class="col-sm-12">
-        <div class="claim">
+        <div class="t1">
           <span class="glyphicon glyphicon-pencil edit click" @click="editing = !editing" aria-hidden="true"></span>
           <div>{{ claim.text }}</div>
         </div>
@@ -78,12 +78,6 @@ export default {
 </script>
 
 <style>
-.claim {
-  background-color: #EEEEEE;
-  border: 1px solid #757575;
-  margin-top: 8px;
-  padding: 15px;
-}
 .edit {
   float: right;
   margin-left: 5px;

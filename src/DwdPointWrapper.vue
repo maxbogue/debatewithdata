@@ -1,7 +1,7 @@
 <template>
 <div class="col-sm-6"
      :class="{'col-sm-offset-6': needsOffset}">
-  <div class="point" :class="[sideIndex > 0 ? 'against' : 'for']">
+  <div class="t2" :class="['side-' + sideIndex]">
     <slot></slot>
   </div>
 </div>
@@ -25,15 +25,15 @@ export default {
 </script>
 
 <style>
-.point {
+.t2 {
   padding: 15px;
   position: relative;
 }
-.for {
+.t2.side-0 {
   background-color: #80DEEA;
   border: 1px solid #00ACC1;
 }
-.against {
+.t2.side-1 {
   background-color: #FFE082;
   border: 1px solid #FFB300;
 }

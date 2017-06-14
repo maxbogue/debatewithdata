@@ -2,7 +2,7 @@
 <div>
   <template v-if="!adding">
     <router-link v-for="(claim, id) in claims"
-                 class="claim"
+                 class="t1 source-text"
                  :to="'/claim/' + id"
                  :key="id">
       {{ claim.text }}
@@ -48,14 +48,6 @@ export default {
 </script>
 
 <style>
-a.claim {
-  color: #000;
-  display: block;
-}
-a.claim:hover {
-  background-color: #E0E0E0;
-  text-decoration: none;
-}
 .add {
   font-size: 32px;
 }
