@@ -1,6 +1,7 @@
 <template>
 <div class="t2" :class="['side-' + side]">
-  <span class="delete click glyphicon glyphicon-trash"
+  <span v-if="!isLast"
+        class="delete click glyphicon glyphicon-trash"
         aria-hidden="true"
         @click="$emit('delete')"></span>
   <input type="text"
@@ -33,7 +34,7 @@ import { isWebUri } from 'valid-url';
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
 export default {
-  props: ['point', 'side'],
+  props: ['point', 'side', 'isLast'],
   data: () => ({
     input1: '',
     input2: '',
@@ -85,12 +86,15 @@ export default {
   },
   mounted: function () {
     if (this.point) {
-      this.input1 = this.point.claim || this.point.source || this.point.text;
+      this.input1 = this.point.claim || this.point.source || '';
     }
   },
   watch: {
     input1: function () {
       this.updatePoint();
+      if (this.isLast && this.input1) {
+        this.$emit('makeNewEmpty');
+      }
     },
     input2: function () {
       this.updatePoint();
