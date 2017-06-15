@@ -1,5 +1,5 @@
 <template>
-<li :class="['side-' + item.side]">
+<li :class="['side-' + side]">
   <span v-if="error">{{ error }}</span>
   <router-link v-else :to="url">{{ text }}</router-link>
 </li>
@@ -7,19 +7,19 @@
 
 <script>
 export default {
-  props: ['item'],
+  props: ['point', 'side'],
   computed: {
     claim: function () {
-      return this.$store.state.claims[this.item.claim];
+      return this.$store.state.claims[this.point.claim];
     },
     source: function () {
-      return this.$store.state.sources[this.item.source];
+      return this.$store.state.sources[this.point.source];
     },
     url: function () {
-      if (this.item.claim) {
-        return '/claim/' + this.item.claim;
-      } else if (this.item.source) {
-        return '/source/' + this.item.source;
+      if (this.point.claim) {
+        return '/claim/' + this.point.claim;
+      } else if (this.point.source) {
+        return '/source/' + this.point.source;
       }
       return '';
     },
@@ -32,10 +32,10 @@ export default {
       return '';
     },
     error: function () {
-      if (this.item.claim && !this.claim) {
-        return 'Claim not found: ' + this.item.claim;
-      } else if (this.item.source && !this.source) {
-        return 'Source not found: ' + this.item.source;
+      if (this.point.claim && !this.claim) {
+        return 'Claim not found: ' + this.point.claim;
+      } else if (this.point.source && !this.source) {
+        return 'Source not found: ' + this.point.source;
       }
       return '';
     },

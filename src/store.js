@@ -13,12 +13,23 @@ function sanitizeClaim(claim) {
   }
 }
 
+function windowIsSingleColumn() {
+  return window.innerWidth < 768;
+}
+
+function singleColumnPlugin(store) {
+  window.addEventListener('resize', () => {
+    store.commit('setSingleColumn', windowIsSingleColumn());
+  });
+}
+
 export default new Vuex.Store({
   state: {
     loaded: false,
     claims: {},
     sources: {},
     user: null,
+    singleColumn: windowIsSingleColumn(),
   },
   mutations: {
     loaded: function (state) {
@@ -39,6 +50,9 @@ export default new Vuex.Store({
     },
     setUser: function (state, user) {
       state.user = user;
+    },
+    setSingleColumn: function (state, isSingleColumn) {
+      state.singleColumn = isSingleColumn;
     },
   },
   actions: {
@@ -94,5 +108,6 @@ export default new Vuex.Store({
       });
     },
   },
+  plugins: [singleColumnPlugin],
 });
 

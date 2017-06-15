@@ -1,14 +1,12 @@
 <template>
-<dwd-point-wrapper v-if="point"
-                   :points="points"
-                   :sideIndex="sideIndex"
-                   :pointIndex="pointIndex">
+<div class="t2" :class="['side-' + side]">
   <template v-if="claim">
     <router-link :to="'/claim/' + point.claim" class="source-text">{{ claim.text }}</router-link>
     <ul v-if="subPoints.length > 0" class="t3">
-      <dwd-sub-point v-for="item in subPoints"
-                     :item="item"
-                     :key="item.claim || item.source">
+      <dwd-sub-point v-for="[subPoint, subSide] in subPoints"
+                     :point="subPoint"
+                     :side="subSide"
+                     :key="subPoint.claim || subPoint.source">
       </dwd-sub-point>
     </ul>
   </template>
@@ -16,27 +14,22 @@
     <router-link :to="'/source/' + point.source" class="source-text">{{ source.text }}</router-link>
     <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
-  <span v-else>{{ point.text }}</span>
-</dwd-point-wrapper>
+  <span v-else>error</span>
+</div>
 </template>
 
 <script>
-import { clone, map } from 'lodash';
+import { map } from 'lodash';
 
-import DwdPointWrapper from './DwdPointWrapper.vue';
 import DwdSubPoint from './DwdSubPoint.vue';
-import { rotate } from './utils';
+import { rotate, zipInnerWithIndex } from './utils';
 
 export default {
   components: {
-    DwdPointWrapper,
     DwdSubPoint,
   },
-  props: ['points', 'sideIndex', 'pointIndex'],
+  props: ['point', 'side'],
   computed: {
-    point: function () {
-      return this.points[this.sideIndex][this.pointIndex];
-    },
     claim: function () {
       return this.$store.state.claims[this.point.claim];
     },
@@ -47,18 +40,28 @@ export default {
       if (!this.claim || !this.$store.state.loaded) {
         return [];
       }
-      let setSide = (n) => (p) => {
-        let item = clone(p);
-        item.side = n;
-        return item;
-      };
-      return rotate(map(this.claim.points, (sp, si) => map(sp, setSide(si))));
+      return rotate(map(this.claim.points, zipInnerWithIndex));
     },
   },
 };
 </script>
 
 <style>
+.t2 {
+  padding: 16px;
+  position: relative;
+}
+.t2.side-0 {
+  background-color: #80DEEA;
+  border: 1px solid #00ACC1;
+}
+.t2.side-1 {
+  background-color: #FFE082;
+  border: 1px solid #FFB300;
+}
+.t2 + .t2 {
+  margin-top: 16px;
+}
 .t3 {
   margin: 5px 0 0 0;
   padding: 0;

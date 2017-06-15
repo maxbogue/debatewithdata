@@ -8,14 +8,22 @@
           <div>{{ claim.text }}</div>
         </div>
       </div>
-      <template v-for="pi in pointIndexes">
-        <dwd-point v-for="si in sideIndexes"
-                   :points="claim.points"
-                   :sideIndex="si"
-                   :pointIndex="pi"
-                   :key="'point-' + si + '-' + pi">
-        </dwd-point>
-        <div class="clearfix"></div>
+      <template v-if="$store.state.singleColumn">
+        <div v-for="[point, side] in zippedPoints" class="col-xs-12">
+          <dwd-point :point="point"
+                     :side="side"
+                     :key="point.claim || point.source">
+          </dwd-point>
+        </div>
+      </template>
+      <template v-else>
+        <div v-for="(sidePoints, side) in claim.points" class="col-sm-6">
+          <dwd-point v-for="point in sidePoints"
+                     :point="point"
+                     :side="side"
+                     :key="point.claim || point.source">
+          </dwd-point>
+        </div>
       </template>
     </div>
   </template>
@@ -27,10 +35,11 @@
 </template>
 
 <script>
-import { range } from 'lodash';
+import { map } from 'lodash';
 
 import DwdEditClaim from './DwdEditClaim.vue';
 import DwdPoint from './DwdPoint.vue';
+import { rotate, zipInnerWithIndex } from './utils';
 
 export default {
   components: {
@@ -48,12 +57,11 @@ export default {
     claim: function () {
       return this.$store.state.claims[this.id] || { points: [[], []] };
     },
-    pointIndexes: function () {
-      return range(this.claim.points.reduce(
-          (acc, pts) => Math.max(acc, pts.length), 0));
-    },
-    sideIndexes: function () {
-      return range(this.claim.points.length);
+    zippedPoints: function () {
+      if (!this.claim || !this.$store.state.loaded) {
+        return [];
+      }
+      return rotate(map(this.claim.points, zipInnerWithIndex));
     },
   },
   methods: {

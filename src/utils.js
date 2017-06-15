@@ -1,5 +1,9 @@
 import map from 'lodash/map';
 
+export function zipInnerWithIndex(xs, i) {
+  return map(xs, (x) => [x, i]);
+}
+
 export function rotate(lists) {
   let retList = [];
   for (let i = 0; i < Math.max(...map(lists, (list) => list.length)); i++) {

@@ -1,8 +1,5 @@
 <template>
-<dwd-point-wrapper v-if="point"
-                   :points="points"
-                   :sideIndex="sideIndex"
-                   :pointIndex="pointIndex">
+<div class="t2" :class="['side-' + side]">
   <span class="delete click glyphicon glyphicon-trash"
         aria-hidden="true"
         @click="$emit('delete')"></span>
@@ -26,30 +23,22 @@
     <div class="source-url">{{ source.url }}</div>
   </template>
   <div v-else-if="isId">No claim or source with that ID found.</div>
-</dwd-point-wrapper>
+</div>
 </template>
 
 <script>
 import debounce from 'lodash/debounce';
 import { isWebUri } from 'valid-url';
 
-import DwdPointWrapper from './DwdPointWrapper.vue';
-
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
 export default {
-  components: {
-    DwdPointWrapper,
-  },
-  props: ['points', 'sideIndex', 'pointIndex'],
+  props: ['point', 'side'],
   data: () => ({
     input1: '',
     input2: '',
   }),
   computed: {
-    point: function () {
-      return this.points[this.sideIndex][this.pointIndex];
-    },
     isId: function () {
       return ID_REGEX.test(this.input1);
     },

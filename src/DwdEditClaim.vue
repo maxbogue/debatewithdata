@@ -8,19 +8,26 @@
                 v-model="text"></input>
     </div>
   </div>
-  <template v-for="pi in pointIndexes">
-    <dwd-edit-point v-for="si in sideIndexes"
-                    :points="points"
-                    :sideIndex="si"
-                    :pointIndex="pi"
-                    :key="'editPoint-' + si + '-' + pi"
-                    @delete="deletePoint(si, pi)">
-    </dwd-edit-point>
-    <div class="clearfix"></div>
+  <template v-if="$store.state.singleColumn">
+    <div v-for="[point, side] in zippedPoints" class="col-xs-12">
+      <dwd-edit-point :point="point"
+                      :side="side"
+                      :key="point.claim || point.source">
+      </dwd-edit-point>
+    </div>
   </template>
-  <div v-for="si in sideIndexes" class="col-sm-6">
-    <button type="button" :disabled="!canAddPoint(si)" class="btn btn-default" @click="addPoint(si)">
-      Add point {{ sideString(si) }}
+  <template v-else>
+    <div v-for="(sidePoints, side) in points" class="col-sm-6">
+      <dwd-edit-point v-for="point in sidePoints"
+                      :point="point"
+                      :side="side"
+                      :key="point.claim || point.source">
+      </dwd-edit-point>
+    </div>
+  </template>
+  <div v-for="(items, side) in points" class="col-sm-6">
+    <button type="button" :disabled="!canAddPoint(side)" class="btn btn-default" @click="addPoint(side)">
+      Add point {{ sideString(side) }}
     </button>
   </div>
   <div class="col-sm-12">
@@ -35,10 +42,10 @@
 </template>
 
 <script>
-import clone from 'clone';
-import { range } from 'lodash';
+import { cloneDeep, map } from 'lodash';
 
 import DwdEditPoint from './DwdEditPoint.vue';
+import { rotate, zipInnerWithIndex } from './utils';
 
 export default {
   components: {
@@ -50,11 +57,8 @@ export default {
     points: [[], []],
   }),
   computed: {
-    pointIndexes: function () {
-      return range(this.points.reduce((acc, pts) => Math.max(acc, pts.length), 0));
-    },
-    sideIndexes: function () {
-      return range(this.points.length);
+    zippedPoints: function () {
+      return rotate(map(this.points, zipInnerWithIndex));
     },
   },
   methods: {
@@ -101,7 +105,7 @@ export default {
     reset: function () {
       if (this.claim) {
         this.text = this.claim.text;
-        this.points = clone(this.claim.points);
+        this.points = cloneDeep(this.claim.points);
       }
     },
     addPoint: function (i) {
