@@ -1,11 +1,11 @@
 <template>
 <form class="row gutter-16" @submit.prevent="commit">
   <div class="col-xs-12">
-    <div class="claim">
+    <div class="t1">
       <input type="text"
-                autocomplete="off"
-                placeholder="claim"
-                v-model="text"></input>
+             autocomplete="off"
+             placeholder="claim"
+             v-model="text"></input>
     </div>
   </div>
   <template v-if="$store.state.singleColumn">
@@ -31,25 +31,25 @@
       </dwd-edit-point>
     </div>
   </template>
-  <div class="col-xs-12">
-    <button type="submit" class="btn btn-default">
-      Submit
-    </button>
-    <button type="button" class="btn btn-default" @click="cancel">
-      Cancel
-    </button>
+  <div class="col-xs-12 center">
+    <button type="submit" class="btn btn-default">Submit</button>
+    <button type="button" class="btn btn-default" @click="cancel">Cancel</button>
   </div>
 </form>
 </template>
 
 <script>
-import { cloneDeep, map } from 'lodash';
+import { cloneDeep, filter, map } from 'lodash';
 
 import DwdEditPoint from './DwdEditPoint.vue';
 import { rotate } from './utils';
 
 function zipInnerWithIndexes(xs, i) {
   return map(xs, (x, j) => [x, i, j]);
+}
+
+function isValidPoint(point) {
+  return point.claim || point.source;
 }
 
 export default {
@@ -72,7 +72,6 @@ export default {
       for (let si = 0; si < this.points.length; si++) {
         for (let pi = 0; pi < this.points[si].length; pi++) {
           let point = this.points[si][pi];
-          console.log(point);
           if (point.newClaim) {
             let promise = this.$store.dispatch('addClaim', {
               claim: point.newClaim,
@@ -93,6 +92,9 @@ export default {
         }
       }
       Promise.all(promises).then(() => {
+        for (let i = 0; i < this.points.length; i++) {
+          this.points[i] = filter(this.points[i], isValidPoint);
+        }
         this.$emit('commit', {
           text: this.text,
           points: this.points,

@@ -52,8 +52,8 @@ export default {
   position: relative;
 }
 .t2.side-0 {
-  background-color: #80DEEA;
-  border: 1px solid #00ACC1;
+  background-color: #E1BEE7;
+  border: 1px solid #9C27B0;
 }
 .t2.side-1 {
   background-color: #FFE082;

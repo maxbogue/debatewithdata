@@ -77,7 +77,7 @@ export default {
           text: this.input2,
           url: this.input1,
         };
-      } else {
+      } else if (this.input1) {
         this.point.newClaim = {
           text: this.input1,
         };
@@ -113,12 +113,13 @@ export default {
 .point-input + * {
   margin-top: 0.5em;
 }
-.valid {
-  background-color: #CCFF90;
-  border: 1px solid #64DD17;
+.id {
+  font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
-.invalid {
-  background-color: #FF8A80;
-  border: 1px solid #D50000;
+.id.valid {
+  color: #8BC34A;
+}
+.id.invalid {
+  color: #F44336;
 }
 </style>

@@ -28,8 +28,8 @@ a:hover {
   cursor: pointer;
 }
 .t1 {
-  background-color: #EEEEEE;
-  border: 1px solid #757575;
+  background-color: #B2DFDB;
+  border: 1px solid #009688;
   margin-top: 8px;
   padding: 16px;
 }
@@ -38,7 +38,7 @@ a.t1 {
   display: block;
 }
 a.t1:hover {
-  background-color: #E0E0E0;
+  background-color: #80CBC4;
   text-decoration: none;
 }
 .source-text {
