@@ -41,6 +41,9 @@ a.t1:hover {
   background-color: #80CBC4;
   text-decoration: none;
 }
+.t1 > input {
+  background-color: #E0F2F1;
+}
 .source-text {
   display: block;
   font-size: 16px;

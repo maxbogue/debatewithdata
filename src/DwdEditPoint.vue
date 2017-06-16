@@ -20,8 +20,8 @@
     <router-link :to="'/claim/' + point.claim">{{ claim.text }}</router-link>
   </div>
   <template v-else-if="source">
-    <div class="source-text">{{ source.text }}</div>
-    <div class="source-url">{{ source.url }}</div>
+    <router-link :to="'/source/' + point.source" class="source-text">{{ source.text }}</router-link>
+    <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
   <div v-else-if="isId">No claim or source with that ID found.</div>
 </div>
@@ -110,6 +110,12 @@ export default {
   right: 2px;
   font-size: 12px;
 }
+.side-0 > .point-input {
+  background-color: #F3E5F5;
+}
+.side-1 > .point-input {
+  background-color: #FFF8E1;
+}
 .point-input + * {
   margin-top: 0.5em;
 }
@@ -117,7 +123,7 @@ export default {
   font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
 .id.valid {
-  color: #8BC34A;
+  color: #757575;
 }
 .id.invalid {
   color: #F44336;
