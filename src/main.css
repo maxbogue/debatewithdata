@@ -9,6 +9,9 @@ input:focus {
   outline: none;
   box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.75);
 }
+input + * {
+  margin-top: 0.5em;
+}
 a, a:visited, a:focus {
   color: #222;
   text-decoration: none;
@@ -26,6 +29,9 @@ a:hover {
 .click:hover {
   color: #aaa;
   cursor: pointer;
+}
+.mono {
+  font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
 .t1 {
   background-color: #B2DFDB;

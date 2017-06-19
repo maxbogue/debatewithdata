@@ -6,7 +6,7 @@
         <div class="t1">
           <span class="glyphicon glyphicon-pencil edit click" @click="editing = true" aria-hidden="true"></span>
           <div class="source-text">{{ source.text }}</div>
-          <div class="source-url">{{ source.url }}</div>
+          <a :href="source.url" class="source-url">{{ source.url }}</a>
         </div>
       </div>
     </div>

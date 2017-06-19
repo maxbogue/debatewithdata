@@ -7,14 +7,13 @@
   <input type="text"
          autocomplete="off"
          placeholder="URL, new claim, or 12-letter ID"
-         class="point-input"
          v-model="input1"
          :class="[inputClass]" />
   <input v-if="isUrl"
+         required
          type="text"
          autocomplete="off"
          placeholder="source description"
-         class="point-input"
          v-model="input2" />
   <div v-if="claim">
     <router-link :to="'/claim/' + point.claim">{{ claim.text }}</router-link>
@@ -54,9 +53,9 @@ export default {
     },
     inputClass: function () {
       if (this.claim || this.source) {
-        return 'id valid';
+        return 'mono valid';
       } else if (this.isId) {
-        return 'id invalid';
+        return 'mono invalid';
       }
       return '';
     },
@@ -110,22 +109,16 @@ export default {
   right: 2px;
   font-size: 12px;
 }
-.side-0 > .point-input {
+.side-0 > input {
   background-color: #F3E5F5;
 }
-.side-1 > .point-input {
+.side-1 > input {
   background-color: #FFF8E1;
 }
-.point-input + * {
-  margin-top: 0.5em;
-}
-.id {
-  font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
-}
-.id.valid {
+.valid {
   color: #757575;
 }
-.id.invalid {
+.invalid {
   color: #F44336;
 }
 </style>
