@@ -10,8 +10,14 @@ ID_CHARS = '0123456789abcdef'
 
 
 def load_db():
-    with open(DB_FILE) as f:
-        return json.load(f)
+    try:
+        with open(DB_FILE) as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {
+            'claims': {},
+            'sources': {},
+        }
 
 
 DB = load_db()
