@@ -36,14 +36,14 @@ export default new Vuex.Store({
       state.loaded = true;
     },
     setClaim: function (state, { id, claim }) {
-      state.claims[id] = claim;
+      Vue.set(state.claims, id, claim);
     },
     setClaims: function (state, claims) {
       forOwn(claims, sanitizeClaim);
       state.claims = claims;
     },
     setSource: function (state, { id, source }) {
-      state.sources[id] = source;
+      Vue.set(state.sources, id, source);
     },
     setSources: function (state, sources) {
       state.sources = sources;
