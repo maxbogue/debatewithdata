@@ -24,3 +24,14 @@ export function axiosErrorToString(error) {
   }
   return error.response.data.message;
 }
+
+export var DwdUtilsMixin = {
+  methods: {
+    claimUrl: function (claimId) {
+      return '/claim/' + claimId;
+    },
+    sourceUrl: function (sourceId) {
+      return '/source/' + sourceId;
+    },
+  },
+};

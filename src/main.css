@@ -37,6 +37,7 @@ a:hover {
   background-color: #B2DFDB;
   border: 1px solid #009688;
   border-radius: 5px;
+  font-size: 20px;
   margin-top: 8px;
   padding: 16px;
 }
@@ -53,8 +54,6 @@ a.t1:hover {
 }
 .source-text {
   display: block;
-  font-size: 16px;
-  font-weight: 600;
 }
 .source-url {
   display: block;

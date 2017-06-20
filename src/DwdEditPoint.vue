@@ -16,10 +16,10 @@
          placeholder="source description"
          v-model="input2" />
   <div v-if="claim">
-    <router-link :to="'/claim/' + point.claim">{{ claim.text }}</router-link>
+    <router-link :to="claimUrl(point.claim)">{{ claim.text }}</router-link>
   </div>
   <template v-else-if="source">
-    <router-link :to="'/source/' + point.source" class="source-text">{{ source.text }}</router-link>
+    <router-link :to="sourceUrl(point.source)" class="source-text">{{ source.text }}</router-link>
     <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
   <div v-else-if="isId">No claim or source with that ID found.</div>

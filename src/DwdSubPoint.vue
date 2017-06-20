@@ -17,9 +17,9 @@ export default {
     },
     url: function () {
       if (this.point.claim) {
-        return '/claim/' + this.point.claim;
+        return this.claimUrl(this.point.claim);
       } else if (this.point.source) {
-        return '/source/' + this.point.source;
+        return this.sourceUrl(this.point.source);
       }
       return '';
     },

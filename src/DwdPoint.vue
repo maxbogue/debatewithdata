@@ -1,7 +1,7 @@
 <template>
 <div class="t2" :class="['side-' + side]">
   <template v-if="claim">
-    <router-link :to="'/claim/' + point.claim" class="source-text">{{ claim.text }}</router-link>
+    <router-link :to="claimUrl(point.claim)" class="source-text">{{ claim.text }}</router-link>
     <ul v-if="subPoints.length > 0" class="t3">
       <dwd-sub-point v-for="[subPoint, subSide] in subPoints"
                      :point="subPoint"
@@ -11,7 +11,7 @@
     </ul>
   </template>
   <template v-else-if="source">
-    <router-link :to="'/source/' + point.source" class="source-text">{{ source.text }}</router-link>
+    <router-link :to="sourceUrl(point.source)" class="source-text">{{ source.text }}</router-link>
     <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
   <span v-else>error</span>
@@ -49,6 +49,7 @@ export default {
 <style>
 .t2 {
   border-radius: 5px;
+  font-size: 16px;
   padding: 16px;
   position: relative;
 }
@@ -64,8 +65,16 @@ export default {
   margin-top: 16px;
 }
 .t3 {
-  margin: 5px 0 0 0;
-  padding: 0;
+  border-radius: 5px;
+  font-size: 12px;
+  margin: 8px -8px -8px -8px;
+  padding: 8px;
+}
+.side-0 .t3 {
+  background-color: #F3E5F5;
+}
+.side-1 .t3 {
+  background-color: #FFECB3;
 }
 .t3 li {
   list-style: none;

@@ -3,7 +3,7 @@
   <template v-if="!adding">
     <router-link v-for="(claim, id) in claims"
                  class="t1 source-text"
-                 :to="'/claim/' + id"
+                 :to="claimUrl(id)"
                  :key="id">
       {{ claim.text }}
     </router-link>
@@ -36,9 +36,10 @@ export default {
   ]),
   methods: {
     addClaim: function (claim) {
-      this.$store.dispatch('addClaim', { claim }).then(() => {
+      this.$store.dispatch('addClaim', { claim }).then((id) => {
         this.adding = false;
         this.error = '';
+        this.$router.push(this.claimUrl(id));
       }).catch((error) => {
         this.error = error;
       });

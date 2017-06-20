@@ -14,9 +14,11 @@ import DwdSource from './DwdSource.vue';
 import DwdSources from './DwdSources.vue';
 import auth from './auth';
 import store from './store';
+import { DwdUtilsMixin } from './utils';
 import './main.css';
 
 Vue.use(VueRouter);
+Vue.mixin(DwdUtilsMixin);
 
 Vue.directive('auto-resize', {
   bind: function (el, binding, vnode) {
