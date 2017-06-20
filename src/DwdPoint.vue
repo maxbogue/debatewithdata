@@ -48,6 +48,7 @@ export default {
 
 <style>
 .t2 {
+  border-radius: 5px;
   padding: 16px;
   position: relative;
 }

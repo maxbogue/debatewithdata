@@ -1,3 +1,4 @@
+import { find } from 'lodash';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
@@ -16,6 +17,15 @@ import store from './store';
 import './main.css';
 
 Vue.use(VueRouter);
+
+Vue.directive('auto-resize', {
+  bind: function (el, binding, vnode) {
+    let model = find(vnode.data.directives, (d) => d.name === 'model');
+    vnode.context.$watch(model.expression, function () {
+      el.style.height = el.scrollHeight + 'px';
+    });
+  },
+});
 
 new Vue({
   el: '#app',

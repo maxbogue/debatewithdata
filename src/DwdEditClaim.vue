@@ -2,10 +2,10 @@
 <form class="row gutter-16" @submit.prevent="commit">
   <div class="col-xs-12">
     <div class="t1">
-      <input type="text"
-             autocomplete="off"
-             placeholder="claim"
-             v-model="text"></input>
+      <textarea autocomplete="off"
+                placeholder="claim"
+                v-model="text"
+                v-auto-resize></textarea>
     </div>
   </div>
   <template v-if="$store.state.singleColumn">
@@ -75,6 +75,7 @@ export default {
           if (point.newClaim) {
             let promise = this.$store.dispatch('addClaim', {
               claim: point.newClaim,
+              points: [[], []],
             }).then((id) => {
               this.points[si][pi] = { claim: id };
             });
