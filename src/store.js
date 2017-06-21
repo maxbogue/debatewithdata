@@ -74,7 +74,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         axios.put('/api/claim/' + id, claim).then(() => {
           commit('setClaim', { id, claim });
-          resolve();
+          resolve(id);
         }).catch((error) => {
           reject(axiosErrorToString(error));
         });

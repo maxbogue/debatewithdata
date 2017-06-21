@@ -1,5 +1,5 @@
 <template>
-<form class="row gutter-16" @submit.prevent="commit">
+<form class="row gutter-16" @submit.prevent="submit">
   <div class="col-xs-12">
     <div class="t1">
       <textarea autocomplete="off"
@@ -31,13 +31,14 @@
       </dwd-edit-point>
     </div>
   </template>
+  <div v-if="error" class="col-xs-12 center">{{ error }}</div>
   <div class="col-xs-12 center">
     <button type="submit" class="btn btn-default">Submit</button>
     <button type="button" class="btn btn-default" @click="cancel">Cancel</button>
   </div>
-  <div class="col-xs-12 center">
-    <button v-if="!confirmRemove" type="button" class="btn btn-danger" @click="remove">Delete Claim</button>
-    <button v-else type="button" class="btn btn-danger" @click="$emit('remove')">Really Delete?</button>
+  <div v-if="id" class="col-xs-12 center">
+    <button v-if="!confirmRemove" type="button" class="btn btn-danger" @click="startRemove">Delete Claim</button>
+    <button v-else type="button" class="btn btn-danger" @click="reallyRemove">Really Delete?</button>
   </div>
 </form>
 </template>
@@ -60,19 +61,26 @@ export default {
   components: {
     DwdEditPoint,
   },
-  props: ['claim'],
   data: () => ({
-    text: '',
-    points: [[], []],
     confirmRemove: false,
+    error: '',
+    initialized: false,
+    points: [[], []],
+    text: '',
   }),
   computed: {
+    id: function () {
+      return this.$route.params.claimId || '';
+    },
+    claim: function () {
+      return this.$store.state.claims[this.id] || null;
+    },
     zippedPoints: function () {
       return rotate(map(this.points, zipInnerWithIndexes));
     },
   },
   methods: {
-    commit: function () {
+    submit: function () {
       let promises = [];
       for (let si = 0; si < this.points.length; si++) {
         for (let pi = 0; pi < this.points[si].length; pi++) {
@@ -101,30 +109,56 @@ export default {
         for (let i = 0; i < this.points.length; i++) {
           this.points[i] = filter(this.points[i], isValidPoint);
         }
-        this.$emit('commit', {
-          text: this.text,
-          points: this.points,
-        });
+        this.commit();
       });
     },
-    cancel: function () {
-      this.reset();
-      this.$emit('cancel');
+    commit: function () {
+      let action = 'addClaim';
+      let payload = {
+        claim: {
+          text: this.text,
+          points: this.points,
+        },
+      };
+      if (this.id) {
+        action = 'updateClaim';
+        payload.id = this.id;
+      }
+      this.$store.dispatch(action, payload).then((id) => {
+        this.error = '';
+        this.$router.push(this.claimUrl(id));
+      }).catch((error) => {
+        this.error = error;
+      });
     },
-    remove: function () {
+    startRemove: function () {
       setTimeout(() => {
         this.confirmRemove = true;
         setTimeout(() => { this.confirmRemove = false; }, 2000);
       }, 200);
     },
-    reset: function () {
+    reallyRemove: function () {
+      this.$store.dispatch('removeClaim', {
+        id: this.id,
+      }).then(() => {
+        this.$router.push('/claims');
+      });
+    },
+    cancel: function () {
+      this.$router.push(this.id ? this.claimUrl(this.id) : '/claims');
+    },
+    initialize: function () {
+      if (this.initialized) return;
+      if (this.id && !this.claim) return;
+
       if (this.claim) {
         this.text = this.claim.text;
         this.points = cloneDeep(this.claim.points);
-        for (let i = 0; i < this.points.length; i++) {
-          this.points[i].push({});
-        }
       }
+      for (let i = 0; i < this.points.length; i++) {
+        this.points[i].push({});
+      }
+      this.initialized = true;
     },
     sideString: function (i) {
       return ['for', 'against'][i];
@@ -137,8 +171,15 @@ export default {
       return point.key;
     },
   },
+  watch: {
+    '$store.state.loaded': function (loaded) {
+      if (loaded) {
+        this.initialize();
+      }
+    },
+  },
   mounted: function() {
-    this.reset();
+    this.initialize();
   },
 };
 </script>

@@ -6,6 +6,7 @@ import DwdAccount from './DwdAccount.vue';
 import DwdApp from './DwdApp.vue';
 import DwdClaim from './DwdClaim.vue';
 import DwdClaims from './DwdClaims.vue';
+import DwdEditClaim from './DwdEditClaim.vue';
 import DwdHome from './DwdHome.vue';
 import DwdLogin from './DwdLogin.vue';
 import DwdLogout from './DwdLogout.vue';
@@ -42,7 +43,9 @@ new Vue({
       { path: '/logout', component: DwdLogout },
       { path: '/register', component: DwdRegister },
       { path: '/claims', component: DwdClaims },
+      { path: '/claims/add', component: DwdEditClaim },
       { path: '/claim/:claimId', component: DwdClaim },
+      { path: '/claim/:claimId/edit', component: DwdEditClaim },
       { path: '/sources', component: DwdSources },
       { path: '/source/:sourceId', component: DwdSource },
     ],

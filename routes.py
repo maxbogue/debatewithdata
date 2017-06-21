@@ -52,7 +52,9 @@ def handle_api_error(err):
 @app.route('/logout')
 @app.route('/register')
 @app.route('/claims')
+@app.route('/claims/add')
 @app.route('/claim/<id>')
+@app.route('/claim/<id>/edit')
 @app.route('/sources')
 @app.route('/source/<id>')
 def index(id=None):
