@@ -3,7 +3,9 @@
     hooks:
     -   id: yapf
 -   repo: git://github.com/pre-commit/mirrors-eslint
-    sha: v4.0.0-rc.0
+    sha: v4.0.0
     hooks:
     -   id: eslint
-        additional_dependencies: ['eslint', 'eslint-plugin-vue']
+        additional_dependencies:
+        - eslint
+        - eslint-plugin-vue
