@@ -1,40 +1,28 @@
 <template>
 <div>
-  <template v-if="!editing">
-    <div class="row gutter-16">
-      <div class="col-sm-12">
-        <div class="t1">
-          <span class="glyphicon glyphicon-pencil edit click" @click="editing = true" aria-hidden="true"></span>
-          <div class="source-text">{{ source.text }}</div>
-          <a :href="source.url" class="source-url">{{ source.url }}</a>
-        </div>
+  <div v-if="source" class="row gutter-16">
+    <div class="col-sm-12">
+      <div class="t1">
+        <router-link :to="sourceUrl(id) + '/edit'" class="glyphicon glyphicon-pencil edit click" aria-hidden="true"></router-link>
+        <div class="source-text">{{ source.text }}</div>
+        <a :href="source.url" class="source-url">{{ source.url }}</a>
       </div>
     </div>
-  </template>
-  <template v-else>
-    <dwd-edit-source :source="source" @commit="updateSource" @cancel="editing = false" />
-    <div v-if="error">{{ error }}</div>
-  </template>
+  </div>
+  <div v-else-if="!$store.state.loaded">Loading sources...</div>
+  <div v-else>Source not found.</div>
 </div>
 </template>
 
 <script>
-import DwdEditSource from './DwdEditSource.vue';
 
 export default {
-  components: {
-    DwdEditSource,
-  },
-  data: () => ({
-    editing: false,
-    error: '',
-  }),
   computed: {
     id: function () {
       return this.$route.params.sourceId;
     },
     source: function () {
-      return this.$store.state.sources[this.id] || {};
+      return this.$store.state.sources[this.id] || null;
     },
   },
   methods: {

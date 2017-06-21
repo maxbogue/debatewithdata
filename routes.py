@@ -56,7 +56,9 @@ def handle_api_error(err):
 @app.route('/claim/<id>')
 @app.route('/claim/<id>/edit')
 @app.route('/sources')
+@app.route('/sources/add')
 @app.route('/source/<id>')
+@app.route('/source/<id>/edit')
 def index(id=None):
     return make_response(open('index.html').read())
 

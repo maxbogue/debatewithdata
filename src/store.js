@@ -104,7 +104,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         axios.put('/api/source/' + id, source).then(() => {
           commit('setSource', { id, source });
-          resolve();
+          resolve(id);
         }).catch((error) => {
           reject(axiosErrorToString(error));
         });

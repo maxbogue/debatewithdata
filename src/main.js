@@ -7,6 +7,7 @@ import DwdApp from './DwdApp.vue';
 import DwdClaim from './DwdClaim.vue';
 import DwdClaims from './DwdClaims.vue';
 import DwdEditClaim from './DwdEditClaim.vue';
+import DwdEditSource from './DwdEditSource.vue';
 import DwdHome from './DwdHome.vue';
 import DwdLogin from './DwdLogin.vue';
 import DwdLogout from './DwdLogout.vue';
@@ -47,7 +48,9 @@ new Vue({
       { path: '/claim/:claimId', component: DwdClaim },
       { path: '/claim/:claimId/edit', component: DwdEditClaim },
       { path: '/sources', component: DwdSources },
+      { path: '/sources/add', component: DwdEditSource },
       { path: '/source/:sourceId', component: DwdSource },
+      { path: '/source/:sourceId/edit', component: DwdEditSource },
     ],
   }),
   created: function () {
