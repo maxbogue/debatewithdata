@@ -28,7 +28,7 @@
     </div>
   </template>
   <template v-else>
-    <dwd-edit-claim :claim="claim" @commit="updateClaim" @cancel="editing = false" />
+    <dwd-edit-claim :claim="claim" @commit="updateClaim" @cancel="editing = false" @remove="removeClaim" />
     <div v-if="error">{{ error }}</div>
   </template>
 </div>
@@ -74,6 +74,13 @@ export default {
         this.error = '';
       }).catch((error) => {
         this.error = error;
+      });
+    },
+    removeClaim: function () {
+      this.$store.dispatch('removeClaim', {
+        id: this.id,
+      }).then(() => {
+        this.$router.push('/claims');
       });
     },
   },

@@ -42,6 +42,9 @@ export default new Vuex.Store({
       forOwn(claims, sanitizeClaim);
       state.claims = claims;
     },
+    removeClaim: function (state, id) {
+      Vue.delete(state.claims, id);
+    },
     setSource: function (state, { id, source }) {
       Vue.set(state.sources, id, source);
     },
@@ -82,6 +85,16 @@ export default new Vuex.Store({
         axios.post('/api/claim', claim).then((response) => {
           commit('setClaim', { id: response.data.id, claim });
           resolve(response.data.id);
+        }).catch((error) => {
+          reject(axiosErrorToString(error));
+        });
+      });
+    },
+    removeClaim: function ({ commit }, { id }) {
+      return new Promise((resolve, reject) => {
+        axios.delete('/api/claim/' + id).then(() => {
+          commit('removeClaim', id);
+          resolve();
         }).catch((error) => {
           reject(axiosErrorToString(error));
         });

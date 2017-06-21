@@ -3,7 +3,7 @@
   <template v-if="!adding">
     <router-link v-for="(source, id) in sources"
                  class="t1"
-                 :to="'/source/' + id"
+                 :to="sourceUrl(id)"
                  :key="id">
       <div class="source-text">{{ source.text }}</div>
       <div class="source-url">{{ source.url }}</div>

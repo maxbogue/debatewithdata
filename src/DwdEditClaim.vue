@@ -35,6 +35,10 @@
     <button type="submit" class="btn btn-default">Submit</button>
     <button type="button" class="btn btn-default" @click="cancel">Cancel</button>
   </div>
+  <div class="col-xs-12 center">
+    <button v-if="!confirmRemove" type="button" class="btn btn-danger" @click="remove">Delete Claim</button>
+    <button v-else type="button" class="btn btn-danger" @click="$emit('remove')">Really Delete?</button>
+  </div>
 </form>
 </template>
 
@@ -60,6 +64,7 @@ export default {
   data: () => ({
     text: '',
     points: [[], []],
+    confirmRemove: false,
   }),
   computed: {
     zippedPoints: function () {
@@ -105,6 +110,12 @@ export default {
     cancel: function () {
       this.reset();
       this.$emit('cancel');
+    },
+    remove: function () {
+      setTimeout(() => {
+        this.confirmRemove = true;
+        setTimeout(() => { this.confirmRemove = false; }, 2000);
+      }, 200);
     },
     reset: function () {
       if (this.claim) {
