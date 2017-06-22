@@ -62,30 +62,34 @@ export default {
   },
   methods: {
     updatePoint: debounce(function () {
+      delete this.point.id;
       delete this.point.newClaim;
-      delete this.point.claim;
-      delete this.point.source;
       delete this.point.newSource;
       delete this.point.text;
       if (this.claim) {
-        this.point.claim = this.input1;
+        this.point.type = 'claim';
+        this.point.id = this.input1;
       } else if (this.source) {
-        this.point.source = this.input1;
+        this.point.type = 'source';
+        this.point.id = this.input1;
       } else if (this.isUrl) {
+        this.point.type = 'newSource';
         this.point.newSource = {
           text: this.input2,
           url: this.input1,
         };
       } else if (this.input1) {
+        this.point.type = 'newClaim';
         this.point.newClaim = {
           text: this.input1,
+          points: [[], []],
         };
       }
     }, 100),
   },
   mounted: function () {
     if (this.point) {
-      this.input1 = this.point.claim || this.point.source || '';
+      this.input1 = this.point.id || '';
     }
   },
   watch: {

@@ -54,7 +54,7 @@ function zipInnerWithIndexes(xs, i) {
 }
 
 function isValidPoint(point) {
-  return point.claim || point.source;
+  return (point.type === 'claim' || point.type === 'source') && point.id;
 }
 
 export default {
@@ -85,19 +85,24 @@ export default {
       for (let si = 0; si < this.points.length; si++) {
         for (let pi = 0; pi < this.points[si].length; pi++) {
           let point = this.points[si][pi];
-          if (point.newClaim) {
+          if (point.type === 'newClaim') {
             let promise = this.$store.dispatch('addClaim', {
               claim: point.newClaim,
-              points: [[], []],
             }).then((id) => {
-              this.points[si][pi] = { claim: id };
+              this.points[si][pi] = {
+                type: 'claim',
+                id: id,
+              };
             });
             promises.push(promise);
-          } else if (point.newSource) {
+          } else if (point.type === 'newSource') {
             let promise = this.$store.dispatch('addSource', {
               source: point.newSource,
             }).then((id) => {
-              this.points[si][pi] = { source: id };
+              this.points[si][pi] = {
+                type: 'source',
+                id: id,
+              };
             });
             promises.push(promise);
           } else {
@@ -164,8 +169,7 @@ export default {
       return ['for', 'against'][i];
     },
     getKey: function (point) {
-      if (point.claim) return point.claim;
-      if (point.source) return point.source;
+      if (point.id) return point.id;
       if (point.key) return point.key;
       point.key = Math.floor(Math.random() * 0x100000000).toString(16);
       return point.key;

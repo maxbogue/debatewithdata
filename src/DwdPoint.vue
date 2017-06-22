@@ -1,17 +1,17 @@
 <template>
 <div class="t2" :class="['side-' + side]">
   <template v-if="claim">
-    <router-link :to="claimUrl(point.claim)" class="source-text">{{ claim.text }}</router-link>
+    <router-link :to="claimUrl(point.id)" class="source-text">{{ claim.text }}</router-link>
     <ul v-if="subPoints.length > 0" class="t3">
       <dwd-sub-point v-for="[subPoint, subSide] in subPoints"
                      :point="subPoint"
                      :side="subSide"
-                     :key="subPoint.claim || subPoint.source">
+                     :key="subPoint.id">
       </dwd-sub-point>
     </ul>
   </template>
   <template v-else-if="source">
-    <router-link :to="sourceUrl(point.source)" class="source-text">{{ source.text }}</router-link>
+    <router-link :to="sourceUrl(point.id)" class="source-text">{{ source.text }}</router-link>
     <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
   <span v-else>error</span>
@@ -31,10 +31,12 @@ export default {
   props: ['point', 'side'],
   computed: {
     claim: function () {
-      return this.$store.state.claims[this.point.claim];
+      if (this.point.type !== 'claim') return null;
+      return this.$store.state.claims[this.point.id];
     },
     source: function () {
-      return this.$store.state.sources[this.point.source];
+      if (this.point.type !== 'source') return null;
+      return this.$store.state.sources[this.point.id];
     },
     subPoints: function () {
       if (!this.claim || !this.$store.state.loaded) {

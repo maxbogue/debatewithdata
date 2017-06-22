@@ -11,7 +11,7 @@
       <div v-for="[point, side] in zippedPoints" class="col-xs-12">
         <dwd-point :point="point"
                    :side="side"
-                   :key="point.claim || point.source">
+                   :key="point.id">
         </dwd-point>
       </div>
     </template>
@@ -20,7 +20,7 @@
         <dwd-point v-for="point in sidePoints"
                    :point="point"
                    :side="side"
-                   :key="point.claim || point.source">
+                   :key="point.id">
         </dwd-point>
       </div>
     </template>

@@ -10,16 +10,18 @@ export default {
   props: ['point', 'side'],
   computed: {
     claim: function () {
-      return this.$store.state.claims[this.point.claim];
+      if (this.point.type !== 'claim') return null;
+      return this.$store.state.claims[this.point.id];
     },
     source: function () {
-      return this.$store.state.sources[this.point.source];
+      if (this.point.type !== 'source') return null;
+      return this.$store.state.sources[this.point.id];
     },
     url: function () {
-      if (this.point.claim) {
-        return this.claimUrl(this.point.claim);
-      } else if (this.point.source) {
-        return this.sourceUrl(this.point.source);
+      if (this.claim) {
+        return this.claimUrl(this.point.id);
+      } else if (this.source) {
+        return this.sourceUrl(this.point.id);
       }
       return '';
     },
@@ -32,10 +34,10 @@ export default {
       return '';
     },
     error: function () {
-      if (this.point.claim && !this.claim) {
-        return 'Claim not found: ' + this.point.claim;
-      } else if (this.point.source && !this.source) {
-        return 'Source not found: ' + this.point.source;
+      if (this.point.type === 'claim' && !this.claim) {
+        return 'Claim not found: ' + this.point.id;
+      } else if (this.point.type === 'source' && !this.source) {
+        return 'Source not found: ' + this.point.id;
       }
       return '';
     },
