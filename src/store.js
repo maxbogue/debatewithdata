@@ -51,6 +51,9 @@ export default new Vuex.Store({
     setSources: function (state, sources) {
       state.sources = sources;
     },
+    removeSource: function (state, id) {
+      Vue.delete(state.sources, id);
+    },
     setUser: function (state, user) {
       state.user = user;
     },
@@ -115,6 +118,16 @@ export default new Vuex.Store({
         axios.post('/api/source', source).then((response) => {
           commit('setSource', { id: response.data.id, source });
           resolve(response.data.id);
+        }).catch((error) => {
+          reject(axiosErrorToString(error));
+        });
+      });
+    },
+    removeSource: function ({ commit }, { id }) {
+      return new Promise((resolve, reject) => {
+        axios.delete('/api/source/' + id).then(() => {
+          commit('removeSource', id);
+          resolve();
         }).catch((error) => {
           reject(axiosErrorToString(error));
         });

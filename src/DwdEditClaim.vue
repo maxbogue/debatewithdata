@@ -37,8 +37,7 @@
     <button type="button" class="btn btn-default" @click="cancel">Cancel</button>
   </div>
   <div v-if="id" class="col-xs-12 center">
-    <button v-if="!confirmRemove" type="button" class="btn btn-danger" @click="startRemove">Delete Claim</button>
-    <button v-else type="button" class="btn btn-danger" @click="reallyRemove">Really Delete?</button>
+    <delete-button noun="Claim" @delete="remove"></delete-button>
   </div>
 </form>
 </template>
@@ -46,6 +45,7 @@
 <script>
 import { cloneDeep, filter, map } from 'lodash';
 
+import DeleteButton from './DeleteButton.vue';
 import DwdEditPoint from './DwdEditPoint.vue';
 import { rotate } from './utils';
 
@@ -59,10 +59,10 @@ function isValidPoint(point) {
 
 export default {
   components: {
+    DeleteButton,
     DwdEditPoint,
   },
   data: () => ({
-    confirmRemove: false,
     error: '',
     initialized: false,
     points: [[], []],
@@ -136,17 +136,13 @@ export default {
         this.error = error;
       });
     },
-    startRemove: function () {
-      setTimeout(() => {
-        this.confirmRemove = true;
-        setTimeout(() => { this.confirmRemove = false; }, 2000);
-      }, 200);
-    },
-    reallyRemove: function () {
+    remove: function () {
       this.$store.dispatch('removeClaim', {
         id: this.id,
       }).then(() => {
         this.$router.push('/claims');
+      }).catch((error) => {
+        this.error = error;
       });
     },
     cancel: function () {

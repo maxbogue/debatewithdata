@@ -21,15 +21,23 @@
     <button type="submit" class="btn btn-default">Submit</button>
     <button type="button" class="btn btn-default" @click="cancel">Cancel</button>
   </div>
+  <div v-if="id" class="col-xs-12 center">
+    <delete-button noun="Source" @delete="remove"></delete-button>
+  </div>
 </form>
 </template>
 
 <script>
 import { isWebUri } from 'valid-url';
 
+import DeleteButton from './DeleteButton.vue';
+
 const ERROR_MSG_INVALID_URL = 'Please enter a URL.';
 
 export default {
+  components: {
+    DeleteButton,
+  },
   data: () => ({
     error: '',
     initialized: false,
@@ -63,6 +71,15 @@ export default {
       this.$store.dispatch(action, payload).then((id) => {
         this.error = '';
         this.$router.push(this.sourceUrl(id));
+      }).catch((error) => {
+        this.error = error;
+      });
+    },
+    remove: function () {
+      this.$store.dispatch('removeSource', {
+        id: this.id,
+      }).then(() => {
+        this.$router.push('/sources');
       }).catch((error) => {
         this.error = error;
       });
