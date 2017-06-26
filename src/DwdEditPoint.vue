@@ -1,6 +1,6 @@
 <template>
 <div class="t2" :class="['side-' + side]">
-  <span v-if="!isLast"
+  <span v-if="canDelete"
         class="delete click glyphicon glyphicon-trash"
         aria-hidden="true"
         @click="$emit('delete')"></span>
@@ -16,10 +16,10 @@
          placeholder="source description"
          v-model="input2" />
   <div v-if="claim">
-    <router-link :to="claimUrl(point.claim)">{{ claim.text }}</router-link>
+    <router-link :to="claimUrl(point.id)">{{ claim.text }}</router-link>
   </div>
   <template v-else-if="source">
-    <router-link :to="sourceUrl(point.source)" class="source-text">{{ source.text }}</router-link>
+    <router-link :to="sourceUrl(point.id)" class="source-text">{{ source.text }}</router-link>
     <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
   <div v-else-if="isId">No claim or source with that ID found.</div>
@@ -27,13 +27,12 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce';
 import { isWebUri } from 'valid-url';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
 export default {
-  props: ['point', 'side', 'isLast'],
+  props: ['point', 'side', 'canDelete'],
   data: () => ({
     input1: '',
     input2: '',
@@ -61,31 +60,42 @@ export default {
     },
   },
   methods: {
-    updatePoint: debounce(function () {
-      delete this.point.id;
-      delete this.point.newClaim;
-      delete this.point.newSource;
-      delete this.point.text;
+    makePoint: function () {
       if (this.claim) {
-        this.point.type = 'claim';
-        this.point.id = this.input1;
+        return {
+          type: 'claim',
+          id: this.input1,
+        };
       } else if (this.source) {
-        this.point.type = 'source';
-        this.point.id = this.input1;
+        return {
+          type: 'source',
+          id: this.input1,
+        };
       } else if (this.isUrl) {
-        this.point.type = 'newSource';
-        this.point.newSource = {
-          text: this.input2,
-          url: this.input1,
+        return {
+          type: 'newSource',
+          newSource: {
+            text: this.input2,
+            url: this.input1,
+          },
         };
       } else if (this.input1) {
-        this.point.type = 'newClaim';
-        this.point.newClaim = {
-          text: this.input1,
-          points: [[], []],
+        return {
+          type: 'newClaim',
+          newClaim: {
+            text: this.input1,
+            points: [[], []],
+          },
         };
       }
-    }, 100),
+      return null;
+    },
+    updatePoint: function () {
+      let p = this.makePoint();
+      if (p) {
+        this.$emit('update', p);
+      }
+    },
   },
   mounted: function () {
     if (this.point) {
@@ -95,9 +105,6 @@ export default {
   watch: {
     input1: function () {
       this.updatePoint();
-      if (this.isLast && this.input1) {
-        this.$emit('makeNewEmpty');
-      }
     },
     input2: function () {
       this.updatePoint();

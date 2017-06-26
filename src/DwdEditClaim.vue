@@ -12,10 +12,10 @@
     <div v-for="[point, side, i] in zippedPoints" class="col-xs-12">
       <dwd-edit-point :point="point"
                       :side="side"
-                      :isLast="i === points[side].length - 1"
-                      :key="getKey(point)"
-                      @delete="points[side].splice(i, 1)"
-                      @makeNewEmpty="points[side].push({})">
+                      :canDelete="i < points[side].length - 1"
+                      :key="'point-' + side + '-' + i"
+                      @update="(p) => updatePoint(side, i, p)"
+                      @delete="points[side].splice(i, 1)">
       </dwd-edit-point>
     </div>
   </template>
@@ -24,10 +24,10 @@
       <dwd-edit-point v-for="(point, i) in sidePoints"
                       :point="point"
                       :side="side"
-                      :isLast="i === sidePoints.length - 1"
-                      :key="getKey(point)"
-                      @delete="sidePoints.splice(i, 1)"
-                      @makeNewEmpty="sidePoints.push({})">
+                      :canDelete="i < sidePoints.length - 1"
+                      :key="'point-' + side + '-' + i"
+                      @update="(p) => updatePoint(side, i, p)"
+                      @delete="sidePoints.splice(i, 1)">
       </dwd-edit-point>
     </div>
   </template>
@@ -80,6 +80,12 @@ export default {
     },
   },
   methods: {
+    updatePoint: function (si, pi, point) {
+      this.$set(this.points[si], pi, point);
+      if (pi === this.points[si].length - 1) {
+        this.points[si].push({});
+      }
+    },
     submit: function () {
       let promises = [];
       for (let si = 0; si < this.points.length; si++) {
@@ -160,15 +166,6 @@ export default {
         this.points[i].push({});
       }
       this.initialized = true;
-    },
-    sideString: function (i) {
-      return ['for', 'against'][i];
-    },
-    getKey: function (point) {
-      if (point.id) return point.id;
-      if (point.key) return point.key;
-      point.key = Math.floor(Math.random() * 0x100000000).toString(16);
-      return point.key;
     },
   },
   watch: {
