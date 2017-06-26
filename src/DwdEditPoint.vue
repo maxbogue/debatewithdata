@@ -7,6 +7,7 @@
   <input type="text"
          autocomplete="off"
          placeholder="URL, new claim, or 12-letter ID"
+         ref="input1"
          v-model="input1"
          :class="[inputClass]" />
   <input v-if="isUrl"
@@ -14,6 +15,7 @@
          type="text"
          autocomplete="off"
          placeholder="source description"
+         ref="input2"
          v-model="input2" />
   <div v-if="claim">
     <router-link :to="claimUrl(point.id)">{{ claim.text }}</router-link>
@@ -96,6 +98,17 @@ export default {
         this.$emit('update', p);
       }
     },
+    setError: function () {
+      let error1 = '';
+      let error2 = '';
+      if (this.isId && !this.claim && !this.source) {
+        error1 = 'Invalid ID';
+      } else if (this.isUrl && !this.input2) {
+        error2 = 'Source description required';
+      }
+      this.$refs.input1.setCustomValidity(error1);
+      this.$refs.input2.setCustomValidity(error2);
+    },
   },
   mounted: function () {
     if (this.point) {
@@ -105,9 +118,11 @@ export default {
   watch: {
     input1: function () {
       this.updatePoint();
+      this.setError();
     },
     input2: function () {
       this.updatePoint();
+      this.setError();
     },
   },
 };
