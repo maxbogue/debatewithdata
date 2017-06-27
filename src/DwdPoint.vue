@@ -1,12 +1,13 @@
 <template>
 <div class="t2" :class="['side-' + side]">
   <template v-if="claim">
-    <router-link :to="claimUrl(point.id)" class="source-text">{{ claim.text }}</router-link>
+    <router-link v-if="point.id" :to="claimUrl(point.id)" class="source-text">{{ claim.text }}</router-link>
+    <span v-else class="source-text">{{ claim.text }}</span>
     <ul v-if="subPoints.length > 0" class="t3">
-      <dwd-sub-point v-for="[subPoint, subSide] in subPoints"
+      <dwd-sub-point v-for="[subPoint, subSide, i] in subPoints"
                      :point="subPoint"
                      :side="subSide"
-                     :key="subPoint.id">
+                     :key="'subpoint' + subSide + '-' + i">
       </dwd-sub-point>
     </ul>
   </template>
@@ -19,10 +20,8 @@
 </template>
 
 <script>
-import { map } from 'lodash';
-
 import DwdSubPoint from './DwdSubPoint.vue';
-import { rotate, zipInnerWithIndex } from './utils';
+import { rotateWithIndexes } from './utils';
 
 export default {
   components: {
@@ -31,8 +30,13 @@ export default {
   props: ['point', 'side'],
   computed: {
     claim: function () {
-      if (this.point.type !== 'claim') return null;
-      return this.$store.state.claims[this.point.id];
+      if (this.point.type === 'claim') {
+        return this.$store.state.claims[this.point.id];
+      }
+      if (this.point.type === 'subclaim') {
+        return this.point;
+      }
+      return null;
     },
     source: function () {
       if (this.point.type !== 'source') return null;
@@ -42,7 +46,7 @@ export default {
       if (!this.claim || !this.$store.state.loaded) {
         return [];
       }
-      return rotate(map(this.claim.points, zipInnerWithIndex));
+      return rotateWithIndexes(this.claim.points);
     },
   },
 };

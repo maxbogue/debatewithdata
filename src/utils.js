@@ -1,15 +1,11 @@
-import map from 'lodash/map';
+import { map } from 'lodash';
 
-export function zipInnerWithIndex(xs, i) {
-  return map(xs, (x) => [x, i]);
-}
-
-export function rotate(lists) {
+export function rotateWithIndexes(lists) {
   let retList = [];
   for (let i = 0; i < Math.max(...map(lists, (list) => list.length)); i++) {
     for (let j = 0; j < lists.length; j++) {
       if (i < lists[j].length) {
-        retList.push(lists[j][i]);
+        retList.push([lists[j][i], j, i]);
       }
     }
   }

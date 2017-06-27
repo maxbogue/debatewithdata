@@ -10,8 +10,13 @@ export default {
   props: ['point', 'side'],
   computed: {
     claim: function () {
-      if (this.point.type !== 'claim') return null;
-      return this.$store.state.claims[this.point.id];
+      if (this.point.type === 'claim') {
+        return this.$store.state.claims[this.point.id];
+      }
+      if (this.point.type === 'subclaim') {
+        return this.point;
+      }
+      return null;
     },
     source: function () {
       if (this.point.type !== 'source') return null;

@@ -8,19 +8,19 @@
       </div>
     </div>
     <template v-if="$store.state.singleColumn">
-      <div v-for="[point, side] in zippedPoints" class="col-xs-12">
+      <div v-for="[point, side, i] in zippedPoints" class="col-xs-12">
         <dwd-point :point="point"
                    :side="side"
-                   :key="point.id">
+                   :key="'point-' + side + '-' + i">
         </dwd-point>
       </div>
     </template>
     <template v-else>
       <div v-for="(sidePoints, side) in claim.points" class="col-sm-6">
-        <dwd-point v-for="point in sidePoints"
+        <dwd-point v-for="(point, i) in sidePoints"
                    :point="point"
                    :side="side"
-                   :key="point.id">
+                   :key="'point-' + side + '-' + i">
         </dwd-point>
       </div>
     </template>
@@ -31,10 +31,8 @@
 </template>
 
 <script>
-import { map } from 'lodash';
-
 import DwdPoint from './DwdPoint.vue';
-import { rotate, zipInnerWithIndex } from './utils';
+import { rotateWithIndexes } from './utils';
 
 export default {
   components: {
@@ -51,7 +49,7 @@ export default {
       if (!this.claim || !this.$store.state.loaded) {
         return [];
       }
-      return rotate(map(this.claim.points, zipInnerWithIndex));
+      return rotateWithIndexes(this.claim.points);
     },
   },
 };

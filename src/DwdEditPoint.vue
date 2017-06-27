@@ -4,19 +4,20 @@
         class="delete click glyphicon glyphicon-trash"
         aria-hidden="true"
         @click="$emit('delete')"></span>
-  <input type="text"
-         autocomplete="off"
-         placeholder="URL, new claim, or 12-letter ID"
-         ref="input1"
-         v-model="input1"
-         :class="[inputClass]" />
-  <input v-if="isUrl"
-         required
-         type="text"
-         autocomplete="off"
-         placeholder="source description"
-         ref="input2"
-         v-model="input2" />
+  <textarea rows="1"
+            autocomplete="off"
+            placeholder="New sub-claim, URL, or 12-letter ID"
+            ref="input1"
+            v-model="input1"
+            v-auto-resize
+            :class="[inputClass]" />
+  <textarea v-if="isUrl"
+            rows="1"
+            autocomplete="off"
+            placeholder="source description"
+            ref="input2"
+            v-model="input2"
+            v-auto-resize />
   <div v-if="claim">
     <router-link :to="claimUrl(point.id)">{{ claim.text }}</router-link>
   </div>
@@ -83,11 +84,9 @@ export default {
         };
       } else if (this.input1) {
         return {
-          type: 'newClaim',
-          newClaim: {
-            text: this.input1,
-            points: [[], []],
-          },
+          type: 'subclaim',
+          text: this.input1,
+          points: [[], []],
         };
       }
       return null;
@@ -107,12 +106,14 @@ export default {
         error2 = 'Source description required';
       }
       this.$refs.input1.setCustomValidity(error1);
-      this.$refs.input2.setCustomValidity(error2);
+      if (this.$refs.input2) {
+        this.$refs.input2.setCustomValidity(error2);
+      }
     },
   },
   mounted: function () {
     if (this.point) {
-      this.input1 = this.point.id || '';
+      this.input1 = this.point.id || this.point.text || '';
     }
   },
   watch: {

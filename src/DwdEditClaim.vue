@@ -2,7 +2,8 @@
 <form class="row gutter-16" @submit.prevent="submit">
   <div class="col-xs-12">
     <div class="t1">
-      <textarea autocomplete="off"
+      <textarea rows="1"
+                autocomplete="off"
                 placeholder="claim"
                 v-model="text"
                 v-auto-resize></textarea>
@@ -43,18 +44,15 @@
 </template>
 
 <script>
-import { cloneDeep, filter, map } from 'lodash';
+import { cloneDeep, filter } from 'lodash';
 
 import DeleteButton from './DeleteButton.vue';
 import DwdEditPoint from './DwdEditPoint.vue';
-import { rotate } from './utils';
-
-function zipInnerWithIndexes(xs, i) {
-  return map(xs, (x, j) => [x, i, j]);
-}
+import { rotateWithIndexes } from './utils';
 
 function isValidPoint(point) {
-  return (point.type === 'claim' || point.type === 'source') && point.id;
+  return ((point.type === 'claim' || point.type === 'source') && point.id)
+      || point.type === 'subclaim';
 }
 
 export default {
@@ -76,7 +74,7 @@ export default {
       return this.$store.state.claims[this.id] || null;
     },
     zippedPoints: function () {
-      return rotate(map(this.points, zipInnerWithIndexes));
+      return rotateWithIndexes(this.points);
     },
   },
   methods: {
@@ -91,17 +89,7 @@ export default {
       for (let si = 0; si < this.points.length; si++) {
         for (let pi = 0; pi < this.points[si].length; pi++) {
           let point = this.points[si][pi];
-          if (point.type === 'newClaim') {
-            let promise = this.$store.dispatch('addClaim', {
-              claim: point.newClaim,
-            }).then((id) => {
-              this.points[si][pi] = {
-                type: 'claim',
-                id: id,
-              };
-            });
-            promises.push(promise);
-          } else if (point.type === 'newSource') {
+          if (point.type === 'newSource') {
             let promise = this.$store.dispatch('addSource', {
               source: point.newSource,
             }).then((id) => {
