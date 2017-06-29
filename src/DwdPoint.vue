@@ -7,7 +7,7 @@
       <dwd-sub-point v-for="[subPoint, subSide, i] in subPoints"
                      :point="subPoint"
                      :side="subSide"
-                     :key="'subpoint' + subSide + '-' + i">
+                     :key="'subpoint-' + subSide + '-' + i">
       </dwd-sub-point>
     </ul>
   </template>
@@ -73,24 +73,22 @@ export default {
 .t3 {
   border-radius: 5px;
   font-size: 12px;
-  margin: 8px -8px -8px -8px;
-  padding: 8px;
-}
-.side-0 .t3 {
-  background-color: #F3E5F5;
-}
-.side-1 .t3 {
-  background-color: #FFECB3;
+  margin: 0;
+  padding: 0 0 0 1em;
+  position: relative;
 }
 .t3 li {
   list-style: none;
+  margin-top: 8px;
   padding: 0;
 }
 .t3 li:before {
   font-family: "Courier New";
   font-size: 12px;
   font-weight: 600;
-  padding-right: 5px;
+  left: 0;
+  position: absolute;
+  text-align: center;
 }
 .t3 li.side-0:before {
   content: "+";

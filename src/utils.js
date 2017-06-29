@@ -1,5 +1,10 @@
 import { map } from 'lodash';
 
+export function isValidPoint(point) {
+  return (point.type === 'claim' || point.type === 'source') && point.id
+      || point.type === 'subclaim';
+}
+
 export function rotateWithIndexes(lists) {
   let retList = [];
   for (let i = 0; i < Math.max(...map(lists, (list) => list.length)); i++) {

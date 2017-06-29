@@ -18,27 +18,43 @@
             ref="input2"
             v-model="input2"
             v-auto-resize />
-  <div v-if="claim">
-    <router-link :to="claimUrl(point.id)">{{ claim.text }}</router-link>
-  </div>
+  <router-link v-if="claim"
+               class="source-text"
+               :to="claimUrl(point.id) + '/edit'">{{ claim.text }}</router-link>
   <template v-else-if="source">
-    <router-link :to="sourceUrl(point.id)" class="source-text">{{ source.text }}</router-link>
+    <router-link :to="sourceUrl(point.id) + '/edit'" class="source-text">{{ source.text }}</router-link>
     <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
   <div v-else-if="isId">No claim or source with that ID found.</div>
+  <ul v-else-if="zippedSubpoints.length > 0" class="t3 editing">
+    <dwd-edit-subpoint v-for="[p, side, i] in zippedSubpoints"
+                       :point="p"
+                       :side="side"
+                       :key="'subpoint-' + side + '-' + i"
+                       @update="(p) => updateSubpoint(side, i, p)"
+                       @delete="this.subpoints[side].splice(i, 1)"></dwd-edit-subpoint>
+  </ul>
 </div>
 </template>
 
 <script>
+import { cloneDeep, filter } from 'lodash';
 import { isWebUri } from 'valid-url';
+
+import DwdEditSubpoint from './DwdEditSubpoint.vue';
+import { isValidPoint, rotateWithIndexes } from './utils';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
 export default {
+  components: {
+    DwdEditSubpoint,
+  },
   props: ['point', 'side', 'canDelete'],
   data: () => ({
     input1: '',
     input2: '',
+    subpoints: [],
   }),
   computed: {
     isId: function () {
@@ -52,6 +68,10 @@ export default {
     },
     source: function () {
       return this.isId ? this.$store.state.sources[this.input1] : null;
+    },
+    zippedSubpoints: function () {
+      if (!this.subpoints) return [];
+      return rotateWithIndexes(this.subpoints);
     },
     inputClass: function () {
       if (this.claim || this.source) {
@@ -83,10 +103,14 @@ export default {
           },
         };
       } else if (this.input1) {
+        let subpoints = cloneDeep(this.subpoints);
+        for (let i = 0; i < subpoints.length; i++) {
+          subpoints[i] = filter(subpoints[i], isValidPoint);
+        }
         return {
           type: 'subclaim',
           text: this.input1,
-          points: [[], []],
+          points: subpoints,
         };
       }
       return null;
@@ -96,6 +120,13 @@ export default {
       if (p) {
         this.$emit('update', p);
       }
+    },
+    updateSubpoint: function (si, pi, point) {
+      this.$set(this.subpoints[si], pi, point);
+      if (pi === this.subpoints[si].length - 1) {
+        this.subpoints[si].push({});
+      }
+      this.updatePoint();
     },
     setError: function () {
       let error1 = '';
@@ -114,6 +145,11 @@ export default {
   mounted: function () {
     if (this.point) {
       this.input1 = this.point.id || this.point.text || '';
+    }
+    if (this.point.points) {
+      this.subpoints = cloneDeep(this.point.points);
+      this.subpoints[0].push({});
+      this.subpoints[1].push({});
     }
   },
   watch: {
@@ -147,5 +183,11 @@ export default {
 }
 .invalid {
   color: #F44336;
+}
+.t2 textarea + * {
+  margin-top: 8px;
+}
+.t3.editing li:before {
+  line-height: 2.5;
 }
 </style>

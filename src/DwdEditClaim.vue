@@ -48,12 +48,7 @@ import { cloneDeep, filter } from 'lodash';
 
 import DeleteButton from './DeleteButton.vue';
 import DwdEditPoint from './DwdEditPoint.vue';
-import { rotateWithIndexes } from './utils';
-
-function isValidPoint(point) {
-  return ((point.type === 'claim' || point.type === 'source') && point.id)
-      || point.type === 'subclaim';
-}
+import { isValidPoint, rotateWithIndexes } from './utils';
 
 export default {
   components: {
