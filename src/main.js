@@ -26,6 +26,7 @@ Vue.directive('auto-resize', {
   bind: function (el, binding, vnode) {
     let model = find(vnode.data.directives, (d) => d.name === 'model');
     vnode.context.$watch(model.expression, function () {
+      el.style.height = 'auto';
       el.style.height = el.scrollHeight + 'px';
     });
   },

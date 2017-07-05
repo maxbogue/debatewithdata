@@ -83,7 +83,7 @@ export default {
   padding: 0;
 }
 .t3 li:before {
-  font-family: "Courier New";
+  font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
   font-size: 12px;
   font-weight: 600;
   left: 0;
@@ -94,6 +94,6 @@ export default {
   content: "+";
 }
 .t3 li.side-1:before {
-  content: "-";
+  content: "−";
 }
 </style>
