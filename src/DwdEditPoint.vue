@@ -54,7 +54,7 @@ export default {
   data: () => ({
     input1: '',
     input2: '',
-    subpoints: [],
+    subpoints: [[], []],
   }),
   computed: {
     isId: function () {
@@ -148,6 +148,10 @@ export default {
     }
     if (this.point.points) {
       this.subpoints = cloneDeep(this.point.points);
+      if (this.subpoints.length === 0) {
+        this.subpoints.push([]);
+        this.subpoints.push([]);
+      }
       this.subpoints[0].push({});
       this.subpoints[1].push({});
     }
@@ -188,6 +192,6 @@ export default {
   margin-top: 8px;
 }
 .t3.editing li:before {
-  line-height: 2.5;
+  line-height: 2;
 }
 </style>

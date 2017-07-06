@@ -1,46 +1,48 @@
 <template>
-<form class="row gutter-16" @submit.prevent="submit">
-  <div class="col-xs-12">
-    <div class="t1">
-      <textarea rows="1"
-                autocomplete="off"
-                placeholder="claim"
-                v-model="text"
-                v-auto-resize></textarea>
+<div>
+  <form class="row gutter-16" @submit.prevent="submit">
+    <div class="col-xs-12">
+      <div class="t1">
+        <textarea rows="1"
+                  autocomplete="off"
+                  placeholder="claim"
+                  v-model="text"
+                  v-auto-resize></textarea>
+      </div>
     </div>
-  </div>
-  <template v-if="$store.state.singleColumn">
-    <div v-for="[point, side, i] in zippedPoints" class="col-xs-12">
-      <dwd-edit-point :point="point"
-                      :side="side"
-                      :canDelete="i < points[side].length - 1"
-                      :key="'point-' + side + '-' + i"
-                      @update="(p) => updatePoint(side, i, p)"
-                      @delete="points[side].splice(i, 1)">
-      </dwd-edit-point>
+    <template v-if="$store.state.singleColumn">
+      <div v-for="[point, side, i] in zippedPoints" class="col-xs-12">
+        <dwd-edit-point :point="point"
+                        :side="side"
+                        :canDelete="i < points[side].length - 1"
+                        :key="'point-' + side + '-' + i"
+                        @update="(p) => updatePoint(side, i, p)"
+                        @delete="points[side].splice(i, 1)">
+        </dwd-edit-point>
+      </div>
+    </template>
+    <template v-else>
+      <div v-for="(sidePoints, side) in points" class="col-sm-6">
+        <dwd-edit-point v-for="(point, i) in sidePoints"
+                        :point="point"
+                        :side="side"
+                        :canDelete="i < sidePoints.length - 1"
+                        :key="'point-' + side + '-' + i"
+                        @update="(p) => updatePoint(side, i, p)"
+                        @delete="sidePoints.splice(i, 1)">
+        </dwd-edit-point>
+      </div>
+    </template>
+    <div v-if="error" class="col-xs-12 center">{{ error }}</div>
+    <div class="col-xs-12 center">
+      <button type="submit" class="btn btn-default">Submit</button>
+      <button type="button" class="btn btn-default" @click="cancel">Cancel</button>
     </div>
-  </template>
-  <template v-else>
-    <div v-for="(sidePoints, side) in points" class="col-sm-6">
-      <dwd-edit-point v-for="(point, i) in sidePoints"
-                      :point="point"
-                      :side="side"
-                      :canDelete="i < sidePoints.length - 1"
-                      :key="'point-' + side + '-' + i"
-                      @update="(p) => updatePoint(side, i, p)"
-                      @delete="sidePoints.splice(i, 1)">
-      </dwd-edit-point>
+    <div v-if="id" class="col-xs-12 center">
+      <delete-button noun="Claim" @delete="remove"></delete-button>
     </div>
-  </template>
-  <div v-if="error" class="col-xs-12 center">{{ error }}</div>
-  <div class="col-xs-12 center">
-    <button type="submit" class="btn btn-default">Submit</button>
-    <button type="button" class="btn btn-default" @click="cancel">Cancel</button>
-  </div>
-  <div v-if="id" class="col-xs-12 center">
-    <delete-button noun="Claim" @delete="remove"></delete-button>
-  </div>
-</form>
+  </form>
+</div>
 </template>
 
 <script>

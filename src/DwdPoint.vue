@@ -74,7 +74,7 @@ export default {
   border-radius: 5px;
   font-size: 12px;
   margin: 0;
-  padding: 0 0 0 1em;
+  padding: 0 0 0 2em;
   position: relative;
 }
 .t3 li {
@@ -83,17 +83,18 @@ export default {
   padding: 0;
 }
 .t3 li:before {
-  font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
-  font-size: 12px;
-  font-weight: 600;
+  color: rgba(0, 0, 0, 0.65);
+  font-family: 'Glyphicons Halflings';
+  font-size: 16px;
   left: 0;
+  line-height: 1.1;
   position: absolute;
   text-align: center;
 }
 .t3 li.side-0:before {
-  content: "+";
+  content: "\e081";
 }
 .t3 li.side-1:before {
-  content: "−";
+  content: "\e082";
 }
 </style>
