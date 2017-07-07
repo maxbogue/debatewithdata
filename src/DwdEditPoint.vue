@@ -26,7 +26,7 @@
     <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
   <div v-else-if="isId">No claim or source with that ID found.</div>
-  <ul v-else-if="zippedSubpoints.length > 0" class="t3 editing">
+  <ul v-else-if="isSubclaim" class="t3 editing">
     <dwd-edit-subpoint v-for="[p, side, i] in zippedSubpoints"
                        :point="p"
                        :side="side"
@@ -54,7 +54,7 @@ export default {
   data: () => ({
     input1: '',
     input2: '',
-    subpoints: [[], []],
+    subpoints: [[{}], [{}]],
   }),
   computed: {
     isId: function () {
@@ -62,6 +62,9 @@ export default {
     },
     isUrl: function () {
       return isWebUri(this.input1);
+    },
+    isSubclaim: function () {
+      return this.input1 && !this.isId && !this.isUrl;
     },
     claim: function () {
       return this.isId ? this.$store.state.claims[this.input1] : null;
