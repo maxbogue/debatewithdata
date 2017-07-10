@@ -74,10 +74,9 @@ export default {
   border-radius: 5px;
   font-size: 12px;
   margin: 0;
-  padding: 0 0 0 2em;
-  position: relative;
+  padding: 0;
 }
-.t3 li {
+.t3 > li {
   list-style: none;
   margin-top: 8px;
   padding: 0;
@@ -85,11 +84,7 @@ export default {
 .t3 li:before {
   color: rgba(0, 0, 0, 0.65);
   font-family: 'Glyphicons Halflings';
-  font-size: 16px;
-  left: 0;
-  line-height: 1.1;
-  position: absolute;
-  text-align: center;
+  margin-right: 4px;
 }
 .t3 li.side-0:before {
   content: "\e081";

@@ -88,14 +88,10 @@ export default {
       this.$router.push(this.id ? this.sourceUrl(this.id) : '/sources');
     },
     initialize: function () {
-      if (this.initialized) return;
-      if (this.id && !this.source) return;
-
       if (this.source) {
         this.url = this.source.url;
         this.text = this.source.text;
       }
-      this.initialized = true;
     },
   },
   watch: {
@@ -106,10 +102,8 @@ export default {
         this.$refs.url.setCustomValidity(ERROR_MSG_INVALID_URL);
       }
     },
-    '$store.state.loaded': function (loaded) {
-      if (loaded) {
-        this.initialize();
-      }
+    source: function () {
+      this.initialize();
     },
   },
   mounted: function() {

@@ -38,6 +38,10 @@ a:hover {
 .mono {
   font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
+.flex-row {
+  align-items: flex-start;
+  display: flex;
+}
 .t1 {
   background-color: #B2DFDB;
   border: 1px solid #009688;

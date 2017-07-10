@@ -59,7 +59,6 @@ export default {
   },
   data: () => ({
     error: '',
-    initialized: false,
     points: [[], []],
     text: '',
   }),
@@ -140,7 +139,6 @@ export default {
       this.$router.push(this.id ? this.claimUrl(this.id) : '/claims');
     },
     initialize: function () {
-      if (this.initialized) return;
       if (this.id && !this.claim) return;
 
       if (this.claim) {
@@ -150,14 +148,11 @@ export default {
       for (let i = 0; i < this.points.length; i++) {
         this.points[i].push({});
       }
-      this.initialized = true;
     },
   },
   watch: {
-    '$store.state.loaded': function (loaded) {
-      if (loaded) {
-        this.initialize();
-      }
+    claim: function () {
+      this.initialize();
     },
   },
   mounted: function() {

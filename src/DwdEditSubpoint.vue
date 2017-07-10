@@ -1,9 +1,5 @@
 <template>
-<li :class="['side-' + side]">
-  <span v-if="canDelete"
-        class="delete click glyphicon glyphicon-trash"
-        aria-hidden="true"
-        @click="$emit('delete')"></span>
+<li class="flex-row" :class="['side-' + side]">
   <textarea rows="1"
             autocomplete="off"
             placeholder="New sub-claim or 12-letter ID"
@@ -11,6 +7,10 @@
             v-model="input"
             v-auto-resize
             :class="[inputClass]" />
+  <span v-if="canDelete"
+        class="delete click glyphicon glyphicon-trash"
+        aria-hidden="true"
+        @click="$emit('delete')"></span>
   <router-link v-if="claim"
                class="source-text"
                :to="claimUrl(point.id) + '/edit'">{{ claim.text }}</router-link>
@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import { pointToInput } from './utils';
+
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
 export default {
@@ -62,19 +64,15 @@ export default {
           type: 'source',
           id: this.input,
         };
-      } else if (this.input) {
+      } else {
         return {
-          type: 'subclaim',
+          type: 'text',
           text: this.input,
         };
       }
-      return null;
     },
     updatePoint: function () {
-      let p = this.makePoint();
-      if (p) {
-        this.$emit('update', p);
-      }
+      this.$emit('update', this.makePoint());
     },
     setError: function () {
       let error = '';
@@ -85,9 +83,7 @@ export default {
     },
   },
   mounted: function () {
-    if (this.point) {
-      this.input = this.point.id || this.point.text || '';
-    }
+    this.input = pointToInput(this.point);
   },
   watch: {
     input: function () {

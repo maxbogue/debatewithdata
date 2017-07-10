@@ -1,16 +1,18 @@
 <template>
 <div class="t2" :class="['side-' + side]">
-  <span v-if="canDelete"
-        class="delete click glyphicon glyphicon-trash"
-        aria-hidden="true"
-        @click="$emit('delete')"></span>
-  <textarea rows="1"
-            autocomplete="off"
-            placeholder="New sub-claim, URL, or 12-letter ID"
-            ref="input1"
-            v-model="input1"
-            v-auto-resize
-            :class="[inputClass]" />
+  <div class="flex-row">
+    <textarea rows="1"
+              autocomplete="off"
+              placeholder="New sub-claim, URL, or 12-letter ID"
+              ref="input1"
+              v-model="input1"
+              v-auto-resize
+              :class="[inputClass]" />
+    <span v-if="canDelete"
+          class="delete click glyphicon glyphicon-trash"
+          aria-hidden="true"
+          @click="$emit('delete')"></span>
+  </div>
   <textarea v-if="isUrl"
             rows="1"
             autocomplete="off"
@@ -26,13 +28,14 @@
     <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
   <div v-else-if="isId">No claim or source with that ID found.</div>
-  <ul v-else-if="isSubclaim" class="t3 editing">
+  <ul v-else-if="isSubclaim" class="t3">
     <dwd-edit-subpoint v-for="[p, side, i] in zippedSubpoints"
                        :point="p"
                        :side="side"
+                       :canDelete="i < subpoints[side].length - 1"
                        :key="'subpoint-' + side + '-' + i"
                        @update="(p) => updateSubpoint(side, i, p)"
-                       @delete="this.subpoints[side].splice(i, 1)"></dwd-edit-subpoint>
+                       @delete="subpoints[side].splice(i, 1)"></dwd-edit-subpoint>
   </ul>
 </div>
 </template>
@@ -42,7 +45,7 @@ import { cloneDeep, filter } from 'lodash';
 import { isWebUri } from 'valid-url';
 
 import DwdEditSubpoint from './DwdEditSubpoint.vue';
-import { isValidPoint, rotateWithIndexes } from './utils';
+import { isValidPoint, pointToInput, rotateWithIndexes } from './utils';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
@@ -146,9 +149,7 @@ export default {
     },
   },
   mounted: function () {
-    if (this.point) {
-      this.input1 = this.point.id || this.point.text || '';
-    }
+    this.input1 = pointToInput(this.point);
     if (this.point.points) {
       this.subpoints = cloneDeep(this.point.points);
       if (this.subpoints.length === 0) {
@@ -174,10 +175,7 @@ export default {
 
 <style>
 .delete {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: 12px;
+  margin: 0.5em 0 0 4px;
 }
 .side-0 > input {
   background-color: #F3E5F5;
@@ -191,10 +189,7 @@ export default {
 .invalid {
   color: #F44336;
 }
-.t2 textarea + * {
+.t2 > * + * {
   margin-top: 8px;
-}
-.t3.editing li:before {
-  line-height: 2;
 }
 </style>

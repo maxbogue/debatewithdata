@@ -58,6 +58,6 @@ export default {
 <style>
 .edit {
   float: right;
-  margin-left: 5px;
+  margin-left: 4px;
 }
 </style>

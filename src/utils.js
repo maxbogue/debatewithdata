@@ -1,8 +1,23 @@
 import { map } from 'lodash';
 
+export function pointToInput(point) {
+  if (!point) {
+    return '';
+  }
+  switch (point.type) {
+  case 'claim':
+  case 'source':
+    return point.id;
+  case 'subclaim':
+  case 'text':
+    return point.text;
+  default:
+    return '';
+  }
+}
+
 export function isValidPoint(point) {
-  return (point.type === 'claim' || point.type === 'source') && point.id
-      || point.type === 'subclaim';
+  return Boolean(pointToInput(point));
 }
 
 export function rotateWithIndexes(lists) {
