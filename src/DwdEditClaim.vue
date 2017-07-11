@@ -2,12 +2,19 @@
 <div>
   <form class="row gutter-16" @submit.prevent="submit">
     <div class="col-xs-12">
-      <div class="t1">
-        <textarea rows="1"
-                  autocomplete="off"
-                  placeholder="claim"
-                  v-model="text"
-                  v-auto-resize></textarea>
+      <div class="t1 flex-row">
+        <div class="content">
+          <textarea rows="1"
+                    autocomplete="off"
+                    placeholder="claim"
+                    v-model="text"
+                    v-auto-resize></textarea>
+          <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
+        </div>
+        <div class="controls">
+          <dwd-flag-dropdown :flag="flag"
+                             @select="updateFlag"></dwd-flag-dropdown>
+        </div>
       </div>
     </div>
     <template v-if="$store.state.singleColumn">
@@ -50,17 +57,22 @@ import { cloneDeep, filter } from 'lodash';
 
 import DeleteButton from './DeleteButton.vue';
 import DwdEditPoint from './DwdEditPoint.vue';
+import DwdFlag from './DwdFlag.vue';
+import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import { isValidPoint, rotateWithIndexes } from './utils';
 
 export default {
   components: {
     DeleteButton,
     DwdEditPoint,
+    DwdFlag,
+    DwdFlagDropdown,
   },
   data: () => ({
     error: '',
     points: [[], []],
     text: '',
+    flag: '',
   }),
   computed: {
     id: function () {
@@ -79,6 +91,9 @@ export default {
       if (pi === this.points[si].length - 1) {
         this.points[si].push({});
       }
+    },
+    updateFlag: function (flag) {
+      this.flag = flag;
     },
     submit: function () {
       let promises = [];
@@ -113,6 +128,7 @@ export default {
         claim: {
           text: this.text,
           points: this.points,
+          flag: this.flag,
         },
       };
       if (this.id) {
@@ -144,6 +160,7 @@ export default {
       if (this.claim) {
         this.text = this.claim.text;
         this.points = cloneDeep(this.claim.points);
+        this.flag = this.claim.flag;
       }
       for (let i = 0; i < this.points.length; i++) {
         this.points[i].push({});

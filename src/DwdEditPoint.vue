@@ -166,7 +166,7 @@ export default {
   },
   mounted: function () {
     this.input1 = pointToInput(this.point);
-    this.flag = this.point.flag;
+    this.flag = this.claim ? this.claim.flag : this.point.flag;
     if (this.point.points) {
       this.subpoints = cloneDeep(this.point.points);
       if (this.subpoints.length === 0) {

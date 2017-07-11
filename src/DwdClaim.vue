@@ -5,6 +5,7 @@
       <div class="t1">
         <router-link :to="claimUrl(id) + '/edit'" class="glyphicon glyphicon-pencil edit click" aria-hidden="true"></router-link>
         <div>{{ claim.text }}</div>
+        <dwd-flag v-if="claim.flag" :flag="claim.flag"></dwd-flag>
       </div>
     </div>
     <template v-if="$store.state.singleColumn">
@@ -31,11 +32,13 @@
 </template>
 
 <script>
+import DwdFlag from './DwdFlag.vue';
 import DwdPoint from './DwdPoint.vue';
 import { rotateWithIndexes } from './utils';
 
 export default {
   components: {
+    DwdFlag,
     DwdPoint,
   },
   computed: {
