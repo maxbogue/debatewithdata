@@ -1,6 +1,7 @@
 <template>
-<div class="t2" :class="['side-' + side]">
+<div class="t2 content" :class="['side-' + side]">
   <template v-if="claim">
+    <dwd-flag v-if="point.flag" :flag="point.flag"></dwd-flag>
     <router-link v-if="point.id" :to="claimUrl(point.id)" class="source-text">{{ claim.text }}</router-link>
     <span v-else class="source-text">{{ claim.text }}</span>
     <ul v-if="subPoints.length > 0" class="t3">
@@ -20,11 +21,13 @@
 </template>
 
 <script>
+import DwdFlag from './DwdFlag.vue';
 import DwdSubPoint from './DwdSubPoint.vue';
 import { rotateWithIndexes } from './utils';
 
 export default {
   components: {
+    DwdFlag,
     DwdSubPoint,
   },
   props: ['point', 'side'],

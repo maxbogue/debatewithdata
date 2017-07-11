@@ -1,6 +1,6 @@
 <template>
-<div class="t2" :class="['side-' + side]">
-  <div class="flex-row">
+<div class="t2 flex-row" :class="['side-' + side]">
+  <div class="content">
     <textarea rows="1"
               autocomplete="off"
               placeholder="New sub-claim, URL, or 12-letter ID"
@@ -8,35 +8,41 @@
               v-model="input1"
               v-auto-resize
               :class="[inputClass]" />
+    <textarea v-if="isUrl"
+              rows="1"
+              autocomplete="off"
+              placeholder="source description"
+              ref="input2"
+              v-model="input2"
+              v-auto-resize />
+    <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
+    <router-link v-if="claim"
+                 class="source-text"
+                 :to="claimUrl(point.id) + '/edit'">{{ claim.text }}</router-link>
+    <template v-else-if="source">
+      <router-link :to="sourceUrl(point.id) + '/edit'" class="source-text">{{ source.text }}</router-link>
+      <a :href="source.url" class="source-url">{{ source.url }}</a>
+    </template>
+    <div v-else-if="isId">No claim or source with that ID found.</div>
+    <ul v-else-if="isSubclaim" class="t3">
+      <dwd-edit-subpoint v-for="[p, side, i] in zippedSubpoints"
+                         :point="p"
+                         :side="side"
+                         :canDelete="i < subpoints[side].length - 1"
+                         :key="'subpoint-' + side + '-' + i"
+                         @update="(p) => updateSubpoint(side, i, p)"
+                         @delete="subpoints[side].splice(i, 1)"></dwd-edit-subpoint>
+    </ul>
+  </div>
+  <div class="controls">
+    <dwd-flag-dropdown v-if="isSubclaim"
+                       :flag="flag"
+                       @select="updateFlag"></dwd-flag-dropdown>
     <span v-if="canDelete"
           class="delete click glyphicon glyphicon-trash"
           aria-hidden="true"
           @click="$emit('delete')"></span>
   </div>
-  <textarea v-if="isUrl"
-            rows="1"
-            autocomplete="off"
-            placeholder="source description"
-            ref="input2"
-            v-model="input2"
-            v-auto-resize />
-  <router-link v-if="claim"
-               class="source-text"
-               :to="claimUrl(point.id) + '/edit'">{{ claim.text }}</router-link>
-  <template v-else-if="source">
-    <router-link :to="sourceUrl(point.id) + '/edit'" class="source-text">{{ source.text }}</router-link>
-    <a :href="source.url" class="source-url">{{ source.url }}</a>
-  </template>
-  <div v-else-if="isId">No claim or source with that ID found.</div>
-  <ul v-else-if="isSubclaim" class="t3">
-    <dwd-edit-subpoint v-for="[p, side, i] in zippedSubpoints"
-                       :point="p"
-                       :side="side"
-                       :canDelete="i < subpoints[side].length - 1"
-                       :key="'subpoint-' + side + '-' + i"
-                       @update="(p) => updateSubpoint(side, i, p)"
-                       @delete="subpoints[side].splice(i, 1)"></dwd-edit-subpoint>
-  </ul>
 </div>
 </template>
 
@@ -45,6 +51,8 @@ import { cloneDeep, filter } from 'lodash';
 import { isWebUri } from 'valid-url';
 
 import DwdEditSubpoint from './DwdEditSubpoint.vue';
+import DwdFlag from './DwdFlag.vue';
+import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import { isValidPoint, pointToInput, rotateWithIndexes } from './utils';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
@@ -52,12 +60,15 @@ const ID_REGEX = /^[0-9a-f]{12}$/;
 export default {
   components: {
     DwdEditSubpoint,
+    DwdFlag,
+    DwdFlagDropdown,
   },
   props: ['point', 'side', 'canDelete'],
   data: () => ({
     input1: '',
     input2: '',
     subpoints: [[{}], [{}]],
+    flag: '',
   }),
   computed: {
     isId: function () {
@@ -117,6 +128,7 @@ export default {
           type: 'subclaim',
           text: this.input1,
           points: subpoints,
+          flag: this.flag,
         };
       }
       return null;
@@ -132,6 +144,10 @@ export default {
       if (pi === this.subpoints[si].length - 1) {
         this.subpoints[si].push({});
       }
+      this.updatePoint();
+    },
+    updateFlag: function (flag) {
+      this.flag = flag;
       this.updatePoint();
     },
     setError: function () {
@@ -150,6 +166,7 @@ export default {
   },
   mounted: function () {
     this.input1 = pointToInput(this.point);
+    this.flag = this.point.flag;
     if (this.point.points) {
       this.subpoints = cloneDeep(this.point.points);
       if (this.subpoints.length === 0) {
@@ -174,8 +191,20 @@ export default {
 </script>
 
 <style>
-.delete {
-  margin: 0.5em 0 0 4px;
+.content {
+  flex: auto;
+}
+.content > :not(:first-child) {
+  margin-top: 8px;
+}
+.controls {
+  margin-left: 8px;
+}
+.controls span {
+  display: block;
+}
+.controls span:not(:first-child) {
+  margin-top: 10px;
 }
 .side-0 > input {
   background-color: #F3E5F5;
@@ -188,8 +217,5 @@ export default {
 }
 .invalid {
   color: #F44336;
-}
-.t2 > * + * {
-  margin-top: 8px;
 }
 </style>

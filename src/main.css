@@ -1,7 +1,7 @@
 body {
   line-height: 1.5;
 }
-input, textarea {
+textarea {
   border: 1px solid #666;
   border-radius: 5px;
   display: block;
@@ -13,9 +13,6 @@ input, textarea {
 input:focus, textarea:focus {
   outline: none;
   box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.75);
-}
-input + * {
-  margin-top: 0.5em;
 }
 a, a:visited, a:focus {
   color: #222;
@@ -68,4 +65,25 @@ a.t1:hover {
   display: block;
   color: #666;
   font-size: 12px;
+}
+.dropdown {
+  position: relative;
+}
+.dropdown-content {
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  display: block;
+  max-height: 0;
+  min-width: 160px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  transition: max-height 0.3s, opacity 0.2s 0.1s, visibility 0s 0.3s;
+  visibility: hidden;
+  z-index: 1;
+}
+.open {
+  transition: max-height 0.3s, opacity 0.2s, visibility 0s;
+  opacity: 1;
+  visibility: visible;
+  max-height: 500px;
 }

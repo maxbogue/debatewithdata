@@ -51,3 +51,42 @@ export var DwdUtilsMixin = {
     },
   },
 };
+
+export const FLAGS = {
+  'ad-hominem': {
+    name: 'Ad Hominem',
+  },
+  'appeal-to-authority': {
+    name: 'Appeal to Authority',
+  },
+  'appeal-to-emotion': {
+    name: 'Appeal to Emotion',
+  },
+  'appeal-to-nature': {
+    name: 'Appeal to Nature',
+  },
+  'bandwagon': {
+    name: 'Bandwagon',
+  },
+  'black-or-white': {
+    name: 'False Dichotomy',
+  },
+  'false-cause': {
+    name: 'False Cause',
+  },
+  'genetic': {
+    name: 'Genetic',
+  },
+  'middle-ground': {
+    name: 'Middle Ground',
+  },
+  'non-sequitur': {
+    name: 'Non Sequitur',
+  },
+  'slippery-slope': {
+    name: 'Slippery Slope',
+  },
+  'strawman': {
+    name: 'Strawman',
+  },
+};

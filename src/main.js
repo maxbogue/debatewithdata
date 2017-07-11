@@ -57,5 +57,13 @@ new Vue({
   created: function () {
     this.$store.commit('setUser', auth.getUser());
     this.$store.dispatch('load');
+    window.onclick = function(event) {
+      if (!event.target.matches('.dropdown-toggle')) {
+        var dropdowns = document.getElementsByClassName('dropdown-content');
+        for (let i = 0; i < dropdowns.length; i++) {
+          dropdowns[i].classList.remove('open');
+        }
+      }
+    };
   },
 });
