@@ -68,6 +68,7 @@ export default {
         return {
           type: 'text',
           text: this.input,
+          tempId: this.point.tempId,
         };
       }
     },

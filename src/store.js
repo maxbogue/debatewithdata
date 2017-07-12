@@ -1,16 +1,37 @@
 import axios from 'axios';
-import { forOwn } from 'lodash';
+import { cloneDeep, forOwn } from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { axiosErrorToString } from './utils';
+import { axiosErrorToString, genId, walk } from './utils';
 
 Vue.use(Vuex);
+
+function addTempIds(points) {
+  for (let i = 0; i < points.length; i++) {
+    for (let j = 0; j < points[i].length; j++) {
+      let p = points[i][j];
+      if (!p.id && !p.tempId) {
+        p.tempId = genId();
+      }
+      if (p.points) {
+        addTempIds(p.points);
+      }
+    }
+  }
+}
 
 function sanitizeClaim(claim) {
   if (!claim.points) {
     claim.points = [[], []];
   }
+  addTempIds(claim.points);
+}
+
+function copyClaim(claim) {
+  let copy = cloneDeep(claim);
+  walk(copy, (o) => delete o.tempId);
+  return copy;
 }
 
 function windowIsSingleColumn() {
@@ -36,6 +57,7 @@ export default new Vuex.Store({
       state.loaded = true;
     },
     setClaim: function (state, { id, claim }) {
+      sanitizeClaim(claim);
       Vue.set(state.claims, id, claim);
     },
     setClaims: function (state, claims) {
@@ -76,7 +98,10 @@ export default new Vuex.Store({
     updateClaim: function ({ commit }, { id, claim }) {
       return new Promise((resolve, reject) => {
         axios.put('/api/claim/' + id, claim).then(() => {
-          commit('setClaim', { id, claim });
+          commit('setClaim', {
+            id,
+            claim: copyClaim(claim),
+          });
           resolve(id);
         }).catch((error) => {
           reject(axiosErrorToString(error));
@@ -86,7 +111,10 @@ export default new Vuex.Store({
     addClaim: function ({ commit }, { claim }) {
       return new Promise((resolve, reject) => {
         axios.post('/api/claim', claim).then((response) => {
-          commit('setClaim', { id: response.data.id, claim });
+          commit('setClaim', {
+            id: response.data.id,
+            claim: copyClaim(claim),
+          });
           resolve(response.data.id);
         }).catch((error) => {
           reject(axiosErrorToString(error));

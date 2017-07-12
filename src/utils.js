@@ -1,4 +1,29 @@
-import { map } from 'lodash';
+import { forEach, forOwn, isArray, isObject, map } from 'lodash';
+
+export function walk(o, f) {
+  if (isObject(o)) {
+    f(o);
+    forOwn(o, (v) => walk(v, f));
+  } else if (isArray(o)) {
+    forEach(o, (v) => walk(v, f));
+  }
+}
+
+export function genId() {
+  let chars = [];
+  for (let i = 0; i < 16; i++) {
+    chars.push(Math.floor(Math.random() * 16).toString(16));
+  }
+  return chars.join('');
+}
+
+export function emptyPoint() {
+  return { tempId: genId() };
+}
+
+export function emptyPoints() {
+  return [[emptyPoint()], [emptyPoint()]];
+}
 
 export function pointToInput(point) {
   if (!point) {

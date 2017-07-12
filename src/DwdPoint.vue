@@ -8,7 +8,7 @@
       <dwd-sub-point v-for="[subPoint, subSide, i] in subPoints"
                      :point="subPoint"
                      :side="subSide"
-                     :key="'subpoint-' + subSide + '-' + i">
+                     :key="subPoint.id || subPoint.tempId">
       </dwd-sub-point>
     </ul>
   </template>

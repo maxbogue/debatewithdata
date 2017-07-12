@@ -22,7 +22,7 @@
         <dwd-edit-point :point="point"
                         :side="side"
                         :canDelete="i < points[side].length - 1"
-                        :key="'point-' + side + '-' + i"
+                        :key="point.id || point.tempId"
                         @update="(p) => updatePoint(side, i, p)"
                         @delete="points[side].splice(i, 1)">
         </dwd-edit-point>
@@ -34,7 +34,7 @@
                         :point="point"
                         :side="side"
                         :canDelete="i < sidePoints.length - 1"
-                        :key="'point-' + side + '-' + i"
+                        :key="point.id || point.tempId"
                         @update="(p) => updatePoint(side, i, p)"
                         @delete="sidePoints.splice(i, 1)">
         </dwd-edit-point>
@@ -59,7 +59,7 @@ import DeleteButton from './DeleteButton.vue';
 import DwdEditPoint from './DwdEditPoint.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
-import { isValidPoint, rotateWithIndexes } from './utils';
+import { emptyPoint, emptyPoints, isValidPoint, rotateWithIndexes } from './utils';
 
 export default {
   components: {
@@ -70,7 +70,7 @@ export default {
   },
   data: () => ({
     error: '',
-    points: [[], []],
+    points: emptyPoints(),
     text: '',
     flag: '',
   }),
@@ -89,7 +89,7 @@ export default {
     updatePoint: function (si, pi, point) {
       this.$set(this.points[si], pi, point);
       if (pi === this.points[si].length - 1) {
-        this.points[si].push({});
+        this.points[si].push(emptyPoint());
       }
     },
     updateFlag: function (flag) {
@@ -161,9 +161,9 @@ export default {
         this.text = this.claim.text;
         this.points = cloneDeep(this.claim.points);
         this.flag = this.claim.flag;
-      }
-      for (let i = 0; i < this.points.length; i++) {
-        this.points[i].push({});
+        for (let i = 0; i < this.points.length; i++) {
+          this.points[i].push(emptyPoint());
+        }
       }
     },
   },

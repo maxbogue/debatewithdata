@@ -29,7 +29,7 @@
                          :point="p"
                          :side="side"
                          :canDelete="i < subpoints[side].length - 1"
-                         :key="'subpoint-' + side + '-' + i"
+                         :key="p.id || p.tempId"
                          @update="(p) => updateSubpoint(side, i, p)"
                          @delete="subpoints[side].splice(i, 1)"></dwd-edit-subpoint>
     </ul>
@@ -53,7 +53,8 @@ import { isWebUri } from 'valid-url';
 import DwdEditSubpoint from './DwdEditSubpoint.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
-import { isValidPoint, pointToInput, rotateWithIndexes } from './utils';
+import { emptyPoint, emptyPoints, isValidPoint, pointToInput,
+         rotateWithIndexes } from './utils';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
@@ -67,7 +68,7 @@ export default {
   data: () => ({
     input1: '',
     input2: '',
-    subpoints: [[{}], [{}]],
+    subpoints: emptyPoints(),
     flag: '',
   }),
   computed: {
@@ -129,6 +130,7 @@ export default {
           text: this.input1,
           points: subpoints,
           flag: this.flag,
+          tempId: this.point.tempId,
         };
       }
       return null;
@@ -142,7 +144,7 @@ export default {
     updateSubpoint: function (si, pi, point) {
       this.$set(this.subpoints[si], pi, point);
       if (pi === this.subpoints[si].length - 1) {
-        this.subpoints[si].push({});
+        this.subpoints[si].push(emptyPoint());
       }
       this.updatePoint();
     },
@@ -173,8 +175,8 @@ export default {
         this.subpoints.push([]);
         this.subpoints.push([]);
       }
-      this.subpoints[0].push({});
-      this.subpoints[1].push({});
+      this.subpoints[0].push(emptyPoint());
+      this.subpoints[1].push(emptyPoint());
     }
   },
   watch: {
