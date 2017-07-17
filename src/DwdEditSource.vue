@@ -1,30 +1,32 @@
 <template>
-<form class="row gutter-16" @submit.prevent="commit">
-  <div class="col-sm-12">
-    <div class="t1">
-      <input type="textarea"
-             required
-             autocomplete="off"
-             placeholder="description"
-             v-model="text"></input>
-      <input type="text"
-             required
-             autocomplete="off"
-             placeholder="url"
-             ref="url"
-             v-model="url"
-             :class="{invalid: !validUrl}"></input>
+<div>
+  <form class="row gutter-16" @submit.prevent="commit">
+    <div class="col-sm-12">
+      <div class="t1 content">
+        <textarea rows="1"
+                  required
+                  autocomplete="off"
+                  placeholder="description"
+                  v-model="text"></textarea>
+        <textarea rows="1"
+                  required
+                  autocomplete="off"
+                  placeholder="url"
+                  ref="url"
+                  v-model="url"
+                  :class="{invalid: !validUrl}"></textarea>
+      </div>
     </div>
-  </div>
-  <div v-if="error" class="col-xs-12 center">{{ error }}</div>
-  <div class="col-sm-12">
-    <button type="submit" class="btn btn-default">Submit</button>
-    <button type="button" class="btn btn-default" @click="cancel">Cancel</button>
-  </div>
-  <div v-if="id" class="col-xs-12 center">
-    <delete-button noun="Source" @delete="remove"></delete-button>
-  </div>
-</form>
+    <div v-if="error" class="col-xs-12 center">{{ error }}</div>
+    <div class="col-sm-12">
+      <button type="submit" class="btn btn-default">Submit</button>
+      <button type="button" class="btn btn-default" @click="cancel">Cancel</button>
+    </div>
+    <div v-if="id" class="col-xs-12 center">
+      <delete-button noun="Source" @delete="remove"></delete-button>
+    </div>
+  </form>
+</div>
 </template>
 
 <script>
