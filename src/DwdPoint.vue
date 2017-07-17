@@ -71,12 +71,12 @@ export default {
   position: relative;
 }
 .t2.side-0 {
-  background-color: #E1BEE7;
-  border: 1px solid #9C27B0;
+  background-color: #F3E5F5;
+  border: 1px solid #E1BEE7;
 }
 .t2.side-1 {
-  background-color: #FFE082;
-  border: 1px solid #FFB300;
+  background-color: #FFF8E1;
+  border: 1px solid #FFE082;
 }
 .t2 + .t2 {
   margin-top: 16px;
