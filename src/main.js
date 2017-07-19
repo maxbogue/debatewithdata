@@ -56,6 +56,7 @@ new Vue({
   }),
   created: function () {
     this.$store.commit('setUser', auth.getUser());
+    auth.updateHeader();
     this.$store.dispatch('load');
     window.onclick = function(event) {
       if (!event.target.matches('.dropdown-toggle')) {

@@ -19,17 +19,22 @@ function getUserFromToken(auth_token) {
   return null;
 }
 
+function getAuthToken() {
+  return window.localStorage.getItem(TOKEN_STORAGE_KEY);
+}
+
+function updateHeader() {
+  axios.defaults.headers.common.Authorization = 'Bearer ' + getAuthToken();
+}
+
 function setAuthToken(auth_token) {
   if (auth_token) {
     window.localStorage.setItem(TOKEN_STORAGE_KEY, auth_token);
   } else {
     window.localStorage.removeItem(TOKEN_STORAGE_KEY);
   }
+  updateHeader();
   store.commit('setUser', getUserFromToken(auth_token));
-}
-
-function getAuthToken() {
-  return window.localStorage.getItem(TOKEN_STORAGE_KEY);
 }
 
 export default {
@@ -68,4 +73,5 @@ export default {
   getUser: function () {
     return getUserFromToken(getAuthToken());
   },
+  updateHeader,
 };
