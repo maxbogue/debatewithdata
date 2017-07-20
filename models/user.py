@@ -67,12 +67,12 @@ class User(db.Model):
             payload = jwt.decode(auth_token.encode(),
                                  app.config.get('SECRET_KEY'))
         except jwt.DecodeError:
-            raise ApiError('Malformed or invalid auth token.')
+            raise ApiError('Malformed or invalid auth token.', 401)
         except jwt.ExpiredSignatureError:
-            raise ApiError('Expired auth token.')
+            raise ApiError('Expired auth token.', 401)
         user = User.query.get(payload['sub'])
         if user is None:
-            raise ApiError('User for auth token does not exist.')
+            raise ApiError('User for auth token does not exist.', 401)
         return user
 
     def __init__(self, username, password, email):
@@ -82,7 +82,7 @@ class User(db.Model):
                                       bcrypt.gensalt()).decode()
         self.email = email
 
-    def gen_auth_token(self, duration=timedelta(seconds=30), key=None):
+    def gen_auth_token(self, duration=timedelta(minutes=30), key=None):
         payload = {
             'exp': datetime.utcnow() + duration,
             'iat': datetime.utcnow(),

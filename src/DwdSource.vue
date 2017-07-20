@@ -40,10 +40,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.edit {
-  float: right;
-  margin-left: 5px;
-}
-</style>

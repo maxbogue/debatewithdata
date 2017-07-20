@@ -8,23 +8,35 @@ const LOGIN_URL = '/api/login';
 const REGISTER_URL = '/api/register';
 const TOKEN_STORAGE_KEY = 'auth_token';
 
-function getUserFromToken(auth_token) {
-  if (auth_token) {
-    let decoded = jwt_decode(auth_token);
-    let user = decoded.user;
-    user.created = new Date(user.created);
-    user.username = decoded.sub;
-    return user;
-  }
-  return null;
-}
-
 function getAuthToken() {
   return window.localStorage.getItem(TOKEN_STORAGE_KEY);
 }
 
 function updateHeader() {
-  axios.defaults.headers.common.Authorization = 'Bearer ' + getAuthToken();
+  let token = getAuthToken();
+  if (token) {
+    axios.defaults.headers.common.Authorization = 'Bearer ' + token;
+  } else {
+    delete axios.defaults.headers.common.Authorization;
+  }
+}
+
+function getUserFromToken(auth_token) {
+  if (!auth_token) {
+    return null;
+  }
+
+  let decoded = jwt_decode(auth_token);
+
+  // Check for an expired token.
+  if (Date.now() / 1000 > decoded.exp) {
+    return null;
+  }
+
+  let user = decoded.user;
+  user.created = new Date(user.created);
+  user.username = decoded.sub;
+  return user;
 }
 
 function setAuthToken(auth_token) {
@@ -36,6 +48,12 @@ function setAuthToken(auth_token) {
   updateHeader();
   store.commit('setUser', getUserFromToken(auth_token));
 }
+
+axios.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  return Promise.reject(error);
+});
 
 export default {
   register: function (context) {
@@ -71,7 +89,13 @@ export default {
     setAuthToken(null);
   },
   getUser: function () {
-    return getUserFromToken(getAuthToken());
+    let token = getAuthToken();
+    let user = getUserFromToken(token);
+    if (token && !user) {
+      // Token must be expired.
+      setAuthToken(null);
+    }
+    return user;
   },
   updateHeader,
 };

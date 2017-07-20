@@ -1,4 +1,4 @@
-import json, random
+import json, random, time
 
 from flask import g, jsonify, make_response, redirect, request, session, url_for
 
@@ -14,15 +14,16 @@ def load_db():
         with open(DB_FILE) as f:
             return json.load(f)
     except FileNotFoundError:
-        return {
-            'claims': {},
-            'sources': {},
-        }
+        return {}
 
 
 DB = load_db()
-CLAIMS = DB['claims']
-SOURCES = DB['sources']
+CLAIMS = DB.setdefault('claims', {})
+SOURCES = DB.setdefault('sources', {})
+COMMENTS = DB.setdefault('comments',
+                         {'claims': {},
+                          'sources': {},
+                          'points': {}})
 
 
 def save_db():
@@ -44,6 +45,14 @@ def req_fields(*fields, **typed_fields):
 @app.errorhandler(ApiError)
 def handle_api_error(err):
     return jsonify(message=err.message), err.status_code
+
+
+def auth_required():
+    token = request.headers.get('Authorization')
+    if token:
+        g.user = User.verify_token(token.split()[1])
+    else:
+        raise ApiError('No auth token found.', 401)
 
 
 @app.route('/')
@@ -100,6 +109,24 @@ def claim_one(id):
         del CLAIMS[id]
         save_db()
         return jsonify(message='success')
+
+
+@app.route('/api/claim/<id>/comments', methods=['GET', 'POST'])
+def claim_comments(id):
+    comments = COMMENTS['claims'].setdefault(id, [])
+    if request.method == 'GET':
+        return jsonify(comments)
+    elif request.method == 'POST':
+        auth_required()
+        text, = req_fields('text')
+        comment = {
+            'text': text,
+            'author': g.user.username,
+            'created': int(time.time()),
+        }
+        comments.append(comment)
+        save_db()
+        return jsonify(comment=comment)
 
 
 @app.route('/api/source', methods=['GET', 'POST'])
