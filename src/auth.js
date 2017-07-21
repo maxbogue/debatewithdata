@@ -56,12 +56,8 @@ axios.interceptors.response.use(function (response) {
 });
 
 export default {
-  register: function (context) {
-    let payload = {
-      'username': context.username,
-      'password': context.password,
-      'email': context.email,
-    };
+  register: function (username, password, email) {
+    let payload = { username, password, email };
     return new Promise((resolve, reject) => {
       axios.post(REGISTER_URL, payload).then((response) => {
         setAuthToken(response.data.auth_token);

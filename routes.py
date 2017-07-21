@@ -3,7 +3,7 @@ import json, random, time
 from flask import g, jsonify, make_response, redirect, request, session, url_for
 
 from debatewithdata.models import app, User
-from debatewithdata.utils import ApiError
+from debatewithdata.utils import ApiError, find_one
 
 DB_FILE = 'db.json'
 ID_CHARS = '0123456789abcdef'
@@ -31,6 +31,10 @@ def save_db():
         json.dump(DB, f)
 
 
+def gen_id():
+    return ''.join(random.choice(ID_CHARS) for _ in range(12))
+
+
 def req_fields(*fields, **typed_fields):
     data = request.get_json()
     missing_fields = [field for field in fields if field not in data]
@@ -38,7 +42,7 @@ def req_fields(*fields, **typed_fields):
         if not isinstance(data[field], t):
             raise ApiError('Field has wrong type: ' + field)
     if missing_fields:
-        raise ApiError('Missing field(s): ' + missing_fields.join(', '))
+        raise ApiError('Missing field(s): ' + ', '.join(missing_fields))
     return (data[field] for field in fields)
 
 
@@ -89,7 +93,7 @@ def claim_all():
     if request.method == 'GET':
         return jsonify(CLAIMS)
     elif request.method == 'POST':
-        id = ''.join(random.choice(ID_CHARS) for _ in range(12))
+        id = gen_id()
         CLAIMS[id] = request.get_json()
         save_db()
         return jsonify(id=id)
@@ -111,15 +115,16 @@ def claim_one(id):
         return jsonify(message='success')
 
 
-@app.route('/api/claim/<id>/comments', methods=['GET', 'POST'])
+@app.route('/api/claim/<id>/comment', methods=['GET', 'POST'])
 def claim_comments(id):
     comments = COMMENTS['claims'].setdefault(id, [])
     if request.method == 'GET':
-        return jsonify(comments)
+        return jsonify([c for c in comments if not c.get('deleted')])
     elif request.method == 'POST':
         auth_required()
         text, = req_fields('text')
         comment = {
+            'id': gen_id(),
             'text': text,
             'author': g.user.username,
             'created': int(time.time()),
@@ -129,12 +134,26 @@ def claim_comments(id):
         return jsonify(comment=comment)
 
 
+@app.route('/api/claim/<claim_id>/comment/<comment_id>', methods=['DELETE'])
+def del_claim_comment(claim_id, comment_id):
+    auth_required()
+    comments = COMMENTS['claims'].setdefault(claim_id, [])
+    comment = find_one(comments, lambda c: c.get('id') == comment_id)
+    if not comment:
+        raise ApiError('Comment not found.', 404)
+    if comment['author'] != g.user.username:
+        raise ApiError('Comment is not yours to delete.', 401)
+    comment['deleted'] = True
+    save_db()
+    return jsonify(message='success')
+
+
 @app.route('/api/source', methods=['GET', 'POST'])
 def source_all():
     if request.method == 'GET':
         return jsonify(SOURCES)
     elif request.method == 'POST':
-        id = ''.join(random.choice(ID_CHARS) for _ in range(12))
+        id = gen_id()
         SOURCES[id] = request.get_json()
         save_db()
         return jsonify(id=id)

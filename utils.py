@@ -3,3 +3,10 @@ class ApiError(Exception):
         Exception.__init__(self)
         self.message = message
         self.status_code = status_code
+
+
+def find_one(xs, p):
+    for x in xs:
+        if p(x):
+            return x
+    return None
