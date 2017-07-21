@@ -2,11 +2,22 @@
 <div>
   <div v-if="source" class="row gutter-16">
     <div class="col-sm-12">
-      <div class="t1">
-        <router-link :to="sourceUrl(id) + '/edit'" class="glyphicon glyphicon-pencil edit click" aria-hidden="true"></router-link>
-        <div class="source-text">{{ source.text }}</div>
-        <a :href="source.url" class="source-url">{{ source.url }}</a>
+      <div class="t1 flex-row">
+        <div class="content">
+          <div class="source-text">{{ source.text }}</div>
+          <a :href="source.url" class="source-url">{{ source.url }}</a>
+        </div>
+        <div class="controls">
+          <router-link :to="sourceUrl(id) + '/edit'"
+                       class="glyphicon glyphicon-pencil"
+                       aria-hidden="true"></router-link>
+          <span class="glyphicon glyphicon-comment"
+                aria-hidden="true"
+                @click="showComments = !showComments"></span>
+        </div>
       </div>
+      <dwd-comments v-if="showComments"
+                    :url="'/api/source/' + id"></dwd-comments>
     </div>
   </div>
   <div v-else-if="!$store.state.loaded">Loading sources...</div>
@@ -15,8 +26,15 @@
 </template>
 
 <script>
+import DwdComments from './DwdComments.vue';
 
 export default {
+  components: {
+    DwdComments,
+  },
+  data: () => ({
+    showComments: false,
+  }),
   computed: {
     id: function () {
       return this.$route.params.sourceId;

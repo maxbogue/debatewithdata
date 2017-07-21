@@ -29,16 +29,32 @@ a:hover {
 .gutter-16 > [class^="col-"], .gutter-16 > [class^=" col-"] {
   padding: 8px;
 }
-.click:hover {
-  color: #aaa;
-  cursor: pointer;
-}
 .mono {
   font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
 .flex-row {
   align-items: flex-start;
   display: flex;
+}
+.content {
+  flex: auto;
+}
+.content > :not(:first-child) {
+  margin-top: 8px;
+}
+.controls {
+  margin-left: 8px;
+}
+.controls > * {
+  display: block;
+}
+.controls > :hover, .click:hover {
+  color: #aaa;
+  cursor: pointer;
+  text-decoration: none;
+}
+.controls > :not(:first-child) {
+  margin-top: 8px;
 }
 .t1 {
   background-color: #E0F2F1;

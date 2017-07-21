@@ -59,6 +59,36 @@ def auth_required():
         raise ApiError('No auth token found.', 401)
 
 
+def get_comments(comments):
+    return jsonify([c for c in comments if not c.get('deleted')])
+
+
+def add_comment(comments):
+    auth_required()
+    text, = req_fields('text')
+    comment = {
+        'id': gen_id(),
+        'text': text,
+        'author': g.user.username,
+        'created': int(time.time()),
+    }
+    comments.append(comment)
+    save_db()
+    return jsonify(comment=comment)
+
+
+def delete_comment(comments, id):
+    auth_required()
+    comment = find_one(comments, lambda c: c.get('id') == id)
+    if not comment:
+        raise ApiError('Comment not found.', 404)
+    if comment['author'] != g.user.username:
+        raise ApiError('Comment is not yours to delete.', 401)
+    comment['deleted'] = True
+    save_db()
+    return jsonify(message='success')
+
+
 @app.route('/')
 @app.route('/account')
 @app.route('/login')
@@ -119,33 +149,15 @@ def claim_one(id):
 def claim_comments(id):
     comments = COMMENTS['claims'].setdefault(id, [])
     if request.method == 'GET':
-        return jsonify([c for c in comments if not c.get('deleted')])
+        return get_comments(comments)
     elif request.method == 'POST':
-        auth_required()
-        text, = req_fields('text')
-        comment = {
-            'id': gen_id(),
-            'text': text,
-            'author': g.user.username,
-            'created': int(time.time()),
-        }
-        comments.append(comment)
-        save_db()
-        return jsonify(comment=comment)
+        return add_comment(comments)
 
 
 @app.route('/api/claim/<claim_id>/comment/<comment_id>', methods=['DELETE'])
 def del_claim_comment(claim_id, comment_id):
-    auth_required()
     comments = COMMENTS['claims'].setdefault(claim_id, [])
-    comment = find_one(comments, lambda c: c.get('id') == comment_id)
-    if not comment:
-        raise ApiError('Comment not found.', 404)
-    if comment['author'] != g.user.username:
-        raise ApiError('Comment is not yours to delete.', 401)
-    comment['deleted'] = True
-    save_db()
-    return jsonify(message='success')
+    return delete_comment(comments, comment_id)
 
 
 @app.route('/api/source', methods=['GET', 'POST'])
@@ -173,3 +185,18 @@ def source_one(id):
         del SOURCES[id]
         save_db()
         return jsonify(message='success')
+
+
+@app.route('/api/source/<id>/comment', methods=['GET', 'POST'])
+def source_comments(id):
+    comments = COMMENTS['sources'].setdefault(id, [])
+    if request.method == 'GET':
+        return get_comments(comments)
+    elif request.method == 'POST':
+        return add_comment(comments)
+
+
+@app.route('/api/source/<source_id>/comment/<comment_id>', methods=['DELETE'])
+def del_source_comment(source_id, comment_id):
+    comments = COMMENTS['sources'].setdefault(source_id, [])
+    return delete_comment(comments, comment_id)

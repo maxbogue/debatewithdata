@@ -8,11 +8,16 @@
           <dwd-flag v-if="claim.flag" :flag="claim.flag"></dwd-flag>
         </div>
         <div class="controls">
-          <router-link :to="claimUrl(id) + '/edit'" class="glyphicon glyphicon-pencil edit click" aria-hidden="true"></router-link>
-          <span class="glyphicon glyphicon-comment" aria-hidden="true" @click="showComments = !showComments"></span>
+          <router-link :to="claimUrl(id) + '/edit'"
+                       class="glyphicon glyphicon-pencil"
+                       aria-hidden="true"></router-link>
+          <span class="glyphicon glyphicon-comment"
+                aria-hidden="true"
+                @click="showComments = !showComments"></span>
         </div>
       </div>
-      <dwd-comments v-if="showComments" :url="'/api/claim/' + id"></dwd-comments>
+      <dwd-comments v-if="showComments"
+                    :url="'/api/claim/' + id"></dwd-comments>
     </div>
     <template v-if="$store.state.singleColumn">
       <div v-for="[point, side, i] in zippedPoints" class="col-xs-12">

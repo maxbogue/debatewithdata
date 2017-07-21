@@ -193,21 +193,6 @@ export default {
 </script>
 
 <style>
-.content {
-  flex: auto;
-}
-.content > :not(:first-child) {
-  margin-top: 8px;
-}
-.controls {
-  margin-left: 8px;
-}
-.controls span {
-  display: block;
-}
-.controls span:not(:first-child) {
-  margin-top: 10px;
-}
 .side-0 > input {
   background-color: #F3E5F5;
 }
