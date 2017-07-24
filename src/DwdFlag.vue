@@ -1,7 +1,8 @@
 <template>
 <div class="flag">
   <span>Logical fallacy warning:</span>
-  <a :href="'https://yourlogicalfallacyis.com/' + flag" target="_blank">{{ name }}</a>
+  <a :href="'https://yourlogicalfallacyis.com/' + flag"
+     target="_blank">{{ name }}</a>
 </div>
 </template>
 

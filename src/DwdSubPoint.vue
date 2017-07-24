@@ -20,7 +20,9 @@ export default {
       return null;
     },
     source: function () {
-      if (this.point.type !== 'source') return null;
+      if (this.point.type !== 'source') {
+        return null;
+      }
       return this.$store.state.sources[this.point.id];
     },
     url: function () {
@@ -50,6 +52,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>

@@ -1,11 +1,11 @@
 -   repo: git://github.com/pre-commit/mirrors-yapf
-    sha: v0.16.2
+    sha: v0.16.3
     hooks:
     -   id: yapf
 -   repo: git://github.com/pre-commit/mirrors-eslint
-    sha: v4.0.0
+    sha: v4.3.0
     hooks:
     -   id: eslint
+        files: \.(js|vue)$
         additional_dependencies:
-        - eslint
-        - eslint-plugin-vue
+        - eslint-plugin-vue@beta

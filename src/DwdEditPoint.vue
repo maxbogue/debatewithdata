@@ -18,9 +18,12 @@
     <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
     <router-link v-if="claim"
                  class="source-text"
-                 :to="claimUrl(point.id) + '/edit'">{{ claim.text }}</router-link>
+                 :to="claimUrl(point.id) + '/edit'">
+      {{ claim.text }}
+    </router-link>
     <template v-else-if="source">
-      <router-link :to="sourceUrl(point.id) + '/edit'" class="source-text">{{ source.text }}</router-link>
+      <router-link :to="sourceUrl(point.id) + '/edit'"
+                   class="source-text">{{ source.text }}</router-link>
       <a :href="source.url" class="source-url">{{ source.url }}</a>
     </template>
     <div v-else-if="isId">No claim or source with that ID found.</div>
@@ -31,7 +34,8 @@
                          :canDelete="i < subpoints[side].length - 1"
                          :key="p.id || p.tempId"
                          @update="(p) => updateSubpoint(side, i, p)"
-                         @delete="subpoints[side].splice(i, 1)"></dwd-edit-subpoint>
+                         @delete="subpoints[side].splice(i, 1)">
+      </dwd-edit-subpoint>
     </ul>
   </div>
   <div class="controls">

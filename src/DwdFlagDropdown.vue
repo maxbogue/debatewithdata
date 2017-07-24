@@ -6,14 +6,13 @@
   <ul ref="flags" class="flags dropdown-content">
     <li v-for="(v, k) in flags"
         :class="{ selected: k === flag }"
+        :key="k"
         @click="selectFlag(k)">{{ v.name }}</li>
   </ul>
 </div>
 </template>
 
 <script>
-import { cloneDeep } from 'lodash';
-
 import { FLAGS } from './utils';
 
 export default {
@@ -55,4 +54,3 @@ export default {
   color: #212121;
 }
 </style>
-

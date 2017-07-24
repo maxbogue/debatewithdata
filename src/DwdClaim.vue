@@ -20,15 +20,18 @@
                     :url="'/api/claim/' + id"></dwd-comments>
     </div>
     <template v-if="$store.state.singleColumn">
-      <div v-for="[point, side, i] in zippedPoints" class="col-xs-12">
+      <div v-for="[point, side, i] in zippedPoints"
+           class="col-xs-12"
+           :key="point.id || point.tempId">
         <dwd-point :point="point"
-                   :side="side"
-                   :key="point.id || point.tempId">
+           :side="side"></dwd-point>
         </dwd-point>
       </div>
     </template>
     <template v-else>
-      <div v-for="(sidePoints, side) in claim.points" class="col-sm-6">
+      <div v-for="(sidePoints, side) in claim.points"
+           class="col-sm-6"
+           :key="'side-' + side">
         <dwd-point v-for="(point, i) in sidePoints"
                    :point="point"
                    :side="side"

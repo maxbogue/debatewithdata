@@ -1,5 +1,7 @@
 <template>
-  <button type="button" class="btn btn-danger" @click="click">{{ text }}</button>
+  <button type="button"
+          class="btn btn-danger"
+          @click="click">{{ text }}</button>
 </template>
 
 <script>
@@ -10,7 +12,10 @@ export default {
   }),
   computed: {
     text: function () {
-      return this.awaitingConfirmation ? 'Really Delete?' : 'Delete ' + this.noun;
+      if (this.awaitingConfirmation) {
+        return 'Really Delete?';
+      }
+      return 'Delete ' + this.noun;
     },
   },
   methods: {
@@ -21,12 +26,11 @@ export default {
       }
       setTimeout(() => {
         this.awaitingConfirmation = true;
-        setTimeout(() => { this.awaitingConfirmation = false; }, 2000);
+        setTimeout(() => {
+          this.awaitingConfirmation = false;
+        }, 2000);
       }, 200);
     },
   },
 };
 </script>
-
-<style>
-</style>

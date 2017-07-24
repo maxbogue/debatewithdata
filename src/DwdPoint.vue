@@ -2,7 +2,9 @@
 <div class="t2 content" :class="['side-' + side]">
   <template v-if="claim">
     <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
-    <router-link v-if="point.id" :to="claimUrl(point.id)" class="source-text">{{ claim.text }}</router-link>
+    <router-link v-if="point.id"
+                 :to="claimUrl(point.id)"
+                 class="source-text">{{ claim.text }}</router-link>
     <span v-else class="source-text">{{ claim.text }}</span>
     <ul v-if="subPoints.length > 0" class="t3">
       <dwd-sub-point v-for="[subPoint, subSide, i] in subPoints"
@@ -13,7 +15,8 @@
     </ul>
   </template>
   <template v-else-if="source">
-    <router-link :to="sourceUrl(point.id)" class="source-text">{{ source.text }}</router-link>
+    <router-link :to="sourceUrl(point.id)"
+                 class="source-text">{{ source.text }}</router-link>
     <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
   <span v-else>error</span>
@@ -42,7 +45,9 @@ export default {
       return null;
     },
     source: function () {
-      if (this.point.type !== 'source') return null;
+      if (this.point.type !== 'source') {
+        return null;
+      }
       return this.$store.state.sources[this.point.id];
     },
     flag: function () {

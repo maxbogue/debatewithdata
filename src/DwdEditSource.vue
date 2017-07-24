@@ -20,7 +20,9 @@
     <div v-if="error" class="col-xs-12 center">{{ error }}</div>
     <div class="col-sm-12">
       <button type="submit" class="btn btn-default">Submit</button>
-      <button type="button" class="btn btn-default" @click="cancel">Cancel</button>
+      <button type="button"
+              class="btn btn-default"
+              @click="cancel">Cancel</button>
     </div>
     <div v-if="id" class="col-xs-12 center">
       <delete-button noun="Source" @delete="remove"></delete-button>
@@ -113,6 +115,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>
