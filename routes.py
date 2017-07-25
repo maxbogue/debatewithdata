@@ -20,6 +20,7 @@ def load_db():
 DB = load_db()
 CLAIMS = DB.setdefault('claims', {})
 SOURCES = DB.setdefault('sources', {})
+POINTS = DB.setdefault('points', {})
 COMMENTS = DB.setdefault('comments',
                          {'claims': {},
                           'sources': {},
@@ -33,6 +34,45 @@ def save_db():
 
 def gen_id():
     return ''.join(random.choice(ID_CHARS) for _ in range(12))
+
+
+def save_points(client_points):
+    points = [[], []]
+    for i, side_points in enumerate(client_points):
+        for point in side_points:
+            id = point['id'] if 'id' in point else gen_id()
+            save_point(id, point)
+            points[i].append(id)
+    return points
+
+
+def save_point(id, point):
+    assert type(point) == dict
+    print('save point', id, point)
+    if 'points' in point:
+        point['points'] = save_points(point['points'])
+    POINTS[id] = point
+
+
+def load_point(id):
+    point = POINTS[id].copy()
+    if 'points' in point:
+        point['points'] = [[load_point(id) for id in side_points]
+                           for side_points in point['points']]
+    return point
+
+
+def save_claim(id, claim):
+    claim['points'] = save_points(claim.get('points', [[], []]))
+    CLAIMS[id] = claim
+
+
+def load_claim(id):
+    claim = CLAIMS[id].copy()
+    if 'points' in claim:
+        claim['points'] = [[load_point(id) for id in side_points]
+                           for side_points in claim['points']]
+    return claim
 
 
 def req_fields(*fields, **typed_fields):
@@ -121,7 +161,7 @@ def register():
 @app.route('/api/claim', methods=['GET', 'POST'])
 def claim_all():
     if request.method == 'GET':
-        return jsonify(CLAIMS)
+        return jsonify({id: load_claim(id) for id in CLAIMS})
     elif request.method == 'POST':
         id = gen_id()
         CLAIMS[id] = request.get_json()
@@ -132,11 +172,11 @@ def claim_all():
 @app.route('/api/claim/<id>', methods=['GET', 'PUT', 'DELETE'])
 def claim_one(id):
     if request.method == 'GET':
-        return jsonify(CLAIMS[id])
+        return jsonify(load_claim(id))
     elif request.method == 'PUT':
         if id not in CLAIMS:
             raise ApiError('Claim not found.')
-        CLAIMS[id] = request.get_json()
+        save_claim(id, request.get_json())
         save_db()
         return jsonify(message='success')
     elif request.method == 'DELETE':
