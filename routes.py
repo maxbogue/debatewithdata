@@ -240,3 +240,18 @@ def source_comments(id):
 def del_source_comment(source_id, comment_id):
     comments = COMMENTS['sources'].setdefault(source_id, [])
     return delete_comment(comments, comment_id)
+
+
+@app.route('/api/point/<id>/comment', methods=['GET', 'POST'])
+def point_comments(id):
+    comments = COMMENTS['points'].setdefault(id, [])
+    if request.method == 'GET':
+        return get_comments(comments)
+    elif request.method == 'POST':
+        return add_comment(comments)
+
+
+@app.route('/api/point/<point_id>/comment/<comment_id>', methods=['DELETE'])
+def del_point_comment(point_id, comment_id):
+    comments = COMMENTS['points'].setdefault(point_id, [])
+    return delete_comment(comments, comment_id)

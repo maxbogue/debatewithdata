@@ -1,7 +1,8 @@
 <template>
 <li class="flex-row" :class="['side-' + side]">
   <span v-if="error">{{ error }}</span>
-  <router-link v-else-if="point.id" :to="url">{{ text }}</router-link>
+  <router-link v-else-if="point.type === 'claim'"
+               :to="url">{{ text }}</router-link>
   <template v-else>{{ point.text }}</template>
 </li>
 </template>

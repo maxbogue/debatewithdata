@@ -1,5 +1,5 @@
 <template>
-<div class="t2 flex-row" :class="['side-' + side]">
+<div class="point t2 flex-row" :class="['side-' + side]">
   <div class="content">
     <textarea rows="1"
               autocomplete="off"
