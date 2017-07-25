@@ -129,13 +129,18 @@ export default {
         for (let i = 0; i < subpoints.length; i++) {
           subpoints[i] = filter(subpoints[i], isValidPoint);
         }
-        return {
+        let subclaim = {
           type: 'subclaim',
           text: this.input1,
           points: subpoints,
           flag: this.flag,
-          tempId: this.point.tempId,
         };
+        if (this.point.id) {
+          subclaim.id = this.point.id;
+        } else {
+          subclaim.tempId = this.point.tempId;
+        }
+        return subclaim;
       }
       return null;
     },

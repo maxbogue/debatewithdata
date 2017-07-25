@@ -48,7 +48,6 @@ def save_points(client_points):
 
 def save_point(id, point):
     assert type(point) == dict
-    print('save point', id, point)
     if 'points' in point:
         point['points'] = save_points(point['points'])
     POINTS[id] = point
@@ -56,6 +55,7 @@ def save_point(id, point):
 
 def load_point(id):
     point = POINTS[id].copy()
+    point['id'] = id
     if 'points' in point:
         point['points'] = [[load_point(id) for id in side_points]
                            for side_points in point['points']]
@@ -166,7 +166,7 @@ def claim_all():
         id = gen_id()
         CLAIMS[id] = request.get_json()
         save_db()
-        return jsonify(id=id)
+        return jsonify(id=id, claim=load_claim(id))
 
 
 @app.route('/api/claim/<id>', methods=['GET', 'PUT', 'DELETE'])
@@ -178,7 +178,7 @@ def claim_one(id):
             raise ApiError('Claim not found.')
         save_claim(id, request.get_json())
         save_db()
-        return jsonify(message='success')
+        return jsonify(claim=load_claim(id))
     elif request.method == 'DELETE':
         del CLAIMS[id]
         save_db()

@@ -97,10 +97,10 @@ export default new Vuex.Store({
     },
     updateClaim: function ({ commit }, { id, claim }) {
       return new Promise((resolve, reject) => {
-        axios.put('/api/claim/' + id, claim).then(() => {
+        axios.put('/api/claim/' + id, copyClaim(claim)).then((response) => {
           commit('setClaim', {
             id,
-            claim: copyClaim(claim),
+            claim: response.data.claim,
           });
           resolve(id);
         }).catch((error) => {
@@ -110,10 +110,10 @@ export default new Vuex.Store({
     },
     addClaim: function ({ commit }, { claim }) {
       return new Promise((resolve, reject) => {
-        axios.post('/api/claim', claim).then((response) => {
+        axios.post('/api/claim', copyClaim(claim)).then((response) => {
           commit('setClaim', {
             id: response.data.id,
-            claim: copyClaim(claim),
+            claim: response.data.claim,
           });
           resolve(response.data.id);
         }).catch((error) => {
