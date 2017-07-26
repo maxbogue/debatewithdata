@@ -5,7 +5,7 @@
       <template v-if="claim">
         <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
         <router-link v-if="point.type === 'claim'"
-                     :to="claimUrl(point.id)"
+                     :to="claimUrl(point.claimId)"
                      class="source-text">{{ claim.text }}</router-link>
         <span v-else class="source-text">{{ claim.text }}</span>
         <ul v-if="subPoints.length > 0" class="t3">
@@ -17,7 +17,7 @@
         </ul>
       </template>
       <template v-else-if="source">
-        <router-link :to="sourceUrl(point.id)"
+        <router-link :to="sourceUrl(point.sourceId)"
                      class="source-text">{{ source.text }}</router-link>
         <a :href="source.url" class="source-url">{{ source.url }}</a>
       </template>
@@ -56,7 +56,7 @@ export default {
   computed: {
     claim: function () {
       if (this.point.type === 'claim') {
-        return this.$store.state.claims[this.point.id];
+        return this.$store.state.claims[this.point.claimId];
       }
       if (this.point.type === 'subclaim') {
         return this.point;
@@ -67,7 +67,7 @@ export default {
       if (this.point.type !== 'source') {
         return null;
       }
-      return this.$store.state.sources[this.point.id];
+      return this.$store.state.sources[this.point.sourceId];
     },
     flag: function () {
       if (this.claim) {

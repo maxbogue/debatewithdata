@@ -18,11 +18,11 @@
     <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
     <router-link v-if="claim"
                  class="source-text"
-                 :to="claimUrl(point.id) + '/edit'">
+                 :to="claimUrl(point.claimId) + '/edit'">
       {{ claim.text }}
     </router-link>
     <template v-else-if="source">
-      <router-link :to="sourceUrl(point.id) + '/edit'"
+      <router-link :to="sourceUrl(point.sourceId) + '/edit'"
                    class="source-text">{{ source.text }}</router-link>
       <a :href="source.url" class="source-url">{{ source.url }}</a>
     </template>
@@ -109,12 +109,12 @@ export default {
       if (this.claim) {
         return {
           type: 'claim',
-          id: this.input1,
+          claimId: this.input1,
         };
       } else if (this.source) {
         return {
           type: 'source',
-          id: this.input1,
+          sourceId: this.input1,
         };
       } else if (this.isUrl) {
         return {

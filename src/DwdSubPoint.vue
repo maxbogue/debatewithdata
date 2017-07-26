@@ -13,7 +13,7 @@ export default {
   computed: {
     claim: function () {
       if (this.point.type === 'claim') {
-        return this.$store.state.claims[this.point.id];
+        return this.$store.state.claims[this.point.claimId];
       }
       if (this.point.type === 'subclaim') {
         return this.point;
@@ -24,13 +24,13 @@ export default {
       if (this.point.type !== 'source') {
         return null;
       }
-      return this.$store.state.sources[this.point.id];
+      return this.$store.state.sources[this.point.sourceId];
     },
     url: function () {
       if (this.claim) {
-        return this.claimUrl(this.point.id);
+        return this.claimUrl(this.point.claimId);
       } else if (this.source) {
-        return this.sourceUrl(this.point.id);
+        return this.sourceUrl(this.point.sourceId);
       }
       return '';
     },
@@ -44,9 +44,9 @@ export default {
     },
     error: function () {
       if (this.point.type === 'claim' && !this.claim) {
-        return 'Claim not found: ' + this.point.id;
+        return 'Claim not found: ' + this.point.claimId;
       } else if (this.point.type === 'source' && !this.source) {
-        return 'Source not found: ' + this.point.id;
+        return 'Source not found: ' + this.point.sourceId;
       }
       return '';
     },

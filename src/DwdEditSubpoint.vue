@@ -13,9 +13,11 @@
         @click="$emit('delete')"></span>
   <router-link v-if="claim"
                class="source-text"
-               :to="claimUrl(point.id) + '/edit'">{{ claim.text }}</router-link>
+               :to="claimUrl(point.claimId) + '/edit'">
+    {{ claim.text }}
+  </router-link>
   <template v-else-if="source">
-    <router-link :to="sourceUrl(point.id) + '/edit'"
+    <router-link :to="sourceUrl(point.sourceId) + '/edit'"
                  class="source-text">{{ source.text }}</router-link>
     <a :href="source.url" class="source-url">{{ source.url }}</a>
   </template>
@@ -57,19 +59,24 @@ export default {
       if (this.claim) {
         return {
           type: 'claim',
-          id: this.input,
+          claimId: this.input,
         };
       } else if (this.source) {
         return {
           type: 'source',
-          id: this.input,
+          sourceId: this.input,
         };
       } else {
-        return {
+        let subpoint = {
           type: 'text',
           text: this.input,
-          tempId: this.point.tempId,
         };
+        if (this.point.id) {
+          subpoint.id = this.point.id;
+        } else {
+          subpoint.tempId = this.point.tempId;
+        }
+        return subpoint;
       }
     },
     updatePoint: function () {
