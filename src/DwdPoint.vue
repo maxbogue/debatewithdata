@@ -24,7 +24,8 @@
       <span v-else>error</span>
     </div>
     <div class="controls">
-      <span class="glyphicon glyphicon-comment"
+      <dwd-star type="point" :id="point.id"></dwd-star>
+      <span class="glyphicon glyphicon-comment click"
             aria-hidden="true"
             @click="showComments = !showComments"></span>
     </div>
@@ -37,6 +38,7 @@
 <script>
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
+import DwdStar from './DwdStar.vue';
 import DwdSubPoint from './DwdSubPoint.vue';
 import { rotateWithIndexes } from './utils';
 
@@ -44,6 +46,7 @@ export default {
   components: {
     DwdComments,
     DwdFlag,
+    DwdStar,
     DwdSubPoint,
   },
   props: ['point', 'side'],

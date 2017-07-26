@@ -32,6 +32,11 @@ a:hover {
 .mono {
   font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
+.click:hover {
+  color: #aaa;
+  cursor: pointer;
+  text-decoration: none;
+}
 .flex-row {
   align-items: flex-start;
   display: flex;
@@ -47,11 +52,6 @@ a:hover {
 }
 .controls > * {
   display: block;
-}
-.controls > :hover, .click:hover {
-  color: #aaa;
-  cursor: pointer;
-  text-decoration: none;
 }
 .controls > :not(:first-child) {
   margin-top: 8px;

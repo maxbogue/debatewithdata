@@ -8,10 +8,11 @@
           <dwd-flag v-if="claim.flag" :flag="claim.flag"></dwd-flag>
         </div>
         <div class="controls">
+          <dwd-star type="claim" :id="id"></dwd-star>
           <router-link :to="claimUrl(id) + '/edit'"
-                       class="glyphicon glyphicon-pencil"
+                       class="glyphicon glyphicon-pencil click"
                        aria-hidden="true"></router-link>
-          <span class="glyphicon glyphicon-comment"
+          <span class="glyphicon glyphicon-comment click"
                 aria-hidden="true"
                 @click="showComments = !showComments"></span>
         </div>
@@ -49,6 +50,7 @@
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdPoint from './DwdPoint.vue';
+import DwdStar from './DwdStar.vue';
 import { rotateWithIndexes } from './utils';
 
 export default {
@@ -56,6 +58,7 @@ export default {
     DwdComments,
     DwdFlag,
     DwdPoint,
+    DwdStar,
   },
   data: () => ({
     showComments: false,
@@ -73,6 +76,9 @@ export default {
       }
       return rotateWithIndexes(this.claim.points);
     },
+  },
+  mounted: function () {
+    this.$store.dispatch('loadClaimStars', { id: this.id });
   },
 };
 </script>

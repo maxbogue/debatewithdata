@@ -25,6 +25,7 @@ COMMENTS = DB.setdefault('comments',
                          {'claims': {},
                           'sources': {},
                           'points': {}})
+STARS = DB.setdefault('stars', {'claim': {}, 'source': {}, 'point': {}})
 
 
 def save_db():
@@ -97,6 +98,14 @@ def auth_required():
         g.user = User.verify_token(token.split()[1])
     else:
         raise ApiError('No auth token found.', 401)
+
+
+def auth_optional():
+    token = request.headers.get('Authorization')
+    if token:
+        g.user = User.verify_token(token.split()[1])
+    else:
+        g.user = None
 
 
 def get_comments(comments):
@@ -255,3 +264,51 @@ def point_comments(id):
 def del_point_comment(point_id, comment_id):
     comments = COMMENTS['points'].setdefault(point_id, [])
     return delete_comment(comments, comment_id)
+
+
+def point_ids(points):
+    for side_points in points:
+        for point_id in side_points:
+            yield point_id
+            point = POINTS[point_id]
+            if 'points' in point:
+                for subpoint_id in point_ids(point['points']):
+                    yield subpoint_id
+
+
+def star_for_client(type, id):
+    star_users = STARS[type].setdefault(id, [])
+    return {
+        'count': len(star_users),
+        'starred': g.user is not None and g.user.username in star_users,
+    }
+
+
+def claim_stars(claim_id):
+    claim = CLAIMS[claim_id]
+    point_stars = {
+        point_id: star_for_client('point', point_id)
+        for point_id in point_ids(claim['points'])
+    }
+    return {
+        'star': star_for_client('claim', claim_id),
+        'points': point_stars,
+    }
+
+
+@app.route('/api/<type>/<id>/star', methods=['GET', 'POST'])
+def stars(type, id):
+    if request.method == 'GET':
+        auth_optional()
+        if type == 'claim':
+            return jsonify(claim_stars(id))
+        return jsonify(star=star_for_client(type, id))
+    elif request.method == 'POST':
+        auth_required()
+        star_users = STARS[type].setdefault(id, [])
+        if g.user.username in star_users:
+            star_users.remove(g.user.username)
+        else:
+            star_users.append(g.user.username)
+        save_db()
+        return jsonify(star=star_for_client(type, id))

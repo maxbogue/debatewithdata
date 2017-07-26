@@ -49,6 +49,11 @@ export default new Vuex.Store({
     loaded: false,
     claims: {},
     sources: {},
+    stars: {
+      'claim': {},
+      'source': {},
+      'point': {},
+    },
     user: null,
     singleColumn: windowIsSingleColumn(),
   },
@@ -78,6 +83,9 @@ export default new Vuex.Store({
     },
     setUser: function (state, user) {
       state.user = user;
+    },
+    setStar: function (state, { type, id, star }) {
+      Vue.set(state.stars[type], id, star);
     },
     setSingleColumn: function (state, isSingleColumn) {
       state.singleColumn = isSingleColumn;
@@ -158,6 +166,31 @@ export default new Vuex.Store({
           resolve();
         }).catch((error) => {
           reject(axiosErrorToString(error));
+        });
+      });
+    },
+    loadClaimStars: function ({ commit }, { id }) {
+      axios.get('/api/claim/' + id + '/star').then((response) => {
+        commit('setStar', {
+          type: 'claim',
+          id,
+          star: response.data.star,
+        });
+        forOwn(response.data.points, (v, k) => {
+          commit('setStar', {
+            type: 'point',
+            id: k,
+            star: v,
+          });
+        });
+      });
+    },
+    toggleStar: function ({ commit }, { type, id }) {
+      axios.post('/api/' + type + '/' + id + '/star').then((response) => {
+        commit('setStar', {
+          type,
+          id,
+          star: response.data.star,
         });
       });
     },
