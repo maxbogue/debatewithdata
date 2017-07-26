@@ -30,7 +30,7 @@
       </div>
     </template>
     <template v-else>
-      <div v-for="(sidePoints, side) in claim.points"
+      <div v-for="(sidePoints, side) in points"
            class="col-sm-6"
            :key="'side-' + side">
         <dwd-point v-for="(point, i) in sidePoints"
@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import { sortBy } from 'lodash';
+
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdPoint from './DwdPoint.vue';
@@ -61,6 +63,7 @@ export default {
     DwdStar,
   },
   data: () => ({
+    loading: true,
     showComments: false,
   }),
   computed: {
@@ -70,15 +73,23 @@ export default {
     claim: function () {
       return this.$store.state.claims[this.id] || null;
     },
-    zippedPoints: function () {
-      if (!this.claim || !this.$store.state.loaded) {
+    points: function () {
+      if (!this.claim || !this.$store.state.loaded || this.loading) {
         return [];
       }
-      return rotateWithIndexes(this.claim.points);
+      let starCount = (p) => -this.$store.state.stars.point[p.id].count;
+      return this.claim.points.map((sidePoints) => {
+        return sortBy(sidePoints, [starCount, Math.random]);
+      });
+    },
+    zippedPoints: function () {
+      return rotateWithIndexes(this.points);
     },
   },
   mounted: function () {
-    this.$store.dispatch('loadClaimStars', { id: this.id });
+    this.$store.dispatch('loadClaimStars', { id: this.id }).then(() => {
+      this.loading = false;
+    });
   },
 };
 </script>

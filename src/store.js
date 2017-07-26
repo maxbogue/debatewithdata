@@ -170,18 +170,21 @@ export default new Vuex.Store({
       });
     },
     loadClaimStars: function ({ commit }, { id }) {
-      axios.get('/api/claim/' + id + '/star').then((response) => {
-        commit('setStar', {
-          type: 'claim',
-          id,
-          star: response.data.star,
-        });
-        forOwn(response.data.points, (v, k) => {
+      return new Promise((resolve) => {
+        axios.get('/api/claim/' + id + '/star').then((response) => {
           commit('setStar', {
-            type: 'point',
-            id: k,
-            star: v,
+            type: 'claim',
+            id,
+            star: response.data.star,
           });
+          forOwn(response.data.points, (v, k) => {
+            commit('setStar', {
+              type: 'point',
+              id: k,
+              star: v,
+            });
+          });
+          resolve();
         });
       });
     },
