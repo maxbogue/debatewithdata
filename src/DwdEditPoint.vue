@@ -129,24 +129,23 @@ export default {
         for (let i = 0; i < subpoints.length; i++) {
           subpoints[i] = filter(subpoints[i], isValidPoint);
         }
-        let subclaim = {
+        return {
           type: 'subclaim',
           text: this.input1,
           points: subpoints,
           flag: this.flag,
         };
-        if (this.point.id) {
-          subclaim.id = this.point.id;
-        } else {
-          subclaim.tempId = this.point.tempId;
-        }
-        return subclaim;
       }
       return null;
     },
     updatePoint: function () {
       let p = this.makePoint();
       if (p) {
+        if (this.point.id) {
+          p.id = this.point.id;
+        } else {
+          p.tempId = this.point.tempId;
+        }
         this.$emit('update', p);
       }
     },
@@ -177,7 +176,7 @@ export default {
   },
   mounted: function () {
     this.input1 = pointToInput(this.point);
-    this.flag = this.claim ? this.claim.flag : this.point.flag;
+    this.flag = this.claim ? this.claim.flag : this.point.flag || '';
     if (this.point.points) {
       this.subpoints = cloneDeep(this.point.points);
       if (this.subpoints.length === 0) {
