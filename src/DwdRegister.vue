@@ -5,6 +5,7 @@
            label="User name"
            autocomplete="off"
            placeholder="username"
+           autofocus
            v-model="username" />
     <input type="password"
            placeholder="password"
