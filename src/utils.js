@@ -31,8 +31,9 @@ export function pointToInput(point) {
   }
   switch (point.type) {
   case 'claim':
+    return point.claimId;
   case 'source':
-    return point.id;
+    return point.sourceId;
   case 'subclaim':
   case 'text':
     return point.text;
