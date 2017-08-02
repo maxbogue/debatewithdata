@@ -1,20 +1,21 @@
 <template>
-<form class="login" @submit.prevent="submit">
-  <input type="text"
-         label="User name"
-         class="form-control"
-         autocomplete="off"
-         placeholder="username"
-         v-model="username" />
-  <input type="password"
-         class="form-control"
-         placeholder="password"
-         v-model="password" />
-  <button type="submit" class="btn btn-default">
-    Submit
-  </button>
-  <div v-if="error">{{ error }}</div>
-</form>
+<div>
+  <form class="login" @submit.prevent="submit">
+    <input type="text"
+           label="User name"
+           autocomplete="off"
+           placeholder="username"
+           autofocus
+           v-model="username" />
+    <input type="password"
+           placeholder="password"
+           v-model="password" />
+    <button type="submit" class="btn btn-default">
+      Submit
+    </button>
+    <div v-if="error">{{ error }}</div>
+  </form>
+</div>
 </template>
 
 <script>
@@ -47,9 +48,13 @@ export default {
 </script>
 
 <style>
+.login {
+  width: 300px;
+  margin: 0 auto;
+}
 .login > * {
   height: 3em;
-  width: 300px;
-  margin-bottom: 5px;
+  margin-top: 10px;
+  width: 100%;
 }
 </style>
