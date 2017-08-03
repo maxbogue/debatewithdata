@@ -112,6 +112,7 @@ export default {
   margin-left: 8px;
 }
 .comments textarea {
+  margin-top: 12px;
   padding: 2px 0.5em;
 }
 .comments li:not(:hover) .delete {

@@ -48,13 +48,19 @@ a:hover {
   margin-top: 8px;
 }
 .controls {
-  margin-left: 8px;
+  margin-left: 10px;
 }
 .controls > * {
   display: block;
 }
 .controls > :not(:first-child) {
   margin-top: 8px;
+}
+.controls .click {
+  color: rgba(0, 0, 0, 0.15);
+}
+.controls .click:hover {
+  color: rgba(0, 0, 0, 0.85);
 }
 .t1 {
   background-color: #E0F2F1;
