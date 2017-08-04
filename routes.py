@@ -1,4 +1,5 @@
 import json, random, time
+from pyblake2 import blake2b
 
 from flask import g, jsonify, make_response, redirect, request, session, url_for
 
@@ -7,6 +8,10 @@ from debatewithdata.utils import ApiError, find_one
 
 DB_FILE = 'db.json'
 ID_CHARS = '0123456789abcdef'
+
+
+def hash(text):
+    return blake2b(text.encode(), digest_size=20).hexdigest()
 
 
 def load_db():
@@ -18,13 +23,14 @@ def load_db():
 
 
 DB = load_db()
-CLAIMS = DB.setdefault('claims', {})
-SOURCES = DB.setdefault('sources', {})
-POINTS = DB.setdefault('points', {})
-COMMENTS = DB.setdefault('comments',
-                         {'claims': {},
-                          'sources': {},
-                          'points': {}})
+CLAIMS = DB.setdefault('claim', {})
+SOURCES = DB.setdefault('source', {})
+POINTS = DB.setdefault('point', {})
+BLOBS = DB.setdefault('blob', {})
+CLAIM_REVS = DB.setdefault('claim_rev', {})
+SOURCE_REVS = DB.setdefault('source_rev', {})
+POINT_REVS = DB.setdefault('point_rev', {})
+COMMENTS = DB.setdefault('comments', {'claim': {}, 'source': {}, 'point': {}})
 STARS = DB.setdefault('stars', {'claim': {}, 'source': {}, 'point': {}})
 
 
@@ -33,45 +39,118 @@ def save_db():
         json.dump(DB, f)
 
 
-def gen_id():
-    return ''.join(random.choice(ID_CHARS) for _ in range(12))
+def gen_id(n=12):
+    return ''.join(random.choice(ID_CHARS) for _ in range(n))
 
 
-def save_points(client_points):
-    points = [[], []]
-    for i, side_points in enumerate(client_points):
-        for point in side_points:
-            id = point['id'] if 'id' in point else gen_id()
-            save_point(id, point)
-            points[i].append(id)
-    return points
+def make_text(text):
+    h = hash(text)
+    BLOBS[h] = text
+    return h
 
 
-def save_point(id, point):
-    assert type(point) == dict
+def subset_equals(d1, d2):
+    for k in d1:
+        if k not in d2 or d1[k] != d2[k]:
+            return False
+    return True
+
+
+def load_text(obj):
+    obj['text'] = BLOBS[obj['text']]
+
+
+def save_points(points):
+    return [[save_point(point) for point in side_points]
+            for side_points in points]
+
+
+def save_point(point):
+    parent_id = None
+    parent = None
+    if 'id' in point:
+        point_id = point['id']
+        parent_id = POINTS[point_id]['head']
+        parent = POINT_REVS[parent_id]
+    else:
+        # new point
+        point_id = gen_id()
+
+    point_rev = {'id': point_id, 'type': point['type']}
+    if point['type'] == 'subclaim':
+        point_rev['text'] = make_text(point['text'])
+        point_rev['points'] = save_points(point['points'])
+    elif point['type'] == 'claim':
+        point_rev['claimId'] = point['claimId']
+    elif point['type'] == 'source':
+        point_rev['sourceId'] = point['sourceId']
+    elif point['type'] == 'text':
+        point_rev['text'] = make_text(point['text'])
+    else:
+        raise Exception('bad point type')
+
+    if parent:
+        # check if there was a actually a change
+        if subset_equals(point_rev, parent):
+            # we're not making a new revision
+            return parent_id
+        point_rev['parent'] = parent_id
+    point_rev['created'] = int(time.time())
+    point_rev['author'] = 'max'
+
+    rev_id = gen_id(24)
+    POINT_REVS[rev_id] = point_rev
+    POINTS[point_id] = {
+        'head': rev_id,
+    }
+    return rev_id
+
+
+def load_point_rev(rev_id):
+    point = POINT_REVS[rev_id].copy()
+    if 'text' in point:
+        load_text(point)
     if 'points' in point:
-        point['points'] = save_points(point['points'])
-    POINTS[id] = point
-
-
-def load_point(id):
-    point = POINTS[id].copy()
-    point['id'] = id
-    if 'points' in point:
-        point['points'] = [[load_point(id) for id in side_points]
+        point['points'] = [[load_point_rev(id) for id in side_points]
                            for side_points in point['points']]
     return point
 
 
-def save_claim(id, claim):
-    claim['points'] = save_points(claim.get('points', [[], []]))
-    CLAIMS[id] = claim
+def save_claim(claim_id, claim):
+    parent_id = None
+    parent = None
+    if claim_id in CLAIMS:
+        parent_id = CLAIMS[claim_id]['head']
+        parent = CLAIM_REVS[parent_id]
+
+    claim_rev = {
+        'id': claim_id,
+        'text': make_text(claim['text']),
+        'points': save_points(claim['points']),
+    }
+
+    if parent:
+        if subset_equals(claim_rev, parent):
+            # we're not making a new revision
+            return parent_id
+        claim_rev['parent'] = parent_id
+    claim_rev['created'] = int(time.time())
+    claim_rev['author'] = 'max'
+
+    rev_id = gen_id(24)
+    CLAIM_REVS[rev_id] = claim_rev
+    CLAIMS[claim_id] = {
+        'head': rev_id,
+    }
 
 
 def load_claim(id):
-    claim = CLAIMS[id].copy()
+    rev_id = CLAIMS[id]['head']
+    claim = CLAIM_REVS[rev_id].copy()
+    if 'text' in claim:
+        load_text(claim)
     if 'points' in claim:
-        claim['points'] = [[load_point(id) for id in side_points]
+        claim['points'] = [[load_point_rev(id) for id in side_points]
                            for side_points in claim['points']]
     return claim
 
@@ -173,7 +252,7 @@ def claim_all():
         return jsonify({id: load_claim(id) for id in CLAIMS})
     elif request.method == 'POST':
         id = gen_id()
-        CLAIMS[id] = request.get_json()
+        save_claim(id, request.get_json())
         save_db()
         return jsonify(id=id, claim=load_claim(id))
 
@@ -196,7 +275,7 @@ def claim_one(id):
 
 @app.route('/api/claim/<id>/comment', methods=['GET', 'POST'])
 def claim_comments(id):
-    comments = COMMENTS['claims'].setdefault(id, [])
+    comments = COMMENTS['claim'].setdefault(id, [])
     if request.method == 'GET':
         return get_comments(comments)
     elif request.method == 'POST':
@@ -205,7 +284,7 @@ def claim_comments(id):
 
 @app.route('/api/claim/<claim_id>/comment/<comment_id>', methods=['DELETE'])
 def del_claim_comment(claim_id, comment_id):
-    comments = COMMENTS['claims'].setdefault(claim_id, [])
+    comments = COMMENTS['claim'].setdefault(claim_id, [])
     return delete_comment(comments, comment_id)
 
 
@@ -238,7 +317,7 @@ def source_one(id):
 
 @app.route('/api/source/<id>/comment', methods=['GET', 'POST'])
 def source_comments(id):
-    comments = COMMENTS['sources'].setdefault(id, [])
+    comments = COMMENTS['source'].setdefault(id, [])
     if request.method == 'GET':
         return get_comments(comments)
     elif request.method == 'POST':
@@ -247,13 +326,13 @@ def source_comments(id):
 
 @app.route('/api/source/<source_id>/comment/<comment_id>', methods=['DELETE'])
 def del_source_comment(source_id, comment_id):
-    comments = COMMENTS['sources'].setdefault(source_id, [])
+    comments = COMMENTS['source'].setdefault(source_id, [])
     return delete_comment(comments, comment_id)
 
 
 @app.route('/api/point/<id>/comment', methods=['GET', 'POST'])
 def point_comments(id):
-    comments = COMMENTS['points'].setdefault(id, [])
+    comments = COMMENTS['point'].setdefault(id, [])
     if request.method == 'GET':
         return get_comments(comments)
     elif request.method == 'POST':
@@ -262,17 +341,17 @@ def point_comments(id):
 
 @app.route('/api/point/<point_id>/comment/<comment_id>', methods=['DELETE'])
 def del_point_comment(point_id, comment_id):
-    comments = COMMENTS['points'].setdefault(point_id, [])
+    comments = COMMENTS['point'].setdefault(point_id, [])
     return delete_comment(comments, comment_id)
 
 
 def point_ids(points):
     for side_points in points:
-        for point_id in side_points:
-            yield point_id
-            point = POINTS[point_id]
-            if 'points' in point:
-                for subpoint_id in point_ids(point['points']):
+        for point_rev_id in side_points:
+            point_rev = POINT_REVS[point_rev_id]
+            yield point_rev['id']
+            if 'points' in point_rev:
+                for subpoint_id in point_ids(point_rev['points']):
                     yield subpoint_id
 
 
@@ -286,9 +365,10 @@ def star_for_client(type, id):
 
 def claim_stars(claim_id):
     claim = CLAIMS[claim_id]
+    claim_rev = CLAIM_REVS[claim['head']]
     point_stars = {
         point_id: star_for_client('point', point_id)
-        for point_id in point_ids(claim['points'])
+        for point_id in point_ids(claim_rev['points'])
     }
     return {
         'star': star_for_client('claim', claim_id),
