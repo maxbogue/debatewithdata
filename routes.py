@@ -96,7 +96,7 @@ def save_point(point):
             return parent_id
         point_rev['parent'] = parent_id
     point_rev['created'] = int(time.time())
-    point_rev['author'] = 'max'
+    point_rev['author'] = g.user.username
 
     rev_id = gen_id(24)
     POINT_REVS[rev_id] = point_rev
@@ -135,7 +135,7 @@ def save_claim(claim_id, claim):
             return parent_id
         claim_rev['parent'] = parent_id
     claim_rev['created'] = int(time.time())
-    claim_rev['author'] = 'max'
+    claim_rev['author'] = g.user.username
 
     rev_id = gen_id(24)
     CLAIM_REVS[rev_id] = claim_rev
@@ -153,6 +153,21 @@ def load_claim(id):
         claim['points'] = [[load_point_rev(id) for id in side_points]
                            for side_points in claim['points']]
     return claim
+
+
+def delete_claim(id):
+    if id not in CLAIMS:
+        raise ApiError('Claim not found.', 404)
+    claim = CLAIMS[id]
+    rev = {
+        'parent': claim['head'],
+        'created': int(time.time()),
+        'author': g.user.username,
+        'deleted': True,
+    }
+    rev_id = gen_id(24)
+    CLAIM_REVS[rev_id] = rev
+    claim['head'] = rev_id
 
 
 def req_fields(*fields, **typed_fields):
@@ -249,8 +264,14 @@ def register():
 @app.route('/api/claim', methods=['GET', 'POST'])
 def claim_all():
     if request.method == 'GET':
-        return jsonify({id: load_claim(id) for id in CLAIMS})
+        claims = {}
+        for id in CLAIMS:
+            claim = load_claim(id)
+            if not claim.get('deleted'):
+                claims[id] = claim
+        return jsonify(claims)
     elif request.method == 'POST':
+        auth_required()
         id = gen_id()
         save_claim(id, request.get_json())
         save_db()
@@ -262,13 +283,15 @@ def claim_one(id):
     if request.method == 'GET':
         return jsonify(load_claim(id))
     elif request.method == 'PUT':
+        auth_required()
         if id not in CLAIMS:
             raise ApiError('Claim not found.')
         save_claim(id, request.get_json())
         save_db()
         return jsonify(claim=load_claim(id))
     elif request.method == 'DELETE':
-        del CLAIMS[id]
+        auth_required()
+        delete_claim(id)
         save_db()
         return jsonify(message='success')
 

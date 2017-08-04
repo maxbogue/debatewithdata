@@ -9,7 +9,8 @@
         </div>
         <div class="controls">
           <dwd-star type="claim" :id="id"></dwd-star>
-          <router-link :to="claimUrl(id) + '/edit'"
+          <router-link v-if="$store.state.user"
+                       :to="claimUrl(id) + '/edit'"
                        class="glyphicon glyphicon-pencil click"
                        aria-hidden="true"></router-link>
           <span class="glyphicon glyphicon-comment click"

@@ -1,5 +1,6 @@
 <template>
-<span class="glyphicon"
+<span v-if="user"
+      class="glyphicon"
       :class="classes"
       @click="toggle"
       aria-hidden="true"></span>
