@@ -6,7 +6,7 @@
                :key="id">
     {{ claim.text }}
   </router-link>
-  <div class="center">
+  <div class="center" v-if="$store.state.user">
     <router-link to="/claims/add" class="add click">+</router-link>
   </div>
 </div>

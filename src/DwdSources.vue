@@ -7,7 +7,7 @@
     <div class="source-text">{{ source.text }}</div>
     <div class="source-url">{{ source.url }}</div>
   </router-link>
-  <div class="center">
+  <div class="center" v-if="$store.state.user">
     <router-link to="/sources/add" class="add click">+</router-link>
   </div>
 </div>

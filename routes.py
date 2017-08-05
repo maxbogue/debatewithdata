@@ -116,15 +116,15 @@ def load_point_rev(rev_id):
     return point
 
 
-def save_claim(claim_id, claim):
+def save_claim(id, claim):
     parent_id = None
     parent = None
-    if claim_id in CLAIMS:
-        parent_id = CLAIMS[claim_id]['head']
+    if id in CLAIMS:
+        parent_id = CLAIMS[id]['head']
         parent = CLAIM_REVS[parent_id]
 
     claim_rev = {
-        'id': claim_id,
+        'id': id,
         'text': make_text(claim['text']),
         'points': save_points(claim['points']),
     }
@@ -139,12 +139,14 @@ def save_claim(claim_id, claim):
 
     rev_id = gen_id(24)
     CLAIM_REVS[rev_id] = claim_rev
-    CLAIMS[claim_id] = {
+    CLAIMS[id] = {
         'head': rev_id,
     }
 
 
 def load_claim(id):
+    if id not in CLAIMS:
+        raise ApiError('Claim not found.', 404)
     rev_id = CLAIMS[id]['head']
     claim = CLAIM_REVS[rev_id].copy()
     if 'text' in claim:
@@ -159,7 +161,13 @@ def delete_claim(id):
     if id not in CLAIMS:
         raise ApiError('Claim not found.', 404)
     claim = CLAIMS[id]
+    parent_id = claim['head']
+    parent = CLAIM_REVS[parent_id]
+    if parent.get('deleted'):
+        return
+
     rev = {
+        'id': id,
         'parent': claim['head'],
         'created': int(time.time()),
         'author': g.user.username,
@@ -168,6 +176,65 @@ def delete_claim(id):
     rev_id = gen_id(24)
     CLAIM_REVS[rev_id] = rev
     claim['head'] = rev_id
+
+
+def save_source(id, source):
+    parent_id = None
+    parent = None
+    if id in source:
+        parent_id = SOURCES[id]['head']
+        parent = SOURCE_REVS[parent_id]
+
+    source_rev = {
+        'id': id,
+        'text': make_text(source['text']),
+        'url': source['url'],
+    }
+
+    if parent:
+        if subset_equals(source_rev, parent):
+            # we're not making a new revision
+            return parent_id
+        source_rev['parent'] = parent_id
+    source_rev['created'] = int(time.time())
+    source_rev['author'] = g.user.username
+
+    rev_id = gen_id(24)
+    SOURCE_REVS[rev_id] = source_rev
+    SOURCES[id] = {
+        'head': rev_id,
+    }
+
+
+def load_source(id):
+    if id not in SOURCES:
+        raise ApiError('Source not found.', 404)
+    rev_id = SOURCES[id]['head']
+    source = SOURCE_REVS[rev_id].copy()
+    if 'text' in source:
+        load_text(source)
+    return source
+
+
+def delete_source(id):
+    if id not in SOURCES:
+        raise ApiError('Source not found.', 404)
+    source = SOURCES[id]
+    parent_id = source['head']
+    parent = SOURCE_REVS[parent_id]
+    if parent.get('deleted'):
+        return
+
+    rev = {
+        'id': id,
+        'parent': parent_id,
+        'created': int(time.time()),
+        'author': g.user.username,
+        'deleted': True,
+    }
+    rev_id = gen_id(24)
+    SOURCE_REVS[rev_id] = rev
+    source['head'] = rev_id
 
 
 def req_fields(*fields, **typed_fields):
@@ -314,26 +381,34 @@ def del_claim_comment(claim_id, comment_id):
 @app.route('/api/source', methods=['GET', 'POST'])
 def source_all():
     if request.method == 'GET':
-        return jsonify(SOURCES)
+        sources = {}
+        for id in SOURCES:
+            source = load_source(id)
+            if not source.get('deleted'):
+                sources[id] = source
+        return jsonify(sources)
     elif request.method == 'POST':
+        auth_required()
         id = gen_id()
-        SOURCES[id] = request.get_json()
+        save_source(id, request.get_json())
         save_db()
-        return jsonify(id=id)
+        return jsonify(id=id, source=load_source(id))
 
 
 @app.route('/api/source/<id>', methods=['GET', 'PUT', 'DELETE'])
 def source_one(id):
     if request.method == 'GET':
-        return jsonify(SOURCES[id])
+        return jsonify(load_source(id))
     elif request.method == 'PUT':
+        auth_required()
         if id not in SOURCES:
             raise ApiError('Source not found.')
-        SOURCES[id] = request.get_json()
+        save_source(id, request.get_json())
         save_db()
         return jsonify(message='success')
     elif request.method == 'DELETE':
-        del SOURCES[id]
+        auth_required()
+        delete_source(id)
         save_db()
         return jsonify(message='success')
 

@@ -8,7 +8,8 @@
           <a :href="source.url" class="source-url">{{ source.url }}</a>
         </div>
         <div class="controls">
-          <router-link :to="sourceUrl(id) + '/edit'"
+          <router-link v-if="$store.state.user"
+                       :to="sourceUrl(id) + '/edit'"
                        class="glyphicon glyphicon-pencil click"
                        aria-hidden="true"></router-link>
           <span class="glyphicon glyphicon-comment click"
