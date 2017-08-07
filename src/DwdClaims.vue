@@ -1,14 +1,12 @@
 <template>
 <div>
+  <router-link :to="addUrl" class="add click">+</router-link>
   <router-link v-for="(claim, id) in claims"
-               class="t1 source-text"
+               class="t1"
                :to="claimUrl(id)"
                :key="id">
     {{ claim.text }}
   </router-link>
-  <div class="center" v-if="$store.state.user">
-    <router-link to="/claims/add" class="add click">+</router-link>
-  </div>
 </div>
 </template>
 
@@ -16,14 +14,17 @@
 import { mapState } from 'vuex';
 
 export default {
-  computed: mapState([
-    'claims',
-  ]),
+  computed: {
+    ...mapState([
+      'user',
+      'claims',
+    ]),
+    addUrl: function () {
+      if (this.user) {
+        return '/claims/add';
+      }
+      return '/login?next=/claims/add';
+    },
+  },
 };
 </script>
-
-<style>
-.add {
-  font-size: 32px;
-}
-</style>

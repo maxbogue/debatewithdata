@@ -19,7 +19,7 @@
   </template>
   <template v-else>
     <li slot="right">
-      <router-link to="/login" title="Login">Login</router-link>
+      <router-link :to="loginUrl" title="Login">Login</router-link>
     </li>
     <li slot="right">
       <router-link to="/register" title="Register">Register</router-link>
@@ -36,8 +36,17 @@ export default {
   components: {
     navbar,
   },
-  computed: mapState([
-    'user',
-  ]),
+  computed: {
+    ...mapState([
+      'user',
+    ]),
+    loginUrl: function () {
+      let path = this.$route.fullPath;
+      if (path.startsWith('/login')) {
+        return '/login';
+      }
+      return '/login?next=' + path;
+    },
+  },
 };
 </script>

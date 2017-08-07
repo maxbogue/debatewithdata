@@ -1,5 +1,6 @@
 <template>
 <div>
+  <router-link :to="addUrl" class="add click">+</router-link>
   <router-link v-for="(source, id) in sources"
                class="t1"
                :to="sourceUrl(id)"
@@ -7,9 +8,6 @@
     <div class="source-text">{{ source.text }}</div>
     <div class="source-url">{{ source.url }}</div>
   </router-link>
-  <div class="center" v-if="$store.state.user">
-    <router-link to="/sources/add" class="add click">+</router-link>
-  </div>
 </div>
 </template>
 
@@ -17,14 +15,17 @@
 import { mapState } from 'vuex';
 
 export default {
-  computed: mapState([
-    'sources',
-  ]),
+  computed: {
+    ...mapState([
+      'user',
+      'sources',
+    ]),
+    addUrl: function () {
+      if (this.user) {
+        return '/sources/add';
+      }
+      return '/login?next=/sources/add';
+    },
+  },
 };
 </script>
-
-<style>
-.add {
-  font-size: 32px;
-}
-</style>

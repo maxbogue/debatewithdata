@@ -13,17 +13,18 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
+        exclude: /node_modules/,
         loader: 'vue-loader',
         options: {
           loaders: {
+            js: 'babel-loader'
           }
-          // other vue-loader options go here
         }
       },
       {
         test: /\.js$/,
+        exclude: /node_modules/,
         loader: 'babel-loader',
-        exclude: /node_modules/
       },
       {
         test: /\.css$/,
