@@ -29,6 +29,9 @@ a:hover {
 .gutter-16 > [class^="col-"], .gutter-16 > [class^=" col-"] {
   padding: 8px;
 }
+.center {
+  text-align: center;
+}
 .mono {
   font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
