@@ -189,6 +189,7 @@ def save_source(id, source):
         'id': id,
         'text': make_text(source['text']),
         'url': source['url'],
+        'ary': source.get('ary', 0),
     }
 
     if parent:

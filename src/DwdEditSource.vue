@@ -15,10 +15,25 @@
                   ref="url"
                   v-model="url"
                   :class="{invalid: !validUrl}"></textarea>
+        <div class="ary" :class="{selected: ary === 1}" @click="setAry(1)">
+          <h2>Primary</h2>
+          <div>Research paper, first reporting news article, authorative
+            institution, etc.</div>
+        </div>
+        <div class="ary" :class="{selected: ary === 2}" @click="setAry(2)">
+          <h2>Secondary</h2>
+          <div>Article about a primary source (research, news broken by another
+            institution, etc.)</div>
+        </div>
+        <div class="ary" :class="{selected: ary === 3}" @click="setAry(3)">
+          <h2>Tertiary</h2>
+          <div>Article about a secondary source (Wikipedia page with bad
+            sources, etc.)</div>
+        </div>
       </div>
     </div>
     <div v-if="error" class="col-xs-12 center">{{ error }}</div>
-    <div class="col-sm-12">
+    <div class="col-sm-12 center">
       <button type="submit" class="btn btn-default">Submit</button>
       <button type="button"
               class="btn btn-default"
@@ -47,6 +62,7 @@ export default {
     initialized: false,
     text: '',
     url: '',
+    ary: 0,
   }),
   computed: {
     id: function () {
@@ -60,12 +76,20 @@ export default {
     },
   },
   methods: {
+    setAry: function (ary) {
+      if (this.ary === ary) {
+        this.ary = 0;
+      } else {
+        this.ary = ary;
+      }
+    },
     commit: function () {
       let action = 'addSource';
       let payload = {
         source: {
           url: this.url,
           text: this.text,
+          ary: this.ary,
         },
       };
       if (this.id) {
@@ -95,6 +119,7 @@ export default {
       if (this.source) {
         this.url = this.source.url;
         this.text = this.source.text;
+        this.ary = this.source.ary;
       }
     },
   },
@@ -115,3 +140,27 @@ export default {
   },
 };
 </script>
+
+<style>
+.ary {
+  background-color: #fff;
+  border: 1px solid #aaa;
+  font-size: 10px;
+  padding: 4px;
+  text-align: center;
+  width: 50%;
+}
+.ary:hover {
+  background-color: #eee;
+  cursor: pointer;
+}
+.ary h2 {
+  font-size: 16px;
+  margin: 0;
+}
+.ary.selected {
+  background-color: #26A69A;
+  border-color: #009688;
+  color: #fff;
+}
+</style>

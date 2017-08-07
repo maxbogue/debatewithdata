@@ -87,10 +87,21 @@ export default {
       return rotateWithIndexes(this.points);
     },
   },
+  methods: {
+    loadStars: function () {
+      this.loading = true;
+      this.$store.dispatch('loadClaimStars', { id: this.id }).then(() => {
+        this.loading = false;
+      });
+    },
+  },
   mounted: function () {
-    this.$store.dispatch('loadClaimStars', { id: this.id }).then(() => {
-      this.loading = false;
-    });
+    this.loadStars();
+  },
+  watch: {
+    id: function () {
+      this.loadStars();
+    },
   },
 };
 </script>

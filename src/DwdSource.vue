@@ -4,7 +4,10 @@
     <div class="col-sm-12">
       <div class="t1 flex-row">
         <div class="content">
-          <div class="source-text">{{ source.text }}</div>
+          <div>
+            <div class="source-text">{{ source.text }}</div>
+            <div v-if="ary" class="ary-text">{{ ary }}</div>
+          </div>
           <a :href="source.url" class="source-url">{{ source.url }}</a>
         </div>
         <div class="controls">
@@ -43,6 +46,19 @@ export default {
     source: function () {
       return this.$store.state.sources[this.id] || null;
     },
+    ary: function () {
+      if (!this.source) {
+        return '';
+      }
+      if (this.source.ary === 1) {
+        return 'PRIMARY';
+      } else if (this.source.ary === 2) {
+        return 'SECONDARY';
+      } else if (this.source.ary === 3) {
+        return 'TERTIARY';
+      }
+      return '';
+    },
   },
   methods: {
     updateSource: function (source) {
@@ -59,3 +75,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.ary-text {
+  font-size: 12px;
+}
+</style>

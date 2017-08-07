@@ -17,8 +17,12 @@
         </ul>
       </template>
       <template v-else-if="source">
-        <router-link :to="sourceUrl(point.sourceId)"
-                     class="source-text">{{ source.text }}</router-link>
+        <div class="source-text">
+          <span v-if="ary">{{ ary }}&nbsp;</span>
+          <router-link :to="sourceUrl(point.sourceId)">
+            {{ source.text }}
+          </router-link>
+        </div>
         <a :href="source.url" class="source-url">{{ source.url }}</a>
       </template>
       <span v-else>error</span>
@@ -68,6 +72,18 @@ export default {
         return null;
       }
       return this.$store.state.sources[this.point.sourceId];
+    },
+    ary: function () {
+      if (!this.source) {
+        return '';
+      } else if (this.source.ary === 1) {
+        return '①';
+      } else if (this.source.ary === 2) {
+        return '②';
+      } else if (this.source.ary === 3) {
+        return '③';
+      }
+      return '';
     },
     flag: function () {
       if (this.claim) {
