@@ -2,7 +2,7 @@
 <div>
   <div v-if="claim" class="row gutter-16">
     <div class="col-sm-12">
-      <div class="t1 flex-row">
+      <div class="t1 bubble blue flex-row">
         <div class="content">
           <div>{{ claim.text }}</div>
           <dwd-flag v-if="claim.flag" :flag="claim.flag"></dwd-flag>

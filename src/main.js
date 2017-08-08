@@ -17,7 +17,7 @@ import DwdSources from './DwdSources.vue';
 import auth from './auth';
 import store from './store';
 import { DwdUtilsMixin } from './utils';
-import './main.css';
+import './style/index.css';
 
 Vue.use(VueRouter);
 Vue.mixin(DwdUtilsMixin);

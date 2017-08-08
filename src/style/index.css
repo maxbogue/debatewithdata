@@ -1,3 +1,6 @@
+@import 'bubble.css';
+@import 'colors.css';
+
 body {
   font-family: 'Roboto', 'Noto Sans', sans-serif;
   line-height: 1.5;
@@ -44,46 +47,17 @@ a:hover {
   align-items: flex-start;
   display: flex;
 }
-.content {
-  flex: auto;
-}
-.content > :not(:first-child) {
-  margin-top: 8px;
-}
-.controls {
-  margin-left: 10px;
-}
-.controls > * {
-  display: block;
-}
-.controls > :not(:first-child) {
-  margin-top: 8px;
-}
-.controls .click {
-  color: rgba(0, 0, 0, 0.15);
-}
-.controls .click:hover {
-  color: rgba(0, 0, 0, 0.85);
-}
 .t1 {
-  background-color: #E0F2F1;
-  border: 1px solid #B2DFDB;
-  border-radius: 5px;
   font-size: 20px;
   margin-top: 8px;
-  padding: 16px;
-}
-a.t1 {
-  color: #000;
-  display: block;
 }
 a.t1:hover {
-  background-color: #B2DFDB;
   text-decoration: none;
 }
 .add {
   display: block;
   font-size: 32px;
+  margin-top: 8px;
   text-align: center;
 }
 .source-text {

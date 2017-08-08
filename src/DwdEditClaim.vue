@@ -2,7 +2,7 @@
 <div>
   <form class="row gutter-16" @submit.prevent="submit">
     <div class="col-xs-12">
-      <div class="t1 flex-row">
+      <div class="t1 bubble blue flex-row">
         <div class="content">
           <textarea rows="1"
                     autocomplete="off"

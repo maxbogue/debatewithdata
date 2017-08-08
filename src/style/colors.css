@@ -1,0 +1,35 @@
+.red {
+  background-color: #FFEBEE;
+  border: 1px solid #FFCDD2;
+}
+.red.click:hover, a.red:hover {
+  background-color: #FFCDD2;
+}
+.green {
+  background-color: #E8F5E9;
+  border: 1px solid #C8E6C9;
+}
+.green.click:hover, a.green:hover {
+  background-color: #C8E6C9;
+}
+.blue {
+  background-color: #E3F2FD;
+  border: 1px solid #BBDEFB;
+}
+.blue.click:hover, a.blue:hover {
+  background-color: #BBDEFB;
+}
+.purple {
+  background-color: #F3E5F5;
+  border: 1px solid #E1BEE7;
+}
+.purple.click:hover, a.purple:hover {
+  background-color: #E1BEE7;
+}
+.amber {
+  background-color: #FFF8E1;
+  border: 1px solid #FFE082;
+}
+.amber.click:hover, a.amber:hover {
+  background-color: #FFE082;
+}

@@ -2,7 +2,7 @@
 <div>
   <form class="row gutter-16" @submit.prevent="commit">
     <div class="col-sm-12">
-      <div class="t1 content">
+      <div class="t1 bubble green content">
         <textarea rows="1"
                   required
                   autocomplete="off"
@@ -145,6 +145,7 @@ export default {
 .ary {
   background-color: #fff;
   border: 1px solid #aaa;
+  border-radius: 5px;
   font-size: 10px;
   padding: 4px;
   text-align: center;

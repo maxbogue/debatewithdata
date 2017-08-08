@@ -4,7 +4,7 @@
   <h2>A crowdsourced reference for the world's discussions.</h2>
   <hr></hr>
   <h3>Have informed debates without writing your own research paper!</h3>
-  <div class="guide b">
+  <div class="guide bubble blue">
     <h3>Learn</h3>
     <ul>
       <li>Find a claim you want to know more about.</li>
@@ -12,7 +12,7 @@
       <li>Dive into the sources to see the data behind each side.</li>
     </ul>
   </div>
-  <div class="guide r">
+  <div class="guide bubble red">
     <h3>Talk</h3>
     <ul>
       <li>If you find yourself in a discussion, find the claim that best
@@ -22,7 +22,7 @@
         data and call out the weaknesses in theirs.</li>
     </ul>
   </div>
-  <div class="guide g">
+  <div class="guide bubble green">
     <h3>Contribute</h3>
     <ul>
       <li>Add sources that contribute relevant data to a discussion. The closer
@@ -54,23 +54,8 @@ export default {};
   font-size: 20px;
 }
 .guide {
-  border-radius: 5px;
-  display: block;
   margin: 20px 0;
-  padding: 20px;
   text-align: left;
-}
-.guide.r {
-  background-color: #FFEBEE;
-  border: 1px solid #FFCDD2;
-}
-.guide.g {
-  background-color: #E8F5E9;
-  border: 1px solid #C8E6C9;
-}
-.guide.b {
-  background-color: #E3F2FD;
-  border: 1px solid #BBDEFB;
 }
 .guide > h3 {
   font-weight: bold;

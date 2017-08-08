@@ -2,7 +2,7 @@
 <div>
   <router-link :to="addUrl" class="add click">+</router-link>
   <router-link v-for="(claim, id) in claims"
-               class="t1"
+               class="t1 bubble blue"
                :to="claimUrl(id)"
                :key="id">
     {{ claim.text }}

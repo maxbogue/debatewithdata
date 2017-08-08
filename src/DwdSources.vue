@@ -2,7 +2,7 @@
 <div>
   <router-link :to="addUrl" class="add click">+</router-link>
   <router-link v-for="(source, id) in sources"
-               class="t1"
+               class="t1 bubble green"
                :to="sourceUrl(id)"
                :key="id">
     <div class="source-text">{{ source.text }}</div>

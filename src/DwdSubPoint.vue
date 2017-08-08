@@ -1,5 +1,5 @@
 <template>
-<li class="flex-row" :class="['side-' + side]">
+<li class="t3 flex-row" :class="[side === 0 ? 'for' : 'against']">
   <span v-if="error">{{ error }}</span>
   <router-link v-else-if="point.type === 'claim'"
                :to="url">{{ text }}</router-link>
@@ -19,7 +19,7 @@ export default {
       if (this.point.type === 'claim') {
         return this.$store.state.claims[this.point.claimId];
       }
-      if (this.point.type === 'subclaim') {
+      if (this.point.type === 'text' || this.point.type === 'subclaim') {
         return this.point;
       }
       return null;
@@ -69,3 +69,22 @@ export default {
   },
 };
 </script>
+
+<style>
+.t3 {
+  list-style: none;
+  margin-top: 8px;
+  padding: 0;
+}
+.t3:before {
+  color: rgba(0, 0, 0, 0.65);
+  font-family: 'Glyphicons Halflings';
+  margin-right: 4px;
+}
+.t3.for:before {
+  content: "\e081";
+}
+.t3.against:before {
+  content: "\e082";
+}
+</style>

@@ -2,7 +2,7 @@
 <div>
   <div v-if="source" class="row gutter-16">
     <div class="col-sm-12">
-      <div class="t1 flex-row">
+      <div class="t1 bubble green flex-row">
         <div class="content">
           <div>
             <div class="source-text">{{ source.text }}</div>

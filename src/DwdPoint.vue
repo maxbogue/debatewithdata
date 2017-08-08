@@ -1,6 +1,6 @@
 <template>
 <div class="point">
-  <div class="t2 flex-row" :class="['side-' + side]">
+  <div class="t2 bubble flex-row" :class="[side === 0 ? 'purple' : 'amber']">
     <div class="content">
       <template v-if="claim">
         <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
@@ -104,43 +104,15 @@ export default {
 </script>
 
 <style>
-.t2 {
-  border-radius: 5px;
-  font-size: 16px;
-  padding: 16px;
-  position: relative;
-}
-.t2.side-0 {
-  background-color: #F3E5F5;
-  border: 1px solid #E1BEE7;
-}
-.t2.side-1 {
-  background-color: #FFF8E1;
-  border: 1px solid #FFE082;
-}
 .point + .point {
   margin-top: 16px;
 }
-.t3 {
-  border-radius: 5px;
+.t2 {
+  font-size: 16px;
+}
+.t2 ul {
   font-size: 12px;
   margin: 0;
   padding: 0;
-}
-.t3 > li {
-  list-style: none;
-  margin-top: 8px;
-  padding: 0;
-}
-.t3 li:before {
-  color: rgba(0, 0, 0, 0.65);
-  font-family: 'Glyphicons Halflings';
-  margin-right: 4px;
-}
-.t3 li.side-0:before {
-  content: "\e081";
-}
-.t3 li.side-1:before {
-  content: "\e082";
 }
 </style>

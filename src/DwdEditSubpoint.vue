@@ -1,5 +1,5 @@
 <template>
-<li class="flex-row" :class="['side-' + side]">
+<li class="t3 flex-row" :class="[side === 0 ? 'for' : 'against']">
   <textarea rows="1"
             autocomplete="off"
             placeholder="New sub-claim or 12-letter ID"

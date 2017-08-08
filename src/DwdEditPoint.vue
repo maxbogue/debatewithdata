@@ -1,5 +1,6 @@
 <template>
-<div class="point t2 flex-row" :class="['side-' + side]">
+<div class="point t2 bubble flex-row"
+     :class="[side === 0 ? 'purple' : 'amber']">
   <div class="content">
     <textarea rows="1"
               autocomplete="off"
@@ -27,7 +28,7 @@
       <a :href="source.url" class="source-url">{{ source.url }}</a>
     </template>
     <div v-else-if="isId">No claim or source with that ID found.</div>
-    <ul v-else-if="isSubclaim" class="t3">
+    <ul v-else-if="isSubclaim">
       <dwd-edit-subpoint v-for="[p, side, i] in zippedSubpoints"
                          :point="p"
                          :side="side"
