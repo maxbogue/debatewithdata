@@ -4,11 +4,17 @@
     <div class="col-xs-12">
       <div class="t1 bubble blue flex-row">
         <div class="content">
-          <textarea rows="1"
-                    autocomplete="off"
-                    placeholder="claim"
-                    v-model="text"
-                    v-auto-resize></textarea>
+          <div>
+            <label for="text" class="hint">
+              A claim should be a short, simple statement about the world.
+            </label>
+            <textarea id="text"
+                      rows="1"
+                      autocomplete="off"
+                      placeholder="claim"
+                      v-model="text"
+                      v-auto-resize></textarea>
+          </div>
           <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
         </div>
         <div class="controls">

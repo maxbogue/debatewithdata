@@ -3,32 +3,47 @@
   <form class="row gutter-16" @submit.prevent="commit">
     <div class="col-sm-12">
       <div class="t1 bubble green content">
-        <textarea rows="1"
-                  required
-                  autocomplete="off"
-                  placeholder="description"
-                  v-model="text"></textarea>
-        <textarea rows="1"
-                  required
-                  autocomplete="off"
-                  placeholder="url"
-                  ref="url"
-                  v-model="url"
-                  :class="{invalid: !validUrl}"></textarea>
-        <div class="ary" :class="{selected: ary === 1}" @click="setAry(1)">
-          <h2>Primary</h2>
-          <div>Research paper, first reporting news article, authorative
-            institution, etc.</div>
+        <div>
+          <label for="url" class="hint">
+            Link a source that provides data about the world.
+          </label>
+          <textarea id="url"
+                    rows="1"
+                    required
+                    autocomplete="off"
+                    placeholder="url"
+                    ref="url"
+                    v-model="url"
+                    :class="{invalid: !validUrl}"></textarea>
         </div>
-        <div class="ary" :class="{selected: ary === 2}" @click="setAry(2)">
-          <h2>Secondary</h2>
-          <div>Article about a primary source (research, news broken by another
-            institution, etc.)</div>
+        <div>
+          <label for="text" class="hint">
+            Describe the data the link provides.
+          </label>
+          <textarea id="text"
+                    rows="1"
+                    required
+                    autocomplete="off"
+                    placeholder="description"
+                    v-model="text"></textarea>
         </div>
-        <div class="ary" :class="{selected: ary === 3}" @click="setAry(3)">
-          <h2>Tertiary</h2>
-          <div>Article about a secondary source (Wikipedia page with bad
-            sources, etc.)</div>
+        <div>
+          <label class="hint">Classify the directness of the source.</label>
+          <div class="ary" :class="{selected: ary === 1}" @click="setAry(1)">
+            <h2>Primary</h2>
+            <div>Research paper, first reporting news article, authorative
+              institution, etc.</div>
+          </div>
+          <div class="ary" :class="{selected: ary === 2}" @click="setAry(2)">
+            <h2>Secondary</h2>
+            <div>Article about a primary source (research, news broken by
+              another institution, etc.)</div>
+          </div>
+          <div class="ary" :class="{selected: ary === 3}" @click="setAry(3)">
+            <h2>Tertiary</h2>
+            <div>Article about a secondary source (Wikipedia page with bad
+              sources, etc.)</div>
+          </div>
         </div>
       </div>
     </div>
@@ -147,6 +162,7 @@ export default {
   border: 1px solid #aaa;
   border-radius: 5px;
   font-size: 10px;
+  margin-top: 4px;
   padding: 4px;
   text-align: center;
   width: 50%;
@@ -160,8 +176,8 @@ export default {
   margin: 0;
 }
 .ary.selected {
-  background-color: #26A69A;
-  border-color: #009688;
+  background-color: #43A047;
+  border-color: #2E7D32;
   color: #fff;
 }
 </style>

@@ -1,5 +1,8 @@
 <template>
 <div>
+  <h3 class="center">
+    Sources are external sources of data used to support claims.
+  </h3>
   <router-link :to="addUrl" class="add click">+</router-link>
   <router-link v-for="(source, id) in sources"
                class="t1 bubble green"

@@ -60,6 +60,11 @@ a.t1:hover {
   margin-top: 8px;
   text-align: center;
 }
+.hint {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
 .source-text {
   display: block;
 }
