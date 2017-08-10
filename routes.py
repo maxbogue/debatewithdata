@@ -305,6 +305,7 @@ def delete_comment(comments, id):
 @app.route('/login')
 @app.route('/logout')
 @app.route('/register')
+@app.route('/guide')
 @app.route('/claims')
 @app.route('/claims/add')
 @app.route('/claim/<id>')
