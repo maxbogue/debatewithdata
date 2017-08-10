@@ -82,7 +82,7 @@ class User(db.Model):
                                       bcrypt.gensalt()).decode()
         self.email = email
 
-    def gen_auth_token(self, duration=timedelta(minutes=30), key=None):
+    def gen_auth_token(self, duration=timedelta(days=7), key=None):
         payload = {
             'exp': datetime.utcnow() + duration,
             'iat': datetime.utcnow(),
