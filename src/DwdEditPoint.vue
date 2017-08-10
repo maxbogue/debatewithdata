@@ -2,20 +2,29 @@
 <div class="point t2 bubble flex-row"
      :class="[side === 0 ? 'purple' : 'amber']">
   <div class="content">
-    <textarea rows="1"
-              autocomplete="off"
-              placeholder="New sub-claim, URL, or 12-letter ID"
-              ref="input1"
-              v-model="input1"
-              v-auto-resize
-              :class="[inputClass]" />
-    <textarea v-if="isUrl"
-              rows="1"
-              autocomplete="off"
-              placeholder="source description"
-              ref="input2"
-              v-model="input2"
-              v-auto-resize />
+    <div>
+      <label v-if="point.tempId" class="hint">
+        Add a point {{ side === 0 ? 'for' : 'against' }} the claim.
+      </label>
+      <textarea rows="1"
+                autocomplete="off"
+                placeholder="New sub-claim, URL, or 12-letter ID"
+                ref="input1"
+                v-model="input1"
+                v-auto-resize
+                :class="[inputClass]" />
+    </div>
+    <div v-if="isUrl">
+      <label class="hint">
+        URL detected; describe the data this new source provides.
+      </label>
+      <textarea rows="1"
+                autocomplete="off"
+                placeholder="source description"
+                ref="input2"
+                v-model="input2"
+                v-auto-resize />
+    </div>
     <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
     <router-link v-if="claim"
                  class="source-text"
