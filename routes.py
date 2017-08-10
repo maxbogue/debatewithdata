@@ -1,4 +1,4 @@
-import json, random, time
+import json, os, random, time
 from pyblake2 import blake2b
 
 from flask import g, jsonify, make_response, redirect, request, session, url_for
@@ -6,7 +6,7 @@ from flask import g, jsonify, make_response, redirect, request, session, url_for
 from debatewithdata.models import app, User
 from debatewithdata.utils import ApiError, find_one
 
-DB_FILE = 'db.json'
+DB_FILE = 'dev.json' if os.environ.get('FLASK_DEBUG') == '1' else 'db.json'
 ID_CHARS = '0123456789abcdef'
 
 

@@ -3,4 +3,5 @@ env/
 node_modules/
 static/
 db.json
+dev.json
 local_settings.cfg
