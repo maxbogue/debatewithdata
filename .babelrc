@@ -1,4 +1,7 @@
 {
+  "presets": [
+    "backpack-core/babel",
+  ],
   "plugins": [
     ["transform-object-rest-spread", { "useBuiltIns": true }]
   ]
