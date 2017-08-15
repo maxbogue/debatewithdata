@@ -42,7 +42,7 @@ class User(db.Model):
     username = db.Column(db.String(32), primary_key=True, nullable=False)
     password = db.Column(db.Text, nullable=False)
     email = db.Column(db.Text, nullable=False)
-    created = db.Column(
+    created_at = db.Column(
         db.DateTime, nullable=False, server_default=db.func.now())
 
     @staticmethod

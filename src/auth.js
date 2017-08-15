@@ -60,7 +60,7 @@ export default {
     let payload = { username, password, email };
     return new Promise((resolve, reject) => {
       axios.post(REGISTER_URL, payload).then((response) => {
-        setAuthToken(response.data.auth_token);
+        setAuthToken(response.data.authToken);
         resolve();
       }).catch((error) => {
         reject(axiosErrorToString(error));
@@ -74,7 +74,7 @@ export default {
     };
     return new Promise((resolve, reject) => {
       axios.post(LOGIN_URL, payload).then((response) => {
-        setAuthToken(response.data.auth_token);
+        setAuthToken(response.data.authToken);
         resolve();
       }).catch((error) => {
         reject(axiosErrorToString(error));

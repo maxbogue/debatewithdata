@@ -1,4 +1,5 @@
 backups/
+config/
 env/
 node_modules/
 static/
