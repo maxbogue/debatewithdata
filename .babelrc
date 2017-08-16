@@ -3,6 +3,9 @@
     "backpack-core/babel",
   ],
   "plugins": [
-    ["transform-object-rest-spread", { "useBuiltIns": true }]
+    ["transform-object-rest-spread", { "useBuiltIns": true }],
+    ["babel-plugin-transform-builtin-extend", {
+      globals: ["Error"]
+    }]
   ]
 }

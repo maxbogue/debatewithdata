@@ -3,6 +3,7 @@ import config from 'config';
 import jwt from 'jsonwebtoken';
 import Sequelize from 'sequelize';
 
+import { ClientError, NotFoundError } from '../api/error';
 import sequelize from './index';
 
 const User = sequelize.define('user', {
@@ -33,26 +34,26 @@ const VALID_USERNAME = /[a-z][a-z0-9]+/;
 function validateUsername(username) {
   username = username.toLowerCase();
   if (username.length < 3) {
-    throw Error('Username must be at least 3 characters.');
+    throw new ClientError('Username must be at least 3 characters.');
   } else if (!VALID_USERNAME.test(username)) {
-    throw Error('Username can only use letters and numbers.');
+    throw new ClientError('Username can only use letters and numbers.');
   }
   return username;
 }
 
 function validatePassword(password) {
   if (password.length < 8) {
-    throw Error('Password must be at least 8 characters.');
+    throw new ClientError('Password must be at least 8 characters.');
   }
 }
 
 User.login = async function (username, password) {
   let user = await User.findOne({ where: { username }});
   if (!user) {
-    throw Error('User not found.');
+    throw new NotFoundError('User not found.');
   }
   if (!await bcrypt.compare(password, user.passwordHash)) {
-    throw Error('Invalid password.');
+    throw new ClientError('Invalid password.');
   }
   return user;
 };

@@ -6,3 +6,4 @@ static/
 db.json
 dev.json
 local_settings.cfg
+package-lock.json
