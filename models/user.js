@@ -16,7 +16,7 @@ export default function (sequelize, DataTypes) {
       unique: true,
       allowNull: false,
     },
-    passwordHash: {
+    'password_hash': {
       type: DataTypes.TEXT,
       allowNull: false,
     },
@@ -24,8 +24,6 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-  }, {
-    tableName: 'dwd_user',
   });
 
   const VALID_USERNAME = /[a-z][a-z0-9]+/;
