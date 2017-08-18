@@ -17,6 +17,11 @@ export default function (sequelize, DataTypes) {
       as: 'PrevRev',
       foreignKey: 'prev_rev_id',
     });
+    PointRev.belongsToMany(models.ClaimRev, { through: models.ClaimPoint });
+    PointRev.belongsToMany(models.PointRev, {
+      through: models.PointPoint,
+      as: 'SubpointRev',
+    });
   };
 
   return PointRev;
