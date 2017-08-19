@@ -17,6 +17,7 @@ const sequelize = new Sequelize(config.get('db'), {
   define: {
     underscored: true,
   },
+  logging: null,
 });
 
 const models = {};
@@ -42,5 +43,3 @@ forOwn(models, (model) => {
     model.associate(models);
   }
 });
-
-sequelize.sync({force: true});

@@ -1,8 +1,9 @@
 export default function (sequelize, DataTypes) {
   const ClaimPoint = sequelize.define('claim_point', {
-    'is_for': {
+    isFor: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
+      field: 'is_for',
     },
   });
 

@@ -16,9 +16,10 @@ export default function (sequelize, DataTypes) {
       unique: true,
       allowNull: false,
     },
-    'password_hash': {
+    passwordHash: {
       type: DataTypes.TEXT,
       allowNull: false,
+      field: 'password_hash',
     },
     email: {
       type: DataTypes.TEXT,
@@ -26,7 +27,7 @@ export default function (sequelize, DataTypes) {
     },
   });
 
-  const VALID_USERNAME = /[a-z][a-z0-9]+/;
+  const VALID_USERNAME = /^[a-z][a-z0-9]+$/;
 
   function validateUsername(username) {
     username = username.toLowerCase();
@@ -68,14 +69,14 @@ export default function (sequelize, DataTypes) {
     return await User.findOne({ where: { username }});
   };
 
-  User.prototype.genAuthToken = function () {
+  User.prototype.genAuthToken = function (exp = '7d') {
     let user = {
       created: this.created_at,
       email: this.email,
     };
     return jwt.sign({ user }, config.get('secretKey'), {
       subject: this.username,
-      expiresIn: '7d',
+      expiresIn: exp,
     });
   };
 

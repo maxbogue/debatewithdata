@@ -5,7 +5,8 @@
   "author": "Max Bogue <max@maxbogue.com>",
   "private": true,
   "scripts": {
-    "dev": "backpack"
+    "dev": "backpack",
+    "test": "mocha"
   },
   "dependencies": {
     "aws-sdk": "^2.98.0",
@@ -51,6 +52,11 @@
     "x2js": "^3.1.1"
   },
   "devDependencies": {
-    "backpack-core": "^0.4.2"
+    "babel-register": "^6.26.0",
+    "backpack-core": "^0.4.2",
+    "chai": "^4.1.1",
+    "chai-as-promised": "^7.1.1",
+    "env-test": "^1.0.0",
+    "mocha": "^3.5.0"
   }
 }

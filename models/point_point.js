@@ -1,8 +1,9 @@
 export default function (sequelize, DataTypes) {
   const PointPoint = sequelize.define('point_point', {
-    'is_for': {
+    isFor: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
+      field: 'is_for',
     },
   });
 
