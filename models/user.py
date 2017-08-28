@@ -88,7 +88,7 @@ class User(db.Model):
             'iat': datetime.utcnow(),
             'sub': self.username,
             'user': {
-                'created': str(self.created),
+                'created': str(self.created_at),
                 'email': self.email,
             },
         }

@@ -321,13 +321,13 @@ def index(id=None):
 @app.route('/api/login', methods=['POST'])
 def login():
     user = User.login(*req_fields('username', 'password'))
-    return jsonify(auth_token=user.gen_auth_token())
+    return jsonify(authToken=user.gen_auth_token())
 
 
 @app.route('/api/register', methods=['POST'])
 def register():
     user = User.register(*req_fields('username', 'password', 'email'))
-    return jsonify(auth_token=user.gen_auth_token())
+    return jsonify(authToken=user.gen_auth_token())
 
 
 @app.route('/api/claim', methods=['GET', 'POST'])
