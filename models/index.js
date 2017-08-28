@@ -27,7 +27,7 @@ function makeModel(name, makeFn) {
   return models[name];
 }
 
-makeModel('Blob', makeBlob);
+export const Blob = makeModel('Blob', makeBlob);
 export const Claim = makeModel('Claim', makeClaim);
 export const ClaimPoint = makeModel('ClaimPoint', makeClaimPoint);
 export const ClaimRev = makeModel('ClaimRev', makeClaimRev);
