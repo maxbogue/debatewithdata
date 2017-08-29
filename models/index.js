@@ -13,7 +13,7 @@ import makeSource from './source';
 import makeSourceRev from './source_rev';
 import makeUser from './user';
 
-const sequelize = new Sequelize(config.get('db'), {
+export const sequelize = new Sequelize(config.get('db'), {
   define: {
     underscored: true,
   },

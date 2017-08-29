@@ -12,6 +12,10 @@ export default function (sequelize, DataTypes) {
       allowNull: false,
       validate: { isUrl: true },
     },
+    ary: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     deleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
@@ -21,7 +25,7 @@ export default function (sequelize, DataTypes) {
   SourceRev.associate = function (models) {
     SourceRev.belongsTo(models.User, { as: 'author' });
     SourceRev.belongsTo(models.Source);
-    SourceRev.belongsTo(models.Blob, { as: 'text' });
+    SourceRev.belongsTo(models.Blob);
     SourceRev.belongsTo(models.SourceRev, {
       as: 'PrevRev',
       foreignKey: 'prev_rev_id',
