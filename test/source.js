@@ -7,7 +7,8 @@ chai.use(chaiAsPromised);
 const should = chai.should();
 
 const URL = 'https://debatewithdata.org';
-const DESC = 'an awesome website';
+const URL2 = 'https://dev.debatewithdata.org';
+const DESC = 'awesome website';
 const ARY = 1;
 
 const USERNAME = 'test';
@@ -33,6 +34,7 @@ describe('Source', function () {
       rev.blob.text.should.equal(DESC);
       rev.source_id.should.equal(sourceId);
       should.not.exist(rev.ary);
+      should.not.exist(rev.prev_rev_id);
     });
 
     it('happy case with ary', async function () {
@@ -45,6 +47,33 @@ describe('Source', function () {
       rev.blob.text.should.equal(DESC);
       rev.source_id.should.equal(sourceId);
       rev.ary.should.equal(ARY);
+    });
+  });
+
+  describe('.tryUpdate()', function () {
+    it('change', async function () {
+      let sourceId = await Source.makeNew(user, URL, DESC);
+      let source = await Source.findById(sourceId, {
+        include: { all: true, nested: true },
+      });
+      let firstRev = source.head_id;
+      await source.tryUpdate(user, URL2, DESC);
+
+      source = await Source.findById(sourceId, {
+        include: { all: true, nested: true },
+      });
+      source.head.url.should.equal(URL2);
+      source.head.prev_rev_id.should.equal(firstRev);
+    });
+
+    it('no change', async function () {
+      let sourceId = await Source.makeNew(user, URL, DESC);
+      let source = await Source.findById(sourceId, {
+        include: { all: true, nested: true },
+      });
+      let firstRev = source.head_id;
+      await source.tryUpdate(user, URL, DESC);
+      source.head_id.should.equal(firstRev);
     });
   });
 });

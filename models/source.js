@@ -30,6 +30,26 @@ export default function (sequelize, DataTypes) {
       await source.setHead(rev);
       return source.id;
     };
+
+    Source.prototype.tryUpdate =
+      async function (author, url, text, ary = null) {
+        if (url === this.head.url &&
+            text === this.head.blob.text &&
+            ary === this.head.ary) {
+          return;
+        }
+
+        let blob = await models.Blob.fromText(text);
+        let rev = await models.SourceRev.create({
+          url,
+          ary,
+          blob_hash: blob.hash,
+          author_id: author.id,
+          source_id: this.id,
+          prev_rev_id: this.head_id,
+        });
+        await this.setHead(rev);
+      };
   };
 
   return Source;
