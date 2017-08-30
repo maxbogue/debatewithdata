@@ -1,5 +1,7 @@
 import { genId } from './utils';
 
+const INCLUDE_ALL = { include: { all: true, nested: true } };
+
 export default function (sequelize, DataTypes) {
   const Source = sequelize.define('source', {
     id: {
@@ -31,9 +33,18 @@ export default function (sequelize, DataTypes) {
       return source.id;
     };
 
+    Source.prototype.checkLoaded = function (msg) {
+      if (!this.head || !this.head.deleted && !this.head.blob) {
+        throw Error(msg);
+      }
+    };
+
     Source.prototype.tryUpdate =
       async function (author, url, text, ary = null) {
-        if (url === this.head.url &&
+        this.checkLoaded('Must include all nested to update.');
+
+        if (!this.head.deleted &&
+            url === this.head.url &&
             text === this.head.blob.text &&
             ary === this.head.ary) {
           return;
@@ -49,7 +60,49 @@ export default function (sequelize, DataTypes) {
           prev_rev_id: this.head_id,
         });
         await this.setHead(rev);
+        await this.reload(INCLUDE_ALL);
       };
+
+    Source.prototype.tryDelete = async function (user) {
+      if (!this.head) {
+        throw Error('Must include all to delete.');
+      }
+
+      if (this.head.deleted) {
+        return;
+      }
+
+      let rev = await models.SourceRev.create({
+        deleted: true,
+        author_id: user.id,
+        source_id: this.id,
+        prev_rev_id: this.head_id,
+      });
+      await this.setHead(rev);
+      await this.reload(INCLUDE_ALL);
+    };
+
+    Source.prototype.toApiFormat = function () {
+      this.checkLoaded('Must include all nested for API format.');
+
+      if (this.head.deleted) {
+        return { deleted: true };
+      }
+
+      return {
+        url: this.head.url,
+        text: this.head.blob.text,
+        ary: this.head.ary,
+      };
+    };
+
+    Source.getForApi = async function (sourceId) {
+      let source = await Source.findById(sourceId, INCLUDE_ALL);
+      if (!source) {
+        throw Error('Source ID not found: ' + sourceId);
+      }
+      return source.toApiFormat();
+    };
   };
 
   return Source;

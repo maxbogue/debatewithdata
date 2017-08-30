@@ -9,16 +9,15 @@ export default function (sequelize, DataTypes) {
     },
     url: {
       type: DataTypes.TEXT,
-      allowNull: false,
       validate: { isUrl: true },
     },
     ary: {
       type: DataTypes.INTEGER,
-      allowNull: true,
     },
     deleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+      allowNull: false,
     },
   });
 
@@ -27,7 +26,7 @@ export default function (sequelize, DataTypes) {
     SourceRev.belongsTo(models.Source);
     SourceRev.belongsTo(models.Blob);
     SourceRev.belongsTo(models.SourceRev, {
-      as: 'PrevRev',
+      as: 'prev_rev',
       foreignKey: 'prev_rev_id',
     });
   };

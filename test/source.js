@@ -6,6 +6,8 @@ import { sequelize, Source, User } from '../models';
 chai.use(chaiAsPromised);
 const should = chai.should();
 
+const INCLUDE_ALL = { include: { all: true, nested: true } };
+
 const URL = 'https://debatewithdata.org';
 const URL2 = 'https://dev.debatewithdata.org';
 const DESC = 'awesome website';
@@ -24,11 +26,9 @@ describe('Source', function () {
   });
 
   describe('.makeNew()', function () {
-    it('happy case', async function () {
+    it('happy', async function () {
       let sourceId = await Source.makeNew(user, URL, DESC);
-      let source = await Source.findById(sourceId, {
-        include: { all: true, nested: true },
-      });
+      let source = await Source.findById(sourceId, INCLUDE_ALL);
       let rev = source.head;
       rev.author.id.should.equal(user.id);
       rev.blob.text.should.equal(DESC);
@@ -37,11 +37,9 @@ describe('Source', function () {
       should.not.exist(rev.prev_rev_id);
     });
 
-    it('happy case with ary', async function () {
+    it('happy with ary', async function () {
       let sourceId = await Source.makeNew(user, URL, DESC, ARY);
-      let source = await Source.findById(sourceId, {
-        include: { all: true, nested: true },
-      });
+      let source = await Source.findById(sourceId, INCLUDE_ALL);
       let rev = source.head;
       rev.author.id.should.equal(user.id);
       rev.blob.text.should.equal(DESC);
@@ -53,27 +51,69 @@ describe('Source', function () {
   describe('.tryUpdate()', function () {
     it('change', async function () {
       let sourceId = await Source.makeNew(user, URL, DESC);
-      let source = await Source.findById(sourceId, {
-        include: { all: true, nested: true },
-      });
-      let firstRev = source.head_id;
+      let source = await Source.findById(sourceId, INCLUDE_ALL);
+      let prevRevId = source.head_id;
       await source.tryUpdate(user, URL2, DESC);
 
-      source = await Source.findById(sourceId, {
-        include: { all: true, nested: true },
-      });
+      source = await Source.findById(sourceId, INCLUDE_ALL);
       source.head.url.should.equal(URL2);
-      source.head.prev_rev_id.should.equal(firstRev);
+      source.head.prev_rev_id.should.equal(prevRevId);
     });
 
     it('no change', async function () {
       let sourceId = await Source.makeNew(user, URL, DESC);
-      let source = await Source.findById(sourceId, {
-        include: { all: true, nested: true },
-      });
-      let firstRev = source.head_id;
+      let source = await Source.findById(sourceId, INCLUDE_ALL);
+      let prevRevId = source.head_id;
       await source.tryUpdate(user, URL, DESC);
-      source.head_id.should.equal(firstRev);
+      source.head_id.should.equal(prevRevId);
+    });
+  });
+
+  describe('.tryDelete()', function () {
+    it('change', async function () {
+      let sourceId = await Source.makeNew(user, URL, DESC);
+      let source = await Source.findById(sourceId, INCLUDE_ALL);
+      let prevRevId = source.head_id;
+      await source.tryDelete(user);
+
+      source = await Source.findById(sourceId, INCLUDE_ALL);
+      source.head.deleted.should.equal(true);
+      source.head.prev_rev_id.should.equal(prevRevId);
+    });
+
+    it('no change', async function () {
+      let sourceId = await Source.makeNew(user, URL, DESC);
+      let source = await Source.findById(sourceId, INCLUDE_ALL);
+      await source.tryDelete(user);
+      let prevRevId = source.head_id;
+      await source.tryDelete(user);
+      source.head_id.should.equal(prevRevId);
+    });
+  });
+
+  describe('.getForApi()', function () {
+    it('source exists', async function () {
+      let sourceId = await Source.makeNew(user, URL, DESC);
+      let sourceForApi = await Source.getForApi(sourceId);
+      sourceForApi.should.deep.equal({
+        url: URL,
+        text: DESC,
+        ary: null,
+      });
+    });
+
+    it('source does not exist', function () {
+      Source.getForApi('bad id').should.be.rejected;
+    });
+
+    it('source deleted', async function () {
+      let sourceId = await Source.makeNew(user, URL, DESC);
+      let source = await Source.findById(sourceId, INCLUDE_ALL);
+      await source.tryDelete(user);
+      let sourceForApi = await Source.getForApi(sourceId);
+      sourceForApi.should.deep.equal({
+        deleted: true,
+      });
     });
   });
 });
