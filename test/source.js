@@ -53,40 +53,40 @@ describe('Source', function () {
       let sourceId = await Source.makeNew(user, URL, DESC);
       let source = await Source.findById(sourceId, INCLUDE_ALL);
       let prevRevId = source.head_id;
-      await source.tryUpdate(user, URL2, DESC);
+      (await source.tryUpdate(user, URL2, DESC)).should.be.true;
 
       source = await Source.findById(sourceId, INCLUDE_ALL);
       source.head.url.should.equal(URL2);
       source.head.prev_rev_id.should.equal(prevRevId);
     });
 
-    it('no change', async function () {
+    it('no change no-op', async function () {
       let sourceId = await Source.makeNew(user, URL, DESC);
       let source = await Source.findById(sourceId, INCLUDE_ALL);
       let prevRevId = source.head_id;
-      await source.tryUpdate(user, URL, DESC);
+      (await source.tryUpdate(user, URL, DESC)).should.be.false;
       source.head_id.should.equal(prevRevId);
     });
   });
 
   describe('.tryDelete()', function () {
-    it('change', async function () {
+    it('normal delete', async function () {
       let sourceId = await Source.makeNew(user, URL, DESC);
       let source = await Source.findById(sourceId, INCLUDE_ALL);
       let prevRevId = source.head_id;
-      await source.tryDelete(user);
+      (await source.tryDelete(user)).should.be.true;
 
       source = await Source.findById(sourceId, INCLUDE_ALL);
       source.head.deleted.should.equal(true);
       source.head.prev_rev_id.should.equal(prevRevId);
     });
 
-    it('no change', async function () {
+    it('already deleted no-op', async function () {
       let sourceId = await Source.makeNew(user, URL, DESC);
       let source = await Source.findById(sourceId, INCLUDE_ALL);
-      await source.tryDelete(user);
+      (await source.tryDelete(user)).should.be.true;
       let prevRevId = source.head_id;
-      await source.tryDelete(user);
+      (await source.tryDelete(user)).should.be.false;
       source.head_id.should.equal(prevRevId);
     });
   });
@@ -109,10 +109,45 @@ describe('Source', function () {
     it('source deleted', async function () {
       let sourceId = await Source.makeNew(user, URL, DESC);
       let source = await Source.findById(sourceId, INCLUDE_ALL);
-      await source.tryDelete(user);
+      (await source.tryDelete(user)).should.be.true;
       let sourceForApi = await Source.getForApi(sourceId);
       sourceForApi.should.deep.equal({
         deleted: true,
+      });
+    });
+  });
+
+  describe('.getAllForApi()', function () {
+    it('two sources', async function () {
+      let id1 = await Source.makeNew(user, URL, DESC);
+      let id2 = await Source.makeNew(user, URL2, DESC, ARY);
+      let sourcesForApi = await Source.getAllForApi();
+      sourcesForApi.should.deep.equal({
+        [id1]: {
+          url: URL,
+          text: DESC,
+          ary: null,
+        },
+        [id2]: {
+          url: URL2,
+          text: DESC,
+          ary: ARY,
+        },
+      });
+    });
+
+    it('excludes deleted', async function () {
+      let id1 = await Source.makeNew(user, URL, DESC);
+      let id2 = await Source.makeNew(user, URL2, DESC, ARY);
+      let source2 = await Source.findById(id2, INCLUDE_ALL);
+      (await source2.tryDelete(user)).should.be.true;
+      let sourcesForApi = await Source.getAllForApi();
+      sourcesForApi.should.deep.equal({
+        [id1]: {
+          url: URL,
+          text: DESC,
+          ary: null,
+        },
       });
     });
   });

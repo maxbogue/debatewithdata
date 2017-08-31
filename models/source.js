@@ -47,7 +47,7 @@ export default function (sequelize, DataTypes) {
             url === this.head.url &&
             text === this.head.blob.text &&
             ary === this.head.ary) {
-          return;
+          return false;
         }
 
         let blob = await models.Blob.fromText(text);
@@ -61,6 +61,7 @@ export default function (sequelize, DataTypes) {
         });
         await this.setHead(rev);
         await this.reload(INCLUDE_ALL);
+        return true;
       };
 
     Source.prototype.tryDelete = async function (user) {
@@ -69,7 +70,7 @@ export default function (sequelize, DataTypes) {
       }
 
       if (this.head.deleted) {
-        return;
+        return false;
       }
 
       let rev = await models.SourceRev.create({
@@ -80,6 +81,7 @@ export default function (sequelize, DataTypes) {
       });
       await this.setHead(rev);
       await this.reload(INCLUDE_ALL);
+      return true;
     };
 
     Source.prototype.toApiFormat = function () {
@@ -103,8 +105,18 @@ export default function (sequelize, DataTypes) {
       }
       return source.toApiFormat();
     };
+
+    Source.getAllForApi = async function () {
+      let sources = await Source.findAll(INCLUDE_ALL);
+      let ret = {};
+      for (let source of sources) {
+        if (!source.head.deleted) {
+          ret[source.id] = source.toApiFormat();
+        }
+      }
+      return ret;
+    };
   };
 
   return Source;
 }
-
