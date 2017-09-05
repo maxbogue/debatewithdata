@@ -12,15 +12,17 @@ export default function (sequelize, DataTypes) {
   PointRev.associate = function (models) {
     PointRev.belongsTo(models.User, { as: 'author' });
     PointRev.belongsTo(models.Point);
-    PointRev.belongsTo(models.Blob, { as: 'text' });
+    PointRev.belongsTo(models.Blob);
     PointRev.belongsTo(models.PointRev, {
-      as: 'PrevRev',
-      foreignKey: 'prev_rev_id',
+      as: 'prevRev',
     });
-    PointRev.belongsToMany(models.ClaimRev, { through: models.ClaimPoint });
+    PointRev.belongsToMany(models.ClaimRev, {
+      through: models.ClaimPoint,
+      as: 'claimRevs',
+    });
     PointRev.belongsToMany(models.PointRev, {
       through: models.PointPoint,
-      as: 'SubpointRev',
+      as: 'subpointRevs',
     });
   };
 

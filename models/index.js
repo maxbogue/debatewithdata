@@ -16,6 +16,7 @@ import makeUser from './user';
 export const sequelize = new Sequelize(config.get('db'), {
   define: {
     underscored: true,
+    underscoredAll: true,
   },
   logging: null,
 });
