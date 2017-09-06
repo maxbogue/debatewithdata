@@ -21,27 +21,35 @@ export default function (sequelize, DataTypes) {
       as: 'pointRevs',
     });
 
-    Point.makeNew = async function (user, data) {
-      let point = await Point.create();
-      let blob = await models.Blob.fromText(data.text);
+    async function makeNewInner(user, data, transaction) {
+      let point = await Point.create({}, { transaction });
+      let blob = await models.Blob.fromText(data.text, transaction);
       let rev = await models.PointRev.create({
         blob_hash: blob.hash,
         author_id: user.id,
         point_id: point.id,
-      });
+      }, { transaction });
       if (data.points) {
         for (let i = 0; i < 2; i++) {
           for (let subpoint of data.points[i]) {
-            let subpointRev = await Point.makeNew(user, subpoint);
+            let subpointRev = await makeNewInner(user, subpoint, transaction);
             let p = rev.addSubpointRev(subpointRev, {
               through: { isFor: i === 0 },
+              transaction,
             });
             await p;
           }
         }
       }
 
-      await point.setHead(rev);
+      await point.setHead(rev, { transaction });
+      return rev;
+    }
+
+    Point.makeNew = async function (user, data) {
+      let rev = await sequelize.transaction(function(transaction) {
+        return makeNewInner(user, data, transaction);
+      });
       await rev.reload(INCLUDE_ALL);
       return rev;
     };

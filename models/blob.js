@@ -18,11 +18,12 @@ export default function (sequelize, DataTypes) {
     },
   });
 
-  Blob.fromText = async function (text) {
+  Blob.fromText = async function (text, transaction) {
     let hash = hashText(text);
     let [blob] = await Blob.findOrCreate({
       where: { hash },
       defaults: { text },
+      transaction,
     });
     return blob;
   };
