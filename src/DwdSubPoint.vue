@@ -87,4 +87,7 @@ export default {
 .t3.against:before {
   content: "\e082";
 }
+.t3 > .controls {
+  margin-left: 4px;
+}
 </style>

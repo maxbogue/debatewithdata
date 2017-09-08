@@ -1,27 +1,29 @@
 <template>
 <li class="t3 flex-row" :class="[side === 0 ? 'for' : 'against']">
-  <textarea rows="1"
-            autocomplete="off"
-            placeholder="New sub-claim or 12-letter ID"
-            ref="input"
-            v-model="input"
-            v-auto-resize
-            :class="[inputClass]" />
-  <span v-if="canDelete"
-        class="delete click glyphicon glyphicon-trash"
-        aria-hidden="true"
-        @click="$emit('delete')"></span>
-  <router-link v-if="claim"
-               class="source-text"
-               :to="claimUrl(point.claimId) + '/edit'">
-    {{ claim.text }}
-  </router-link>
-  <template v-else-if="source">
-    <router-link :to="sourceUrl(point.sourceId) + '/edit'"
+  <div class="flex-fill">
+    <textarea rows="1"
+              autocomplete="off"
+              placeholder="New sub-claim or 12-letter ID"
+              ref="input"
+              v-model="input"
+              v-auto-resize
+              :class="[inputClass]" />
+    <router-link v-if="claim"
+                 class="source-text"
+                 :to="claimUrl(point.claimId) + '/edit'">
+      {{ claim.text }}
+    </router-link>
+    <router-link v-else-if="source"
+                 :to="sourceUrl(point.sourceId) + '/edit'"
                  class="source-text">{{ source.text }}</router-link>
-    <a :href="source.url" class="source-url">{{ source.url }}</a>
-  </template>
-  <div v-else-if="isId">No claim or source with that ID found.</div>
+    <div v-else-if="isId">No claim or source with that ID found.</div>
+  </div>
+  <div class="controls">
+    <span v-if="canDelete"
+          class="delete click glyphicon glyphicon-trash"
+          aria-hidden="true"
+          @click="$emit('delete')"></span>
+  </div>
 </li>
 </template>
 

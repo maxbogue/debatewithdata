@@ -9,9 +9,6 @@
 .content > :not(:first-child) {
   margin-top: 8px;
 }
-.controls {
-  margin-left: 10px;
-}
 .controls > * {
   display: block;
 }
