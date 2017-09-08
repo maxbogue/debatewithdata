@@ -18,7 +18,9 @@ export default function (sequelize, DataTypes) {
       constraints: false,
     });
     Source.hasMany(models.SourceRev);
+  };
 
+  Source.postAssociate = function (models) {
     Source.makeNew = async function (author, url, text, ary = null) {
       let source = await Source.create();
       let blob = await models.Blob.fromText(text);

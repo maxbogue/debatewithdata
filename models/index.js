@@ -44,3 +44,9 @@ forOwn(models, (model) => {
     model.associate(models);
   }
 });
+
+forOwn(models, (model) => {
+  if ('postAssociate' in model) {
+    model.postAssociate(models);
+  }
+});

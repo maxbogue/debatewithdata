@@ -20,7 +20,9 @@ export default function (sequelize, DataTypes) {
     Point.hasMany(models.PointRev, {
       as: 'pointRevs',
     });
+  };
 
+  Point.postAssociate = function (models) {
     // Make a new 'claim' point, which links to a claim object.
     function makeClaimRev(revParams, { claimId }, transaction) {
       if (!claimId) {
@@ -58,7 +60,7 @@ export default function (sequelize, DataTypes) {
 
       for (let i = 0; i < 2; i++) {
         for (let subpoint of points[i]) {
-          let subpointRev = await makeRev(revParams, subpoint, transaction);
+          let subpointRev = await makePoint(revParams, subpoint, transaction);
           await pointRev.addSubpointRev(subpointRev, {
             through: { isFor: i === 0 },
             transaction,
@@ -98,14 +100,21 @@ export default function (sequelize, DataTypes) {
       }
     }
 
+    // revParams must at least include author_id, and point_id will be
+    // overwritten if provided.
+    async function makePoint(revParams, data, transaction) {
+      const point = await Point.create({}, { transaction });
+      const pointRev = await makeRev({
+        ...revParams,
+        point_id: point.id,
+      }, data, transaction);
+      await point.setHead(pointRev, { transaction });
+      return pointRev;
+    }
+
     Point.apiCreate = async function (user, data) {
-      let pointRev = await sequelize.transaction(async function(transaction) {
-        let point = await Point.create({}, { transaction });
-        let revParams = {
-          author_id: user.id,
-          point_id: point.id,
-        };
-        return await makeRev(revParams, data, transaction);
+      let pointRev = await sequelize.transaction(function(transaction) {
+        return makePoint({ author_id: user.id }, data, transaction);
       });
       await pointRev.reload(INCLUDE_ALL);
       return pointRev;

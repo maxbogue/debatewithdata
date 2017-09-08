@@ -33,6 +33,8 @@ describe('Point', function () {
       pointRev.author.id.should.equal(user.id);
       pointRev.blob.text.should.equal(FOO);
       should.equal(pointRev.prev_rev_id, null);
+      pointRev.point.head_id.should.equal(pointRev.id);
+      pointRev.point_id.should.exist;
     });
 
     it('subclaim with for subpoint', async function () {
@@ -47,12 +49,14 @@ describe('Point', function () {
       pointRev.author_id.should.equal(user.id);
       pointRev.blob.text.should.equal(FOO);
       should.equal(pointRev.prev_rev_id, null);
+      pointRev.point_id.should.exist;
 
       pointRev.subpointRevs.length.should.equal(1);
       let subpointRev = pointRev.subpointRevs[0];
       subpointRev.author.id.should.equal(user.id);
       subpointRev.blob.text.should.equal(BAR);
       subpointRev.pointPoint.isFor.should.be.true;
+      subpointRev.point_id.should.not.equal(pointRev.point_id);
     });
 
     it('subclaim with against subpoint', async function () {
@@ -85,6 +89,5 @@ describe('Point', function () {
       pointRev.source_id.should.equal(sourceId);
       should.equal(pointRev.prev_rev_id, null);
     });
-
   });
 });

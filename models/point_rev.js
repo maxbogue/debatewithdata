@@ -22,7 +22,7 @@ export default function (sequelize, DataTypes) {
       through: models.ClaimPoint,
       as: 'claimRevs',
     });
-    PointRev.belongsToMany(models.PointRev, {
+    PointRev.Subpoints = PointRev.belongsToMany(models.PointRev, {
       through: models.PointPoint,
       as: 'subpointRevs',
     });
