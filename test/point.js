@@ -1,10 +1,13 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { sequelize, Point, User } from '../models';
+import { sequelize, Point, Source, User } from '../models';
 
 chai.use(chaiAsPromised);
 const should = chai.should();
+
+const URL = 'https://debatewithdata.org';
+const DESC = 'awesome website';
 
 const FOO = 'foo';
 const BAR = 'bar';
@@ -22,8 +25,9 @@ describe('Point', function () {
   });
 
   describe('.makeNew()', function () {
-    it('basic', async function () {
+    it('text', async function () {
       let pointRev = await Point.makeNew(user, {
+        type: 'text',
         text: FOO,
       });
       pointRev.author.id.should.equal(user.id);
@@ -31,12 +35,16 @@ describe('Point', function () {
       should.equal(pointRev.prev_rev_id, null);
     });
 
-    it('with for subpoint', async function () {
+    it('subclaim with for subpoint', async function () {
       let pointRev = await Point.makeNew(user, {
+        type: 'subclaim',
         text: FOO,
-        points: [[{ text: BAR }], []],
+        points: [[{
+          type: 'text',
+          text: BAR,
+        }], []],
       });
-      pointRev.author.id.should.equal(user.id);
+      pointRev.author_id.should.equal(user.id);
       pointRev.blob.text.should.equal(FOO);
       should.equal(pointRev.prev_rev_id, null);
 
@@ -47,10 +55,14 @@ describe('Point', function () {
       subpointRev.pointPoint.isFor.should.be.true;
     });
 
-    it('with against subpoint', async function () {
+    it('subclaim with against subpoint', async function () {
       let pointRev = await Point.makeNew(user, {
+        type: 'subclaim',
         text: FOO,
-        points: [[], [{ text: BAR }]],
+        points: [[], [{
+          type: 'text',
+          text: BAR,
+        }]],
       });
       pointRev.author.id.should.equal(user.id);
       pointRev.blob.text.should.equal(FOO);
@@ -62,5 +74,17 @@ describe('Point', function () {
       subpointRev.blob.text.should.equal(BAR);
       subpointRev.pointPoint.isFor.should.be.false;
     });
+
+    it('source link', async function () {
+      let sourceId = await Source.makeNew(user, URL, DESC);
+      let pointRev = await Point.makeNew(user, {
+        type: 'source',
+        sourceId,
+      });
+      pointRev.author_id.should.equal(user.id);
+      pointRev.source_id.should.equal(sourceId);
+      should.equal(pointRev.prev_rev_id, null);
+    });
+
   });
 });

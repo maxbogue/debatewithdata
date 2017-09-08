@@ -43,7 +43,6 @@
         "no-multi-spaces": ["error"],
         "no-sequences": ["error"],
 
-        "no-use-before-define": ["error"],
         "no-shadow": ["error"],
 
         "array-bracket-spacing": ["error", "never"],

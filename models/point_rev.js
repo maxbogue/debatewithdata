@@ -13,6 +13,8 @@ export default function (sequelize, DataTypes) {
     PointRev.belongsTo(models.User, { as: 'author' });
     PointRev.belongsTo(models.Point);
     PointRev.belongsTo(models.Blob);
+    PointRev.belongsTo(models.Claim);
+    PointRev.belongsTo(models.Source);
     PointRev.belongsTo(models.PointRev, {
       as: 'prevRev',
     });
