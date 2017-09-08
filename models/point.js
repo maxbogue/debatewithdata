@@ -22,37 +22,31 @@ export default function (sequelize, DataTypes) {
     });
 
     // Make a new 'claim' point, which links to a claim object.
-    async function makeNewClaimLink(user, { claimId }, transaction) {
+    function makeClaimRev(revParams, { claimId }, transaction) {
       if (!claimId) {
         throw new Error('Missing claimId.');
       }
-      let point = await Point.create({}, { transaction });
-      return await models.PointRev.create({
-        author_id: user.id,
-        point_id: point.id,
+      return models.PointRev.create({
+        ...revParams,
         claim_id: claimId,
       }, { transaction });
     }
 
     // Make a new 'source' point, which links to a source object.
-    async function makeNewSourceLink(user, { sourceId }, transaction) {
+    function makeSourceRev(revParams, { sourceId }, transaction) {
       if (!sourceId) {
         throw new Error('Missing sourceId.');
       }
-      let point = await Point.create({}, { transaction });
-      return await models.PointRev.create({
-        author_id: user.id,
-        point_id: point.id,
+      return models.PointRev.create({
+        ...revParams,
         source_id: sourceId,
       }, { transaction });
     }
 
     // Make a new 'subclaim' point, which can have subpoints.
-    async function makeNewSubclaim(user, { text, points }, transaction) {
-      let point = await Point.create({}, { transaction });
+    async function makeSubclaimRev(revParams, { text, points }, transaction) {
       let pointRev = await models.PointRev.create({
-        author_id: user.id,
-        point_id: point.id,
+        ...revParams,
         blob: {
           hash: models.Blob.hashText(text),
           text,
@@ -64,7 +58,7 @@ export default function (sequelize, DataTypes) {
 
       for (let i = 0; i < 2; i++) {
         for (let subpoint of points[i]) {
-          let subpointRev = await makeNewInner(user, subpoint, transaction);
+          let subpointRev = await makeRev(revParams, subpoint, transaction);
           await pointRev.addSubpointRev(subpointRev, {
             through: { isFor: i === 0 },
             transaction,
@@ -75,11 +69,9 @@ export default function (sequelize, DataTypes) {
     }
 
     // Make a new 'text' point.
-    async function makeNewText(user, { text }, transaction) {
-      let point = await Point.create({}, { transaction });
-      let pointRev = await models.PointRev.create({
-        author_id: user.id,
-        point_id: point.id,
+    function makeTextRev(revParams, { text }, transaction) {
+      return models.PointRev.create({
+        ...revParams,
         blob: {
           hash: models.Blob.hashText(text),
           text,
@@ -88,28 +80,32 @@ export default function (sequelize, DataTypes) {
         transaction,
         include: [models.Blob],
       });
-      return pointRev;
     }
 
     // Dispatches point creation based on type.
-    function makeNewInner(user, data, transaction) {
+    function makeRev(revParams, data, transaction) {
       switch (data.type) {
       case 'claim':
-        return makeNewClaimLink(user, data, transaction);
+        return makeClaimRev(revParams, data, transaction);
       case 'source':
-        return makeNewSourceLink(user, data, transaction);
+        return makeSourceRev(revParams, data, transaction);
       case 'subclaim':
-        return makeNewSubclaim(user, data, transaction);
+        return makeSubclaimRev(revParams, data, transaction);
       case 'text':
-        return makeNewText(user, data, transaction);
+        return makeTextRev(revParams, data, transaction);
       default:
         throw new Error('Bad point type: ' + data.type);
       }
     }
 
-    Point.makeNew = async function (user, data) {
-      let pointRev = await sequelize.transaction(function(transaction) {
-        return makeNewInner(user, data, transaction);
+    Point.apiCreate = async function (user, data) {
+      let pointRev = await sequelize.transaction(async function(transaction) {
+        let point = await Point.create({}, { transaction });
+        let revParams = {
+          author_id: user.id,
+          point_id: point.id,
+        };
+        return await makeRev(revParams, data, transaction);
       });
       await pointRev.reload(INCLUDE_ALL);
       return pointRev;

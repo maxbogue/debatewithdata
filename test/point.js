@@ -24,9 +24,9 @@ describe('Point', function () {
     user = await User.register(USERNAME, PASSWORD, EMAIL);
   });
 
-  describe('.makeNew()', function () {
+  describe('.apiCreate()', function () {
     it('text', async function () {
-      let pointRev = await Point.makeNew(user, {
+      let pointRev = await Point.apiCreate(user, {
         type: 'text',
         text: FOO,
       });
@@ -36,7 +36,7 @@ describe('Point', function () {
     });
 
     it('subclaim with for subpoint', async function () {
-      let pointRev = await Point.makeNew(user, {
+      let pointRev = await Point.apiCreate(user, {
         type: 'subclaim',
         text: FOO,
         points: [[{
@@ -56,7 +56,7 @@ describe('Point', function () {
     });
 
     it('subclaim with against subpoint', async function () {
-      let pointRev = await Point.makeNew(user, {
+      let pointRev = await Point.apiCreate(user, {
         type: 'subclaim',
         text: FOO,
         points: [[], [{
@@ -77,7 +77,7 @@ describe('Point', function () {
 
     it('source link', async function () {
       let sourceId = await Source.makeNew(user, URL, DESC);
-      let pointRev = await Point.makeNew(user, {
+      let pointRev = await Point.apiCreate(user, {
         type: 'source',
         sourceId,
       });
