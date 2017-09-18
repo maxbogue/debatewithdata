@@ -1,7 +1,5 @@
 import { genId } from './utils';
 
-const INCLUDE_ALL = { include: { all: true, nested: true } };
-
 export default function (sequelize, DataTypes) {
   const Point = sequelize.define('point', {
     id: {
@@ -23,8 +21,19 @@ export default function (sequelize, DataTypes) {
   };
 
   Point.postAssociate = function (models) {
-    // Make a new 'claim' point, which links to a claim object.
-    function makeClaimRev(revParams, { claimId }, transaction) {
+    // Include directive that gets point text and subpoints with text.
+    Point.INCLUDE_SUBPOINTS = {
+      include: [
+        models.Blob,
+        {
+          association: models.PointRev.Subpoints,
+          include: [models.Blob],
+        },
+      ],
+    };
+
+    // Create a new 'claim' point, which links to a claim object.
+    function createClaimRev(revParams, { claimId }, transaction) {
       if (!claimId) {
         throw new Error('Missing claimId.');
       }
@@ -34,8 +43,8 @@ export default function (sequelize, DataTypes) {
       }, { transaction });
     }
 
-    // Make a new 'source' point, which links to a source object.
-    function makeSourceRev(revParams, { sourceId }, transaction) {
+    // Create a new 'source' point, which links to a source object.
+    function createSourceRev(revParams, { sourceId }, transaction) {
       if (!sourceId) {
         throw new Error('Missing sourceId.');
       }
@@ -45,14 +54,12 @@ export default function (sequelize, DataTypes) {
       }, { transaction });
     }
 
-    // Make a new 'subclaim' point, which can have subpoints.
-    async function makeSubclaimRev(revParams, { text, points }, transaction) {
+    // Create a new 'subclaim' point, which can have subpoints.
+    async function createSubclaimRev(revParams, { text, points }, transaction) {
+      let blob = await models.Blob.fromText(text, transaction);
       let pointRev = await models.PointRev.create({
         ...revParams,
-        blob: {
-          hash: models.Blob.hashText(text),
-          text,
-        },
+        blob_hash: blob.hash,
       }, {
         transaction,
         include: [models.Blob],
@@ -60,7 +67,27 @@ export default function (sequelize, DataTypes) {
 
       for (let i = 0; i < 2; i++) {
         for (let subpoint of points[i]) {
-          let subpointRev = await makePoint(revParams, subpoint, transaction);
+          let subpointRev;
+          if (revParams.prev_rev_id && subpoint.rev) {
+            // This is an update operation reusing a point revision.
+            subpointRev = await models.PointRev.findById(subpoint.rev);
+          } else if (revParams.prev_rev_id && subpoint.id) {
+            // This is an update operation updating a subpoint.
+            let subpointPoint = await Point.findById(subpoint.id);
+            if (!subpointPoint) {
+              throw new Error('Bad subpoint ID: ' + subpoint.id);
+            }
+            subpointRev = await createRev({
+              author_id: revParams.author_id,
+              point_id: subpoint.id,
+              prev_rev_id: subpointPoint.head_id,
+            }, subpoint, transaction);
+          } else {
+            // New subpoint.
+            subpointRev = await createPoint({
+              author_id: revParams.author_id,
+            }, subpoint, transaction);
+          }
           await pointRev.addSubpointRev(subpointRev, {
             through: { isFor: i === 0 },
             transaction,
@@ -70,31 +97,26 @@ export default function (sequelize, DataTypes) {
       return pointRev;
     }
 
-    // Make a new 'text' point.
-    function makeTextRev(revParams, { text }, transaction) {
+    // Create a new 'text' point.
+    async function createTextRev(revParams, { text }, transaction) {
+      let blob = await models.Blob.fromText(text, transaction);
       return models.PointRev.create({
         ...revParams,
-        blob: {
-          hash: models.Blob.hashText(text),
-          text,
-        },
-      }, {
-        transaction,
-        include: [models.Blob],
-      });
+        blob_hash: blob.hash,
+      }, { transaction });
     }
 
     // Dispatches point creation based on type.
-    function makeRev(revParams, data, transaction) {
+    function createRev(revParams, data, transaction) {
       switch (data.type) {
       case 'claim':
-        return makeClaimRev(revParams, data, transaction);
+        return createClaimRev(revParams, data, transaction);
       case 'source':
-        return makeSourceRev(revParams, data, transaction);
+        return createSourceRev(revParams, data, transaction);
       case 'subclaim':
-        return makeSubclaimRev(revParams, data, transaction);
+        return createSubclaimRev(revParams, data, transaction);
       case 'text':
-        return makeTextRev(revParams, data, transaction);
+        return createTextRev(revParams, data, transaction);
       default:
         throw new Error('Bad point type: ' + data.type);
       }
@@ -102,9 +124,9 @@ export default function (sequelize, DataTypes) {
 
     // revParams must at least include author_id, and point_id will be
     // overwritten if provided.
-    async function makePoint(revParams, data, transaction) {
+    async function createPoint(revParams, data, transaction) {
       const point = await Point.create({}, { transaction });
-      const pointRev = await makeRev({
+      const pointRev = await createRev({
         ...revParams,
         point_id: point.id,
       }, data, transaction);
@@ -114,9 +136,27 @@ export default function (sequelize, DataTypes) {
 
     Point.apiCreate = async function (user, data) {
       let pointRev = await sequelize.transaction(function(transaction) {
-        return makePoint({ author_id: user.id }, data, transaction);
+        return createPoint({ author_id: user.id }, data, transaction);
       });
-      await pointRev.reload(INCLUDE_ALL);
+      await pointRev.reload(Point.INCLUDE_SUBPOINTS);
+      return pointRev;
+    };
+
+    Point.apiUpdate = async function (pointId, user, data) {
+      const point = await Point.findById(pointId);
+      if (!point) {
+        throw new Error('Point not found for id ' + pointId);
+      }
+      let pointRev = await sequelize.transaction(async function(transaction) {
+        let rev = await createRev({
+          author_id: user.id,
+          point_id: point.id,
+          prev_rev_id: point.head_id,
+        }, data, transaction);
+        await point.setHead(rev, { transaction });
+        return rev;
+      });
+      await pointRev.reload(Point.INCLUDE_SUBPOINTS);
       return pointRev;
     };
   };
