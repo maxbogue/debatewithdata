@@ -31,9 +31,10 @@ describe('Point', function () {
         type: 'text',
         text: FOO,
       });
-      pointRev.author_id.should.equal(user.id);
+      await pointRev.reload(Point.INCLUDE_SUBPOINTS);
+      pointRev.user_id.should.equal(user.id);
       pointRev.blob.text.should.equal(FOO);
-      should.equal(pointRev.prev_rev_id, null);
+      should.equal(pointRev.parent_id, null);
       pointRev.point_id.should.exist;
 
       let point = await Point.findById(pointRev.point_id);
@@ -49,14 +50,15 @@ describe('Point', function () {
           text: BAR,
         }], []],
       });
-      pointRev.author_id.should.equal(user.id);
+      await pointRev.reload(Point.INCLUDE_SUBPOINTS);
+      pointRev.user_id.should.equal(user.id);
       pointRev.blob.text.should.equal(FOO);
-      should.equal(pointRev.prev_rev_id, null);
+      should.equal(pointRev.parent_id, null);
       pointRev.point_id.should.exist;
 
       pointRev.subpointRevs.length.should.equal(1);
       let subpointRev = pointRev.subpointRevs[0];
-      subpointRev.author_id.should.equal(user.id);
+      subpointRev.user_id.should.equal(user.id);
       subpointRev.blob.text.should.equal(BAR);
       subpointRev.pointPoint.isFor.should.be.true;
       subpointRev.point_id.should.not.equal(pointRev.point_id);
@@ -71,13 +73,14 @@ describe('Point', function () {
           text: BAR,
         }]],
       });
-      pointRev.author_id.should.equal(user.id);
+      await pointRev.reload(Point.INCLUDE_SUBPOINTS);
+      pointRev.user_id.should.equal(user.id);
       pointRev.blob.text.should.equal(FOO);
-      should.equal(pointRev.prev_rev_id, null);
+      should.equal(pointRev.parent_id, null);
 
       pointRev.subpointRevs.length.should.equal(1);
       let subpointRev = pointRev.subpointRevs[0];
-      subpointRev.author_id.should.equal(user.id);
+      subpointRev.user_id.should.equal(user.id);
       subpointRev.blob.text.should.equal(BAR);
       subpointRev.pointPoint.isFor.should.be.false;
     });
@@ -88,9 +91,9 @@ describe('Point', function () {
         type: 'source',
         sourceId,
       });
-      pointRev.author_id.should.equal(user.id);
+      pointRev.user_id.should.equal(user.id);
       pointRev.source_id.should.equal(sourceId);
-      should.equal(pointRev.prev_rev_id, null);
+      should.equal(pointRev.parent_id, null);
     });
   });
 
@@ -112,16 +115,17 @@ describe('Point', function () {
           text: FOO,
         }], []],
       });
-      r2.author_id.should.equal(user.id);
+      await r2.reload(Point.INCLUDE_SUBPOINTS);
+      r2.user_id.should.equal(user.id);
       r2.point_id.should.equal(r1.point_id);
       r2.blob.text.should.equal(BAR);
-      r2.prev_rev_id.should.equal(r1.id);
+      r2.parent_id.should.equal(r1.id);
       r2.subpointRevs.length.should.equal(1);
       let r2a = r2.subpointRevs[0];
-      r2a.author_id.should.equal(user.id);
+      r2a.user_id.should.equal(user.id);
       r2a.point_id.should.not.equal(r2.point_id);
       r2a.blob.text.should.equal(FOO);
-      should.equal(r2a.prev_rev_id, null);
+      should.equal(r2a.parent_id, null);
 
       point = await Point.findById(r1.point_id);
       point.head_id.should.equal(r2.id);
@@ -134,10 +138,11 @@ describe('Point', function () {
           rev: r2a.id,
         }], []],
       });
-      r3.author_id.should.equal(user.id);
+      await r3.reload(Point.INCLUDE_SUBPOINTS);
+      r3.user_id.should.equal(user.id);
       r3.point_id.should.equal(r1.point_id);
       r3.blob.text.should.equal(BAZ);
-      r3.prev_rev_id.should.equal(r2.id);
+      r3.parent_id.should.equal(r2.id);
       r3.subpointRevs.length.should.equal(1);
       let r3a = r3.subpointRevs[0];
       r3a.id.should.equal(r2a.id);
@@ -154,16 +159,17 @@ describe('Point', function () {
           text: BAR,
         }], []],
       });
-      r4.author_id.should.equal(user.id);
+      await r4.reload(Point.INCLUDE_SUBPOINTS);
+      r4.user_id.should.equal(user.id);
       r4.point_id.should.equal(r1.point_id);
       r4.blob.text.should.equal(BAZ);
-      r4.prev_rev_id.should.equal(r3.id);
+      r4.parent_id.should.equal(r3.id);
       r4.subpointRevs.length.should.equal(1);
       let r4a = r4.subpointRevs[0];
-      r4a.author_id.should.equal(user.id);
+      r4a.user_id.should.equal(user.id);
       r4a.point_id.should.equal(r2a.point_id);
       r4a.blob.text.should.equal(BAR);
-      r4a.prev_rev_id.should.equal(r2a.id);
+      r4a.parent_id.should.equal(r2a.id);
 
       point = await Point.findById(r1.point_id);
       point.head_id.should.equal(r4.id);
