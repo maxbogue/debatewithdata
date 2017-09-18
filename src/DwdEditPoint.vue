@@ -84,6 +84,8 @@ export default {
     input2: '',
     subpoints: emptyPoints(),
     flag: '',
+    // Flag to prevent overwriting original without a change.
+    initialized: false,
   }),
   computed: {
     isId: function () {
@@ -197,14 +199,22 @@ export default {
       this.subpoints[1].push(emptyPoint());
     }
   },
+  updated: function () {
+    // If this is done in mounted, the watch functions still gets called.
+    this.initialized = true;
+  },
   watch: {
     input1: function () {
-      this.updatePoint();
-      this.setError();
+      if (this.initialized) {
+        this.updatePoint();
+        this.setError();
+      }
     },
     input2: function () {
-      this.updatePoint();
-      this.setError();
+      if (this.initialized) {
+        this.updatePoint();
+        this.setError();
+      }
     },
   },
 };

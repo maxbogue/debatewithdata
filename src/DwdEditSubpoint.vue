@@ -36,6 +36,8 @@ export default {
   props: ['point', 'side', 'canDelete'],
   data: () => ({
     input: '',
+    // Flag to prevent overwriting original without a change.
+    initialized: false,
   }),
   computed: {
     isId: function () {
@@ -95,10 +97,16 @@ export default {
   mounted: function () {
     this.input = pointToInput(this.point);
   },
+  updated: function () {
+    // If this is done in mounted, the watch function still gets called.
+    this.initialized = true;
+  },
   watch: {
     input: function () {
-      this.updatePoint();
-      this.setError();
+      if (this.initialized) {
+        this.updatePoint();
+        this.setError();
+      }
     },
   },
 };

@@ -108,6 +108,9 @@ def save_point(point):
 
 def load_point_rev(rev_id):
     point = POINT_REVS[rev_id].copy()
+    if 'parent' in point:
+        del point['parent']
+    point['rev'] = rev_id
     if 'text' in point:
         load_text(point)
     if 'points' in point:
@@ -149,6 +152,9 @@ def load_claim(id):
         raise ApiError('Claim not found.', 404)
     rev_id = CLAIMS[id]['head']
     claim = CLAIM_REVS[rev_id].copy()
+    if 'parent' in claim:
+        del claim['parent']
+    claim['rev'] = rev_id
     if 'text' in claim:
         load_text(claim)
     if 'points' in claim:
