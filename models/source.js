@@ -21,7 +21,7 @@ export default function (sequelize, DataTypes) {
   };
 
   Source.postAssociate = function (models) {
-    Source.makeNew = async function (author, url, text, ary = null) {
+    Source.apiCreate = async function (author, url, text, ary = null) {
       let source = await Source.create();
       let blob = await models.Blob.fromText(text);
       let rev = await models.SourceRev.create({
@@ -41,7 +41,7 @@ export default function (sequelize, DataTypes) {
       }
     };
 
-    Source.prototype.tryUpdate =
+    Source.prototype.apiUpdate =
       async function (author, url, text, ary = null) {
         this.checkLoaded('Must include all nested to update.');
 
@@ -66,7 +66,7 @@ export default function (sequelize, DataTypes) {
         return true;
       };
 
-    Source.prototype.tryDelete = async function (user) {
+    Source.prototype.apiDelete = async function (user) {
       if (!this.head) {
         throw Error('Must include all to delete.');
       }
