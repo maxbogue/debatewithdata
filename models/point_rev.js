@@ -24,7 +24,8 @@ export default function (sequelize, DataTypes) {
     });
     PointRev.Subpoints = PointRev.belongsToMany(PointRev, {
       through: models.PointPoint,
-      as: 'subpointRevs',
+      as: 'pointRevs',
+      otherKey: 'subpoint_rev_id',
     });
   };
 
@@ -55,6 +56,40 @@ export default function (sequelize, DataTypes) {
       }, { transaction });
     }
 
+    // Adds subpoint revisions corresponding to |pointsData| to the claim or
+    // point revision |rev|.
+    PointRev.createPoints = async function (user, rev, pointsData,
+                                            transaction) {
+      for (let i = 0; i < 2; i++) {
+        for (let pointData of pointsData[i]) {
+          let pointRev;
+          if (rev.parent_id && pointData.rev) {
+            // This is an update operation reusing a point revision.
+            pointRev = await PointRev.findById(pointData.rev);
+            if (!pointRev) {
+              throw new Error('Bad point rev ID: ' + pointData.rev);
+            }
+          } else if (rev.parent_id && pointData.id) {
+            // This is an update operation updating an existing point.
+            let point = await models.Point.findById(pointData.id);
+            if (!point) {
+              throw new Error('Bad point ID: ' + pointData.id);
+            }
+            pointRev = await PointRev.apiCreate(
+                user, point, pointData, transaction);
+          } else {
+            // New point.
+            pointRev = await models.Point.apiCreate(
+                user, pointData, transaction);
+          }
+          await rev.addPointRev(pointRev, {
+            through: { isFor: i === 0 },
+            transaction,
+          });
+        }
+      }
+    };
+
     // Create a new 'subclaim' point, which can have subpoints.
     async function createSubclaimRev(user, point, { text, points },
                                      transaction) {
@@ -64,35 +99,10 @@ export default function (sequelize, DataTypes) {
         point_id: point.id,
         parent_id: point.head_id,
         blob_hash: blob.hash,
-      }, {
-        transaction,
-      });
+      }, { transaction });
 
-      for (let i = 0; i < 2; i++) {
-        for (let subpointData of points[i]) {
-          let subpointRev;
-          if (point.head_id && subpointData.rev) {
-            // This is an update operation reusing a point revision.
-            subpointRev = await PointRev.findById(subpointData.rev);
-          } else if (point.head_id && subpointData.id) {
-            // This is an update operation updating a subpoint.
-            let subpoint = await models.Point.findById(subpointData.id);
-            if (!subpoint) {
-              throw new Error('Bad subpoint ID: ' + subpointData.id);
-            }
-            subpointRev = await PointRev.apiCreate(
-                user, subpoint, subpointData, transaction);
-          } else {
-            // New subpoint.
-            subpointRev = await models.Point.apiCreate(
-                user, subpointData, transaction);
-          }
-          await pointRev.addSubpointRev(subpointRev, {
-            through: { isFor: i === 0 },
-            transaction,
-          });
-        }
-      }
+      await PointRev.createPoints(user, pointRev, points, transaction);
+
       return pointRev;
     }
 

@@ -49,12 +49,9 @@
         "block-spacing": "error",
         "brace-style": "error",
         "indent": ["error", 2, {
-            "FunctionDeclaration": {
-                "parameters": "first"
-            },
-            "CallExpression": {
-                "arguments": 2
-            }
+            "FunctionDeclaration": { "parameters": "first" },
+            "FunctionExpression": { "parameters": "first" },
+            "CallExpression": { "arguments": 2 }
         }],
         "max-len": ["error"],
         "max-depth": ["error", 5],
