@@ -1,9 +1,7 @@
 import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
 import { sequelize, Source, User } from '../models';
 
-chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 const URL = 'https://debatewithdata.org';

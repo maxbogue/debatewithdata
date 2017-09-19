@@ -1,10 +1,8 @@
 import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
 import { Blob } from '../models';
 
-chai.use(chaiAsPromised);
-chai.should();
+const expect = chai.expect;
 
 const FOO = 'foo';
 const BAR = 'bar';
@@ -18,29 +16,29 @@ describe('Blob', function () {
     it('lookup succeeds', async function () {
       let blob = await Blob.fromText(FOO);
       let fromStore = await Blob.findOne({ where: { hash: blob.hash } });
-      fromStore.text.should.equal(FOO);
+      expect(fromStore.text).to.equal(FOO);
     });
 
     it('stores two separately', async function () {
       let blob1 = await Blob.fromText(FOO);
-      (await Blob.count()).should.equal(1);
-      blob1.text.should.equal(FOO);
+      expect(await Blob.count()).to.equal(1);
+      expect(blob1.text).to.equal(FOO);
 
       let blob2 = await Blob.fromText(BAR);
-      (await Blob.count()).should.equal(2);
-      blob2.text.should.equal(BAR);
-      blob2.hash.should.not.equal(blob1.hash);
+      expect(await Blob.count()).to.equal(2);
+      expect(blob2.text).to.equal(BAR);
+      expect(blob2.hash).to.not.equal(blob1.hash);
     });
 
     it('collapses duplicates', async function () {
       let blob1 = await Blob.fromText(FOO);
-      (await Blob.count()).should.equal(1);
-      blob1.text.should.equal(FOO);
+      expect(await Blob.count()).to.equal(1);
+      expect(blob1.text).to.equal(FOO);
 
       let blob2 = await Blob.fromText(FOO);
-      (await Blob.count()).should.equal(1);
-      blob2.text.should.equal(FOO);
-      blob2.hash.should.equal(blob1.hash);
+      expect(await Blob.count()).to.equal(1);
+      expect(blob2.text).to.equal(FOO);
+      expect(blob2.hash).to.equal(blob1.hash);
     });
   });
 });
