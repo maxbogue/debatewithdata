@@ -1,5 +1,17 @@
 import { genRevId } from './utils';
 
+const CLAIM = 'claim';
+const SOURCE = 'source';
+const SUBCLAIM = 'subclaim';
+const TEXT = 'text';
+
+const VALID_POINT_TYPES = [
+  CLAIM,
+  SOURCE,
+  SUBCLAIM,
+  TEXT,
+];
+
 export default function (sequelize, DataTypes) {
   const PointRev = sequelize.define('point_rev', {
     id: {
@@ -7,6 +19,13 @@ export default function (sequelize, DataTypes) {
       primaryKey: true,
       defaultValue: genRevId,
     },
+    type: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        isIn: [VALID_POINT_TYPES],
+      },
+    }
   });
 
   PointRev.associate = function (models) {
@@ -39,6 +58,7 @@ export default function (sequelize, DataTypes) {
         user_id: user.id,
         point_id: point.id,
         parent_id: point.head_id,
+        type: CLAIM,
         claim_id: claimId,
       }, { transaction });
     }
@@ -52,6 +72,7 @@ export default function (sequelize, DataTypes) {
         user_id: user.id,
         point_id: point.id,
         parent_id: point.head_id,
+        type: SOURCE,
         source_id: sourceId,
       }, { transaction });
     }
@@ -98,6 +119,7 @@ export default function (sequelize, DataTypes) {
         user_id: user.id,
         point_id: point.id,
         parent_id: point.head_id,
+        type: SUBCLAIM,
         blob_hash: blob.hash,
       }, { transaction });
 
@@ -113,6 +135,7 @@ export default function (sequelize, DataTypes) {
         user_id: user.id,
         point_id: point.id,
         parent_id: point.head_id,
+        type: TEXT,
         blob_hash: blob.hash,
       }, { transaction });
     }
@@ -120,13 +143,13 @@ export default function (sequelize, DataTypes) {
     // Dispatches point creation based on type.
     PointRev.apiCreate = function (user, point, data, transaction) {
       switch (data.type) {
-      case 'claim':
+      case CLAIM:
         return createClaimRev(user, point, data, transaction);
-      case 'source':
+      case SOURCE:
         return createSourceRev(user, point, data, transaction);
-      case 'subclaim':
+      case SUBCLAIM:
         return createSubclaimRev(user, point, data, transaction);
-      case 'text':
+      case TEXT:
         return createTextRev(user, point, data, transaction);
       default:
         throw new Error('Bad point type: ' + data.type);

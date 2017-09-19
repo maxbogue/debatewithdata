@@ -9,6 +9,11 @@ export default function (sequelize, DataTypes) {
     },
   });
 
+  Point.CLAIM = 'claim';
+  Point.SOURCE = 'source';
+  Point.SUBCLAIM = 'subclaim';
+  Point.TEXT = 'text';
+
   Point.associate = function (models) {
     Point.Head = Point.belongsTo(models.PointRev, {
       as: 'head',
@@ -30,6 +35,13 @@ export default function (sequelize, DataTypes) {
           include: [models.Blob],
         },
       ],
+    };
+
+    Point.INCLUDE_HEAD = {
+      include: [{
+        association: Point.Head,
+        ...Point.INCLUDE_SUBPOINTS,
+      }],
     };
 
     Point.apiCreate = async function (user, data, transaction) {
