@@ -4,14 +4,24 @@ import chaiAsPromised from 'chai-as-promised';
 import { sequelize, Source, User } from '../models';
 
 chai.use(chaiAsPromised);
-const should = chai.should();
-
-const INCLUDE_ALL = { include: { all: true, nested: true } };
+const expect = chai.expect;
 
 const URL = 'https://debatewithdata.org';
 const URL2 = 'https://dev.debatewithdata.org';
-const DESC = 'awesome website';
+const TEXT = 'description 1';
+const TEXT2 = 'description 2';
 const ARY = 1;
+const ARY2 = 2;
+const DATA = {
+  url: URL,
+  text: TEXT,
+  ary: ARY,
+};
+const DATA2 = {
+  url: URL2,
+  text: TEXT2,
+  ary: ARY2,
+};
 
 const USERNAME = 'test';
 const PASSWORD = 'testtest';
@@ -27,91 +37,115 @@ describe('Source', function () {
 
   describe('.apiCreate()', function () {
     it('happy', async function () {
-      let sourceId = await Source.apiCreate(user, URL, DESC);
-      let source = await Source.findById(sourceId, INCLUDE_ALL);
-      let rev = source.head;
-      rev.author.id.should.equal(user.id);
-      rev.blob.text.should.equal(DESC);
-      rev.source_id.should.equal(sourceId);
-      should.not.exist(rev.ary);
-      should.not.exist(rev.prev_rev_id);
+      let rev = await Source.apiCreate(user, { url: URL, text: TEXT });
+      await rev.reload(Source.INCLUDE_TEXT);
+      expect(rev.deleted).to.be.false;
+      expect(rev.user_id).to.equal(user.id);
+      expect(rev.blob.text).to.equal(TEXT);
+      expect(rev.url).to.equal(URL);
+      expect(rev.ary).to.be.null;
+      expect(rev.parent_id).to.be.null;
+
+      let source = await Source.findById(rev.source_id);
+      expect(source.head_id).to.equal(rev.id);
     });
 
     it('happy with ary', async function () {
-      let sourceId = await Source.apiCreate(user, URL, DESC, ARY);
-      let source = await Source.findById(sourceId, INCLUDE_ALL);
-      let rev = source.head;
-      rev.author.id.should.equal(user.id);
-      rev.blob.text.should.equal(DESC);
-      rev.source_id.should.equal(sourceId);
-      rev.ary.should.equal(ARY);
+      let rev = await Source.apiCreate(user, DATA);
+      await rev.reload(Source.INCLUDE_TEXT);
+      expect(rev.deleted).to.be.false;
+      expect(rev.user_id).to.equal(user.id);
+      expect(rev.blob.text).to.equal(TEXT);
+      expect(rev.url).to.equal(URL);
+      expect(rev.ary).to.equal(ARY);
+      expect(rev.parent_id).to.be.null;
+
+      let source = await Source.findById(rev.source_id);
+      expect(source.head_id).to.equal(rev.id);
     });
   });
 
   describe('.apiUpdate()', function () {
     it('change', async function () {
-      let sourceId = await Source.apiCreate(user, URL, DESC);
-      let source = await Source.findById(sourceId, INCLUDE_ALL);
-      let prevRevId = source.head_id;
-      (await source.apiUpdate(user, URL2, DESC)).should.be.true;
+      let rev1 = await Source.apiCreate(user, DATA);
+      let source = await Source.findById(rev1.source_id);
+      expect(source.head_id).to.equal(rev1.id);
 
-      source = await Source.findById(sourceId, INCLUDE_ALL);
-      source.head.url.should.equal(URL2);
-      source.head.prev_rev_id.should.equal(prevRevId);
+      let rev2 = await Source.apiUpdate(source.id, user, DATA2);
+      await rev2.reload(Source.INCLUDE_TEXT);
+      expect(rev2.deleted).to.be.false;
+      expect(rev2.user_id).to.equal(user.id);
+      expect(rev2.blob.text).to.equal(TEXT2);
+      expect(rev2.url).to.equal(URL2);
+      expect(rev2.ary).to.equal(ARY2);
+      expect(rev2.parent_id).to.equal(rev1.id);
+
+      await source.reload();
+      expect(source.head_id).to.equal(rev2.id);
     });
 
     it('no change no-op', async function () {
-      let sourceId = await Source.apiCreate(user, URL, DESC);
-      let source = await Source.findById(sourceId, INCLUDE_ALL);
-      let prevRevId = source.head_id;
-      (await source.apiUpdate(user, URL, DESC)).should.be.false;
-      source.head_id.should.equal(prevRevId);
+      let rev1 = await Source.apiCreate(user, DATA);
+      let source = await Source.findById(rev1.source_id);
+      expect(source.head_id).to.equal(rev1.id);
+
+      let rev2 = await Source.apiUpdate(source.id, user, DATA);
+      expect(rev2.id).to.equal(rev1.id);
+      expect(rev2.parent_id).to.be.null;
     });
   });
 
   describe('.apiDelete()', function () {
     it('normal delete', async function () {
-      let sourceId = await Source.apiCreate(user, URL, DESC);
-      let source = await Source.findById(sourceId, INCLUDE_ALL);
-      let prevRevId = source.head_id;
-      (await source.apiDelete(user)).should.be.true;
+      let rev1 = await Source.apiCreate(user, DATA);
+      let source = await Source.findById(rev1.source_id);
+      expect(source.head_id).to.equal(rev1.id);
 
-      source = await Source.findById(sourceId, INCLUDE_ALL);
-      source.head.deleted.should.equal(true);
-      source.head.prev_rev_id.should.equal(prevRevId);
+      let rev2 = await Source.apiDelete(source.id, user);
+      expect(rev2.deleted).to.be.true;
+      expect(rev2.user_id).to.equal(user.id);
+      expect(rev2.blob_hash).to.be.null;
+      expect(rev2.url).to.be.null;
+      expect(rev2.ary).to.be.null;
+      expect(rev2.parent_id).to.equal(rev1.id);
+
+      await source.reload();
+      expect(source.head_id).to.equal(rev2.id);
     });
 
     it('already deleted no-op', async function () {
-      let sourceId = await Source.apiCreate(user, URL, DESC);
-      let source = await Source.findById(sourceId, INCLUDE_ALL);
-      (await source.apiDelete(user)).should.be.true;
-      let prevRevId = source.head_id;
-      (await source.apiDelete(user)).should.be.false;
-      source.head_id.should.equal(prevRevId);
+      let rev1 = await Source.apiCreate(user, DATA);
+      let source = await Source.findById(rev1.source_id);
+      expect(source.head_id).to.equal(rev1.id);
+
+      let rev2 = await Source.apiDelete(source.id, user);
+      expect(rev2.deleted).to.be.true;
+      expect(rev2.parent_id).to.equal(rev1.id);
+      await source.reload();
+      expect(source.head_id).to.equal(rev2.id);
+
+      let rev3 = await Source.apiDelete(source.id, user);
+      expect(rev3.id).to.equal(rev2.id);
+      expect(rev3.parent_id).to.equal(rev1.id);
     });
   });
 
   describe('.getForApi()', function () {
     it('source exists', async function () {
-      let sourceId = await Source.apiCreate(user, URL, DESC);
-      let sourceForApi = await Source.getForApi(sourceId);
-      sourceForApi.should.deep.equal({
-        url: URL,
-        text: DESC,
-        ary: null,
-      });
+      let rev = await Source.apiCreate(user, DATA);
+      let sourceForApi = await Source.getForApi(rev.source_id);
+      expect(sourceForApi).to.deep.equal(DATA);
     });
 
     it('source does not exist', function () {
-      Source.getForApi('bad id').should.be.rejected;
+      expect(Source.getForApi('bad id')).to.be.rejected;
     });
 
     it('source deleted', async function () {
-      let sourceId = await Source.apiCreate(user, URL, DESC);
-      let source = await Source.findById(sourceId, INCLUDE_ALL);
-      (await source.apiDelete(user)).should.be.true;
-      let sourceForApi = await Source.getForApi(sourceId);
-      sourceForApi.should.deep.equal({
+      let rev = await Source.apiCreate(user, DATA);
+      await Source.apiDelete(rev.source_id, user);
+      let sourceForApi = await Source.getForApi(rev.source_id);
+      expect(sourceForApi).to.deep.equal({
         deleted: true,
       });
     });
@@ -119,35 +153,22 @@ describe('Source', function () {
 
   describe('.getAllForApi()', function () {
     it('two sources', async function () {
-      let id1 = await Source.apiCreate(user, URL, DESC);
-      let id2 = await Source.apiCreate(user, URL2, DESC, ARY);
+      let s1r = await Source.apiCreate(user, DATA);
+      let s2r = await Source.apiCreate(user, DATA2);
       let sourcesForApi = await Source.getAllForApi();
-      sourcesForApi.should.deep.equal({
-        [id1]: {
-          url: URL,
-          text: DESC,
-          ary: null,
-        },
-        [id2]: {
-          url: URL2,
-          text: DESC,
-          ary: ARY,
-        },
+      expect(sourcesForApi).to.deep.equal({
+        [s1r.source_id]: DATA,
+        [s2r.source_id]: DATA2,
       });
     });
 
     it('excludes deleted', async function () {
-      let id1 = await Source.apiCreate(user, URL, DESC);
-      let id2 = await Source.apiCreate(user, URL2, DESC, ARY);
-      let source2 = await Source.findById(id2, INCLUDE_ALL);
-      (await source2.apiDelete(user)).should.be.true;
+      let s1r = await Source.apiCreate(user, DATA);
+      let s2r = await Source.apiCreate(user, DATA2);
+      await Source.apiDelete(s2r.source_id, user);
       let sourcesForApi = await Source.getAllForApi();
-      sourcesForApi.should.deep.equal({
-        [id1]: {
-          url: URL,
-          text: DESC,
-          ary: null,
-        },
+      expect(sourcesForApi).to.deep.equal({
+        [s1r.source_id]: DATA,
       });
     });
   });

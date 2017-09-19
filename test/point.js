@@ -7,7 +7,6 @@ chai.use(chaiAsPromised);
 const should = chai.should();
 
 const URL = 'https://debatewithdata.org';
-const DESC = 'awesome website';
 
 const FOO = 'foo';
 const BAR = 'bar';
@@ -86,13 +85,13 @@ describe('Point', function () {
     });
 
     it('source link', async function () {
-      let sourceId = await Source.apiCreate(user, URL, DESC);
+      let sourceRev = await Source.apiCreate(user, { url: URL, text: FOO });
       let pointRev = await Point.apiCreate(user, {
         type: 'source',
-        sourceId,
+        sourceId: sourceRev.source_id,
       });
       pointRev.user_id.should.equal(user.id);
-      pointRev.source_id.should.equal(sourceId);
+      pointRev.source_id.should.equal(sourceRev.source_id);
       should.equal(pointRev.parent_id, null);
     });
   });

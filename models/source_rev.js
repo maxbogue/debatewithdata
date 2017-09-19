@@ -22,12 +22,12 @@ export default function (sequelize, DataTypes) {
   });
 
   SourceRev.associate = function (models) {
-    SourceRev.belongsTo(models.User, { as: 'author' });
+    SourceRev.belongsTo(models.User);
     SourceRev.belongsTo(models.Source);
     SourceRev.belongsTo(models.Blob);
     SourceRev.belongsTo(models.SourceRev, {
-      as: 'prev_rev',
-      foreignKey: 'prev_rev_id',
+      as: 'parent',
+      foreignKey: 'parent_id',
     });
   };
 

@@ -1,7 +1,5 @@
 import { genId } from './utils';
 
-const INCLUDE_ALL = { include: { all: true, nested: true } };
-
 export default function (sequelize, DataTypes) {
   const Source = sequelize.define('source', {
     id: {
@@ -12,7 +10,7 @@ export default function (sequelize, DataTypes) {
   });
 
   Source.associate = function (models) {
-    Source.belongsTo(models.SourceRev, {
+    Source.Head = Source.belongsTo(models.SourceRev, {
       as: 'head',
       // sequelize.sync() fails without this because it doesn't handle cycles.
       constraints: false,
@@ -21,74 +19,78 @@ export default function (sequelize, DataTypes) {
   };
 
   Source.postAssociate = function (models) {
-    Source.apiCreate = async function (author, url, text, ary = null) {
+    Source.INCLUDE_HEAD = {
+      include: [{
+        association: Source.Head,
+        include: [models.Blob],
+      }],
+    };
+
+    Source.INCLUDE_TEXT = {
+      include: [models.Blob],
+    };
+
+    Source.apiCreate = async function (user, { url, text, ary }) {
       let source = await Source.create();
       let blob = await models.Blob.fromText(text);
       let rev = await models.SourceRev.create({
+        user_id: user.id,
+        source_id: source.id,
+        blob_hash: blob.hash,
         url,
         ary,
-        blob_hash: blob.hash,
-        author_id: author.id,
-        source_id: source.id,
       });
       await source.setHead(rev);
-      return source.id;
+      return rev;
     };
 
-    Source.prototype.checkLoaded = function (msg) {
-      if (!this.head || !this.head.deleted && !this.head.blob) {
-        throw Error(msg);
+    Source.apiUpdate = async function (sourceId, user, data) {
+      let source = await Source.findById(sourceId, Source.INCLUDE_HEAD);
+      if (!source) {
+        throw new Error('No source found for ID: ' + sourceId);
       }
+
+      if (!source.head.deleted &&
+          data.text === source.head.blob.text &&
+          data.url === source.head.url &&
+          data.ary === source.head.ary) {
+        return source.head;
+      }
+
+      let blob = await models.Blob.fromText(data.text);
+      let rev = await models.SourceRev.create({
+        user_id: user.id,
+        source_id: source.id,
+        parent_id: source.head_id,
+        blob_hash: blob.hash,
+        url: data.url,
+        ary: data.ary,
+      });
+      await source.setHead(rev);
+      return rev;
     };
 
-    Source.prototype.apiUpdate =
-      async function (author, url, text, ary = null) {
-        this.checkLoaded('Must include all nested to update.');
-
-        if (!this.head.deleted &&
-            url === this.head.url &&
-            text === this.head.blob.text &&
-            ary === this.head.ary) {
-          return false;
-        }
-
-        let blob = await models.Blob.fromText(text);
-        let rev = await models.SourceRev.create({
-          url,
-          ary,
-          blob_hash: blob.hash,
-          author_id: author.id,
-          source_id: this.id,
-          prev_rev_id: this.head_id,
-        });
-        await this.setHead(rev);
-        await this.reload(INCLUDE_ALL);
-        return true;
-      };
-
-    Source.prototype.apiDelete = async function (user) {
-      if (!this.head) {
-        throw Error('Must include all to delete.');
+    Source.apiDelete = async function (sourceId, user) {
+      let source = await Source.findById(sourceId, Source.INCLUDE_HEAD);
+      if (!source) {
+        throw new Error('No source found for ID: ' + sourceId);
       }
 
-      if (this.head.deleted) {
-        return false;
+      if (source.head.deleted) {
+        return source.head;
       }
 
       let rev = await models.SourceRev.create({
+        user_id: user.id,
+        source_id: source.id,
+        parent_id: source.head_id,
         deleted: true,
-        author_id: user.id,
-        source_id: this.id,
-        prev_rev_id: this.head_id,
       });
-      await this.setHead(rev);
-      await this.reload(INCLUDE_ALL);
-      return true;
+      await source.setHead(rev);
+      return rev;
     };
 
     Source.prototype.toApiFormat = function () {
-      this.checkLoaded('Must include all nested for API format.');
-
       if (this.head.deleted) {
         return { deleted: true };
       }
@@ -101,7 +103,7 @@ export default function (sequelize, DataTypes) {
     };
 
     Source.getForApi = async function (sourceId) {
-      let source = await Source.findById(sourceId, INCLUDE_ALL);
+      let source = await Source.findById(sourceId, Source.INCLUDE_HEAD);
       if (!source) {
         throw Error('Source ID not found: ' + sourceId);
       }
@@ -109,7 +111,7 @@ export default function (sequelize, DataTypes) {
     };
 
     Source.getAllForApi = async function () {
-      let sources = await Source.findAll(INCLUDE_ALL);
+      let sources = await Source.findAll(Source.INCLUDE_HEAD);
       let ret = {};
       for (let source of sources) {
         if (!source.head.deleted) {
