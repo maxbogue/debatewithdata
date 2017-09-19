@@ -132,7 +132,10 @@ describe('Source', function () {
     it('source exists', async function () {
       let rev = await Source.apiCreate(user, DATA);
       let sourceForApi = await Source.getForApi(rev.source_id);
-      expect(sourceForApi).to.deep.equal(DATA);
+      expect(sourceForApi).to.deep.equal({
+        rev: rev.id,
+        ...DATA,
+      });
     });
 
     it('source does not exist', function () {
@@ -144,6 +147,7 @@ describe('Source', function () {
       await Source.apiDelete(rev.source_id, user);
       let sourceForApi = await Source.getForApi(rev.source_id);
       expect(sourceForApi).to.deep.equal({
+        rev: rev.id,
         deleted: true,
       });
     });
@@ -155,8 +159,14 @@ describe('Source', function () {
       let s2r = await Source.apiCreate(user, DATA2);
       let sourcesForApi = await Source.getAllForApi();
       expect(sourcesForApi).to.deep.equal({
-        [s1r.source_id]: DATA,
-        [s2r.source_id]: DATA2,
+        [s1r.source_id]: {
+          rev: s1r.id,
+          ...DATA,
+        },
+        [s2r.source_id]: {
+          rev: s2r.id,
+          ...DATA2,
+        },
       });
     });
 
@@ -166,7 +176,10 @@ describe('Source', function () {
       await Source.apiDelete(s2r.source_id, user);
       let sourcesForApi = await Source.getAllForApi();
       expect(sourcesForApi).to.deep.equal({
-        [s1r.source_id]: DATA,
+        [s1r.source_id]: {
+          rev: s1r.id,
+          ...DATA,
+        }
       });
     });
   });

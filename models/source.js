@@ -92,10 +92,14 @@ export default function (sequelize, DataTypes) {
 
     Source.prototype.toApiFormat = function () {
       if (this.head.deleted) {
-        return { deleted: true };
+        return {
+          rev: this.head_id,
+          deleted: true,
+        };
       }
 
       return {
+        rev: this.head_id,
         url: this.head.url,
         text: this.head.blob.text,
         ary: this.head.ary,
