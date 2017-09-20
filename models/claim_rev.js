@@ -14,14 +14,16 @@ export default function (sequelize, DataTypes) {
   });
 
   ClaimRev.associate = function (models) {
-    ClaimRev.belongsTo(models.User, { as: 'author' });
+    ClaimRev.belongsTo(models.User);
     ClaimRev.belongsTo(models.Claim);
-    ClaimRev.belongsTo(models.Blob, { as: 'text' });
+    ClaimRev.belongsTo(models.Blob);
     ClaimRev.belongsTo(models.ClaimRev, {
-      as: 'PrevRev',
-      foreignKey: 'prev_rev_id',
+      as: 'parent',
     });
-    ClaimRev.belongsToMany(models.PointRev, { through: models.ClaimPoint });
+    ClaimRev.Points = ClaimRev.belongsToMany(models.PointRev, {
+      through: models.ClaimPoint,
+      as: 'pointRevs',
+    });
   };
 
   return ClaimRev;

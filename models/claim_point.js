@@ -1,5 +1,5 @@
 export default function (sequelize, DataTypes) {
-  const ClaimPoint = sequelize.define('claim_point', {
+  const ClaimPoint = sequelize.define('claimPoint', {
     isFor: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
