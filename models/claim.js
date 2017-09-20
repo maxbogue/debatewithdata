@@ -19,13 +19,6 @@ export default function (sequelize, DataTypes) {
   };
 
   Claim.postAssociate = function (models) {
-    Claim.INCLUDE_HEAD = {
-      include: [{
-        association: Claim.Head,
-        include: [models.Blob],
-      }],
-    };
-
     Claim.INCLUDE_TEXT = {
       include: [models.Blob],
     };
@@ -37,6 +30,20 @@ export default function (sequelize, DataTypes) {
           association: models.PointRev.Subpoints,
           include: [models.Blob],
         }],
+      }],
+    };
+
+    Claim.INCLUDE_HEAD = {
+      include: [{
+        association: Claim.Head,
+        include: [models.Blob],
+      }],
+    };
+
+    Claim.INCLUDE_HEAD_POINTS = {
+      include: [{
+        association: Claim.Head,
+        ...Claim.INCLUDE_POINTS,
       }],
     };
 
@@ -111,6 +118,40 @@ export default function (sequelize, DataTypes) {
       });
       await claim.setHead(claimRev);
       return claimRev;
+    };
+
+    Claim.prototype.toData = function () {
+      if (this.head.deleted) {
+        return {
+          rev: this.head_id,
+          deleted: true,
+        };
+      }
+
+      return {
+        rev: this.head_id,
+        text: this.head.blob.text,
+        points: models.PointRev.toDatas(this.head.pointRevs),
+      };
+    };
+
+    Claim.apiGet = async function (claimId) {
+      let claim = await Claim.findById(claimId, Claim.INCLUDE_HEAD_POINTS);
+      if (!claim) {
+        throw Error('Claim ID not found: ' + claimId);
+      }
+      return claim.toData();
+    };
+
+    Claim.apiGetAll = async function () {
+      let claims = await Claim.findAll(Claim.INCLUDE_HEAD_POINTS);
+      let ret = {};
+      for (let claim of claims) {
+        if (!claim.head.deleted) {
+          ret[claim.id] = claim.toData();
+        }
+      }
+      return ret;
     };
   };
 

@@ -155,6 +155,47 @@ export default function (sequelize, DataTypes) {
         throw new Error('Bad point type: ' + data.type);
       }
     };
+
+    function isFor(pointRev) {
+      if (pointRev.claimPoint) {
+        return pointRev.claimPoint.isFor;
+      }
+      return pointRev.pointPoint.isFor;
+    }
+
+    PointRev.toDatas = function (pointRevs) {
+      let points = [{}, {}];
+      for (let pointRev of pointRevs) {
+        let i = isFor(pointRev) ? 0 : 1;
+        points[i][pointRev.point_id] = pointRev.toData();
+      }
+      return points;
+    };
+
+    PointRev.prototype.toData = function () {
+      let data = {
+        rev: this.id,
+        type: this.type,
+      };
+      switch (this.type) {
+      case CLAIM:
+        data.claimId = this.claim_id;
+        break;
+      case SOURCE:
+        data.sourceId = this.source_id;
+        break;
+      case SUBCLAIM:
+        data.points = PointRev.toDatas(this.pointRevs);
+        data.text = this.blob.text;
+        break;
+      case TEXT:
+        data.text = this.blob.text;
+        break;
+      default:
+        throw new Error('Bad point type: ' + data.type);
+      }
+      return data;
+    };
   };
 
   return PointRev;

@@ -128,37 +128,37 @@ describe('Source', function () {
     });
   });
 
-  describe('.getForApi()', function () {
+  describe('.apiGet()', function () {
     it('source exists', async function () {
       let rev = await Source.apiCreate(user, DATA);
-      let sourceForApi = await Source.getForApi(rev.source_id);
-      expect(sourceForApi).to.deep.equal({
+      let sourceData = await Source.apiGet(rev.source_id);
+      expect(sourceData).to.deep.equal({
         rev: rev.id,
         ...DATA,
       });
     });
 
     it('source does not exist', function () {
-      expect(Source.getForApi('bad id')).to.be.rejected;
+      expect(Source.apiGet('bad id')).to.be.rejected;
     });
 
     it('source deleted', async function () {
-      let rev = await Source.apiCreate(user, DATA);
-      await Source.apiDelete(rev.source_id, user);
-      let sourceForApi = await Source.getForApi(rev.source_id);
-      expect(sourceForApi).to.deep.equal({
-        rev: rev.id,
+      let r1 = await Source.apiCreate(user, DATA);
+      let r2 = await Source.apiDelete(r1.source_id, user);
+      let sourceData = await Source.apiGet(r1.source_id);
+      expect(sourceData).to.deep.equal({
+        rev: r2.id,
         deleted: true,
       });
     });
   });
 
-  describe('.getAllForApi()', function () {
+  describe('.apiGetAll()', function () {
     it('two sources', async function () {
       let s1r = await Source.apiCreate(user, DATA);
       let s2r = await Source.apiCreate(user, DATA2);
-      let sourcesForApi = await Source.getAllForApi();
-      expect(sourcesForApi).to.deep.equal({
+      let sourcesData = await Source.apiGetAll();
+      expect(sourcesData).to.deep.equal({
         [s1r.source_id]: {
           rev: s1r.id,
           ...DATA,
@@ -174,8 +174,8 @@ describe('Source', function () {
       let s1r = await Source.apiCreate(user, DATA);
       let s2r = await Source.apiCreate(user, DATA2);
       await Source.apiDelete(s2r.source_id, user);
-      let sourcesForApi = await Source.getAllForApi();
-      expect(sourcesForApi).to.deep.equal({
+      let sourcesData = await Source.apiGetAll();
+      expect(sourcesData).to.deep.equal({
         [s1r.source_id]: {
           rev: s1r.id,
           ...DATA,

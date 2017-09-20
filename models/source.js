@@ -90,7 +90,7 @@ export default function (sequelize, DataTypes) {
       return rev;
     };
 
-    Source.prototype.toApiFormat = function () {
+    Source.prototype.toData = function () {
       if (this.head.deleted) {
         return {
           rev: this.head_id,
@@ -106,20 +106,20 @@ export default function (sequelize, DataTypes) {
       };
     };
 
-    Source.getForApi = async function (sourceId) {
+    Source.apiGet = async function (sourceId) {
       let source = await Source.findById(sourceId, Source.INCLUDE_HEAD);
       if (!source) {
         throw Error('Source ID not found: ' + sourceId);
       }
-      return source.toApiFormat();
+      return source.toData();
     };
 
-    Source.getAllForApi = async function () {
+    Source.apiGetAll = async function () {
       let sources = await Source.findAll(Source.INCLUDE_HEAD);
       let ret = {};
       for (let source of sources) {
         if (!source.head.deleted) {
-          ret[source.id] = source.toApiFormat();
+          ret[source.id] = source.toData();
         }
       }
       return ret;
