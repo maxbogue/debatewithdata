@@ -118,7 +118,7 @@ describe('Claim', function () {
       expect(r2a.parent_id).to.be.null;
     });
 
-    it('update point', async function () {
+    it('change point', async function () {
       let r1 = await Claim.apiCreate(user, {
         text: FOO,
         points: [[{
@@ -146,6 +146,39 @@ describe('Claim', function () {
       let r2a = r2.pointRevs[0];
       expect(r2a.blob.text).to.equal(BAZ);
       expect(r2a.parent_id).to.equal(r1a.id);
+    });
+  });
+
+  describe('.apiDelete()', function () {
+    it('happy', async function () {
+      let r1 = await Claim.apiCreate(user, { text: FOO });
+      let claim = await Claim.findById(r1.claim_id);
+      expect(claim.head_id).to.equal(r1.id);
+
+      let r2 = await Claim.apiDelete(claim.id, user);
+      await r2.reload(Claim.INCLUDE_POINTS);
+      expect(r2.deleted).to.be.true;
+      expect(r2.user_id).to.equal(user.id);
+      expect(r2.parent_id).to.equal(r1.id);
+      expect(r2.blob_hash).to.be.null;
+      expect(r2.pointRevs).to.have.lengthOf(0);
+
+      await claim.reload();
+      expect(claim.head_id).to.equal(r2.id);
+    });
+
+    it('no-op', async function () {
+      let r1 = await Claim.apiCreate(user, { text: FOO });
+      let claim = await Claim.findById(r1.claim_id);
+      expect(claim.head_id).to.equal(r1.id);
+
+      let r2 = await Claim.apiDelete(claim.id, user);
+      await claim.reload();
+      expect(claim.head_id).to.equal(r2.id);
+
+      let r3 = await Claim.apiDelete(claim.id, user);
+      expect(r3.id).to.equal(r2.id);
+      expect(r3.parent_id).to.equal(r1.id);
     });
   });
 });

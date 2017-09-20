@@ -92,6 +92,26 @@ export default function (sequelize, DataTypes) {
 
       return claimRev;
     };
+
+    Claim.apiDelete = async function (claimId, user) {
+      let claim = await Claim.findById(claimId, Claim.INCLUDE_HEAD);
+      if (!claim) {
+        throw new Error('No claim found for ID: ' + claimId);
+      }
+
+      if (claim.head.deleted) {
+        return claim.head;
+      }
+
+      let claimRev = await models.ClaimRev.create({
+        user_id: user.id,
+        claim_id: claim.id,
+        parent_id: claim.head_id,
+        deleted: true,
+      });
+      await claim.setHead(claimRev);
+      return claimRev;
+    };
   };
 
   return Claim;
