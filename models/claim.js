@@ -100,7 +100,13 @@ export default function (sequelize, DataTypes) {
       return claimRev;
     };
 
-    Claim.apiDelete = async function (claimId, user) {
+    Claim.apiDelete = async function (claimId, user, transaction) {
+      if (!transaction) {
+        return await sequelize.transaction(function(t) {
+          return Claim.apiDelete(claimId, user, t);
+        });
+      }
+
       let claim = await Claim.findById(claimId, Claim.INCLUDE_HEAD);
       if (!claim) {
         throw new Error('No claim found for ID: ' + claimId);

@@ -30,21 +30,33 @@ export default function (sequelize, DataTypes) {
       include: [models.Blob],
     };
 
-    Source.apiCreate = async function (user, { url, text, ary }) {
-      let source = await Source.create();
-      let blob = await models.Blob.fromText(text);
+    Source.apiCreate = async function (user, data, transaction) {
+      if (!transaction) {
+        return await sequelize.transaction(function(t) {
+          return Source.apiCreate(user, data, t);
+        });
+      }
+
+      let source = await Source.create({}, { transaction });
+      let blob = await models.Blob.fromText(data.text, transaction);
       let rev = await models.SourceRev.create({
         user_id: user.id,
         source_id: source.id,
         blob_hash: blob.hash,
-        url,
-        ary,
-      });
-      await source.setHead(rev);
+        url: data.url,
+        ary: data.ary,
+      }, { transaction });
+      await source.setHead(rev, { transaction });
       return rev;
     };
 
-    Source.apiUpdate = async function (sourceId, user, data) {
+    Source.apiUpdate = async function (sourceId, user, data, transaction) {
+      if (!transaction) {
+        return await sequelize.transaction(function(t) {
+          return Source.apiUpdate(sourceId, user, data, t);
+        });
+      }
+
       let source = await Source.findById(sourceId, Source.INCLUDE_HEAD);
       if (!source) {
         throw new Error('No source found for ID: ' + sourceId);
@@ -57,7 +69,7 @@ export default function (sequelize, DataTypes) {
         return source.head;
       }
 
-      let blob = await models.Blob.fromText(data.text);
+      let blob = await models.Blob.fromText(data.text, transaction);
       let rev = await models.SourceRev.create({
         user_id: user.id,
         source_id: source.id,
@@ -65,12 +77,18 @@ export default function (sequelize, DataTypes) {
         blob_hash: blob.hash,
         url: data.url,
         ary: data.ary,
-      });
-      await source.setHead(rev);
+      }, { transaction });
+      await source.setHead(rev, { transaction });
       return rev;
     };
 
-    Source.apiDelete = async function (sourceId, user) {
+    Source.apiDelete = async function (sourceId, user, transaction) {
+      if (!transaction) {
+        return await sequelize.transaction(function(t) {
+          return Source.apiDelete(sourceId, user, t);
+        });
+      }
+
       let source = await Source.findById(sourceId, Source.INCLUDE_HEAD);
       if (!source) {
         throw new Error('No source found for ID: ' + sourceId);
@@ -85,8 +103,8 @@ export default function (sequelize, DataTypes) {
         source_id: source.id,
         parent_id: source.head_id,
         deleted: true,
-      });
-      await source.setHead(rev);
+      }, { transaction });
+      await source.setHead(rev, { transaction });
       return rev;
     };
 
