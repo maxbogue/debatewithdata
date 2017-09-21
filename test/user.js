@@ -82,7 +82,12 @@ describe('User', function () {
       let user = await User.register(USERNAME, PASSWORD, EMAIL);
       let token = user.genAuthToken(-1);
       await expect(User.verifyToken(token)).to.be.rejectedWith(
-          jwt.TokenExpiredError);
+          ClientError, /Expired auth token/);
+    });
+
+    it('fails for malformed token', async function () {
+      await expect(User.verifyToken('garbage')).to.be.rejectedWith(
+          ClientError, /Malformed auth token/);
     });
   });
 });

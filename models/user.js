@@ -68,6 +68,9 @@ export default function (sequelize, DataTypes) {
     try {
       decoded = jwt.verify(authToken, config.get('secretKey'));
     } catch (e) {
+      if (e instanceof jwt.TokenExpiredError) {
+        throw new ClientError('Expired auth token.');
+      }
       throw new ClientError('Malformed auth token.');
     }
     let username = decoded.sub;
