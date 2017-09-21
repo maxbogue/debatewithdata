@@ -64,7 +64,12 @@ export default function (sequelize, DataTypes) {
   };
 
   User.verifyToken = async function (authToken) {
-    let decoded = jwt.verify(authToken, config.get('secretKey'));
+    let decoded;
+    try {
+      decoded = jwt.verify(authToken, config.get('secretKey'));
+    } catch (e) {
+      throw new ClientError('Malformed auth token.');
+    }
     let username = decoded.sub;
     return await User.findOne({ where: { username }});
   };

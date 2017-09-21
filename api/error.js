@@ -20,6 +20,6 @@ export function apiErrorHandler(err, req, res, next) {
   if (err instanceof ApiError) {
     res.status(err.httpStatus).json({ message: err.message });
   } else {
-    next();
+    next(err);
   }
 }
