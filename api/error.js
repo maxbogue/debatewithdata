@@ -8,6 +8,14 @@ export class ClientError extends ApiError {
   }
 }
 
+export class AuthError extends ApiError {
+  constructor() {
+    super();
+    this.httpStatus = 401;
+    this.name = 'AuthError';
+  }
+}
+
 export class NotFoundError extends ApiError {
   constructor(message) {
     super(message);
