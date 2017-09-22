@@ -23,6 +23,18 @@ export default function (sequelize, DataTypes) {
     Point.hasMany(models.PointRev, {
       as: 'pointRevs',
     });
+    Point.belongsToMany(models.User, {
+      as: 'starredByUsers',
+      through: {
+        model: models.Star,
+        unique: false,
+        scope: {
+          starrable: 'point',
+        }
+      },
+      foreignKey: 'starrable_id',
+      constraints: false,
+    });
   };
 
   Point.postAssociate = function (models) {
@@ -69,6 +81,29 @@ export default function (sequelize, DataTypes) {
         return rev;
       });
       return pointRev;
+    };
+
+    Point.prototype.toStarData = async function (user) {
+      let count = await this.countStarredByUsers();
+      let starred = user !== null;
+      if (starred) {
+        starred = await this.hasStarredByUser(user);
+      }
+      return { count, starred };
+    };
+
+    Point.apiToggleStar = async function (pointId, user) {
+      let point = await Point.findById(pointId);
+      if (!point) {
+        throw new Error('Point not found.');
+      }
+      let isStarred = await point.hasStarredByUser(user);
+      if (isStarred) {
+        await point.removeStarredByUser(user);
+      } else {
+        await point.addStarredByUser(user);
+      }
+      return point.toStarData(user);
     };
   };
 

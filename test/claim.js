@@ -314,4 +314,145 @@ describe('Claim', function () {
       });
     });
   });
+
+  describe('.apiToggleStar()', function () {
+    it('happy', async function () {
+      let rev = await Claim.apiCreate(user, { text: FOO });
+      let star = await Claim.apiToggleStar(rev.claim_id, user);
+      expect(star).to.deep.equal({
+        count: 1,
+        starred: true,
+      });
+      star = await Claim.apiToggleStar(rev.claim_id, user);
+      expect(star).to.deep.equal({
+        count: 0,
+        starred: false,
+      });
+    });
+  });
+
+  describe('.apiGetStars()', function () {
+    it('no user', async function () {
+      let rev = await Claim.apiCreate(user, { text: FOO });
+      await Claim.apiToggleStar(rev.claim_id, user);
+      let stars = await Claim.apiGetStars(rev.claim_id);
+      expect(stars).to.deep.equal({
+        star: {
+          count: 1,
+          starred: false,
+        },
+        points: {},
+      });
+    });
+
+    it('no points', async function () {
+      let rev = await Claim.apiCreate(user, { text: FOO });
+      await Claim.apiToggleStar(rev.claim_id, user);
+      let stars = await Claim.apiGetStars(rev.claim_id, user);
+      expect(stars).to.deep.equal({
+        star: {
+          count: 1,
+          starred: true,
+        },
+        points: {},
+      });
+    });
+
+    it('one point', async function () {
+      let rev = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[{
+          type: Point.TEXT,
+          text: BAR,
+        }], []],
+      });
+      await rev.reload(Claim.INCLUDE_POINTS);
+      let pointId = rev.pointRevs[0].point_id;
+
+      await Claim.apiToggleStar(rev.claim_id, user);
+      let stars = await Claim.apiGetStars(rev.claim_id, user);
+      expect(stars).to.deep.equal({
+        star: {
+          count: 1,
+          starred: true,
+        },
+        points: {
+          [pointId]: {
+            count: 0,
+            starred: false,
+          },
+        },
+      });
+
+      await Point.apiToggleStar(pointId, user);
+      stars = await Claim.apiGetStars(rev.claim_id, user);
+      expect(stars).to.deep.equal({
+        star: {
+          count: 1,
+          starred: true,
+        },
+        points: {
+          [pointId]: {
+            count: 1,
+            starred: true,
+          },
+        },
+      });
+    });
+
+    it('nested points', async function () {
+      let rev = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[{
+          type: Point.SUBCLAIM,
+          text: BAR,
+          points: [[{
+            type: Point.TEXT,
+            text: BAZ,
+          }], []],
+        }], []],
+      });
+      await rev.reload(Claim.INCLUDE_POINTS);
+      let pointId = rev.pointRevs[0].point_id;
+      let subPointId = rev.pointRevs[0].pointRevs[0].point_id;
+
+      await Claim.apiToggleStar(rev.claim_id, user);
+      let stars = await Claim.apiGetStars(rev.claim_id, user);
+      expect(stars).to.deep.equal({
+        star: {
+          count: 1,
+          starred: true,
+        },
+        points: {
+          [pointId]: {
+            count: 0,
+            starred: false,
+          },
+          [subPointId]: {
+            count: 0,
+            starred: false,
+          },
+        },
+      });
+
+      await Point.apiToggleStar(subPointId, user);
+      stars = await Claim.apiGetStars(rev.claim_id, user);
+      expect(stars).to.deep.equal({
+        star: {
+          count: 1,
+          starred: true,
+        },
+        points: {
+          [pointId]: {
+            count: 0,
+            starred: false,
+          },
+          [subPointId]: {
+            count: 1,
+            starred: true,
+          },
+        },
+      });
+    });
+  });
 });

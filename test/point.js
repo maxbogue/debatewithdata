@@ -178,4 +178,23 @@ describe('Point', function () {
       expect(point.head_id).to.equal(r4.id);
     });
   });
+
+  describe('.apiToggleStar()', function () {
+    it('happy', async function () {
+      let rev = await Point.apiCreate(user, {
+        type: Point.TEXT,
+        text: FOO,
+      });
+      let star = await Point.apiToggleStar(rev.point_id, user);
+      expect(star).to.deep.equal({
+        count: 1,
+        starred: true,
+      });
+      star = await Point.apiToggleStar(rev.point_id, user);
+      expect(star).to.deep.equal({
+        count: 0,
+        starred: false,
+      });
+    });
+  });
 });

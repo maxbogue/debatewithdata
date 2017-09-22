@@ -27,6 +27,20 @@ export default function (sequelize, DataTypes) {
     },
   });
 
+  User.associate = function (models) {
+    User.belongsToMany(models.Claim, {
+      as: 'starredClaims',
+      through: {
+        model: models.Star,
+        unique: false,
+        scope: {
+          starrable: 'claim',
+        }
+      },
+      constraints: false,
+    });
+  };
+
   const VALID_USERNAME = /^[a-z][a-z0-9]+$/;
 
   function validateUsername(username) {

@@ -46,8 +46,16 @@ router.delete('/:id', async function (req, res) {
 });
 
 router.get('/:id/star', async function (req, res) {
-  let claimStars = await Claim.apiGetStars(req.params.id);
+  let claimStars = await Claim.apiGetStars(req.params.id, req.user);
   res.json(claimStars);
+});
+
+router.post('/:id/star', async function (req, res) {
+  if (!req.user) {
+    throw new AuthError();
+  }
+  let star = await Claim.apiToggleStar(req.params.id, req.user);
+  res.json({ star });
 });
 
 export default router;

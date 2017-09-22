@@ -15,7 +15,21 @@ export default function (sequelize, DataTypes) {
       // sequelize.sync() fails without this because it doesn't handle cycles.
       constraints: false,
     });
-    Claim.hasMany(models.ClaimRev);
+    Claim.hasMany(models.ClaimRev, {
+      as: 'claimRevs',
+    });
+    Claim.belongsToMany(models.User, {
+      as: 'starredByUsers',
+      through: {
+        model: models.Star,
+        unique: false,
+        scope: {
+          starrable: 'claim',
+        }
+      },
+      foreignKey: 'starrable_id',
+      constraints: false,
+    });
   };
 
   Claim.postAssociate = function (models) {
@@ -160,17 +174,55 @@ export default function (sequelize, DataTypes) {
       return ret;
     };
 
-    Claim.apiGetStars = async function(claimId) {
-      let claim = await Claim.findById(claimId, Claim.INCLUDE_HEAD_POINTS);
+    Claim.prototype.toStarData = async function (user) {
+      let count = await this.countStarredByUsers();
+      let starred = Boolean(user);
+      if (starred) {
+        starred = await this.hasStarredByUser(user);
+      }
+      return { count, starred };
+    };
+
+    Claim.apiToggleStar = async function (claimId, user) {
+      let claim = await Claim.findById(claimId);
+      if (!claim) {
+        throw new Error('Claim not found.');
+      }
+      let isStarred = await claim.hasStarredByUser(user);
+      if (isStarred) {
+        await claim.removeStarredByUser(user);
+      } else {
+        await claim.addStarredByUser(user);
+      }
+      return claim.toStarData(user);
+    };
+
+    Claim.apiGetStars = async function (claimId, user) {
+      let claim = await Claim.findById(claimId, {
+        include: [{
+          association: Claim.Head,
+          include: [{
+            association: models.ClaimRev.Points,
+            include: [models.Point, {
+              association: models.PointRev.Subpoints,
+              include: [models.Point],
+            }],
+          }],
+        }],
+      });
+
       let pointStars = {};
       for (let pointRev of claim.head.pointRevs) {
-        pointStars[pointRev.point_id] = { count: 0, starred: false };
+        let point = pointRev.point;
+        pointStars[point.id] = await point.toStarData(user);
         for (let subPointRev of pointRev.pointRevs) {
-          pointStars[subPointRev.point_id] = { count: 0, starred: false };
+          let subPoint = subPointRev.point;
+          pointStars[subPoint.id] = await subPoint.toStarData(user);
         }
       }
+      let claimStar = await claim.toStarData(user);
       return {
-        star: { count: 0, starred: false },
+        star: claimStar,
         points: pointStars,
       };
     };
