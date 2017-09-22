@@ -1,4 +1,4 @@
-import { forEach, forOwn, isArray, isObject, map } from 'lodash';
+import { cloneDeep, forEach, forOwn, isArray, isObject, map } from 'lodash';
 
 export function walk(o, f) {
   if (isObject(o)) {
@@ -44,6 +44,14 @@ export function pointToInput(point) {
 
 export function isValidPoint(point) {
   return Boolean(pointToInput(point));
+}
+
+export function pointMapToList(points) {
+  return map(points, (point, id) => {
+    let pointClone = cloneDeep(point);
+    pointClone.id = id;
+    return pointClone;
+  });
 }
 
 export function rotateWithIndexes(lists) {

@@ -54,7 +54,7 @@ import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdPoint from './DwdPoint.vue';
 import DwdStar from './DwdStar.vue';
-import { rotateWithIndexes } from './utils';
+import { pointMapToList, rotateWithIndexes } from './utils';
 
 export default {
   components: {
@@ -80,7 +80,7 @@ export default {
       }
       let starCount = (p) => -this.$store.state.stars.point[p.id].count;
       return this.claim.points.map((sidePoints) => {
-        return sortBy(sidePoints, [starCount, Math.random]);
+        return sortBy(pointMapToList(sidePoints), [starCount, Math.random]);
       });
     },
     zippedPoints: function () {

@@ -114,7 +114,8 @@ def load_point_rev(rev_id):
     if 'text' in point:
         load_text(point)
     if 'points' in point:
-        point['points'] = [[load_point_rev(id) for id in side_points]
+        point['points'] = [{id: load_point_rev(id)
+                            for id in side_points}
                            for side_points in point['points']]
     return point
 
@@ -158,7 +159,8 @@ def load_claim(id):
     if 'text' in claim:
         load_text(claim)
     if 'points' in claim:
-        claim['points'] = [[load_point_rev(id) for id in side_points]
+        claim['points'] = [{id: load_point_rev(id)
+                            for id in side_points}
                            for side_points in claim['points']]
     return claim
 

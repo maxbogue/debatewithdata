@@ -159,6 +159,21 @@ export default function (sequelize, DataTypes) {
       }
       return ret;
     };
+
+    Claim.apiGetStars = async function(claimId) {
+      let claim = await Claim.findById(claimId, Claim.INCLUDE_HEAD_POINTS);
+      let pointStars = {};
+      for (let pointRev of claim.head.pointRevs) {
+        pointStars[pointRev.point_id] = { count: 0, starred: false };
+        for (let subPointRev of pointRev.pointRevs) {
+          pointStars[subPointRev.point_id] = { count: 0, starred: false };
+        }
+      }
+      return {
+        star: { count: 0, starred: false },
+        points: pointStars,
+      };
+    };
   };
 
   return Claim;

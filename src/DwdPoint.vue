@@ -40,11 +40,13 @@
 </template>
 
 <script>
+import { sortBy } from 'lodash';
+
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdStar from './DwdStar.vue';
 import DwdSubPoint from './DwdSubPoint.vue';
-import { rotateWithIndexes } from './utils';
+import { pointMapToList, rotateWithIndexes } from './utils';
 
 export default {
   components: {
@@ -93,11 +95,17 @@ export default {
       }
       return '';
     },
-    subPoints: function () {
+    sortedSubpoints: function () {
       if (!this.claim || !this.$store.state.loaded) {
         return [];
       }
-      return rotateWithIndexes(this.claim.points);
+      let starCount = (p) => -this.$store.state.stars.point[p.id].count;
+      return this.claim.points.map((sidePoints) => {
+        return sortBy(pointMapToList(sidePoints), [starCount, Math.random]);
+      });
+    },
+    subPoints: function () {
+      return rotateWithIndexes(this.sortedSubpoints);
     },
   },
 };
