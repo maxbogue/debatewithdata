@@ -30,6 +30,13 @@ export default function (sequelize, DataTypes) {
       foreignKey: 'starrable_id',
       constraints: false,
     });
+    Claim.hasMany(models.Comment, {
+      foreignKey: 'commentable_id',
+      constraints: false,
+      scope: {
+        commentable: 'claim',
+      },
+    });
   };
 
   Claim.postAssociate = function (models) {
