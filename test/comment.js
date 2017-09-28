@@ -1,6 +1,7 @@
 import chai from 'chai';
 
-import { sequelize, Claim, Comment, User } from '../models';
+import { sequelize, Claim, Comment } from '../models';
+import utils from './utils';
 
 const expect = chai.expect;
 
@@ -8,17 +9,13 @@ const FOO = 'foo';
 const BAR = 'bar';
 const BAZ = 'baz';
 
-const USERNAME = 'test';
-const PASSWORD = 'testtest';
-const EMAIL = 'test@debatewithdata.org';
-
 describe('Comment', function () {
   let user;
   let claimId;
 
   beforeEach(async function () {
     await sequelize.sync({ force: true });
-    user = await User.register(USERNAME, PASSWORD, EMAIL);
+    user = await utils.createUser();
     let claimRev = await Claim.apiCreate(user, { text: BAZ });
     claimId = claimRev.claim_id;
   });

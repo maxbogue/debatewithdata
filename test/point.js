@@ -1,6 +1,7 @@
 import chai from 'chai';
 
-import { sequelize, Point, Source, User } from '../models';
+import { sequelize, Point, Source } from '../models';
+import utils from './utils';
 
 const expect = chai.expect;
 
@@ -10,16 +11,12 @@ const FOO = 'foo';
 const BAR = 'bar';
 const BAZ = 'baz';
 
-const USERNAME = 'test';
-const PASSWORD = 'testtest';
-const EMAIL = 'test@debatewithdata.org';
-
 describe('Point', function () {
   let user;
 
   beforeEach(async function () {
     await sequelize.sync({ force: true });
-    user = await User.register(USERNAME, PASSWORD, EMAIL);
+    user = await utils.createUser();
   });
 
   describe('.apiCreate()', function () {

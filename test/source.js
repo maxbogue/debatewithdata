@@ -1,6 +1,7 @@
 import chai from 'chai';
 
-import { sequelize, Source, User } from '../models';
+import { sequelize, Source } from '../models';
+import utils from './utils';
 
 const expect = chai.expect;
 
@@ -21,16 +22,12 @@ const DATA2 = {
   ary: ARY2,
 };
 
-const USERNAME = 'test';
-const PASSWORD = 'testtest';
-const EMAIL = 'test@debatewithdata.org';
-
 describe('Source', function () {
   let user;
 
   beforeEach(async function () {
     await sequelize.sync({ force: true });
-    user = await User.register(USERNAME, PASSWORD, EMAIL);
+    user = await utils.createUser();
   });
 
   describe('.apiCreate()', function () {
