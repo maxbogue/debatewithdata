@@ -35,6 +35,13 @@ export default function (sequelize, DataTypes) {
       foreignKey: 'starrable_id',
       constraints: false,
     });
+    Point.hasMany(models.Comment, {
+      foreignKey: 'commentable_id',
+      constraints: false,
+      scope: {
+        commentable: 'point',
+      },
+    });
   };
 
   Point.postAssociate = function (models) {

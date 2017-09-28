@@ -16,6 +16,13 @@ export default function (sequelize, DataTypes) {
       constraints: false,
     });
     Source.hasMany(models.SourceRev);
+    Source.hasMany(models.Comment, {
+      foreignKey: 'commentable_id',
+      constraints: false,
+      scope: {
+        commentable: 'source',
+      },
+    });
   };
 
   Source.postAssociate = function (models) {
