@@ -451,5 +451,45 @@ describe('Claim', function () {
         },
       });
     });
+
+    it.only('nested claim', async function () {
+      let innerRev = await Claim.apiCreate(user, {
+        text: BAR,
+        points: [[{
+          type: Point.TEXT,
+          text: BAZ,
+        }], []],
+      });
+      let outerRev = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[{
+          type: Point.CLAIM,
+          claimId: innerRev.claim_id,
+        }], []],
+      });
+      await innerRev.reload(Claim.INCLUDE_POINTS);
+      await outerRev.reload(Claim.INCLUDE_POINTS);
+      let pointId = outerRev.pointRevs[0].point_id;
+      let subPointId = innerRev.pointRevs[0].point_id;
+
+      await Point.apiToggleStar(subPointId, user);
+      let stars = await Claim.apiGetStars(outerRev.claim_id, user);
+      expect(stars).to.deep.equal({
+        star: {
+          count: 0,
+          starred: false,
+        },
+        points: {
+          [pointId]: {
+            count: 0,
+            starred: false,
+          },
+          [subPointId]: {
+            count: 1,
+            starred: true,
+          },
+        },
+      });
+    });
   });
 });

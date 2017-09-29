@@ -99,7 +99,15 @@ export default {
       if (!this.claim || !this.$store.state.loaded) {
         return [];
       }
-      let starCount = (p) => -this.$store.state.stars.point[p.id].count;
+      let starCount = (p) => {
+        try {
+          return -this.$store.state.stars.point[p.id].count;
+        } catch (e) {
+          /* eslint no-console: 0 */
+          console.log('Missing star for point: ' + p.id);
+          return 0;
+        }
+      };
       return this.claim.points.map((sidePoints) => {
         return sortBy(pointMapToList(sidePoints), [starCount, Math.random]);
       });
