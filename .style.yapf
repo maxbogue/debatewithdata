@@ -1,4 +1,0 @@
-[style]
-based_on_style = chromium
-blank_line_before_nested_class_or_def = false
-indent_width = 4
