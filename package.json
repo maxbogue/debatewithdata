@@ -6,7 +6,14 @@
   "private": true,
   "scripts": {
     "dev": "backpack",
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "./bin/lint; exit 0;",
+    "lint-all": "eslint $(git ls-files | egrep \"\\.(js|vue)$\"); exit 0;",
+    "lint-precommit": "./bin/lint staged"
+  },
+  "precommit": {
+    "run": [ "lint-precommit", "test" ],
+    "silent": true
   },
   "dependencies": {
     "aws-sdk": "^2.98.0",
@@ -57,6 +64,7 @@
     "chai": "^4.1.1",
     "chai-as-promised": "^7.1.1",
     "env-test": "^1.0.0",
-    "mocha": "^3.5.0"
+    "mocha": "^3.5.0",
+    "pre-commit": "^1.2.2"
   }
 }

@@ -452,7 +452,7 @@ describe('Claim', function () {
       });
     });
 
-    it.only('nested claim', async function () {
+    it('nested claim', async function () {
       let innerRev = await Claim.apiCreate(user, {
         text: BAR,
         points: [[{

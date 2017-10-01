@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ "$1" = "staged" ]; then
+  GIT_CMD="git diff --cached --name-only --diff-filter=ACM"
+else
+  GIT_CMD="git diff --name-only --diff-filter=ACM"
+fi
+
+STAGED_FILES=$($GIT_CMD | egrep "\.(js|vue)$")
+
+if [ "$STAGED_FILES" = "" ]; then
+  exit 0
+fi
+
+eslint $STAGED_FILES
