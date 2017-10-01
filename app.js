@@ -1,3 +1,4 @@
+import config from 'config';
 import express from 'express';
 
 import api from './api';
@@ -27,7 +28,4 @@ app.get('/source/:id/edit', sendIndex);
 
 app.use('/api', api);
 
-app.listen(7122, function () {
-  /* eslint no-console: 0 */
-  console.log('Example app listening on port 7122!');
-});
+app.listen(config.get('port'));
