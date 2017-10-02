@@ -41,7 +41,7 @@ export default function (sequelize, DataTypes) {
       through: models.ClaimPoint,
       as: 'claimRevs',
     });
-    PointRev.Subpoints = PointRev.belongsToMany(PointRev, {
+    PointRev.SubPointRevs = PointRev.belongsToMany(PointRev, {
       through: models.PointPoint,
       as: 'pointRevs',
       otherKey: 'subpoint_rev_id',
@@ -49,6 +49,20 @@ export default function (sequelize, DataTypes) {
   };
 
   PointRev.postAssociate = function (models) {
+    PointRev.INCLUDE = function (n) {
+      if (n < 1) {
+        throw new Error('Must include at least 1 tier.');
+      }
+      let include = [models.Blob];
+      if (n > 1) {
+        include.push({
+          association: PointRev.SubPointRevs,
+          ...models.PointRev.INCLUDE(n-1),
+        });
+      }
+      return { include };
+    };
+
     // Create a new 'claim' point rev, which links to a claim object.
     function createClaimRev(user, point, { claimId }, transaction) {
       if (!claimId) {

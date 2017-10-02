@@ -40,32 +40,16 @@ export default function (sequelize, DataTypes) {
   };
 
   Claim.postAssociate = function (models) {
-    Claim.INCLUDE_TEXT = {
-      include: [models.Blob],
-    };
-
-    Claim.INCLUDE_POINTS = {
-      include: [models.Blob, {
-        association: models.ClaimRev.Points,
-        include: [models.Blob, {
-          association: models.PointRev.Subpoints,
-          include: [models.Blob],
+    Claim.INCLUDE = function (n) {
+      if (n < 1) {
+        throw new Error('Must include at least 1 tier.');
+      }
+      return {
+        include: [{
+          association: Claim.Head,
+          ...models.ClaimRev.INCLUDE(n),
         }],
-      }],
-    };
-
-    Claim.INCLUDE_HEAD = {
-      include: [{
-        association: Claim.Head,
-        include: [models.Blob],
-      }],
-    };
-
-    Claim.INCLUDE_HEAD_POINTS = {
-      include: [{
-        association: Claim.Head,
-        ...Claim.INCLUDE_POINTS,
-      }],
+      };
     };
 
     Claim.apiCreate = async function (user, data, transaction) {
@@ -99,7 +83,7 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      const claim = await Claim.findById(claimId, Claim.INCLUDE_HEAD);
+      const claim = await Claim.findById(claimId, Claim.INCLUDE(1));
       if (!claim) {
         throw new Error('No claim found for ID: ' + claimId);
       }
@@ -128,7 +112,7 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      let claim = await Claim.findById(claimId, Claim.INCLUDE_HEAD);
+      let claim = await Claim.findById(claimId, Claim.INCLUDE(1));
       if (!claim) {
         throw new Error('No claim found for ID: ' + claimId);
       }
@@ -163,7 +147,7 @@ export default function (sequelize, DataTypes) {
     };
 
     Claim.apiGet = async function (claimId) {
-      let claim = await Claim.findById(claimId, Claim.INCLUDE_HEAD_POINTS);
+      let claim = await Claim.findById(claimId, Claim.INCLUDE(3));
       if (!claim) {
         throw Error('Claim ID not found: ' + claimId);
       }
@@ -171,7 +155,7 @@ export default function (sequelize, DataTypes) {
     };
 
     Claim.apiGetAll = async function () {
-      let claims = await Claim.findAll(Claim.INCLUDE_HEAD_POINTS);
+      let claims = await Claim.findAll(Claim.INCLUDE(3));
       let ret = {};
       for (let claim of claims) {
         if (!claim.head.deleted) {
@@ -201,7 +185,7 @@ export default function (sequelize, DataTypes) {
       } else {
         await claim.addStarredByUser(user);
       }
-      return claim.toStarData(user);
+      return await claim.toStarData(user);
     };
 
     Claim.apiGetStars = async function (claimId, user) {
@@ -209,18 +193,18 @@ export default function (sequelize, DataTypes) {
         include: [{
           association: Claim.Head,
           include: [{
-            association: models.ClaimRev.Points,
+            association: models.ClaimRev.PointRevs,
             include: [models.Point, {
               model: Claim,
               include: [{
                 association: Claim.Head,
                 include: [{
-                  association: models.ClaimRev.Points,
+                  association: models.ClaimRev.PointRevs,
                   include: [models.Point],
                 }],
               }],
             }, {
-              association: models.PointRev.Subpoints,
+              association: models.PointRev.SubPointRevs,
               include: [models.Point],
             }],
           }],

@@ -20,10 +20,26 @@ export default function (sequelize, DataTypes) {
     ClaimRev.belongsTo(models.ClaimRev, {
       as: 'parent',
     });
-    ClaimRev.Points = ClaimRev.belongsToMany(models.PointRev, {
+    ClaimRev.PointRevs = ClaimRev.belongsToMany(models.PointRev, {
       through: models.ClaimPoint,
       as: 'pointRevs',
     });
+  };
+
+  ClaimRev.postAssociate = function (models) {
+    ClaimRev.INCLUDE = function (n) {
+      if (n < 1) {
+        throw new Error('Must include at least 1 tier.');
+      }
+      let include = [models.Blob];
+      if (n > 1) {
+        include.push({
+          association: ClaimRev.PointRevs,
+          ...models.PointRev.INCLUDE(n-1),
+        });
+      }
+      return { include };
+    };
   };
 
   return ClaimRev;

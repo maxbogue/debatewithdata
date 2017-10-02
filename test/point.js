@@ -1,6 +1,6 @@
 import chai from 'chai';
 
-import { sequelize, Point, Source } from '../models';
+import { sequelize, Point, PointRev, Source } from '../models';
 import utils from './utils';
 
 const expect = chai.expect;
@@ -25,7 +25,7 @@ describe('Point', function () {
         type: Point.TEXT,
         text: FOO,
       });
-      await pointRev.reload(Point.INCLUDE_SUBPOINTS);
+      await pointRev.reload(PointRev.INCLUDE(2));
       expect(pointRev.user_id).to.equal(user.id);
       expect(pointRev.point_id).to.exist;
       expect(pointRev.parent_id).to.be.null;
@@ -45,7 +45,7 @@ describe('Point', function () {
           text: BAR,
         }], []],
       });
-      await pointRev.reload(Point.INCLUDE_SUBPOINTS);
+      await pointRev.reload(PointRev.INCLUDE(2));
       expect(pointRev.user_id).to.equal(user.id);
       expect(pointRev.point_id).to.exist;
       expect(pointRev.parent_id).to.be.null;
@@ -70,7 +70,7 @@ describe('Point', function () {
           text: BAR,
         }]],
       });
-      await pointRev.reload(Point.INCLUDE_SUBPOINTS);
+      await pointRev.reload(PointRev.INCLUDE(2));
       expect(pointRev.user_id).to.equal(user.id);
       expect(pointRev.parent_id).to.be.null;
       expect(pointRev.blob.text).to.equal(FOO);
@@ -113,7 +113,7 @@ describe('Point', function () {
           text: FOO,
         }], []],
       });
-      await r2.reload(Point.INCLUDE_SUBPOINTS);
+      await r2.reload(PointRev.INCLUDE(2));
       expect(r2.user_id).to.equal(user.id);
       expect(r2.point_id).to.equal(r1.point_id);
       expect(r2.parent_id).to.equal(r1.id);
@@ -138,7 +138,7 @@ describe('Point', function () {
           rev: r2a.id,
         }], []],
       });
-      await r3.reload(Point.INCLUDE_SUBPOINTS);
+      await r3.reload(PointRev.INCLUDE(2));
       expect(r3.user_id).to.equal(user.id);
       expect(r3.point_id).to.equal(r1.point_id);
       expect(r3.parent_id).to.equal(r2.id);
@@ -159,7 +159,7 @@ describe('Point', function () {
           text: BAR,
         }], []],
       });
-      await r4.reload(Point.INCLUDE_SUBPOINTS);
+      await r4.reload(PointRev.INCLUDE(2));
       expect(r4.user_id).to.equal(user.id);
       expect(r4.point_id).to.equal(r1.point_id);
       expect(r4.parent_id).to.equal(r3.id);

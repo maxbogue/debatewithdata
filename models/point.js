@@ -45,24 +45,6 @@ export default function (sequelize, DataTypes) {
   };
 
   Point.postAssociate = function (models) {
-    // Include directive that gets point text and subpoints with text.
-    Point.INCLUDE_SUBPOINTS = {
-      include: [
-        models.Blob,
-        {
-          association: models.PointRev.Subpoints,
-          include: [models.Blob],
-        },
-      ],
-    };
-
-    Point.INCLUDE_HEAD = {
-      include: [{
-        association: Point.Head,
-        ...Point.INCLUDE_SUBPOINTS,
-      }],
-    };
-
     Point.apiCreate = async function (user, data, transaction) {
       if (!transaction) {
         return await sequelize.transaction(function(t) {
@@ -92,8 +74,8 @@ export default function (sequelize, DataTypes) {
 
     Point.prototype.toStarData = async function (user) {
       let count = await this.countStarredByUsers();
-      let starred = user !== null;
-      if (starred) {
+      let starred = false;
+      if (user) {
         starred = await this.hasStarredByUser(user);
       }
       return { count, starred };
