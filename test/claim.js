@@ -40,7 +40,7 @@ describe('Claim', function () {
           text: BAR,
         }], []],
       });
-      await claimRev.reload(ClaimRev.INCLUDE(3));
+      await claimRev.reload(ClaimRev.INCLUDE(2));
       expect(claimRev.user_id).to.equal(user.id);
       expect(claimRev.blob.text).to.equal(FOO);
       expect(claimRev.parent_id).to.be.null;
@@ -61,7 +61,7 @@ describe('Claim', function () {
           text: BAR,
         }]],
       });
-      await claimRev.reload(ClaimRev.INCLUDE(3));
+      await claimRev.reload(ClaimRev.INCLUDE(2));
       expect(claimRev.user_id).to.equal(user.id);
       expect(claimRev.blob.text).to.equal(FOO);
       expect(claimRev.parent_id).to.be.null;
@@ -83,7 +83,7 @@ describe('Claim', function () {
       let r2 = await Claim.apiUpdate(r1.claim_id, user, {
         text: BAR,
       });
-      await r2.reload(ClaimRev.INCLUDE(3));
+      await r2.reload(ClaimRev.INCLUDE(2));
       expect(r2.user_id).to.equal(user.id);
       expect(r2.claim_id).to.equal(r1.claim_id);
       expect(r2.blob.text).to.equal(BAR);
@@ -106,7 +106,7 @@ describe('Claim', function () {
           text: FOO,
         }], []],
       });
-      await r2.reload(ClaimRev.INCLUDE(3));
+      await r2.reload(ClaimRev.INCLUDE(2));
       expect(r2.pointRevs).to.have.lengthOf(1);
       let r2a = r2.pointRevs[0];
       expect(r2a.user_id).to.equal(user.id);
@@ -123,7 +123,7 @@ describe('Claim', function () {
           text: BAR,
         }], []],
       });
-      await r1.reload(ClaimRev.INCLUDE(3));
+      await r1.reload(ClaimRev.INCLUDE(2));
       expect(r1.pointRevs).to.have.lengthOf(1);
       let r1a = r1.pointRevs[0];
 
@@ -138,7 +138,7 @@ describe('Claim', function () {
           text: BAZ,
         }], []],
       });
-      await r2.reload(ClaimRev.INCLUDE(3));
+      await r2.reload(ClaimRev.INCLUDE(2));
       expect(r2.pointRevs).to.have.lengthOf(1);
       let r2a = r2.pointRevs[0];
       expect(r2a.blob.text).to.equal(BAZ);
@@ -153,7 +153,7 @@ describe('Claim', function () {
       expect(claim.head_id).to.equal(r1.id);
 
       let r2 = await Claim.apiDelete(claim.id, user);
-      await r2.reload(ClaimRev.INCLUDE(3));
+      await r2.reload(ClaimRev.INCLUDE(2));
       expect(r2.deleted).to.be.true;
       expect(r2.user_id).to.equal(user.id);
       expect(r2.parent_id).to.equal(r1.id);
@@ -201,7 +201,7 @@ describe('Claim', function () {
           text: BAZ,
         }]],
       });
-      await rev.reload(ClaimRev.INCLUDE(3));
+      await rev.reload(ClaimRev.INCLUDE(2));
       expect(rev.pointRevs).to.have.lengthOf(2);
       let p1 = rev.pointRevs[rev.pointRevs[0].claimPoint.isFor ? 0 : 1];
       let p2 = rev.pointRevs[rev.pointRevs[0].claimPoint.isFor ? 1 : 0];
@@ -363,7 +363,7 @@ describe('Claim', function () {
           text: BAR,
         }], []],
       });
-      await rev.reload(ClaimRev.INCLUDE(3));
+      await rev.reload(ClaimRev.INCLUDE(2));
       let pointId = rev.pointRevs[0].point_id;
 
       await Claim.apiToggleStar(rev.claim_id, user);
@@ -467,8 +467,8 @@ describe('Claim', function () {
           claimId: innerRev.claim_id,
         }], []],
       });
-      await innerRev.reload(ClaimRev.INCLUDE(3));
-      await outerRev.reload(ClaimRev.INCLUDE(3));
+      await innerRev.reload(ClaimRev.INCLUDE(2));
+      await outerRev.reload(ClaimRev.INCLUDE(2));
       let pointId = outerRev.pointRevs[0].point_id;
       let subPointId = innerRev.pointRevs[0].point_id;
 

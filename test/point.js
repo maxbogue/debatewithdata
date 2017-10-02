@@ -25,7 +25,7 @@ describe('Point', function () {
         type: Point.TEXT,
         text: FOO,
       });
-      await pointRev.reload(PointRev.INCLUDE(2));
+      await pointRev.reload(PointRev.INCLUDE(1));
       expect(pointRev.user_id).to.equal(user.id);
       expect(pointRev.point_id).to.exist;
       expect(pointRev.parent_id).to.be.null;
