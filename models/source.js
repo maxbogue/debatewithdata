@@ -26,15 +26,13 @@ export default function (sequelize, DataTypes) {
   };
 
   Source.postAssociate = function (models) {
-    Source.INCLUDE_HEAD = {
-      include: [{
-        association: Source.Head,
-        include: [models.Blob],
-      }],
-    };
-
-    Source.INCLUDE_TEXT = {
-      include: [models.Blob],
+    Source.INCLUDE = function () {
+      return {
+        include: [{
+          association: Source.Head,
+          ...models.SourceRev.INCLUDE(),
+        }],
+      };
     };
 
     Source.apiCreate = async function (user, data, transaction) {
@@ -64,7 +62,7 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      let source = await Source.findById(sourceId, Source.INCLUDE_HEAD);
+      let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
         throw new Error('No source found for ID: ' + sourceId);
       }
@@ -96,7 +94,7 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      let source = await Source.findById(sourceId, Source.INCLUDE_HEAD);
+      let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
         throw new Error('No source found for ID: ' + sourceId);
       }
@@ -132,7 +130,7 @@ export default function (sequelize, DataTypes) {
     };
 
     Source.apiGet = async function (sourceId) {
-      let source = await Source.findById(sourceId, Source.INCLUDE_HEAD);
+      let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
         throw Error('Source ID not found: ' + sourceId);
       }
@@ -140,7 +138,7 @@ export default function (sequelize, DataTypes) {
     };
 
     Source.apiGetAll = async function () {
-      let sources = await Source.findAll(Source.INCLUDE_HEAD);
+      let sources = await Source.findAll(Source.INCLUDE());
       let ret = {};
       for (let source of sources) {
         if (!source.head.deleted) {

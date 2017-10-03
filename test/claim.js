@@ -182,11 +182,58 @@ describe('Claim', function () {
   describe('.apiGet()', function () {
     it('no points', async function () {
       let rev = await Claim.apiCreate(user, { text: FOO });
-      let claimData = await Claim.apiGet(rev.claim_id);
+      let claimData = await Claim.apiGet(rev.claim_id, user);
       expect(claimData).to.deep.equal({
-        rev: rev.id,
-        text: FOO,
-        points: [{}, {}],
+        claims: {
+          [rev.claim_id]: {
+            rev: rev.id,
+            text: FOO,
+            depth: 3,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            points: [{}, {}],
+          },
+        },
+        sources: {},
+      });
+    });
+
+    it('starred', async function () {
+      let rev = await Claim.apiCreate(user, { text: FOO });
+      await Claim.apiToggleStar(rev.claim_id, user);
+      let claimData = await Claim.apiGet(rev.claim_id, user);
+      expect(claimData).to.deep.equal({
+        claims: {
+          [rev.claim_id]: {
+            rev: rev.id,
+            text: FOO,
+            depth: 3,
+            star: {
+              count: 1,
+              starred: true,
+            },
+            points: [{}, {}],
+          },
+        },
+        sources: {},
+      });
+      let claimDataNoUser = await Claim.apiGet(rev.claim_id);
+      expect(claimDataNoUser).to.deep.equal({
+        claims: {
+          [rev.claim_id]: {
+            rev: rev.id,
+            text: FOO,
+            depth: 3,
+            star: {
+              count: 1,
+              starred: false,
+            },
+            points: [{}, {}],
+          },
+        },
+        sources: {},
       });
     });
 
@@ -205,28 +252,47 @@ describe('Claim', function () {
       expect(rev.pointRevs).to.have.lengthOf(2);
       let p1 = rev.pointRevs[rev.pointRevs[0].claimPoint.isFor ? 0 : 1];
       let p2 = rev.pointRevs[rev.pointRevs[0].claimPoint.isFor ? 1 : 0];
-      let claimData = await Claim.apiGet(rev.claim_id);
+      await Point.apiToggleStar(p2.point_id, user);
+      let claimData = await Claim.apiGet(rev.claim_id, user);
       expect(claimData).to.deep.equal({
-        rev: rev.id,
-        text: FOO,
-        points: [{
-          [p1.point_id]: {
-            rev: p1.id,
-            type: Point.TEXT,
-            text: BAR,
+        claims: {
+          [rev.claim_id]: {
+            rev: rev.id,
+            text: FOO,
+            depth: 3,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            points: [{
+              [p1.point_id]: {
+                rev: p1.id,
+                type: Point.TEXT,
+                text: BAR,
+                star: {
+                  count: 0,
+                  starred: false,
+                },
+              },
+            }, {
+              [p2.point_id]: {
+                rev: p2.id,
+                type: Point.TEXT,
+                text: BAZ,
+                star: {
+                  count: 1,
+                  starred: true,
+                },
+              },
+            }],
           },
-        }, {
-          [p2.point_id]: {
-            rev: p2.id,
-            type: Point.TEXT,
-            text: BAZ,
-          },
-        }],
+        },
+        sources: {},
       });
     });
 
     it('nested points', async function () {
-      let rev = await Claim.apiCreate(user, {
+      let c1 = await Claim.apiCreate(user, {
         text: FOO,
         points: [[{
           type: Point.SUBCLAIM,
@@ -237,29 +303,107 @@ describe('Claim', function () {
           }], []],
         }], []],
       });
-      await rev.reload(ClaimRev.INCLUDE(3));
-      expect(rev.pointRevs).to.have.lengthOf(1);
-      let p1 = rev.pointRevs[0];
+      await c1.reload(ClaimRev.INCLUDE(3));
+      expect(c1.pointRevs).to.have.lengthOf(1);
+      let p1 = c1.pointRevs[0];
       expect(p1.pointRevs).to.have.lengthOf(1);
       let p1a = p1.pointRevs[0];
-      let claimData = await Claim.apiGet(rev.claim_id);
-      expect(claimData).to.deep.equal({
-        rev: rev.id,
-        text: FOO,
-        points: [{
-          [p1.point_id]: {
-            rev: p1.id,
-            type: Point.SUBCLAIM,
-            text: BAR,
+      await Point.apiToggleStar(p1a.point_id, user);
+      let c1Data = await Claim.apiGet(c1.claim_id, user);
+      expect(c1Data).to.deep.equal({
+        claims: {
+          [c1.claim_id]: {
+            rev: c1.id,
+            text: FOO,
+            depth: 3,
+            star: {
+              count: 0,
+              starred: false,
+            },
             points: [{
-              [p1a.point_id]: {
-                rev: p1a.id,
-                type: Point.TEXT,
-                text: BAZ,
+              [p1.point_id]: {
+                rev: p1.id,
+                type: Point.SUBCLAIM,
+                text: BAR,
+                star: {
+                  count: 0,
+                  starred: false,
+                },
+                points: [{
+                  [p1a.point_id]: {
+                    rev: p1a.id,
+                    type: Point.TEXT,
+                    text: BAZ,
+                    star: {
+                      count: 1,
+                      starred: true,
+                    },
+                  },
+                }, {}],
               },
             }, {}],
           },
-        }, {}],
+        },
+        sources: {},
+      });
+
+      let c2 = await Claim.apiCreate(user, {
+        text: BAZ,
+        points: [[{
+          type: Point.CLAIM,
+          claimId: c1.claim_id,
+        }], []],
+      });
+
+      await c2.reload(ClaimRev.INCLUDE(3));
+      expect(c2.pointRevs).to.have.lengthOf(1);
+      let p3 = c2.pointRevs[0];
+
+      let c2Data = await Claim.apiGet(c2.claim_id, user);
+      expect(c2Data).to.deep.equal({
+        claims: {
+          [c2.claim_id]: {
+            rev: c2.id,
+            text: BAZ,
+            depth: 3,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            points: [{
+              [p3.point_id]: {
+                rev: p3.id,
+                type: Point.CLAIM,
+                claimId: c1.claim_id,
+                star: {
+                  count: 0,
+                  starred: false,
+                },
+              },
+            }, {}],
+          },
+          [c1.claim_id]: {
+            rev: c1.id,
+            text: FOO,
+            depth: 2,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            points: [{
+              [p1.point_id]: {
+                rev: p1.id,
+                type: Point.SUBCLAIM,
+                text: BAR,
+                star: {
+                  count: 0,
+                  starred: false,
+                },
+              },
+            }, {}],
+          },
+        },
+        sources: {},
       });
     });
 
@@ -272,8 +416,14 @@ describe('Claim', function () {
       let r2 = await Claim.apiDelete(r1.claim_id, user);
       let claimData = await Claim.apiGet(r1.claim_id);
       expect(claimData).to.deep.equal({
-        rev: r2.id,
-        deleted: true,
+        claims: {
+          [r1.claim_id]: {
+            rev: r2.id,
+            depth: 3,
+            deleted: true,
+          },
+        },
+        sources: {},
       });
     });
   });
@@ -282,18 +432,32 @@ describe('Claim', function () {
     it('two claims', async function () {
       let c1r = await Claim.apiCreate(user, { text: FOO });
       let c2r = await Claim.apiCreate(user, { text: BAR });
-      let claimsData = await Claim.apiGetAll();
+      await Claim.apiToggleStar(c2r.claim_id, user);
+      let claimsData = await Claim.apiGetAll(user);
       expect(claimsData).to.deep.equal({
-        [c1r.claim_id]: {
-          rev: c1r.id,
-          text: FOO,
-          points: [{}, {}],
+        claims: {
+          [c1r.claim_id]: {
+            rev: c1r.id,
+            text: FOO,
+            depth: 3,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            points: [{}, {}],
+          },
+          [c2r.claim_id]: {
+            rev: c2r.id,
+            text: BAR,
+            depth: 3,
+            star: {
+              count: 1,
+              starred: true,
+            },
+            points: [{}, {}],
+          },
         },
-        [c2r.claim_id]: {
-          rev: c2r.id,
-          text: BAR,
-          points: [{}, {}],
-        },
+        sources: {},
       });
     });
 
@@ -301,13 +465,21 @@ describe('Claim', function () {
       let c1r = await Claim.apiCreate(user, { text: FOO });
       let c2r = await Claim.apiCreate(user, { text: BAR });
       await Claim.apiDelete(c2r.claim_id, user);
-      let claimsData = await Claim.apiGetAll();
+      let claimsData = await Claim.apiGetAll(user);
       expect(claimsData).to.deep.equal({
-        [c1r.claim_id]: {
-          rev: c1r.id,
-          text: FOO,
-          points: [{}, {}],
-        }
+        claims: {
+          [c1r.claim_id]: {
+            rev: c1r.id,
+            text: FOO,
+            depth: 3,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            points: [{}, {}],
+          },
+        },
+        sources: {},
       });
     });
   });

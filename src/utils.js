@@ -1,4 +1,5 @@
-import { cloneDeep, forEach, forOwn, isArray, isObject, map } from 'lodash';
+import { cloneDeep, forEach, forOwn, isArray, isObject, map,
+  sortBy } from 'lodash';
 
 export function walk(o, f) {
   if (isObject(o)) {
@@ -82,6 +83,20 @@ export var DwdUtilsMixin = {
     },
     sourceUrl: function (sourceId) {
       return '/source/' + sourceId;
+    },
+    pointsToList: function (points) {
+      let starCount = (p) => {
+        try {
+          return -this.$store.state.stars.point[p.id].count;
+        } catch (e) {
+          /* eslint no-console: 0 */
+          console.log('Missing star for point: ' + p.id);
+          return 0;
+        }
+      };
+      return points.map((sidePoints) => {
+        return sortBy(pointMapToList(sidePoints), [starCount, Math.random]);
+      });
     },
   },
 };

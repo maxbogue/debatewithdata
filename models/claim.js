@@ -131,44 +131,61 @@ export default function (sequelize, DataTypes) {
       return claimRev;
     };
 
-    Claim.prototype.toData = function () {
+    Claim.prototype.fillData = async function (data, depth, user) {
       if (this.head.deleted) {
-        return {
+        data.claims[this.id] = {
           rev: this.head_id,
+          depth: 3,
           deleted: true,
         };
+        return;
       }
 
-      return {
+      if (data.claims[this.id] && data.claims[this.id].depth >= depth) {
+        // This claim has already been loaded with at least as much depth.
+        return;
+      }
+
+      let thisData = {
         rev: this.head_id,
         text: this.head.blob.text,
-        points: models.PointRev.toDatas(this.head.pointRevs),
+        depth: depth,
+        star: await this.toStarData(user),
       };
+
+      if (depth > 1) {
+        thisData.points = await models.PointRev.toDatas(
+            this.head.pointRevs, data, depth - 1, user);
+      }
+
+      data.claims[this.id] = thisData;
     };
 
-    Claim.apiGet = async function (claimId) {
+    Claim.apiGet = async function (claimId, user) {
       let claim = await Claim.findById(claimId, Claim.INCLUDE(3));
       if (!claim) {
         throw Error('Claim ID not found: ' + claimId);
       }
-      return claim.toData();
+      let data = { claims: {}, sources: {} };
+      await claim.fillData(data, 3, user);
+      return data;
     };
 
-    Claim.apiGetAll = async function () {
+    Claim.apiGetAll = async function (user) {
       let claims = await Claim.findAll(Claim.INCLUDE(3));
-      let ret = {};
+      let data = { claims: {}, sources: {} };
       for (let claim of claims) {
         if (!claim.head.deleted) {
-          ret[claim.id] = claim.toData();
+          await claim.fillData(data, 3, user);
         }
       }
-      return ret;
+      return data;
     };
 
     Claim.prototype.toStarData = async function (user) {
       let count = await this.countStarredByUsers();
-      let starred = Boolean(user);
-      if (starred) {
+      let starred = false;
+      if (user) {
         starred = await this.hasStarredByUser(user);
       }
       return { count, starred };

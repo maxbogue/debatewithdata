@@ -1,6 +1,6 @@
 import chai from 'chai';
 
-import { sequelize, Source } from '../models';
+import { sequelize, Source, SourceRev } from '../models';
 import utils from './utils';
 
 const expect = chai.expect;
@@ -33,7 +33,7 @@ describe('Source', function () {
   describe('.apiCreate()', function () {
     it('happy', async function () {
       let rev = await Source.apiCreate(user, { url: URL, text: TEXT });
-      await rev.reload(Source.INCLUDE_TEXT);
+      await rev.reload(SourceRev.INCLUDE());
       expect(rev.deleted).to.be.false;
       expect(rev.user_id).to.equal(user.id);
       expect(rev.blob.text).to.equal(TEXT);
@@ -47,7 +47,7 @@ describe('Source', function () {
 
     it('happy with ary', async function () {
       let rev = await Source.apiCreate(user, DATA);
-      await rev.reload(Source.INCLUDE_TEXT);
+      await rev.reload(SourceRev.INCLUDE());
       expect(rev.deleted).to.be.false;
       expect(rev.user_id).to.equal(user.id);
       expect(rev.blob.text).to.equal(TEXT);
@@ -67,7 +67,7 @@ describe('Source', function () {
       expect(source.head_id).to.equal(rev1.id);
 
       let rev2 = await Source.apiUpdate(source.id, user, DATA2);
-      await rev2.reload(Source.INCLUDE_TEXT);
+      await rev2.reload(SourceRev.INCLUDE());
       expect(rev2.deleted).to.be.false;
       expect(rev2.user_id).to.equal(user.id);
       expect(rev2.blob.text).to.equal(TEXT2);

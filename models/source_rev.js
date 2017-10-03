@@ -31,5 +31,13 @@ export default function (sequelize, DataTypes) {
     });
   };
 
+  SourceRev.postAssociate = function (models) {
+    SourceRev.INCLUDE = function () {
+      return {
+        include: [models.Blob],
+      };
+    };
+  };
+
   return SourceRev;
 }

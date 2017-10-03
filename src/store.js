@@ -3,29 +3,19 @@ import { cloneDeep, forOwn } from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { axiosErrorToString, genId, walk } from './utils';
+import { axiosErrorToString, walk } from './utils';
 
 Vue.use(Vuex);
 
-function addTempIds(points) {
-  for (let i = 0; i < points.length; i++) {
-    for (let j = 0; j < points[i].length; j++) {
-      let p = points[i][j];
-      if (!p.id && !p.tempId) {
-        p.tempId = genId();
-      }
-      if (p.points) {
-        addTempIds(p.points);
-      }
-    }
-  }
-}
-
-function sanitizeClaim(claim) {
-  if (!claim.points) {
-    claim.points = [[], []];
-  }
-  addTempIds(claim.points);
+// Whether the claim for claimId in s1 should be written to s2.
+// This is the case if:
+//   - claimId doesn't exist in s2, or
+//   - s1 has a different revision than s2 (it's always newer), or
+//   - s1 has more depth loaded than s2.
+function shouldWriteClaim(claimId, s1, s2) {
+  let c1 = s1.claims[claimId];
+  let c2 = s2.claims[claimId];
+  return !c2 || c1.rev !== c2.rev || c1.depth > c2.depth;
 }
 
 function copyClaim(claim) {
@@ -61,22 +51,28 @@ export default new Vuex.Store({
     loaded: function (state) {
       state.loaded = true;
     },
-    setClaim: function (state, { id, claim }) {
-      sanitizeClaim(claim);
-      Vue.set(state.claims, id, claim);
+    setData: function (state, data) {
+      if (data.claims) {
+        forOwn(data.claims, (claim, id) => {
+          if (shouldWriteClaim(id, data, state)) {
+            Vue.set(state.claims, id, claim);
+          }
+        });
+      }
+      if (data.sources) {
+        forOwn(data.sources, (source, id) => {
+          Vue.set(state.sources, id, source);
+        });
+      }
     },
-    setClaims: function (state, claims) {
-      forOwn(claims, sanitizeClaim);
-      state.claims = claims;
+    setClaim: function (state, { id, claim }) {
+      Vue.set(state.claims, id, claim);
     },
     removeClaim: function (state, id) {
       Vue.delete(state.claims, id);
     },
     setSource: function (state, { id, source }) {
       Vue.set(state.sources, id, source);
-    },
-    setSources: function (state, sources) {
-      state.sources = sources;
     },
     removeSource: function (state, id) {
       Vue.delete(state.sources, id);
@@ -94,10 +90,10 @@ export default new Vuex.Store({
   actions: {
     load: function ({ commit }) {
       let claimsLoaded = axios.get('/api/claim').then(function (response) {
-        commit('setClaims', response.data);
+        commit('setData', response.data);
       });
       let sourcesLoaded = axios.get('/api/source').then(function (response) {
-        commit('setSources', response.data);
+        commit('setData', { sources: response.data });
       });
       Promise.all([claimsLoaded, sourcesLoaded]).then(function () {
         commit('loaded');

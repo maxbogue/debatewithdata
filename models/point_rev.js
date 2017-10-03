@@ -53,7 +53,13 @@ export default function (sequelize, DataTypes) {
       if (n < 1) {
         throw new Error('Must include at least 1 tier.');
       }
-      let include = [models.Blob];
+      let include = [models.Blob, models.Point, {
+        model: models.Claim,
+        ...models.Claim.INCLUDE(n),
+      }, {
+        model: models.Source,
+        ...models.Source.INCLUDE(),
+      }];
       if (n > 1) {
         include.push({
           association: PointRev.SubPointRevs,
@@ -177,38 +183,55 @@ export default function (sequelize, DataTypes) {
       return pointRev.pointPoint.isFor;
     }
 
-    PointRev.toDatas = function (pointRevs) {
+    /**
+     * Returns the API data format for multiple point revisions.
+     */
+    PointRev.toDatas = async function (pointRevs, data, depth, user) {
       let points = [{}, {}];
       for (let pointRev of pointRevs) {
         let i = isFor(pointRev) ? 0 : 1;
-        points[i][pointRev.point_id] = pointRev.toData();
+        points[i][pointRev.point_id] = await pointRev.toData(data, depth, user);
       }
       return points;
     };
 
-    PointRev.prototype.toData = function () {
-      let data = {
+    /**
+     * Returns the API data format for this point.
+     *
+     * @param data - Linked claims and sources are added to this object as a
+     *               side effect.
+     * @param depth - The depth to load this point and linked claims to.
+     * @param [user] - Used to check whether items are starred.
+     */
+    PointRev.prototype.toData = async function (data, depth, user) {
+      let thisData = {
         rev: this.id,
         type: this.type,
+        star: await this.point.toStarData(user),
       };
       switch (this.type) {
       case CLAIM:
-        data.claimId = this.claim_id;
+        thisData.claimId = this.claim_id;
+        await this.claim.fillData(data, depth, user);
         break;
       case SOURCE:
-        data.sourceId = this.source_id;
+        thisData.sourceId = this.source_id;
+        data.sources[this.source_id] = this.source.toData();
         break;
       case SUBCLAIM:
-        data.points = PointRev.toDatas(this.pointRevs);
-        data.text = this.blob.text;
+        if (depth > 1) {
+          thisData.points = await PointRev.toDatas(
+              this.pointRevs, data, depth - 1, user);
+        }
+        thisData.text = this.blob.text;
         break;
       case TEXT:
-        data.text = this.blob.text;
+        thisData.text = this.blob.text;
         break;
       default:
-        throw new Error('Bad point type: ' + data.type);
+        throw new Error('Bad point type: ' + thisData.type);
       }
-      return data;
+      return thisData;
     };
   };
 
