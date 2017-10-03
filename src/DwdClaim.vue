@@ -8,7 +8,7 @@
           <dwd-flag v-if="claim.flag" :flag="claim.flag"></dwd-flag>
         </div>
         <div class="controls">
-          <dwd-star type="claim" :id="id"></dwd-star>
+          <dwd-star :star="claim.star" :url="'/api' + claimUrl(id)"></dwd-star>
           <router-link v-if="$store.state.user"
                        :to="claimUrl(id) + '/edit'"
                        class="glyphicon glyphicon-pencil click"
@@ -24,7 +24,7 @@
     <template v-if="$store.state.singleColumn">
       <div v-for="[point, side, i] in zippedPoints"
            class="col-xs-12"
-           :key="point.id || point.tempId">
+           :key="point.id">
         <dwd-point :point="point"
            :side="side"></dwd-point>
         </dwd-point>
@@ -37,7 +37,7 @@
         <dwd-point v-for="(point, i) in sidePoints"
                    :point="point"
                    :side="side"
-                   :key="point.id || point.tempId">
+                   :key="point.id">
         </dwd-point>
       </div>
     </template>
@@ -48,13 +48,11 @@
 </template>
 
 <script>
-import { sortBy } from 'lodash';
-
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdPoint from './DwdPoint.vue';
 import DwdStar from './DwdStar.vue';
-import { pointMapToList, rotateWithIndexes } from './utils';
+import { pointMapsToLists, rotateWithIndexes } from './utils';
 
 export default {
   components: {
@@ -78,29 +76,30 @@ export default {
       if (!this.claim || !this.$store.state.loaded || this.loading) {
         return [];
       }
-      let starCount = (p) => -this.$store.state.stars.point[p.id].count;
-      return this.claim.points.map((sidePoints) => {
-        return sortBy(pointMapToList(sidePoints), [starCount, Math.random]);
-      });
+      return pointMapsToLists(this.claim.points);
     },
     zippedPoints: function () {
       return rotateWithIndexes(this.points);
     },
   },
   methods: {
-    loadStars: function () {
-      this.loading = true;
-      this.$store.dispatch('loadClaimStars', { id: this.id }).then(() => {
+    checkLoaded: function () {
+      if (!this.claim || this.claim.depth < 3) {
+        this.loading = true;
+        this.$store.dispatch('getClaim', { id: this.id }).then(() => {
+          this.loading = false;
+        });
+      } else {
         this.loading = false;
-      });
+      }
     },
   },
   mounted: function () {
-    this.loadStars();
+    this.checkLoaded();
   },
   watch: {
     id: function () {
-      this.loadStars();
+      this.checkLoaded();
     },
   },
 };

@@ -1,5 +1,4 @@
-import { cloneDeep, forEach, forOwn, isArray, isObject, map,
-  sortBy } from 'lodash';
+import { forEach, forOwn, isArray, isObject, map, sortBy } from 'lodash';
 
 export function walk(o, f) {
   if (isObject(o)) {
@@ -47,12 +46,21 @@ export function isValidPoint(point) {
   return Boolean(pointToInput(point));
 }
 
-export function pointMapToList(points) {
-  return map(points, (point, id) => {
-    let pointClone = cloneDeep(point);
-    pointClone.id = id;
-    return pointClone;
-  });
+function starCount(point) {
+  return -point.star.count;
+}
+
+function prepPoint(point, id) {
+  point.id = id;
+  return point;
+}
+
+function pointMapToList(pointMap) {
+  return sortBy(map(pointMap, prepPoint), [starCount, Math.random]);
+}
+
+export function pointMapsToLists(pointMaps) {
+  return pointMaps.map(pointMapToList);
 }
 
 export function rotateWithIndexes(lists) {
@@ -83,20 +91,6 @@ export var DwdUtilsMixin = {
     },
     sourceUrl: function (sourceId) {
       return '/source/' + sourceId;
-    },
-    pointsToList: function (points) {
-      let starCount = (p) => {
-        try {
-          return -this.$store.state.stars.point[p.id].count;
-        } catch (e) {
-          /* eslint no-console: 0 */
-          console.log('Missing star for point: ' + p.id);
-          return 0;
-        }
-      };
-      return points.map((sidePoints) => {
-        return sortBy(pointMapToList(sidePoints), [starCount, Math.random]);
-      });
     },
   },
 };

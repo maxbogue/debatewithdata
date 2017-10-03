@@ -6,7 +6,7 @@ import { AuthError } from './error';
 const router = express.Router();
 
 router.get('/', async function (req, res) {
-  let data = await Claim.apiGetAll();
+  let data = await Claim.apiGetAll(req.user);
   res.json(data);
 });
 
@@ -15,7 +15,7 @@ router.post('/', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Claim.apiCreate(req.user, req.body);
-  let data = await Claim.apiGet(rev.claim_id);
+  let data = await Claim.apiGet(rev.claim_id, req.user);
   res.json({
     id: rev.claim_id,
     claim: data,
@@ -23,7 +23,7 @@ router.post('/', async function (req, res) {
 });
 
 router.get('/:id', async function (req, res) {
-  let data = await Claim.apiGet(req.params.id);
+  let data = await Claim.apiGet(req.params.id, req.user);
   res.json(data);
 });
 
@@ -32,7 +32,7 @@ router.put('/:id', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Claim.apiUpdate(req.params.id, req.user, req.body);
-  let data = Claim.apiGet(rev.claim_id);
+  let data = Claim.apiGet(rev.claim_id, req.user);
   res.json({ claim: data });
 });
 
@@ -41,13 +41,8 @@ router.delete('/:id', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Claim.apiDelete(req.params.id, req.user);
-  let data = Claim.apiGet(rev.claim_id);
+  let data = Claim.apiGet(rev.claim_id, req.user);
   res.json({ claim: data });
-});
-
-router.get('/:id/star', async function (req, res) {
-  let claimStars = await Claim.apiGetStars(req.params.id, req.user);
-  res.json(claimStars);
 });
 
 router.post('/:id/star', async function (req, res) {

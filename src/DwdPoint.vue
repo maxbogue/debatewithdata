@@ -12,7 +12,7 @@
           <dwd-sub-point v-for="[subPoint, subSide, i] in subPoints"
                          :point="subPoint"
                          :side="subSide"
-                         :key="subPoint.id || subPoint.tempId">
+                         :key="subPoint.id">
           </dwd-sub-point>
         </ul>
       </template>
@@ -28,7 +28,7 @@
       <span v-else>error</span>
     </div>
     <div class="controls">
-      <dwd-star type="point" :id="point.id"></dwd-star>
+      <dwd-star :star="point.star" :url="'/api/point/' + point.id"></dwd-star>
       <span class="glyphicon glyphicon-comment click"
             aria-hidden="true"
             @click="showComments = !showComments"></span>
@@ -40,13 +40,11 @@
 </template>
 
 <script>
-import { sortBy } from 'lodash';
-
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdStar from './DwdStar.vue';
 import DwdSubPoint from './DwdSubPoint.vue';
-import { pointMapToList, rotateWithIndexes } from './utils';
+import { pointMapsToLists, rotateWithIndexes } from './utils';
 
 export default {
   components: {
@@ -99,18 +97,7 @@ export default {
       if (!this.claim || !this.$store.state.loaded) {
         return [];
       }
-      let starCount = (p) => {
-        try {
-          return -this.$store.state.stars.point[p.id].count;
-        } catch (e) {
-          /* eslint no-console: 0 */
-          console.log('Missing star for point: ' + p.id);
-          return 0;
-        }
-      };
-      return this.claim.points.map((sidePoints) => {
-        return sortBy(pointMapToList(sidePoints), [starCount, Math.random]);
-      });
+      return pointMapsToLists(this.claim.points);
     },
     subPoints: function () {
       return rotateWithIndexes(this.sortedSubpoints);

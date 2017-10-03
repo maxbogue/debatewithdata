@@ -71,7 +71,7 @@ import DwdEditPoint from './DwdEditPoint.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import {
-  emptyPoint, emptyPoints, isValidPoint, rotateWithIndexes
+  emptyPoint, emptyPoints, isValidPoint, pointMapsToLists, rotateWithIndexes
 } from './utils';
 
 export default {
@@ -174,7 +174,7 @@ export default {
 
       if (this.claim) {
         this.text = this.claim.text;
-        this.points = this.pointsToList(this.claim.points);
+        this.points = pointMapsToLists(this.claim.points);
         this.flag = this.claim.flag;
         for (let i = 0; i < this.points.length; i++) {
           this.points[i].push(emptyPoint());

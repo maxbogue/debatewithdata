@@ -7,25 +7,19 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-  props: ['type', 'id'],
+  props: ['star', 'url'],
   computed: {
-    star: function () {
-      return this.$store.state.stars[this.type][this.id];
-    },
     user: function () {
       return this.$store.state.user;
     },
-    starred: function () {
-      return this.user && this.star && this.star.starred;
-    },
     classes: function () {
-      return {
-        'glyphicon-star': this.starred,
-        'glyphicon-star-empty': !this.starred,
-        'disabled': !this.star || !this.user,
-        'click': this.user,
-      };
+      return [
+        this.star.starred ? 'glyphicon-star' : 'glyphicon-star-empty',
+        this.user ? 'click' : 'disabled',
+      ];
     },
   },
   methods: {
@@ -33,7 +27,10 @@ export default {
       if (!this.user) {
         return;
       }
-      this.$store.dispatch('toggleStar', { type: this.type, id: this.id });
+      axios.post(this.url + '/star').then((response) => {
+        this.star.count = response.data.star.count;
+        this.star.starred = response.data.star.starred;
+      });
     },
   },
 };

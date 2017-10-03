@@ -204,53 +204,6 @@ export default function (sequelize, DataTypes) {
       }
       return await claim.toStarData(user);
     };
-
-    Claim.apiGetStars = async function (claimId, user) {
-      let claim = await Claim.findById(claimId, {
-        include: [{
-          association: Claim.Head,
-          include: [{
-            association: models.ClaimRev.PointRevs,
-            include: [models.Point, {
-              model: Claim,
-              include: [{
-                association: Claim.Head,
-                include: [{
-                  association: models.ClaimRev.PointRevs,
-                  include: [models.Point],
-                }],
-              }],
-            }, {
-              association: models.PointRev.SubPointRevs,
-              include: [models.Point],
-            }],
-          }],
-        }],
-      });
-
-      let pointStars = {};
-      for (let pointRev of claim.head.pointRevs) {
-        let point = pointRev.point;
-        pointStars[point.id] = await point.toStarData(user);
-        if (pointRev.type === models.Point.CLAIM) {
-          let claimRev = pointRev.claim.head;
-          for (let subPointRev of claimRev.pointRevs) {
-            let subPoint = subPointRev.point;
-            pointStars[subPoint.id] = await subPoint.toStarData(user);
-          }
-        } else if (pointRev.type === models.Point.SUBCLAIM) {
-          for (let subPointRev of pointRev.pointRevs) {
-            let subPoint = subPointRev.point;
-            pointStars[subPoint.id] = await subPoint.toStarData(user);
-          }
-        }
-      }
-      let claimStar = await claim.toStarData(user);
-      return {
-        star: claimStar,
-        points: pointStars,
-      };
-    };
   };
 
   return Claim;
