@@ -1,6 +1,6 @@
 <template>
 <div>
-  <form class="row gutter-16" @submit.prevent="commit">
+  <form v-if="source" class="row gutter-16" @submit.prevent="commit">
     <div class="col-sm-12">
       <div class="t1 bubble green content">
         <div>
@@ -58,6 +58,8 @@
       <delete-button noun="Source" @delete="remove"></delete-button>
     </div>
   </form>
+  <div v-else-if="!loaded">Loading...</div>
+  <div v-else>Source not found.</div>
 </div>
 </template>
 
@@ -73,8 +75,8 @@ export default {
     DeleteButton,
   },
   data: () => ({
+    loaded: false,
     error: '',
-    initialized: false,
     text: '',
     url: '',
     ary: 0,
@@ -131,10 +133,20 @@ export default {
       this.$router.push(this.id ? this.sourceUrl(this.id) : '/sources');
     },
     initialize: function () {
-      if (this.source) {
-        this.url = this.source.url;
-        this.text = this.source.text;
-        this.ary = this.source.ary;
+      this.url = this.source.url;
+      this.text = this.source.text;
+      this.ary = this.source.ary;
+    },
+    checkLoaded: function () {
+      if (!this.source) {
+        this.loaded = false;
+        this.$store.dispatch('getSource', { id: this.id }).then(() => {
+          this.loaded = true;
+          this.initialize();
+        });
+      } else {
+        this.loaded = true;
+        this.initialize();
       }
     },
   },
@@ -146,12 +158,12 @@ export default {
         this.$refs.url.setCustomValidity(ERROR_MSG_INVALID_URL);
       }
     },
-    source: function () {
-      this.initialize();
+    id: function () {
+      this.checkLoaded();
     },
   },
-  mounted: function() {
-    this.initialize();
+  mounted: function () {
+    this.checkLoaded();
   },
 };
 </script>

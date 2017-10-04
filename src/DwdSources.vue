@@ -3,14 +3,17 @@
   <h3 class="center">
     Sources are external sources of data used to support claims.
   </h3>
-  <router-link :to="addUrl" class="add click">+</router-link>
-  <router-link v-for="(source, id) in sources"
-               class="t1 bubble green"
-               :to="sourceUrl(id)"
-               :key="id">
-    <div class="source-text">{{ source.text }}</div>
-    <div class="source-url">{{ source.url }}</div>
-  </router-link>
+  <template v-if="loaded">
+    <router-link :to="addUrl" class="add click">+</router-link>
+    <router-link v-for="(source, id) in sources"
+                 class="t1 bubble green"
+                 :to="sourceUrl(id)"
+                 :key="id">
+      <div class="source-text">{{ source.text }}</div>
+      <div class="source-url">{{ source.url }}</div>
+    </router-link>
+  </template>
+  <div v-else>Loading...</div>
 </div>
 </template>
 
@@ -18,6 +21,9 @@
 import { mapState } from 'vuex';
 
 export default {
+  data: () => ({
+    loaded: false,
+  }),
   computed: {
     ...mapState([
       'user',
@@ -29,6 +35,11 @@ export default {
       }
       return '/login?next=/sources/add';
     },
+  },
+  mounted: function () {
+    this.$store.dispatch('getSources').then(() => {
+      this.loaded = true;
+    });
   },
 };
 </script>

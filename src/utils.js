@@ -46,21 +46,21 @@ export function isValidPoint(point) {
   return Boolean(pointToInput(point));
 }
 
-function starCount(point) {
-  return -point.star.count;
+function starCount(item) {
+  return -item.star.count;
 }
 
-function prepPoint(point, id) {
-  point.id = id;
-  return point;
+function prepItem(item, id) {
+  item.id = id;
+  return item;
 }
 
-function pointMapToList(pointMap) {
-  return sortBy(map(pointMap, prepPoint), [starCount, Math.random]);
+export function prepAndSortByStars(items) {
+  return sortBy(map(items, prepItem), [starCount, Math.random]);
 }
 
 export function pointMapsToLists(pointMaps) {
-  return pointMaps.map(pointMapToList);
+  return pointMaps.map(prepAndSortByStars);
 }
 
 export function rotateWithIndexes(lists) {

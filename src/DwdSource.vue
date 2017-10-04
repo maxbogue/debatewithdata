@@ -24,7 +24,7 @@
                     :url="'/api/source/' + id"></dwd-comments>
     </div>
   </div>
-  <div v-else-if="!$store.state.loaded">Loading sources...</div>
+  <div v-else-if="!loaded">Loading...</div>
   <div v-else>Source not found.</div>
 </div>
 </template>
@@ -37,6 +37,7 @@ export default {
     DwdComments,
   },
   data: () => ({
+    loaded: false,
     showComments: false,
   }),
   computed: {
@@ -72,6 +73,24 @@ export default {
         this.error = error;
       });
     },
+    checkLoaded: function () {
+      if (!this.source) {
+        this.loaded = false;
+        this.$store.dispatch('getSource', { id: this.id }).then(() => {
+          this.loaded = true;
+        });
+      } else {
+        this.loaded = true;
+      }
+    },
+  },
+  watch: {
+    id: function () {
+      this.checkLoaded();
+    },
+  },
+  mounted: function () {
+    this.checkLoaded();
   },
 };
 </script>

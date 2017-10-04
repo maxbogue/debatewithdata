@@ -94,7 +94,7 @@ export default {
       return '';
     },
     sortedSubpoints: function () {
-      if (!this.claim || !this.$store.state.loaded) {
+      if (!this.claim || !this.claim.points) {
         return [];
       }
       return pointMapsToLists(this.claim.points);

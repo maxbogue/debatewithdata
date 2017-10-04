@@ -42,7 +42,7 @@
       </div>
     </template>
   </div>
-  <div v-else-if="!$store.state.loaded">Loading claims...</div>
+  <div v-else-if="!loaded">Loading...</div>
   <div v-else>Claim not found.</div>
 </div>
 </template>
@@ -62,7 +62,7 @@ export default {
     DwdStar,
   },
   data: () => ({
-    loading: true,
+    loaded: false,
     showComments: false,
   }),
   computed: {
@@ -73,7 +73,7 @@ export default {
       return this.$store.state.claims[this.id] || null;
     },
     points: function () {
-      if (!this.claim || !this.$store.state.loaded || this.loading) {
+      if (!this.claim || !this.loaded) {
         return [];
       }
       return pointMapsToLists(this.claim.points);
@@ -85,22 +85,22 @@ export default {
   methods: {
     checkLoaded: function () {
       if (!this.claim || this.claim.depth < 3) {
-        this.loading = true;
+        this.loaded = false;
         this.$store.dispatch('getClaim', { id: this.id }).then(() => {
-          this.loading = false;
+          this.loaded = true;
         });
       } else {
-        this.loading = false;
+        this.loaded = true;
       }
     },
-  },
-  mounted: function () {
-    this.checkLoaded();
   },
   watch: {
     id: function () {
       this.checkLoaded();
     },
+  },
+  mounted: function () {
+    this.checkLoaded();
   },
 };
 </script>

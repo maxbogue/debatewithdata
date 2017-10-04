@@ -36,16 +36,12 @@ function singleColumnPlugin(store) {
 
 export default new Vuex.Store({
   state: {
-    loaded: false,
     claims: {},
     sources: {},
     user: null,
     singleColumn: windowIsSingleColumn(),
   },
   mutations: {
-    loaded: function (state) {
-      state.loaded = true;
-    },
     setData: function (state, data) {
       if (data.claims) {
         forOwn(data.claims, (claim, id) => {
@@ -83,19 +79,13 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    load: function ({ commit }) {
-      let claimsLoaded = axios.get('/api/claim').then(function (response) {
-        commit('setData', response.data);
-      });
-      let sourcesLoaded = axios.get('/api/source').then(function (response) {
-        commit('setData', { sources: response.data });
-      });
-      Promise.all([claimsLoaded, sourcesLoaded]).then(function () {
-        commit('loaded');
-      });
-    },
     getClaim: function ({ commit }, { id }) {
       return axios.get('/api/claim/' + id).then(function (response) {
+        commit('setData', response.data);
+      });
+    },
+    getClaims: function ({ commit }) {
+      return axios.get('/api/claim').then(function (response) {
         commit('setData', response.data);
       });
     },
@@ -133,6 +123,16 @@ export default new Vuex.Store({
         }).catch((error) => {
           reject(axiosErrorToString(error));
         });
+      });
+    },
+    getSource: function ({ commit }, { id }) {
+      return axios.get('/api/source/' + id).then(function (response) {
+        commit('setSource', { id, source: response.data });
+      });
+    },
+    getSources: function ({ commit }) {
+      return axios.get('/api/source').then(function (response) {
+        commit('setData', { sources: response.data });
       });
     },
     updateSource: function ({ commit }, { id, source }) {

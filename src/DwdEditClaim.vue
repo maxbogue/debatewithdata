@@ -1,6 +1,6 @@
 <template>
 <div>
-  <form class="row gutter-16" @submit.prevent="submit">
+  <form v-if="claim" class="row gutter-16" @submit.prevent="submit">
     <div class="col-xs-12">
       <div class="t1 bubble blue flex-row">
         <div class="content">
@@ -60,6 +60,8 @@
       <delete-button noun="Claim" @delete="remove"></delete-button>
     </div>
   </form>
+  <div v-else-if="!loaded">Loading...</div>
+  <div v-else>Claim not found.</div>
 </div>
 </template>
 
@@ -82,6 +84,7 @@ export default {
     DwdFlagDropdown,
   },
   data: () => ({
+    loaded: false,
     error: '',
     points: emptyPoints(),
     text: '',
@@ -168,27 +171,33 @@ export default {
       this.$router.push(this.id ? this.claimUrl(this.id) : '/claims');
     },
     initialize: function () {
-      if (this.id && !this.claim) {
-        return;
+      this.text = this.claim.text;
+      this.points = pointMapsToLists(this.claim.points);
+      this.flag = this.claim.flag;
+      for (let i = 0; i < this.points.length; i++) {
+        this.points[i].push(emptyPoint());
       }
-
-      if (this.claim) {
-        this.text = this.claim.text;
-        this.points = pointMapsToLists(this.claim.points);
-        this.flag = this.claim.flag;
-        for (let i = 0; i < this.points.length; i++) {
-          this.points[i].push(emptyPoint());
-        }
+    },
+    checkLoaded: function () {
+      if (!this.claim || this.claim.depth < 3) {
+        this.loaded = false;
+        this.$store.dispatch('getClaim', { id: this.id }).then(() => {
+          this.loaded = true;
+          this.initialize();
+        });
+      } else {
+        this.loaded = true;
+        this.initialize();
       }
     },
   },
   watch: {
-    claim: function () {
-      this.initialize();
+    id: function () {
+      this.checkLoaded();
     },
   },
-  mounted: function() {
-    this.initialize();
+  mounted: function () {
+    this.checkLoaded();
   },
 };
 </script>
