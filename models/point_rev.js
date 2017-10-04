@@ -1,3 +1,4 @@
+import { ClientError } from '../api/error';
 import { genRevId } from './utils';
 
 const CLAIM = 'claim';
@@ -72,7 +73,7 @@ export default function (sequelize, DataTypes) {
     // Create a new 'claim' point rev, which links to a claim object.
     function createClaimRev(user, point, { claimId }, transaction) {
       if (!claimId) {
-        throw new Error('Missing claimId.');
+        throw new ClientError('Missing attribute: claimId');
       }
       return PointRev.create({
         user_id: user.id,
@@ -86,7 +87,7 @@ export default function (sequelize, DataTypes) {
     // Create a new 'source' point, which links to a source object.
     function createSourceRev(user, point, { sourceId }, transaction) {
       if (!sourceId) {
-        throw new Error('Missing sourceId.');
+        throw new ClientError('Missing attribute: sourceId');
       }
       return PointRev.create({
         user_id: user.id,
@@ -108,13 +109,13 @@ export default function (sequelize, DataTypes) {
             // This is an update operation reusing a point revision.
             pointRev = await PointRev.findById(pointData.rev);
             if (!pointRev) {
-              throw new Error('Bad point rev ID: ' + pointData.rev);
+              throw new ClientError('Invalid point rev: ' + pointData.rev);
             }
           } else if (rev.parent_id && pointData.id) {
             // This is an update operation updating an existing point.
             let point = await models.Point.findById(pointData.id);
             if (!point) {
-              throw new Error('Bad point ID: ' + pointData.id);
+              throw new ClientError('Invalid point ID: ' + pointData.id);
             }
             pointRev = await PointRev.apiCreate(
                 user, point, pointData, transaction);
@@ -172,7 +173,7 @@ export default function (sequelize, DataTypes) {
       case TEXT:
         return createTextRev(user, point, data, transaction);
       default:
-        throw new Error('Bad point type: ' + data.type);
+        throw new ClientError('Invalid point type: ' + data.type);
       }
     };
 
@@ -229,7 +230,7 @@ export default function (sequelize, DataTypes) {
         thisData.text = this.blob.text;
         break;
       default:
-        throw new Error('Bad point type: ' + thisData.type);
+        throw new ClientError('Invalid point type: ' + data.type);
       }
       return thisData;
     };

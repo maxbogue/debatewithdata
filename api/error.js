@@ -9,10 +9,18 @@ export class ClientError extends ApiError {
 }
 
 export class AuthError extends ApiError {
-  constructor() {
-    super();
+  constructor(message) {
+    super(message);
     this.httpStatus = 401;
     this.name = 'AuthError';
+  }
+}
+
+export class ForbiddenError extends ApiError {
+  constructor(message) {
+    super(message);
+    this.httpStatus = 403;
+    this.name = 'ForbiddenError';
   }
 }
 

@@ -1,43 +1,35 @@
-import express from 'express';
+import Router from 'express-promise-router';
 
 import { User } from '../models';
-import { ClientError } from './error';
+import { AuthError } from './error';
 
 const AUTH_HEADER_REGEX = /^Bearer (.+)$/;
 
 // A middleware that parses the authorization request header and sets req.user
 // if it is valid.
-export function parseAuthHeader(req, res, next) {
+export async function parseAuthHeader(req, res, next) {
   if (req.headers.authorization) {
     let match = req.headers.authorization.match(AUTH_HEADER_REGEX);
     if (!match) {
-      throw new ClientError('Bad auth token.');
+      throw new AuthError('Malformed auth token.');
     }
-    User.verifyToken(match[1]).then((u) => {
-      if (!u) {
-        throw new ClientError('User not found.');
-      }
-      req.user = u;
-      next();
-    }).catch(next);
-  } else {
-    next();
+    let user = await User.verifyToken(match[1]);
+    req.user = user;
   }
+  next();
 }
 
-const router = express.Router();
+const router = Router();
 
-router.post('/login', function (req, res, next) {
-  User.login(req.body.username, req.body.password).then((user) => {
-    res.json({ authToken: user.genAuthToken() });
-  }).catch(next);
+router.post('/login', async function (req, res) {
+  let user = await User.login(req.body.username, req.body.password);
+  res.json({ authToken: user.genAuthToken() });
 });
 
-router.post('/register', function (req, res, next) {
-  User.register(req.body.username, req.body.password, req.body.email)
-    .then((user) => {
-      res.json({ authToken: user.genAuthToken() });
-    }).catch(next);
+router.post('/register', async function (req, res) {
+  let user = await User.register(
+      req.body.username, req.body.password, req.body.email);
+  res.json({ authToken: user.genAuthToken() });
 });
 
 export default router;

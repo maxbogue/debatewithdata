@@ -1,3 +1,4 @@
+import { NotFoundError } from '../api/error';
 import { genId } from './utils';
 
 export default function (sequelize, DataTypes) {
@@ -61,7 +62,7 @@ export default function (sequelize, DataTypes) {
     Point.apiUpdate = async function (pointId, user, data) {
       const point = await Point.findById(pointId);
       if (!point) {
-        throw new Error('Point not found for id ' + pointId);
+        throw new NotFoundError('Point not found: ' + pointId);
       }
       let pointRev = await sequelize.transaction(async function(transaction) {
         let rev = await models.PointRev.apiCreate(
@@ -84,7 +85,7 @@ export default function (sequelize, DataTypes) {
     Point.apiToggleStar = async function (pointId, user) {
       let point = await Point.findById(pointId);
       if (!point) {
-        throw new Error('Point not found.');
+        throw new NotFoundError('Point not found: ' + pointId);
       }
       let isStarred = await point.hasStarredByUser(user);
       if (isStarred) {

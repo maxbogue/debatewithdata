@@ -1,3 +1,4 @@
+import { NotFoundError } from '../api/error';
 import { genId } from './utils';
 
 export default function (sequelize, DataTypes) {
@@ -85,7 +86,7 @@ export default function (sequelize, DataTypes) {
 
       const claim = await Claim.findById(claimId, Claim.INCLUDE(1));
       if (!claim) {
-        throw new Error('No claim found for ID: ' + claimId);
+        throw new NotFoundError('Claim not found: ' + claimId);
       }
 
       const blob = await models.Blob.fromText(data.text, transaction);
@@ -114,7 +115,7 @@ export default function (sequelize, DataTypes) {
 
       let claim = await Claim.findById(claimId, Claim.INCLUDE(1));
       if (!claim) {
-        throw new Error('No claim found for ID: ' + claimId);
+        throw new NotFoundError('Claim not found: ' + claimId);
       }
 
       if (claim.head.deleted) {
@@ -164,7 +165,7 @@ export default function (sequelize, DataTypes) {
     Claim.apiGet = async function (claimId, user) {
       let claim = await Claim.findById(claimId, Claim.INCLUDE(3));
       if (!claim) {
-        throw Error('Claim ID not found: ' + claimId);
+        throw new NotFoundError('Claim not found: ' + claimId);
       }
       let data = { claims: {}, sources: {} };
       await claim.fillData(data, 3, user);
@@ -194,7 +195,7 @@ export default function (sequelize, DataTypes) {
     Claim.apiToggleStar = async function (claimId, user) {
       let claim = await Claim.findById(claimId);
       if (!claim) {
-        throw new Error('Claim not found.');
+        throw new NotFoundError('Claim not found: ' + claimId);
       }
       let isStarred = await claim.hasStarredByUser(user);
       if (isStarred) {

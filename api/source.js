@@ -1,9 +1,9 @@
-import express from 'express';
+import Router from 'express-promise-router';
 
 import { Comment, Source } from '../models';
 import { AuthError } from './error';
 
-const router = express.Router();
+const router = Router();
 
 router.get('/', async function (req, res) {
   let data = await Source.apiGetAll();

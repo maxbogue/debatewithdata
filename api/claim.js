@@ -1,9 +1,9 @@
-import express from 'express';
+import Router from 'express-promise-router';
 
 import { Claim, Comment } from '../models';
 import { AuthError } from './error';
 
-const router = express.Router();
+const router = Router();
 
 router.get('/', async function (req, res) {
   let data = await Claim.apiGetAll(req.user);
@@ -32,7 +32,7 @@ router.put('/:id', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Claim.apiUpdate(req.params.id, req.user, req.body);
-  let data = Claim.apiGet(rev.claim_id, req.user);
+  let data = await Claim.apiGet(rev.claim_id, req.user);
   res.json({ claim: data });
 });
 

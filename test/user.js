@@ -2,7 +2,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import jwt from 'jsonwebtoken';
 
-import { ClientError, NotFoundError } from '../api/error';
+import { AuthError, ClientError } from '../api/error';
 import { User } from '../models';
 
 chai.use(chaiAsPromised);
@@ -48,12 +48,12 @@ describe('User', function () {
 
     it('fails with bad creds', async function () {
       await expect(User.login(USERNAME, PASSWORD)).to.be.rejectedWith(
-          NotFoundError, /User not found/, 'missing user');
+          AuthError, /Invalid user/, 'missing user');
       await User.register(USERNAME, PASSWORD, EMAIL);
-      await expect(User.login('test2', PASSWORD)).to.be.rejectedWith(
-          NotFoundError, /User not found/, 'missing user 2');
+      await expect(User.login('other user', PASSWORD)).to.be.rejectedWith(
+          AuthError, /Invalid user/, 'other missing user');
       await expect(User.login(USERNAME, 'wrong')).to.be.rejectedWith(
-          ClientError, /Invalid password/, 'bad password');
+          AuthError, /Invalid password/, 'bad password');
     });
   });
 
@@ -82,12 +82,12 @@ describe('User', function () {
       let user = await User.register(USERNAME, PASSWORD, EMAIL);
       let token = user.genAuthToken(-1);
       await expect(User.verifyToken(token)).to.be.rejectedWith(
-          ClientError, /Expired auth token/);
+          AuthError, /Expired auth token/);
     });
 
     it('fails for malformed token', async function () {
       await expect(User.verifyToken('garbage')).to.be.rejectedWith(
-          ClientError, /Malformed auth token/);
+          AuthError, /Malformed auth token/);
     });
   });
 });

@@ -1,4 +1,5 @@
 import { map } from 'lodash';
+import { ForbiddenError, NotFoundError } from '../api/error';
 import { genRevId } from './utils';
 
 export default function (sequelize, DataTypes) {
@@ -49,7 +50,7 @@ export default function (sequelize, DataTypes) {
     Comment.apiAdd = async function (Item, itemId, user, text) {
       let item = await Item.findById(itemId);
       if (!item) {
-        throw new Error(Item.name + ' not found: ' + itemId);
+        throw new NotFoundError(Item.name + ' not found: ' + itemId);
       }
       return await item.createComment({
         user_id: user.id,
@@ -60,14 +61,14 @@ export default function (sequelize, DataTypes) {
     Comment.apiDelete = async function (Item, itemId, user, commentId) {
       let item = await Item.findById(itemId);
       if (!item) {
-        throw new Error(Item.name + ' not found: ' + itemId);
+        throw new NotFoundError(Item.name + ' not found: ' + itemId);
       }
       let comment = await models.Comment.findById(commentId);
       if (!await item.hasComment(comment)) {
-        throw new Error('Comment not found.');
+        throw new NotFoundError('Comment not found.');
       }
       if (comment.user_id !== user.id) {
-        throw new Error('Comment is not yours to delete.');
+        throw new ForbiddenError('Comment is not yours to delete.');
       }
       await comment.update({ deleted: true });
     };
@@ -82,7 +83,7 @@ export default function (sequelize, DataTypes) {
     Comment.apiGetAll = async function (Item, itemId) {
       let item = await Item.findById(itemId);
       if (!item) {
-        throw new Error(Item.name + ' not found: ' + itemId);
+        throw new NotFoundError(Item.name + ' not found: ' + itemId);
       }
       let comments = await item.getComments({
         where: { deleted: false },

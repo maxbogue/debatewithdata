@@ -1,9 +1,9 @@
-import express from 'express';
+import Router from 'express-promise-router';
 
 import { Comment, Point } from '../models';
 import { AuthError } from './error';
 
-const router = express.Router();
+const router = Router();
 
 router.post('/:id/star', async function (req, res) {
   if (!req.user) {

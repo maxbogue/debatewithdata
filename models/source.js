@@ -1,3 +1,4 @@
+import { NotFoundError } from '../api/error';
 import { genId } from './utils';
 
 export default function (sequelize, DataTypes) {
@@ -64,7 +65,7 @@ export default function (sequelize, DataTypes) {
 
       let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
-        throw new Error('No source found for ID: ' + sourceId);
+        throw new NotFoundError('Source not found: ' + sourceId);
       }
 
       if (!source.head.deleted &&
@@ -96,7 +97,7 @@ export default function (sequelize, DataTypes) {
 
       let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
-        throw new Error('No source found for ID: ' + sourceId);
+        throw new NotFoundError('Source not found: ' + sourceId);
       }
 
       if (source.head.deleted) {
@@ -132,7 +133,7 @@ export default function (sequelize, DataTypes) {
     Source.apiGet = async function (sourceId) {
       let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
-        throw Error('Source ID not found: ' + sourceId);
+        throw new NotFoundError('Source not found: ' + sourceId);
       }
       return source.toData();
     };

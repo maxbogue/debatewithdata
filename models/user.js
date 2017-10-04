@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import config from 'config';
 import jwt from 'jsonwebtoken';
 
-import { ClientError, NotFoundError } from '../api/error';
+import { AuthError, ClientError } from '../api/error';
 
 export default function (sequelize, DataTypes) {
   const User = sequelize.define('user', {
@@ -62,10 +62,10 @@ export default function (sequelize, DataTypes) {
   User.login = async function (username, password) {
     let user = await User.findOne({ where: { username }});
     if (!user) {
-      throw new NotFoundError('User not found.');
+      throw new AuthError('Invalid user.');
     }
     if (!await bcrypt.compare(password, user.passwordHash)) {
-      throw new ClientError('Invalid password.');
+      throw new AuthError('Invalid password.');
     }
     return user;
   };
@@ -83,12 +83,16 @@ export default function (sequelize, DataTypes) {
       decoded = jwt.verify(authToken, config.get('secretKey'));
     } catch (e) {
       if (e instanceof jwt.TokenExpiredError) {
-        throw new ClientError('Expired auth token.');
+        throw new AuthError('Expired auth token.');
       }
-      throw new ClientError('Malformed auth token.');
+      throw new AuthError('Malformed auth token.');
     }
     let username = decoded.sub;
-    return await User.findOne({ where: { username }});
+    let user = await User.findOne({ where: { username }});
+    if (!user) {
+      throw new AuthError('User not found: ' + username);
+    }
+    return user;
   };
 
   User.prototype.genAuthToken = function (exp = '7d') {
