@@ -3,7 +3,7 @@ import { cloneDeep, forOwn } from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { axiosErrorToString, walk } from './utils';
+import { walk } from './utils';
 
 Vue.use(Vuex);
 
@@ -38,7 +38,11 @@ export default new Vuex.Store({
   state: {
     claims: {},
     sources: {},
+    claimsLoaded: false,
+    sourcesLoaded: false,
     user: null,
+    loading: false,
+    error: '',
     singleColumn: windowIsSingleColumn(),
   },
   mutations: {
@@ -68,11 +72,22 @@ export default new Vuex.Store({
     removeSource: function (state, id) {
       Vue.delete(state.sources, id);
     },
+    setClaimsLoaded: function (state) {
+      state.claimsLoaded = true;
+    },
+    setSourcesLoaded: function (state) {
+      state.sourcesLoaded = true;
+    },
     setUser: function (state, user) {
       state.user = user;
     },
-    setStar: function (state, { type, id, star }) {
-      Vue.set(state.stars[type], id, star);
+    setLoading: function (state, loading) {
+      state.loading = loading;
+      state.error = '';
+    },
+    setError: function (state, error) {
+      state.error = error;
+      state.loading = false;
     },
     setSingleColumn: function (state, isSingleColumn) {
       state.singleColumn = isSingleColumn;
@@ -87,42 +102,28 @@ export default new Vuex.Store({
     getClaims: function ({ commit }) {
       return axios.get('/api/claim').then(function (response) {
         commit('setData', response.data);
+        commit('setClaimsLoaded');
       });
     },
     updateClaim: function ({ commit }, { id, claim }) {
-      return new Promise((resolve, reject) => {
-        axios.put('/api/claim/' + id, copyClaim(claim)).then((response) => {
-          commit('setClaim', {
-            id,
-            claim: response.data.claim,
-          });
-          resolve(id);
-        }).catch((error) => {
-          reject(axiosErrorToString(error));
+      return axios.put('/api/claim/' + id,
+          copyClaim(claim)).then((response) => {
+        commit('setClaim', {
+          id,
+          claim: response.data.claim,
         });
+        return id;
       });
     },
     addClaim: function ({ commit }, { claim }) {
-      return new Promise((resolve, reject) => {
-        axios.post('/api/claim', copyClaim(claim)).then((response) => {
-          commit('setClaim', {
-            id: response.data.id,
-            claim: response.data.claim,
-          });
-          resolve(response.data.id);
-        }).catch((error) => {
-          reject(axiosErrorToString(error));
-        });
+      return axios.post('/api/claim', copyClaim(claim)).then((response) => {
+        commit('setData', response.data);
+        return response.data.id;
       });
     },
     removeClaim: function ({ commit }, { id }) {
-      return new Promise((resolve, reject) => {
-        axios.delete('/api/claim/' + id).then(() => {
-          commit('removeClaim', id);
-          resolve();
-        }).catch((error) => {
-          reject(axiosErrorToString(error));
-        });
+      return axios.delete('/api/claim/' + id).then(() => {
+        commit('removeClaim', id);
       });
     },
     getSource: function ({ commit }, { id }) {
@@ -133,36 +134,24 @@ export default new Vuex.Store({
     getSources: function ({ commit }) {
       return axios.get('/api/source').then(function (response) {
         commit('setData', { sources: response.data });
+        commit('setSourcesLoaded');
       });
     },
     updateSource: function ({ commit }, { id, source }) {
-      return new Promise((resolve, reject) => {
-        axios.put('/api/source/' + id, source).then(() => {
-          commit('setSource', { id, source });
-          resolve(id);
-        }).catch((error) => {
-          reject(axiosErrorToString(error));
-        });
+      return axios.put('/api/source/' + id, source).then(() => {
+        commit('setSource', { id, source });
+        return id;
       });
     },
     addSource: function ({ commit }, { source }) {
-      return new Promise((resolve, reject) => {
-        axios.post('/api/source', source).then((response) => {
-          commit('setSource', { id: response.data.id, source });
-          resolve(response.data.id);
-        }).catch((error) => {
-          reject(axiosErrorToString(error));
-        });
+      return axios.post('/api/source', source).then((response) => {
+        commit('setSource', { id: response.data.id, source });
+        return response.data.id;
       });
     },
     removeSource: function ({ commit }, { id }) {
-      return new Promise((resolve, reject) => {
-        axios.delete('/api/source/' + id).then(() => {
-          commit('removeSource', id);
-          resolve();
-        }).catch((error) => {
-          reject(axiosErrorToString(error));
-        });
+      return axios.delete('/api/source/' + id).then(() => {
+        commit('removeSource', id);
       });
     },
   },

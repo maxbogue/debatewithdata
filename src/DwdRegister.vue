@@ -1,5 +1,6 @@
 <template>
 <div>
+  <dwd-loader :fill="true"></dwd-loader>
   <form class="login" @submit.prevent="submit">
     <input type="text"
            label="User name"
@@ -16,28 +17,27 @@
     <button type="submit" class="btn btn-default">
       Submit
     </button>
-    <div v-if="error">{{ error }}</div>
   </form>
 </div>
 </template>
 
 <script>
+import DwdLoader from './DwdLoader.vue';
 import auth from './auth';
 
 export default {
+  components: {
+    DwdLoader,
+  },
   data: () => ({
     'username': '',
     'password': '',
     'email': '',
-    'error': '',
   }),
   methods: {
     submit: function () {
       auth.register(this.username, this.password, this.email).then(() => {
-        this.error = '';
         this.$router.replace('/');
-      }).catch((error) => {
-        this.error = error;
       });
     }
   },

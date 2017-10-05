@@ -1,6 +1,6 @@
 <template>
 <div>
-  <form v-if="claim" class="row gutter-16" @submit.prevent="submit">
+  <form v-if="!needsData" class="row gutter-16" @submit.prevent="submit">
     <div class="col-xs-12">
       <div class="t1 bubble blue flex-row">
         <div class="content">
@@ -49,7 +49,6 @@
         </dwd-edit-point>
       </div>
     </template>
-    <div v-if="error" class="col-xs-12 center">{{ error }}</div>
     <div class="col-xs-12 center">
       <button type="submit" class="btn btn-default">Submit</button>
       <button type="button"
@@ -60,8 +59,7 @@
       <delete-button noun="Claim" @delete="remove"></delete-button>
     </div>
   </form>
-  <div v-else-if="!loaded">Loading...</div>
-  <div v-else>Claim not found.</div>
+  <dwd-loader></dwd-loader>
 </div>
 </template>
 
@@ -72,6 +70,7 @@ import DeleteButton from './DeleteButton.vue';
 import DwdEditPoint from './DwdEditPoint.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
+import DwdLoader from './DwdLoader.vue';
 import {
   emptyPoint, emptyPoints, isValidPoint, pointMapsToLists, rotateWithIndexes
 } from './utils';
@@ -82,10 +81,9 @@ export default {
     DwdEditPoint,
     DwdFlag,
     DwdFlagDropdown,
+    DwdLoader,
   },
   data: () => ({
-    loaded: false,
-    error: '',
     points: emptyPoints(),
     text: '',
     flag: '',
@@ -96,6 +94,9 @@ export default {
     },
     claim: function () {
       return this.$store.state.claims[this.id] || null;
+    },
+    needsData: function () {
+      return this.id && (!this.claim || this.claim.depth < 3);
     },
     zippedPoints: function () {
       return rotateWithIndexes(this.points);
@@ -152,10 +153,7 @@ export default {
         payload.id = this.id;
       }
       this.$store.dispatch(action, payload).then((id) => {
-        this.error = '';
         this.$router.push(this.claimUrl(id));
-      }).catch((error) => {
-        this.error = error;
       });
     },
     remove: function () {
@@ -163,8 +161,6 @@ export default {
         id: this.id,
       }).then(() => {
         this.$router.push('/claims');
-      }).catch((error) => {
-        this.error = error;
       });
     },
     cancel: function () {
@@ -179,14 +175,12 @@ export default {
       }
     },
     checkLoaded: function () {
-      if (!this.claim || this.claim.depth < 3) {
-        this.loaded = false;
+      if (this.needsData) {
         this.$store.dispatch('getClaim', { id: this.id }).then(() => {
-          this.loaded = true;
           this.initialize();
         });
-      } else {
-        this.loaded = true;
+      } else if (this.id) {
+        // Adding a new claim.
         this.initialize();
       }
     },

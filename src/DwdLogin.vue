@@ -1,5 +1,6 @@
 <template>
 <div>
+  <dwd-loader :fill="true"></dwd-loader>
   <form class="login" @submit.prevent="submit">
     <input type="text"
            label="User name"
@@ -13,7 +14,6 @@
     <button type="submit" class="btn btn-default">
       Submit
     </button>
-    <div v-if="error">{{ error }}</div>
   </form>
 </div>
 </template>
@@ -21,6 +21,7 @@
 <script>
 import URLSearchParams from 'url-search-params';
 
+import DwdLoader from './DwdLoader.vue';
 import auth from './auth';
 
 function getNextUrl() {
@@ -29,18 +30,17 @@ function getNextUrl() {
 }
 
 export default {
+  components: {
+    DwdLoader,
+  },
   data: () => ({
     'username': '',
     'password': '',
-    'error': '',
   }),
   methods: {
     submit: function () {
       auth.login(this.username, this.password).then(() => {
-        this.error = '';
         this.$router.push(getNextUrl());
-      }).catch((error) => {
-        this.error = error;
       });
     },
   },

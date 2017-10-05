@@ -2,7 +2,6 @@ import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 
 import store from './store';
-import { axiosErrorToString } from './utils';
 
 const LOGIN_URL = '/api/login';
 const REGISTER_URL = '/api/register';
@@ -49,22 +48,11 @@ function setAuthToken(auth_token) {
   store.commit('setUser', getUserFromToken(auth_token));
 }
 
-axios.interceptors.response.use(function (response) {
-  return response;
-}, function (error) {
-  return Promise.reject(error);
-});
-
 export default {
   register: function (username, password, email) {
     let payload = { username, password, email };
-    return new Promise((resolve, reject) => {
-      axios.post(REGISTER_URL, payload).then((response) => {
-        setAuthToken(response.data.authToken);
-        resolve();
-      }).catch((error) => {
-        reject(axiosErrorToString(error));
-      });
+    return axios.post(REGISTER_URL, payload).then((response) => {
+      setAuthToken(response.data.authToken);
     });
   },
   login: function (username, password) {
@@ -72,13 +60,8 @@ export default {
       'username': username,
       'password': password,
     };
-    return new Promise((resolve, reject) => {
-      axios.post(LOGIN_URL, payload).then((response) => {
-        setAuthToken(response.data.authToken);
-        resolve();
-      }).catch((error) => {
-        reject(axiosErrorToString(error));
-      });
+    return axios.post(LOGIN_URL, payload).then((response) => {
+      setAuthToken(response.data.authToken);
     });
   },
   logout: function () {

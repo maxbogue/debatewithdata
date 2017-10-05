@@ -42,14 +42,14 @@
       </div>
     </template>
   </div>
-  <div v-else-if="!loaded">Loading...</div>
-  <div v-else>Claim not found.</div>
+  <dwd-loader></dwd-loader>
 </div>
 </template>
 
 <script>
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
+import DwdLoader from './DwdLoader.vue';
 import DwdPoint from './DwdPoint.vue';
 import DwdStar from './DwdStar.vue';
 import { pointMapsToLists, rotateWithIndexes } from './utils';
@@ -58,11 +58,11 @@ export default {
   components: {
     DwdComments,
     DwdFlag,
+    DwdLoader,
     DwdPoint,
     DwdStar,
   },
   data: () => ({
-    loaded: false,
     showComments: false,
   }),
   computed: {
@@ -73,7 +73,7 @@ export default {
       return this.$store.state.claims[this.id] || null;
     },
     points: function () {
-      if (!this.claim || !this.loaded) {
+      if (!this.claim || this.claim.depth < 3) {
         return [];
       }
       return pointMapsToLists(this.claim.points);
@@ -85,12 +85,7 @@ export default {
   methods: {
     checkLoaded: function () {
       if (!this.claim || this.claim.depth < 3) {
-        this.loaded = false;
-        this.$store.dispatch('getClaim', { id: this.id }).then(() => {
-          this.loaded = true;
-        });
-      } else {
-        this.loaded = true;
+        this.$store.dispatch('getClaim', { id: this.id });
       }
     },
   },

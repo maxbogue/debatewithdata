@@ -3,8 +3,8 @@
   <h3 class="center">
     Claims are simple statements about the world.
   </h3>
-  <template v-if="loaded">
-    <router-link :to="addUrl" class="add click">+</router-link>
+  <router-link :to="addUrl" class="add click">+</router-link>
+  <template v-if="claimsLoaded">
     <router-link v-for="claim in claims"
                  class="t1 bubble blue"
                  :to="claimUrl(claim.id)"
@@ -12,21 +12,23 @@
       {{ claim.text }}
     </router-link>
   </template>
-  <div v-else>Loading...</div>
+  <dwd-loader></dwd-loader>
 </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 
+import DwdLoader from './DwdLoader.vue';
 import { prepAndSortByStars } from './utils';
 
 export default {
-  data: () => ({
-    loaded: false,
-  }),
+  components: {
+    DwdLoader,
+  },
   computed: {
     ...mapState([
+      'claimsLoaded',
       'user',
     ]),
     claims: function () {
@@ -40,9 +42,7 @@ export default {
     },
   },
   mounted: function () {
-    this.$store.dispatch('getClaims').then(() => {
-      this.loaded = true;
-    });
+    this.$store.dispatch('getClaims');
   },
 };
 </script>

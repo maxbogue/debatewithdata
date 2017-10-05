@@ -3,8 +3,8 @@
   <h3 class="center">
     Sources are external sources of data used to support claims.
   </h3>
-  <template v-if="loaded">
-    <router-link :to="addUrl" class="add click">+</router-link>
+  <router-link :to="addUrl" class="add click">+</router-link>
+  <template v-if="sourcesLoaded">
     <router-link v-for="(source, id) in sources"
                  class="t1 bubble green"
                  :to="sourceUrl(id)"
@@ -13,21 +13,24 @@
       <div class="source-url">{{ source.url }}</div>
     </router-link>
   </template>
-  <div v-else>Loading...</div>
+  <dwd-loader></dwd-loader>
 </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 
+import DwdLoader from './DwdLoader.vue';
+
 export default {
-  data: () => ({
-    loaded: false,
-  }),
+  components: {
+    DwdLoader,
+  },
   computed: {
     ...mapState([
-      'user',
       'sources',
+      'sourcesLoaded',
+      'user',
     ]),
     addUrl: function () {
       if (this.user) {
@@ -37,9 +40,7 @@ export default {
     },
   },
   mounted: function () {
-    this.$store.dispatch('getSources').then(() => {
-      this.loaded = true;
-    });
+    this.$store.dispatch('getSources');
   },
 };
 </script>

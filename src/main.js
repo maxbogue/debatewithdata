@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { find } from 'lodash';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
@@ -33,6 +34,15 @@ Vue.directive('auto-resize', {
   },
 });
 
+function httpErrorToString(error) {
+  if (!error.response) {
+    return 'Server not responding';
+  } else if (error.response.status >= 500) {
+    return 'Server error';
+  }
+  return error.response.data.message;
+}
+
 new Vue({
   el: '#app',
   components: { DwdApp },
@@ -59,6 +69,20 @@ new Vue({
   created: function () {
     this.$store.commit('setUser', auth.getUser());
     auth.updateHeader();
+    axios.interceptors.request.use((res) => {
+      this.$store.commit('setLoading', true);
+      return res;
+    }, (err) => {
+      this.$store.commit('setError', httpErrorToString(err));
+      return Promise.reject(err);
+    });
+    axios.interceptors.response.use((res) => {
+      this.$store.commit('setLoading', false);
+      return res;
+    }, (err) => {
+      this.$store.commit('setError', httpErrorToString(err));
+      return Promise.reject(err);
+    });
     window.onclick = function(event) {
       if (!event.target.matches('.dropdown-toggle')) {
         var dropdowns = document.getElementsByClassName('dropdown-content');

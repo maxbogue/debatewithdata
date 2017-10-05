@@ -1,6 +1,6 @@
 <template>
 <div>
-  <form v-if="source" class="row gutter-16" @submit.prevent="commit">
+  <form v-if="!needsData" class="row gutter-16" @submit.prevent="commit">
     <div class="col-sm-12">
       <div class="t1 bubble green content">
         <div>
@@ -47,7 +47,6 @@
         </div>
       </div>
     </div>
-    <div v-if="error" class="col-xs-12 center">{{ error }}</div>
     <div class="col-sm-12 center">
       <button type="submit" class="btn btn-default">Submit</button>
       <button type="button"
@@ -58,8 +57,7 @@
       <delete-button noun="Source" @delete="remove"></delete-button>
     </div>
   </form>
-  <div v-else-if="!loaded">Loading...</div>
-  <div v-else>Source not found.</div>
+  <dwd-loader></dwd-loader>
 </div>
 </template>
 
@@ -67,16 +65,16 @@
 import { isWebUri } from 'valid-url';
 
 import DeleteButton from './DeleteButton.vue';
+import DwdLoader from './DwdLoader.vue';
 
 const ERROR_MSG_INVALID_URL = 'Please enter a URL.';
 
 export default {
   components: {
     DeleteButton,
+    DwdLoader,
   },
   data: () => ({
-    loaded: false,
-    error: '',
     text: '',
     url: '',
     ary: 0,
@@ -87,6 +85,9 @@ export default {
     },
     source: function () {
       return this.$store.state.sources[this.id] || null;
+    },
+    needsData: function () {
+      return this.id && !this.source;
     },
     validUrl: function () {
       return isWebUri(this.url);
@@ -114,10 +115,7 @@ export default {
         payload.id = this.id;
       }
       this.$store.dispatch(action, payload).then((id) => {
-        this.error = '';
         this.$router.push(this.sourceUrl(id));
-      }).catch((error) => {
-        this.error = error;
       });
     },
     remove: function () {
@@ -125,8 +123,6 @@ export default {
         id: this.id,
       }).then(() => {
         this.$router.push('/sources');
-      }).catch((error) => {
-        this.error = error;
       });
     },
     cancel: function () {
@@ -138,14 +134,12 @@ export default {
       this.ary = this.source.ary;
     },
     checkLoaded: function () {
-      if (!this.source) {
-        this.loaded = false;
+      if (this.needsData) {
         this.$store.dispatch('getSource', { id: this.id }).then(() => {
-          this.loaded = true;
           this.initialize();
         });
-      } else {
-        this.loaded = true;
+      } else if (this.id) {
+        // Adding a new source.
         this.initialize();
       }
     },

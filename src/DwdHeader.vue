@@ -42,7 +42,7 @@ export default {
     ]),
     loginUrl: function () {
       let path = this.$route.fullPath;
-      if (path.startsWith('/login')) {
+      if (path === '/' || path.startsWith('/login')) {
         return '/login';
       }
       return '/login?next=' + path;

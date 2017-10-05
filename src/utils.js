@@ -75,15 +75,6 @@ export function rotateWithIndexes(lists) {
   return retList;
 }
 
-export function axiosErrorToString(error) {
-  if (!error.response) {
-    return 'Server not responding';
-  } else if (error.response.status >= 500) {
-    return 'Server error';
-  }
-  return error.response.data.message;
-}
-
 export var DwdUtilsMixin = {
   methods: {
     claimUrl: function (claimId) {

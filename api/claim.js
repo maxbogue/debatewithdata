@@ -16,10 +16,8 @@ router.post('/', async function (req, res) {
   }
   let rev = await Claim.apiCreate(req.user, req.body);
   let data = await Claim.apiGet(rev.claim_id, req.user);
-  res.json({
-    id: rev.claim_id,
-    claim: data,
-  });
+  data.id = rev.claim_id;
+  res.json(data);
 });
 
 router.get('/:id', async function (req, res) {
