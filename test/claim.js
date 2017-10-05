@@ -439,22 +439,20 @@ describe('Claim', function () {
           [c1r.claim_id]: {
             rev: c1r.id,
             text: FOO,
-            depth: 3,
+            depth: 1,
             star: {
               count: 0,
               starred: false,
             },
-            points: [{}, {}],
           },
           [c2r.claim_id]: {
             rev: c2r.id,
             text: BAR,
-            depth: 3,
+            depth: 1,
             star: {
               count: 1,
               starred: true,
             },
-            points: [{}, {}],
           },
         },
         sources: {},
@@ -471,12 +469,11 @@ describe('Claim', function () {
           [c1r.claim_id]: {
             rev: c1r.id,
             text: FOO,
-            depth: 3,
+            depth: 1,
             star: {
               count: 0,
               starred: false,
             },
-            points: [{}, {}],
           },
         },
         sources: {},

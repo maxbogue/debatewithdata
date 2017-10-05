@@ -173,11 +173,11 @@ export default function (sequelize, DataTypes) {
     };
 
     Claim.apiGetAll = async function (user) {
-      let claims = await Claim.findAll(Claim.INCLUDE(3));
+      let claims = await Claim.findAll(Claim.INCLUDE(1));
       let data = { claims: {}, sources: {} };
       for (let claim of claims) {
         if (!claim.head.deleted) {
-          await claim.fillData(data, 3, user);
+          await claim.fillData(data, 1, user);
         }
       }
       return data;
