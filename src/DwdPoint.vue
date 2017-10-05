@@ -118,7 +118,4 @@ export default {
   margin: 0;
   padding: 0;
 }
-.t2 > .controls {
-  margin-left: 8px;
-}
 </style>

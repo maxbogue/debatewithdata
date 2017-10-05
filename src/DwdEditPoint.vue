@@ -67,8 +67,8 @@ import { isWebUri } from 'valid-url';
 import DwdEditSubpoint from './DwdEditSubpoint.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
-import { emptyPoint, emptyPoints, isValidPoint, pointToInput,
-         rotateWithIndexes } from './utils';
+import { emptyPoint, emptyPoints, isValidPoint, pointMapsToLists,
+         pointToInput, rotateWithIndexes } from './utils';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
@@ -190,7 +190,7 @@ export default {
     this.input1 = pointToInput(this.point);
     this.flag = this.claim ? this.claim.flag : this.point.flag || '';
     if (this.point.points) {
-      this.subpoints = cloneDeep(this.point.points);
+      this.subpoints = pointMapsToLists(this.point.points);
       if (this.subpoints.length === 0) {
         this.subpoints.push([]);
         this.subpoints.push([]);
