@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { cloneDeep, forOwn } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
+import forOwn from 'lodash/forOwn';
 import Vue from 'vue';
 import Vuex from 'vuex';
 

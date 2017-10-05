@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { find } from 'lodash';
+import find from 'lodash/find';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 

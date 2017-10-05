@@ -61,14 +61,15 @@
 </template>
 
 <script>
-import { cloneDeep, filter } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
+import filter from 'lodash/filter';
 import { isWebUri } from 'valid-url';
 
 import DwdEditSubpoint from './DwdEditSubpoint.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import { emptyPoint, emptyPoints, isValidPoint, pointMapsToLists,
-         pointToInput, rotateWithIndexes } from './utils';
+  pointToInput, rotateWithIndexes } from './utils';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
@@ -104,7 +105,9 @@ export default {
       return this.isId ? this.$store.state.sources[this.input1] : null;
     },
     zippedSubpoints: function () {
-      if (!this.subpoints) return [];
+      if (!this.subpoints) {
+        return [];
+      }
       return rotateWithIndexes(this.subpoints);
     },
     inputClass: function () {

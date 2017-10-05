@@ -1,4 +1,9 @@
-import { forEach, forOwn, isArray, isObject, map, sortBy } from 'lodash';
+import forEach from 'lodash/forEach';
+import forOwn from 'lodash/forOwn';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
+import map from 'lodash/map';
+import sortBy from 'lodash/sortBy';
 
 export function walk(o, f) {
   if (isObject(o)) {

@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { filter } from 'lodash';
+import filter from 'lodash/filter';
 
 import DeleteButton from './DeleteButton.vue';
 import DwdEditPoint from './DwdEditPoint.vue';
