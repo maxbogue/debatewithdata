@@ -21,6 +21,7 @@ export const sequelize = new Sequelize(config.get('db'), {
     underscoredAll: true,
   },
   logging: null,
+  operatorsAliases: false,
 });
 
 const models = {};
