@@ -8,10 +8,6 @@ const FOO = 'foo';
 const BAR = 'bar';
 
 describe('Blob', function () {
-  beforeEach(function () {
-    return Blob.sync({ force: true });
-  });
-
   describe('.fromText()', function () {
     it('lookup succeeds', async function () {
       let blob = await Blob.fromText(FOO);

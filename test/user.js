@@ -13,10 +13,6 @@ const PASSWORD = 'testtest';
 const EMAIL = 'test@debatewithdata.org';
 
 describe('User', function () {
-  beforeEach(function () {
-    return User.sync({ force: true });
-  });
-
   describe('.register()', function () {
     it('works with good args', async function () {
       let user = await User.register(USERNAME, PASSWORD, EMAIL);

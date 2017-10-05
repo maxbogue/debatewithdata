@@ -1,6 +1,6 @@
 import chai from 'chai';
 
-import { sequelize, Source, SourceRev } from '../models';
+import { Source, SourceRev } from '../models';
 import utils from './utils';
 
 const expect = chai.expect;
@@ -26,7 +26,6 @@ describe('Source', function () {
   let user;
 
   beforeEach(async function () {
-    await sequelize.sync({ force: true });
     user = await utils.createUser();
   });
 

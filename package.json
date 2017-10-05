@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "backpack",
-    "test": "mocha --exit",
+    "test": "mocha",
     "lint": "./bin/lint; exit 0;",
     "lint-all": "eslint $(git ls-files | egrep \"\\.(js|vue)$\"); exit 0;",
     "lint-precommit": "./bin/lint staged"

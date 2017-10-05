@@ -1,6 +1,6 @@
 import chai from 'chai';
 
-import { sequelize, Claim, Comment } from '../models';
+import { Claim, Comment } from '../models';
 import utils from './utils';
 
 const expect = chai.expect;
@@ -14,7 +14,6 @@ describe('Comment', function () {
   let claimId;
 
   beforeEach(async function () {
-    await sequelize.sync({ force: true });
     user = await utils.createUser();
     let claimRev = await Claim.apiCreate(user, { text: BAZ });
     claimId = claimRev.claim_id;
