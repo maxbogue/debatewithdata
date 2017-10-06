@@ -19,6 +19,11 @@ function shouldWriteClaim(claimId, s1, s2) {
   return !c2 || c1.rev !== c2.rev || c1.depth > c2.depth;
 }
 
+function hasFullClaim(state, id) {
+  let claim = state.claims[id];
+  return claim && claim.depth >= 3;
+}
+
 function copyClaim(claim) {
   let copy = cloneDeep(claim);
   walk(copy, (o) => delete o.tempId);
@@ -99,8 +104,15 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    getClaim: function ({ commit }, { id }) {
-      return axios.get('/api/claim/' + id).then(function (response) {
+    getClaim: function ({ commit, state }, { id, trail }) {
+      let url = '/api/claim/' + id;
+      if (trail) {
+        trail = trail.filter((itemId) => !hasFullClaim(state, itemId));
+        if (trail.length > 0) {
+          url += '?trail=' + trail.join(',');
+        }
+      }
+      return axios.get(url).then(function (response) {
         commit('setData', response.data);
       });
     },

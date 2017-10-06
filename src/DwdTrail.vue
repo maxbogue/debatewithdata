@@ -1,19 +1,19 @@
 <template>
 <div v-if="items.length > 0" class="trail">
-  <template v-for="[item, nextIsFor, url] in items">
+  <div v-for="[item, nextIsFor, url] in items" :key="item.id">
     <router-link v-if="url"
-                 :to="url"
-                 :key="item.id"
-                 class="bubble blue">
+                 class="bubble blue"
+                 :to="url">
       {{ item.text }}
     </router-link>
-    <span v-else :key="item.id" class="bubble blue">{{ item.text }}</span>
-  </template>
+    <div v-else class="bubble blue">{{ item.text }}</div>
+    <div class="ind" :class="[nextIsFor ? 'for' : 'against']"></div>
+  </div>
 </div>
 </template>
 
 <script>
-const ID = /^[0-9a-f]{12}$/;
+const ID_REGEX = /^[0-9a-f]{12}$/;
 
 export default {
   computed: {
@@ -22,9 +22,11 @@ export default {
         return [];
       }
       let ids = this.$route.query.trail.split(',');
-      if (!ids.reduce((acc, id) => acc && ID.test(id), true)) {
-        // Something doesn't look like an ID.
-        return [];
+      for (let i = 0; i < ids.length; i++) {
+        if (!ID_REGEX.test(ids[i])) {
+          console.warn('Malformed ID detected in trail: ' + ids[i]);
+          return [];
+        }
       }
       ids.push(this.$route.params.id);
       return ids;
@@ -35,7 +37,7 @@ export default {
       }
       let items = [];
       let item = this.$store.state.claims[this.ids[0]];
-      let itemUrl = this.claimUrl(item.id);
+      let itemUrl = this.claimUrl(this.ids[0]);
       for (let i = 1; i < this.ids.length; i++) {
         if (!item) {
           return [];
@@ -44,7 +46,7 @@ export default {
         let [wasFound, isFor, next, nextUrl] =
             this.findInside(item.points, nextId);
         if (!wasFound) {
-          console.warn('Trail error: ' + nextId);
+          console.warn('Broken link found in trail: ' + nextId);
           return [];
         }
         items.push([item, isFor, itemUrl]);
@@ -83,13 +85,25 @@ export default {
 
 <style>
 .trail {
-  margin-bottom: -16px;
+  margin: 8px 0 -12px;
 }
 .trail .bubble {
   display: block;
-  margin: 8px auto;
+  margin: 4px auto;
   padding: 8px;
   text-decoration: none;
   width: 50%;
+}
+.trail .ind {
+  color: rgba(0, 0, 0, 0.65);
+  display: block;
+  font-family: 'Glyphicons Halflings';
+  text-align: center;
+}
+.ind.for:before {
+  content: "\e081";
+}
+.ind.against:before {
+  content: "\e082";
 }
 </style>

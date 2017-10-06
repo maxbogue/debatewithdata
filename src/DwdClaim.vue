@@ -28,7 +28,7 @@
            :key="point.id">
         <dwd-point :point="point"
                    :side="side"
-                   :trail="[id]"></dwd-point>
+                   :trail="trail.concat(id)"></dwd-point>
         </dwd-point>
       </div>
     </template>
@@ -39,7 +39,7 @@
         <dwd-point v-for="(point, i) in sidePoints"
                    :point="point"
                    :side="side"
-                   :trail="[id]"
+                   :trail="trail.concat(id)"
                    :key="point.id">
         </dwd-point>
       </div>
@@ -86,11 +86,20 @@ export default {
     zippedPoints: function () {
       return rotateWithIndexes(this.points);
     },
+    trail: function () {
+      if (!this.$route.query.trail) {
+        return [];
+      }
+      return this.$route.query.trail.split(',');
+    },
   },
   methods: {
     checkLoaded: function () {
       if (!this.claim || this.claim.depth < 3) {
-        this.$store.dispatch('getClaim', { id: this.id });
+        this.$store.dispatch('getClaim', {
+          id: this.id,
+          trail: this.trail,
+        });
       }
     },
   },
