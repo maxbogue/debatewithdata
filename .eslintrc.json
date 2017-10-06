@@ -30,6 +30,7 @@
         "linebreak-style": ["error", "unix"],
         "no-bitwise": ["error"],
         "no-caller": ["error"],
+        "no-console": ["error", { "allow": ["warn", "error"] }],
         "no-eq-null": ["error"],
         "no-else-return": ["error"],
         "no-eval": ["error"],

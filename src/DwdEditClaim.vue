@@ -90,7 +90,7 @@ export default {
   }),
   computed: {
     id: function () {
-      return this.$route.params.claimId || '';
+      return this.$route.params.id;
     },
     claim: function () {
       return this.$store.state.claims[this.id] || null;

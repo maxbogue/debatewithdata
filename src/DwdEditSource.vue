@@ -81,7 +81,7 @@ export default {
   }),
   computed: {
     id: function () {
-      return this.$route.params.sourceId;
+      return this.$route.params.id;
     },
     source: function () {
       return this.$store.state.sources[this.id] || null;

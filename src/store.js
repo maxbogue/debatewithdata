@@ -51,23 +51,27 @@ export default new Vuex.Store({
       if (data.claims) {
         forOwn(data.claims, (claim, id) => {
           if (shouldWriteClaim(id, data, state)) {
+            claim.id = id;
             Vue.set(state.claims, id, claim);
           }
         });
       }
       if (data.sources) {
         forOwn(data.sources, (source, id) => {
+          source.id = id;
           Vue.set(state.sources, id, source);
         });
       }
     },
     setClaim: function (state, { id, claim }) {
+      claim.id = id;
       Vue.set(state.claims, id, claim);
     },
     removeClaim: function (state, id) {
       Vue.delete(state.claims, id);
     },
     setSource: function (state, { id, source }) {
+      source.id = id;
       Vue.set(state.sources, id, source);
     },
     removeSource: function (state, id) {

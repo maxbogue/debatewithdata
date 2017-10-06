@@ -1,5 +1,6 @@
 <template>
 <div>
+  <dwd-trail></dwd-trail>
   <div v-if="claim" class="row gutter-16">
     <div class="col-sm-12">
       <div class="t1 bubble blue flex-row">
@@ -26,7 +27,8 @@
            class="col-xs-12"
            :key="point.id">
         <dwd-point :point="point"
-           :side="side"></dwd-point>
+                   :side="side"
+                   :trail="[id]"></dwd-point>
         </dwd-point>
       </div>
     </template>
@@ -37,6 +39,7 @@
         <dwd-point v-for="(point, i) in sidePoints"
                    :point="point"
                    :side="side"
+                   :trail="[id]"
                    :key="point.id">
         </dwd-point>
       </div>
@@ -52,6 +55,7 @@ import DwdFlag from './DwdFlag.vue';
 import DwdLoader from './DwdLoader.vue';
 import DwdPoint from './DwdPoint.vue';
 import DwdStar from './DwdStar.vue';
+import DwdTrail from './DwdTrail.vue';
 import { pointMapsToLists, rotateWithIndexes } from './utils';
 
 export default {
@@ -61,13 +65,14 @@ export default {
     DwdLoader,
     DwdPoint,
     DwdStar,
+    DwdTrail,
   },
   data: () => ({
     showComments: false,
   }),
   computed: {
     id: function () {
-      return this.$route.params.claimId;
+      return this.$route.params.id;
     },
     claim: function () {
       return this.$store.state.claims[this.id] || null;

@@ -5,13 +5,14 @@
       <template v-if="claim">
         <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
         <router-link v-if="point.type === 'claim'"
-                     :to="claimUrl(point.claimId)"
+                     :to="claimUrl(point.claimId, trail)"
                      class="source-text">{{ claim.text }}</router-link>
         <span v-else class="source-text">{{ claim.text }}</span>
         <ul v-if="subPoints.length > 0" class="t3">
           <dwd-sub-point v-for="[subPoint, subSide, i] in subPoints"
                          :point="subPoint"
                          :side="subSide"
+                         :trail="trail.concat(point.claimId || point.id)"
                          :key="subPoint.id">
           </dwd-sub-point>
         </ul>
@@ -53,7 +54,7 @@ export default {
     DwdStar,
     DwdSubPoint,
   },
-  props: ['point', 'side'],
+  props: ['point', 'side', 'trail'],
   data: () => ({
     showComments: false,
   }),

@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  props: ['point', 'side'],
+  props: ['point', 'side', 'trail'],
   computed: {
     claim: function () {
       if (this.point.type === 'claim') {
@@ -32,7 +32,7 @@ export default {
     },
     url: function () {
       if (this.claim) {
-        return this.claimUrl(this.point.claimId);
+        return this.claimUrl(this.point.claimId, this.trail);
       } else if (this.source) {
         return this.sourceUrl(this.point.sourceId);
       }

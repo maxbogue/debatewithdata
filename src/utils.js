@@ -82,8 +82,12 @@ export function rotateWithIndexes(lists) {
 
 export var DwdUtilsMixin = {
   methods: {
-    claimUrl: function (claimId) {
-      return '/claim/' + claimId;
+    claimUrl: function (claimId, trail) {
+      let url = '/claim/' + claimId;
+      if (trail && trail.length > 0) {
+        url += '?trail=' + trail.join(',');
+      }
+      return url;
     },
     sourceUrl: function (sourceId) {
       return '/source/' + sourceId;
