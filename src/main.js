@@ -69,18 +69,26 @@ new Vue({
   created: function () {
     this.$store.commit('setUser', auth.getUser());
     auth.updateHeader();
-    axios.interceptors.request.use((res) => {
-      this.$store.commit('setLoading', true);
-      return res;
+    axios.interceptors.request.use((config) => {
+      if (config.loader) {
+        config.loader.setLoading(true);
+      }
+      return config;
     }, (err) => {
-      this.$store.commit('setError', httpErrorToString(err));
+      if (err.config && err.config.loader) {
+        err.config.loader.setError(httpErrorToString(err));
+      }
       return Promise.reject(err);
     });
     axios.interceptors.response.use((res) => {
-      this.$store.commit('setLoading', false);
+      if (res.config.loader) {
+        res.config.loader.setLoading(false);
+      }
       return res;
     }, (err) => {
-      this.$store.commit('setError', httpErrorToString(err));
+      if (err.config && err.config.loader) {
+        err.config.loader.setError(httpErrorToString(err));
+      }
       return Promise.reject(err);
     });
     window.onclick = function(event) {

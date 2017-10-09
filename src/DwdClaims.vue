@@ -12,7 +12,7 @@
       {{ claim.text }}
     </router-link>
   </template>
-  <dwd-loader></dwd-loader>
+  <dwd-loader ref="loader"></dwd-loader>
 </div>
 </template>
 
@@ -42,7 +42,7 @@ export default {
     },
   },
   mounted: function () {
-    this.$store.dispatch('getClaims');
+    this.$store.dispatch('getClaims', { loader: this.$refs.loader });
   },
 };
 </script>

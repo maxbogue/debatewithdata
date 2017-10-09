@@ -57,7 +57,7 @@
       <delete-button noun="Source" @delete="remove"></delete-button>
     </div>
   </form>
-  <dwd-loader></dwd-loader>
+  <dwd-loader ref="loader"></dwd-loader>
 </div>
 </template>
 
@@ -135,7 +135,10 @@ export default {
     },
     checkLoaded: function () {
       if (this.needsData) {
-        this.$store.dispatch('getSource', { id: this.id }).then(() => {
+        this.$store.dispatch('getSource', {
+          id: this.id,
+          loader: this.$refs.loader,
+        }).then(() => {
           this.initialize();
         });
       } else if (this.id) {

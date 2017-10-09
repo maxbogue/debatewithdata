@@ -45,7 +45,7 @@
       </div>
     </template>
   </div>
-  <dwd-loader></dwd-loader>
+  <dwd-loader ref="loader"></dwd-loader>
 </div>
 </template>
 
@@ -99,6 +99,7 @@ export default {
         this.$store.dispatch('getClaim', {
           id: this.id,
           trail: this.trail,
+          loader: this.$refs.loader,
         });
       }
     },

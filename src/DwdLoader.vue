@@ -15,15 +15,22 @@
 
 <script>
 import 'loaders.css/loaders.min.css';
-import { mapState } from 'vuex';
 
 export default {
   props: ['fill'],
-  computed: {
-    ...mapState([
-      'loading',
-      'error',
-    ]),
+  data: () => ({
+    loading: false,
+    error: '',
+  }),
+  methods: {
+    setLoading: function (loading) {
+      this.loading = loading;
+      this.error = '';
+    },
+    setError: function (error) {
+      this.error = error;
+      this.loading = false;
+    },
   },
 };
 </script>

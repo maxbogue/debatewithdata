@@ -59,7 +59,7 @@
       <delete-button noun="Claim" @delete="remove"></delete-button>
     </div>
   </form>
-  <dwd-loader></dwd-loader>
+  <dwd-loader ref="loader"></dwd-loader>
 </div>
 </template>
 
@@ -176,7 +176,10 @@ export default {
     },
     checkLoaded: function () {
       if (this.needsData) {
-        this.$store.dispatch('getClaim', { id: this.id }).then(() => {
+        this.$store.dispatch('getClaim', {
+          id: this.id,
+          loader: this.$refs.loader,
+        }).then(() => {
           this.initialize();
         });
       } else if (this.id) {

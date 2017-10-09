@@ -24,7 +24,7 @@
                     :url="'/api/source/' + id"></dwd-comments>
     </div>
   </div>
-  <dwd-loader></dwd-loader>
+  <dwd-loader ref="loader"></dwd-loader>
 </div>
 </template>
 
@@ -64,7 +64,10 @@ export default {
   methods: {
     checkLoaded: function () {
       if (!this.source) {
-        this.$store.dispatch('getSource', { id: this.id });
+        this.$store.dispatch('getSource', {
+          id: this.id,
+          loader: this.$refs.loader,
+        });
       }
     },
   },

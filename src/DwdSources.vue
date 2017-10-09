@@ -13,7 +13,7 @@
       <div class="source-url">{{ source.url }}</div>
     </router-link>
   </template>
-  <dwd-loader></dwd-loader>
+  <dwd-loader ref="loader"></dwd-loader>
 </div>
 </template>
 
@@ -40,7 +40,7 @@ export default {
     },
   },
   mounted: function () {
-    this.$store.dispatch('getSources');
+    this.$store.dispatch('getSources', { loader: this.$refs.loader });
   },
 };
 </script>
