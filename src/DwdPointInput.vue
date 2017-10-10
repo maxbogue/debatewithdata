@@ -5,7 +5,7 @@
   </label>
   <textarea rows="1"
             autocomplete="off"
-            placeholder="New sub-claim, URL, or 12-letter ID"
+            placeholder="Text, URL, or 12-letter ID"
             ref="input1"
             v-model="input1"
             v-auto-resize
@@ -35,11 +35,11 @@
                :to="claimUrl(point.claimId) + '/edit'">
     {{ claim.text }}
   </router-link>
-  <template v-else-if="source">
+  <div v-else-if="source">
     <router-link :to="sourceUrl(point.sourceId) + '/edit'"
                  class="source-text">{{ source.text }}</router-link>
     <a :href="source.url" class="source-url">{{ source.url }}</a>
-  </template>
+  </div>
 </div>
 </template>
 
@@ -175,7 +175,7 @@ export default {
   margin-top: 8px;
 }
 label {
-  margin-bottom: -4px;
+  margin-bottom: -8px;
 }
 .side-0 > input {
   background-color: #F3E5F5;

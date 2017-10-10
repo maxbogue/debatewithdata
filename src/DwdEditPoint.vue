@@ -11,7 +11,7 @@
                          :canDelete="i < subpoints[side].length - 1"
                          :key="p.id || p.tempId"
                          @update="(p) => updateSubPoint(side, i, p)"
-                         @delete="subpoints[side].splice(i, 1)">
+                         @delete="() => deleteSubPoint(side, i)">
       </dwd-edit-subpoint>
     </ul>
   </div>
@@ -28,15 +28,12 @@
 </template>
 
 <script>
-import cloneDeep from 'lodash/cloneDeep';
-import filter from 'lodash/filter';
-
 import './style/point.css';
 import DwdEditSubpoint from './DwdEditSubpoint.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdPointInput from './DwdPointInput.vue';
-import { emptyPoint, emptyPoints, isValidPoint, pointMapsToLists,
-  rotateWithIndexes } from './utils';
+import { emptyPoint, emptyPoints, pointMapsToLists, rotateWithIndexes }
+  from './utils';
 
 export default {
   components: {
@@ -62,14 +59,10 @@ export default {
   },
   methods: {
     makeSubClaim: function (text) {
-      let subpoints = cloneDeep(this.subpoints);
-      for (let i = 0; i < subpoints.length; i++) {
-        subpoints[i] = filter(subpoints[i], isValidPoint);
-      }
       return {
         type: 'subclaim',
         text: text,
-        points: subpoints,
+        points: this.subpoints,
         flag: this.flag,
       };
     },
@@ -104,6 +97,10 @@ export default {
       if (pi === this.subpoints[si].length - 1) {
         this.subpoints[si].push(emptyPoint());
       }
+      this.updateSubClaim();
+    },
+    deleteSubPoint: function (si, pi) {
+      this.subpoints[si].splice(pi, 1);
       this.updateSubClaim();
     },
     updateFlag: function (flag) {

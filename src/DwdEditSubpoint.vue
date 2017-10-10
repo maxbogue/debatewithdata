@@ -1,22 +1,8 @@
 <template>
 <li class="t3 flex-row" :class="[side === 0 ? 'for' : 'against']">
-  <div class="flex-fill">
-    <textarea rows="1"
-              autocomplete="off"
-              placeholder="New sub-claim or 12-letter ID"
-              ref="input"
-              v-model="input"
-              v-auto-resize
-              :class="[inputClass]" />
-    <router-link v-if="claim"
-                 class="source-text"
-                 :to="claimUrl(point.claimId) + '/edit'">
-      {{ claim.text }}
-    </router-link>
-    <router-link v-else-if="source"
-                 :to="sourceUrl(point.sourceId) + '/edit'"
-                 class="source-text">{{ source.text }}</router-link>
-    <div v-else-if="isId">No claim or source with that ID found.</div>
+  <div class="content">
+    <dwd-point-input :point="point" :side="side" @update="updatePoint">
+    </dwd-point-input>
   </div>
   <div class="controls">
     <span v-if="canDelete"
@@ -29,84 +15,44 @@
 
 <script>
 import './style/sub-point.css';
-import { pointToInput } from './utils';
-
-const ID_REGEX = /^[0-9a-f]{12}$/;
+import DwdPointInput from './DwdPointInput.vue';
 
 export default {
+  components: {
+    DwdPointInput,
+  },
   props: ['point', 'side', 'canDelete'],
-  data: () => ({
-    input: '',
-    // Flag to prevent overwriting original without a change.
-    initialized: false,
-  }),
-  computed: {
-    isId: function () {
-      return ID_REGEX.test(this.input);
-    },
-    claim: function () {
-      return this.isId ? this.$store.state.claims[this.input] : null;
-    },
-    source: function () {
-      return this.isId ? this.$store.state.sources[this.input] : null;
-    },
-    inputClass: function () {
-      if (this.claim || this.source) {
-        return 'mono valid';
-      } else if (this.isId) {
-        return 'mono invalid';
-      }
-      return '';
-    },
-  },
   methods: {
-    makePoint: function () {
-      if (this.claim) {
+    makePoint: function (type, input1, input2) {
+      switch (type) {
+      case 'claim':
+        return { type, claimId: input1 };
+      case 'source':
+        return { type, sourceId: input1 };
+      case 'newSource':
         return {
-          type: 'claim',
-          claimId: this.input,
+          type,
+          newSource: {
+            text: input2,
+            url: input1,
+          },
         };
-      } else if (this.source) {
-        return {
-          type: 'source',
-          sourceId: this.input,
-        };
+      case 'text':
+        return { type, text: input1 };
+      default:
+        return {};
       }
-      let subpoint = {
-        type: 'text',
-        text: this.input,
-      };
+    },
+    updatePoint: function (type, input1, input2) {
+      this.emitPoint(this.makePoint(type, input1, input2));
+    },
+    emitPoint: function (p) {
       if (this.point.id) {
-        subpoint.id = this.point.id;
+        p.id = this.point.id;
       } else {
-        subpoint.tempId = this.point.tempId;
+        p.tempId = this.point.tempId;
       }
-      return subpoint;
-    },
-    updatePoint: function () {
-      this.$emit('update', this.makePoint());
-    },
-    setError: function () {
-      let error = '';
-      if (this.isId && !this.claim && !this.source) {
-        error = 'Invalid ID';
-      }
-      this.$refs.input.setCustomValidity(error);
-    },
-  },
-  mounted: function () {
-    this.input = pointToInput(this.point);
-  },
-  updated: function () {
-    // If this is done in mounted, the watch function still gets called.
-    this.initialized = true;
-  },
-  watch: {
-    input: function () {
-      if (this.initialized) {
-        this.updatePoint();
-        this.setError();
-      }
+      this.$emit('update', p);
     },
   },
 };

@@ -75,6 +75,38 @@ import {
   emptyPoint, emptyPoints, isValidPoint, pointMapsToLists, rotateWithIndexes
 } from './utils';
 
+function makeNewSources(store, points) {
+  let promises = [];
+  for (let si = 0; si < points.length; si++) {
+    for (let pi = 0; pi < points[si].length; pi++) {
+      let point = points[si][pi];
+      if (point.type === 'newSource') {
+        let promise = store.dispatch('addSource', {
+          source: point.newSource,
+        }).then((sourceId) => {
+          points[si][pi] = { type: 'source', sourceId };
+        });
+        promises.push(promise);
+      } else if (point.type === 'subclaim') {
+        promises.push(...makeNewSources(store, point.points));
+      }
+    }
+  }
+  return promises;
+}
+
+function filterPoints(points) {
+  for (let si = 0; si < points.length; si++) {
+    for (let pi = 0; pi < points[si].length; pi++) {
+      let point = points[si][pi];
+      if (point.type === 'subclaim') {
+        filterPoints(point.points);
+      }
+    }
+    points[si] = filter(points[si], isValidPoint);
+  }
+}
+
 export default {
   components: {
     DeleteButton,
@@ -113,29 +145,9 @@ export default {
       this.flag = flag;
     },
     submit: function () {
-      let promises = [];
-      for (let si = 0; si < this.points.length; si++) {
-        for (let pi = 0; pi < this.points[si].length; pi++) {
-          let point = this.points[si][pi];
-          if (point.type === 'newSource') {
-            let promise = this.$store.dispatch('addSource', {
-              source: point.newSource,
-            }).then((id) => {
-              this.points[si][pi] = {
-                type: 'source',
-                id: id,
-              };
-            });
-            promises.push(promise);
-          } else {
-            delete point.key;
-          }
-        }
-      }
+      let promises = makeNewSources(this.$store, this.points);
       Promise.all(promises).then(() => {
-        for (let i = 0; i < this.points.length; i++) {
-          this.points[i] = filter(this.points[i], isValidPoint);
-        }
+        filterPoints(this.points);
         this.commit();
       });
     },

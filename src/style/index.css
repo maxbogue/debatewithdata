@@ -65,16 +65,16 @@ a.t1:hover {
 }
 .hint {
   display: block;
-  font-size: 14px;
+  font-size: 0.75em;
   margin-bottom: 2px;
 }
 .source-text {
   display: block;
 }
-.source-url {
+.source-url, a.source-url {
   display: block;
   color: #666;
-  font-size: 12px;
+  font-size: 0.75em;
 }
 .dropdown {
   position: relative;
