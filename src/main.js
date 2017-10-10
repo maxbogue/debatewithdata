@@ -43,6 +43,13 @@ function httpErrorToString(error) {
   return error.response.data.message;
 }
 
+function axiosError(err) {
+  if (err.config && err.config.loader) {
+    err.config.loader.setError(httpErrorToString(err));
+  }
+  return Promise.reject(err);
+}
+
 new Vue({
   el: '#app',
   components: { DwdApp },
@@ -74,23 +81,13 @@ new Vue({
         config.loader.setLoading(true);
       }
       return config;
-    }, (err) => {
-      if (err.config && err.config.loader) {
-        err.config.loader.setError(httpErrorToString(err));
-      }
-      return Promise.reject(err);
-    });
+    }, axiosError);
     axios.interceptors.response.use((res) => {
       if (res.config.loader) {
         res.config.loader.setLoading(false);
       }
       return res;
-    }, (err) => {
-      if (err.config && err.config.loader) {
-        err.config.loader.setError(httpErrorToString(err));
-      }
-      return Promise.reject(err);
-    });
+    }, axiosError);
     window.onclick = function(event) {
       if (!event.target.matches('.dropdown-toggle')) {
         var dropdowns = document.getElementsByClassName('dropdown-content');

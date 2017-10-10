@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import './style/point.css';
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdStar from './DwdStar.vue';
@@ -106,17 +107,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.point + .point {
-  margin-top: 16px;
-}
-.t2 {
-  font-size: 16px;
-}
-.t2 ul {
-  font-size: 12px;
-  margin: 0;
-  padding: 0;
-}
-</style>

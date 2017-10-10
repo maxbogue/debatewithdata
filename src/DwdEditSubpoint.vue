@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import './style/sub-point.css';
 import { pointToInput } from './utils';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
@@ -70,18 +71,17 @@ export default {
           type: 'source',
           sourceId: this.input,
         };
-      } else {
-        let subpoint = {
-          type: 'text',
-          text: this.input,
-        };
-        if (this.point.id) {
-          subpoint.id = this.point.id;
-        } else {
-          subpoint.tempId = this.point.tempId;
-        }
-        return subpoint;
       }
+      let subpoint = {
+        type: 'text',
+        text: this.input,
+      };
+      if (this.point.id) {
+        subpoint.id = this.point.id;
+      } else {
+        subpoint.tempId = this.point.tempId;
+      }
+      return subpoint;
     },
     updatePoint: function () {
       this.$emit('update', this.makePoint());

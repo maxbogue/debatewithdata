@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import './style/sub-point.css';
+
 export default {
   props: ['point', 'side', 'trail'],
   computed: {
@@ -69,25 +71,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.t3 {
-  list-style: none;
-  margin-top: 8px;
-  padding: 0;
-}
-.t3:before {
-  color: rgba(0, 0, 0, 0.65);
-  font-family: 'Glyphicons Halflings';
-  margin-right: 4px;
-}
-.t3.for:before {
-  content: "\e081";
-}
-.t3.against:before {
-  content: "\e082";
-}
-.t3 > .controls {
-  margin-left: 4px;
-}
-</style>

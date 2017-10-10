@@ -6,11 +6,12 @@
     <div></div>
   </div>
 </div>
-<div v-else-if="error" class="error">
+<div v-else-if="error" class="loader error">
   {{ error }}
 </div>
 <div v-else-if="fill" class="loader">
 </div>
+<div v-else></div>
 </template>
 
 <script>
@@ -36,7 +37,7 @@ export default {
 </script>
 
 <style scoped>
-.loader, .error {
+.loader {
   align-items: center;
   display: flex;
   height: 60px;
@@ -47,7 +48,7 @@ export default {
   background-color: #666;
   border: none;
 }
-.error {
+.loader.error {
   color: red;
   font-size: 1.1em;
   text-align: center;

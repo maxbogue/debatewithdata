@@ -37,7 +37,7 @@ router.put('/:id', async function (req, res) {
   }
   let rev = await Claim.apiUpdate(req.params.id, req.user, req.body);
   let data = await Claim.apiGet(rev.claim_id, req.user);
-  res.json({ claim: data });
+  res.json(data);
 });
 
 router.delete('/:id', async function (req, res) {
@@ -46,7 +46,7 @@ router.delete('/:id', async function (req, res) {
   }
   let rev = await Claim.apiDelete(req.params.id, req.user);
   let data = Claim.apiGet(rev.claim_id, req.user);
-  res.json({ claim: data });
+  res.json(data);
 });
 
 router.post('/:id/star', async function (req, res) {

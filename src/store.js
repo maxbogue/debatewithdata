@@ -114,10 +114,7 @@ export default new Vuex.Store({
     },
     updateClaim: function ({ commit }, { id, claim }) {
       return axios.put('/api/claim/' + id, copyClaim(claim)).then((res) => {
-        commit('setClaim', {
-          id,
-          claim: res.data.claim,
-        });
+        commit('setData', res.data);
         return id;
       });
     },
@@ -128,8 +125,8 @@ export default new Vuex.Store({
       });
     },
     removeClaim: function ({ commit }, { id }) {
-      return axios.delete('/api/claim/' + id).then(() => {
-        commit('removeClaim', id);
+      return axios.delete('/api/claim/' + id).then((res) => {
+        commit('setData', res.data);
       });
     },
     getSource: function ({ commit }, { id, loader }) {
@@ -158,6 +155,11 @@ export default new Vuex.Store({
     removeSource: function ({ commit }, { id }) {
       return axios.delete('/api/source/' + id).then(() => {
         commit('removeSource', id);
+      });
+    },
+    getItem: function ({ commit }, { id, loader }) {
+      return axios.get('/api/item/' + id, { loader }).then((res) => {
+        commit('setData', res.data);
       });
     },
   },
