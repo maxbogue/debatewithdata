@@ -5,6 +5,7 @@ export default function (sequelize, DataTypes) {
   const Claim = sequelize.define('claim', {
     id: {
       type: DataTypes.TEXT,
+      allowNull: false,
       primaryKey: true,
       defaultValue: genId,
     },
@@ -13,6 +14,10 @@ export default function (sequelize, DataTypes) {
   Claim.associate = function (models) {
     Claim.Head = Claim.belongsTo(models.ClaimRev, {
       as: 'head',
+      foreignKey: {
+        name: 'headId',
+        field: 'head_id',
+      },
       // sequelize.sync() fails without this because it doesn't handle cycles.
       constraints: false,
     });
@@ -28,11 +33,11 @@ export default function (sequelize, DataTypes) {
           starrable: 'claim',
         }
       },
-      foreignKey: 'starrable_id',
+      foreignKey: 'starrableId',
       constraints: false,
     });
     Claim.hasMany(models.Comment, {
-      foreignKey: 'commentable_id',
+      foreignKey: 'commentableId',
       constraints: false,
       scope: {
         commentable: 'claim',
@@ -63,9 +68,9 @@ export default function (sequelize, DataTypes) {
       const claim = await Claim.create({}, { transaction });
       const blob = await models.Blob.fromText(data.text, transaction);
       const claimRev = await models.ClaimRev.create({
-        user_id: user.id,
-        claim_id: claim.id,
-        blob_hash: blob.hash,
+        userId: user.id,
+        claimId: claim.id,
+        blobHash: blob.hash,
       }, { transaction });
       await claim.setHead(claimRev, { transaction });
 
@@ -91,10 +96,10 @@ export default function (sequelize, DataTypes) {
 
       const blob = await models.Blob.fromText(data.text, transaction);
       const claimRev = await models.ClaimRev.create({
-        user_id: user.id,
-        claim_id: claim.id,
-        parent_id: claim.head_id,
-        blob_hash: blob.hash,
+        userId: user.id,
+        claimId: claim.id,
+        parentId: claim.headId,
+        blobHash: blob.hash,
       }, { transaction });
       await claim.setHead(claimRev, { transaction });
 
@@ -123,9 +128,9 @@ export default function (sequelize, DataTypes) {
       }
 
       let claimRev = await models.ClaimRev.create({
-        user_id: user.id,
-        claim_id: claim.id,
-        parent_id: claim.head_id,
+        userId: user.id,
+        claimId: claim.id,
+        parentId: claim.headId,
         deleted: true,
       });
       await claim.setHead(claimRev);
@@ -135,7 +140,7 @@ export default function (sequelize, DataTypes) {
     Claim.prototype.fillData = async function (data, depth, user) {
       if (this.head.deleted) {
         data.claims[this.id] = {
-          rev: this.head_id,
+          rev: this.headId,
           depth: 3,
           deleted: true,
         };
@@ -148,7 +153,7 @@ export default function (sequelize, DataTypes) {
       }
 
       let thisData = {
-        rev: this.head_id,
+        rev: this.headId,
         text: this.head.blob.text,
         depth: depth,
         star: await this.toStarData(user),

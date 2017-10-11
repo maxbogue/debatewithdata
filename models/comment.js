@@ -6,18 +6,16 @@ export default function (sequelize, DataTypes) {
   const Comment = sequelize.define('comment', {
     id: {
       type: DataTypes.TEXT,
+      allowNull: false,
       primaryKey: true,
       defaultValue: genRevId,
-    },
-    user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
     },
     commentable: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    commentable_id: {
+    commentableId: {
+      field: 'commentable_id',
       type: DataTypes.TEXT,
       allowNull: false,
       references: null,
@@ -28,13 +26,20 @@ export default function (sequelize, DataTypes) {
     },
     deleted: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
       allowNull: false,
+      defaultValue: false,
     },
   });
 
   Comment.associate = function (models) {
-    Comment.belongsTo(models.User);
+    Comment.belongsTo(models.User, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
   };
 
   Comment.postAssociate = function (models) {
@@ -53,7 +58,7 @@ export default function (sequelize, DataTypes) {
         throw new NotFoundError(Item.name + ' not found: ' + itemId);
       }
       return await item.createComment({
-        user_id: user.id,
+        userId: user.id,
         text: text,
       });
     };
@@ -67,7 +72,7 @@ export default function (sequelize, DataTypes) {
       if (!await item.hasComment(comment)) {
         throw new NotFoundError('Comment not found.');
       }
-      if (comment.user_id !== user.id) {
+      if (comment.userId !== user.id) {
         throw new ForbiddenError('Comment is not yours to delete.');
       }
       await comment.update({ deleted: true });

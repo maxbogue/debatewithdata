@@ -5,6 +5,7 @@ export default function (sequelize, DataTypes) {
   const Source = sequelize.define('source', {
     id: {
       type: DataTypes.TEXT,
+      allowNull: false,
       primaryKey: true,
       defaultValue: genId,
     },
@@ -13,12 +14,16 @@ export default function (sequelize, DataTypes) {
   Source.associate = function (models) {
     Source.Head = Source.belongsTo(models.SourceRev, {
       as: 'head',
+      foreignKey: {
+        name: 'headId',
+        field: 'head_id',
+      },
       // sequelize.sync() fails without this because it doesn't handle cycles.
       constraints: false,
     });
     Source.hasMany(models.SourceRev);
     Source.hasMany(models.Comment, {
-      foreignKey: 'commentable_id',
+      foreignKey: 'commentableId',
       constraints: false,
       scope: {
         commentable: 'source',
@@ -46,9 +51,9 @@ export default function (sequelize, DataTypes) {
       let source = await Source.create({}, { transaction });
       let blob = await models.Blob.fromText(data.text, transaction);
       let rev = await models.SourceRev.create({
-        user_id: user.id,
-        source_id: source.id,
-        blob_hash: blob.hash,
+        userId: user.id,
+        sourceId: source.id,
+        blobHash: blob.hash,
         url: data.url,
         ary: data.ary,
       }, { transaction });
@@ -77,10 +82,10 @@ export default function (sequelize, DataTypes) {
 
       let blob = await models.Blob.fromText(data.text, transaction);
       let rev = await models.SourceRev.create({
-        user_id: user.id,
-        source_id: source.id,
-        parent_id: source.head_id,
-        blob_hash: blob.hash,
+        userId: user.id,
+        sourceId: source.id,
+        parentId: source.headId,
+        blobHash: blob.hash,
         url: data.url,
         ary: data.ary,
       }, { transaction });
@@ -105,9 +110,9 @@ export default function (sequelize, DataTypes) {
       }
 
       let rev = await models.SourceRev.create({
-        user_id: user.id,
-        source_id: source.id,
-        parent_id: source.head_id,
+        userId: user.id,
+        sourceId: source.id,
+        parentId: source.headId,
         deleted: true,
       }, { transaction });
       await source.setHead(rev, { transaction });
@@ -117,13 +122,13 @@ export default function (sequelize, DataTypes) {
     Source.prototype.toData = function () {
       if (this.head.deleted) {
         return {
-          rev: this.head_id,
+          rev: this.headId,
           deleted: true,
         };
       }
 
       return {
-        rev: this.head_id,
+        rev: this.headId,
         url: this.head.url,
         text: this.head.blob.text,
         ary: this.head.ary,

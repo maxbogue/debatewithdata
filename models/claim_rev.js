@@ -4,21 +4,48 @@ export default function (sequelize, DataTypes) {
   const ClaimRev = sequelize.define('claim_rev', {
     id: {
       type: DataTypes.TEXT,
+      allowNull: false,
       primaryKey: true,
       defaultValue: genRevId,
     },
     deleted: {
       type: DataTypes.BOOLEAN,
+      allowNull: false,
       defaultValue: false,
     },
   });
 
   ClaimRev.associate = function (models) {
-    ClaimRev.belongsTo(models.User);
-    ClaimRev.belongsTo(models.Claim);
-    ClaimRev.belongsTo(models.Blob);
+    ClaimRev.belongsTo(models.User, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+        allowNull: false,
+      },
+      onDelete: 'RESTRICT',
+    });
+    ClaimRev.belongsTo(models.Claim, {
+      foreignKey: {
+        name: 'claimId',
+        field: 'claim_id',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
+    ClaimRev.belongsTo(models.Blob, {
+      foreignKey: {
+        name: 'blobHash',
+        field: 'blob_hash',
+      },
+      onDelete: 'RESTRICT',
+    });
     ClaimRev.belongsTo(models.ClaimRev, {
       as: 'parent',
+      foreignKey: {
+        name: 'parentId',
+        field: 'parent_id',
+      },
+      onDelete: 'RESTRICT',
     });
     ClaimRev.PointRevs = ClaimRev.belongsToMany(models.PointRev, {
       through: models.ClaimPoint,

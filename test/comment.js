@@ -16,15 +16,15 @@ describe('Comment', function () {
   beforeEach(async function () {
     user = await utils.createUser();
     let claimRev = await Claim.apiCreate(user, { text: BAZ });
-    claimId = claimRev.claim_id;
+    claimId = claimRev.claimId;
   });
 
   describe('.apiAdd()', function () {
     it('happy', async function () {
       let comment = await Comment.apiAdd(Claim, claimId, user, FOO);
-      expect(comment.user_id).to.equal(user.id);
+      expect(comment.userId).to.equal(user.id);
       expect(comment.commentable).to.equal('claim');
-      expect(comment.commentable_id).to.equal(claimId);
+      expect(comment.commentableId).to.equal(claimId);
       expect(comment.text).to.equal(FOO);
       expect(comment.deleted).to.be.false;
     });

@@ -15,9 +15,9 @@ router.post('/', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Source.apiCreate(req.user, req.body);
-  let data = await Source.apiGet(rev.source_id);
+  let data = await Source.apiGet(rev.sourceId);
   res.json({
-    id: rev.source_id,
+    id: rev.sourceId,
     source: data,
   });
 });
@@ -32,7 +32,7 @@ router.put('/:id', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Source.apiUpdate(req.params.id, req.user, req.body);
-  let data = Source.apiGet(rev.source_id);
+  let data = Source.apiGet(rev.sourceId);
   res.json({ source: data });
 });
 
@@ -41,7 +41,7 @@ router.delete('/:id', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Source.apiDelete(req.params.id, req.user);
-  let data = Source.apiGet(rev.source_id);
+  let data = Source.apiGet(rev.sourceId);
   res.json({ source: data });
 });
 

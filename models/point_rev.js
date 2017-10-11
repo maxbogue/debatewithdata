@@ -17,6 +17,7 @@ export default function (sequelize, DataTypes) {
   const PointRev = sequelize.define('point_rev', {
     id: {
       type: DataTypes.TEXT,
+      allowNull: false,
       primaryKey: true,
       defaultValue: genRevId,
     },
@@ -30,13 +31,50 @@ export default function (sequelize, DataTypes) {
   });
 
   PointRev.associate = function (models) {
-    PointRev.belongsTo(models.User);
-    PointRev.belongsTo(models.Point);
-    PointRev.belongsTo(models.Blob);
-    PointRev.belongsTo(models.Claim);
-    PointRev.belongsTo(models.Source);
+    PointRev.belongsTo(models.User, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+        allowNull: false,
+      },
+      onDelete: 'RESTRICT',
+    });
+    PointRev.belongsTo(models.Point, {
+      foreignKey: {
+        name: 'pointId',
+        field: 'point_id',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
+    PointRev.belongsTo(models.Blob, {
+      foreignKey: {
+        name: 'blobHash',
+        field: 'blob_hash',
+      },
+      onDelete: 'RESTRICT',
+    });
+    PointRev.belongsTo(models.Claim, {
+      foreignKey: {
+        name: 'claimId',
+        field: 'claim_id',
+      },
+      onDelete: 'RESTRICT',
+    });
+    PointRev.belongsTo(models.Source, {
+      foreignKey: {
+        name: 'sourceId',
+        field: 'source_id',
+      },
+      onDelete: 'RESTRICT',
+    });
     PointRev.belongsTo(PointRev, {
       as: 'parent',
+      foreignKey: {
+        name: 'parentId',
+        field: 'parent_id',
+      },
+      onDelete: 'RESTRICT',
     });
     PointRev.belongsToMany(models.ClaimRev, {
       through: models.ClaimPoint,
@@ -76,11 +114,11 @@ export default function (sequelize, DataTypes) {
         throw new ClientError('Missing attribute: claimId');
       }
       return PointRev.create({
-        user_id: user.id,
-        point_id: point.id,
-        parent_id: point.head_id,
+        userId: user.id,
+        pointId: point.id,
+        parentId: point.headId,
         type: CLAIM,
-        claim_id: claimId,
+        claimId: claimId,
       }, { transaction });
     }
 
@@ -90,11 +128,11 @@ export default function (sequelize, DataTypes) {
         throw new ClientError('Missing attribute: sourceId');
       }
       return PointRev.create({
-        user_id: user.id,
-        point_id: point.id,
-        parent_id: point.head_id,
+        userId: user.id,
+        pointId: point.id,
+        parentId: point.headId,
         type: SOURCE,
-        source_id: sourceId,
+        sourceId: sourceId,
       }, { transaction });
     }
 
@@ -105,13 +143,13 @@ export default function (sequelize, DataTypes) {
       for (let i = 0; i < 2; i++) {
         for (let pointData of pointsData[i]) {
           let pointRev;
-          if (rev.parent_id && pointData.rev) {
+          if (rev.parentId && pointData.rev) {
             // This is an update operation reusing a point revision.
             pointRev = await PointRev.findById(pointData.rev);
             if (!pointRev) {
               throw new ClientError('Invalid point rev: ' + pointData.rev);
             }
-          } else if (rev.parent_id && pointData.id) {
+          } else if (rev.parentId && pointData.id) {
             // This is an update operation updating an existing point.
             let point = await models.Point.findById(pointData.id);
             if (!point) {
@@ -137,11 +175,11 @@ export default function (sequelize, DataTypes) {
                                      transaction) {
       let blob = await models.Blob.fromText(text, transaction);
       let pointRev = await PointRev.create({
-        user_id: user.id,
-        point_id: point.id,
-        parent_id: point.head_id,
+        userId: user.id,
+        pointId: point.id,
+        parentId: point.headId,
         type: SUBCLAIM,
-        blob_hash: blob.hash,
+        blobHash: blob.hash,
       }, { transaction });
 
       await PointRev.createPoints(user, pointRev, points, transaction);
@@ -153,11 +191,11 @@ export default function (sequelize, DataTypes) {
     async function createTextRev(user, point, { text }, transaction) {
       let blob = await models.Blob.fromText(text, transaction);
       return PointRev.create({
-        user_id: user.id,
-        point_id: point.id,
-        parent_id: point.head_id,
+        userId: user.id,
+        pointId: point.id,
+        parentId: point.headId,
         type: TEXT,
-        blob_hash: blob.hash,
+        blobHash: blob.hash,
       }, { transaction });
     }
 
@@ -191,7 +229,7 @@ export default function (sequelize, DataTypes) {
       let points = [{}, {}];
       for (let pointRev of pointRevs) {
         let i = isFor(pointRev) ? 0 : 1;
-        points[i][pointRev.point_id] = await pointRev.toData(data, depth, user);
+        points[i][pointRev.pointId] = await pointRev.toData(data, depth, user);
       }
       return points;
     };
@@ -212,12 +250,12 @@ export default function (sequelize, DataTypes) {
       };
       switch (this.type) {
       case CLAIM:
-        thisData.claimId = this.claim_id;
+        thisData.claimId = this.claimId;
         await this.claim.fillData(data, depth, user);
         break;
       case SOURCE:
-        thisData.sourceId = this.source_id;
-        data.sources[this.source_id] = this.source.toData();
+        thisData.sourceId = this.sourceId;
+        data.sources[this.sourceId] = this.source.toData();
         break;
       case SUBCLAIM:
         if (depth > 1) {

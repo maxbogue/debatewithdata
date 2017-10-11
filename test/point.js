@@ -25,14 +25,14 @@ describe('Point', function () {
         text: FOO,
       });
       await pointRev.reload(PointRev.INCLUDE(1));
-      expect(pointRev.user_id).to.equal(user.id);
-      expect(pointRev.point_id).to.exist;
-      expect(pointRev.parent_id).to.be.null;
+      expect(pointRev.userId).to.equal(user.id);
+      expect(pointRev.pointId).to.exist;
+      expect(pointRev.parentId).to.be.null;
       expect(pointRev.type).to.equal(Point.TEXT);
       expect(pointRev.blob.text).to.equal(FOO);
 
-      let point = await Point.findById(pointRev.point_id);
-      expect(point.head_id).to.equal(pointRev.id);
+      let point = await Point.findById(pointRev.pointId);
+      expect(point.headId).to.equal(pointRev.id);
     });
 
     it('subclaim with for subpoint', async function () {
@@ -45,16 +45,16 @@ describe('Point', function () {
         }], []],
       });
       await pointRev.reload(PointRev.INCLUDE(2));
-      expect(pointRev.user_id).to.equal(user.id);
-      expect(pointRev.point_id).to.exist;
-      expect(pointRev.parent_id).to.be.null;
+      expect(pointRev.userId).to.equal(user.id);
+      expect(pointRev.pointId).to.exist;
+      expect(pointRev.parentId).to.be.null;
       expect(pointRev.type).to.equal(Point.SUBCLAIM);
       expect(pointRev.blob.text).to.equal(FOO);
 
       expect(pointRev.pointRevs).to.have.lengthOf(1);
       let subpointRev = pointRev.pointRevs[0];
-      expect(subpointRev.user_id).to.equal(user.id);
-      expect(subpointRev.point_id).to.not.equal(pointRev.point_id);
+      expect(subpointRev.userId).to.equal(user.id);
+      expect(subpointRev.pointId).to.not.equal(pointRev.pointId);
       expect(subpointRev.type).to.equal(Point.TEXT);
       expect(subpointRev.blob.text).to.equal(BAR);
       expect(subpointRev.pointPoint.isFor).to.be.true;
@@ -70,13 +70,13 @@ describe('Point', function () {
         }]],
       });
       await pointRev.reload(PointRev.INCLUDE(2));
-      expect(pointRev.user_id).to.equal(user.id);
-      expect(pointRev.parent_id).to.be.null;
+      expect(pointRev.userId).to.equal(user.id);
+      expect(pointRev.parentId).to.be.null;
       expect(pointRev.blob.text).to.equal(FOO);
 
       expect(pointRev.pointRevs).to.have.lengthOf(1);
       let subpointRev = pointRev.pointRevs[0];
-      expect(subpointRev.user_id).to.equal(user.id);
+      expect(subpointRev.userId).to.equal(user.id);
       expect(subpointRev.blob.text).to.equal(BAR);
       expect(subpointRev.pointPoint.isFor).to.be.false;
     });
@@ -85,12 +85,12 @@ describe('Point', function () {
       let sourceRev = await Source.apiCreate(user, { url: URL, text: FOO });
       let pointRev = await Point.apiCreate(user, {
         type: Point.SOURCE,
-        sourceId: sourceRev.source_id,
+        sourceId: sourceRev.sourceId,
       });
-      expect(pointRev.user_id).to.equal(user.id);
-      expect(pointRev.parent_id).to.be.null;
+      expect(pointRev.userId).to.equal(user.id);
+      expect(pointRev.parentId).to.be.null;
       expect(pointRev.type).to.equal(Point.SOURCE);
-      expect(pointRev.source_id).to.equal(sourceRev.source_id);
+      expect(pointRev.sourceId).to.equal(sourceRev.sourceId);
     });
   });
 
@@ -101,10 +101,10 @@ describe('Point', function () {
         text: FOO,
       });
 
-      let point = await Point.findById(r1.point_id);
-      expect(point.head_id).to.equal(r1.id);
+      let point = await Point.findById(r1.pointId);
+      expect(point.headId).to.equal(r1.id);
 
-      let r2 = await Point.apiUpdate(r1.point_id, user, {
+      let r2 = await Point.apiUpdate(r1.pointId, user, {
         type: Point.SUBCLAIM,
         text: BAR,
         points: [[{
@@ -113,65 +113,65 @@ describe('Point', function () {
         }], []],
       });
       await r2.reload(PointRev.INCLUDE(2));
-      expect(r2.user_id).to.equal(user.id);
-      expect(r2.point_id).to.equal(r1.point_id);
-      expect(r2.parent_id).to.equal(r1.id);
+      expect(r2.userId).to.equal(user.id);
+      expect(r2.pointId).to.equal(r1.pointId);
+      expect(r2.parentId).to.equal(r1.id);
       expect(r2.type).to.equal(Point.SUBCLAIM);
       expect(r2.blob.text).to.equal(BAR);
       expect(r2.pointRevs).to.have.lengthOf(1);
       let r2a = r2.pointRevs[0];
-      expect(r2a.user_id).to.equal(user.id);
-      expect(r2a.point_id).to.not.equal(r2.point_id);
-      expect(r2a.parent_id).to.be.null;
+      expect(r2a.userId).to.equal(user.id);
+      expect(r2a.pointId).to.not.equal(r2.pointId);
+      expect(r2a.parentId).to.be.null;
       expect(r2a.type).to.equal(Point.TEXT);
       expect(r2a.blob.text).to.equal(FOO);
 
-      point = await Point.findById(r1.point_id);
-      expect(point.head_id).to.equal(r2.id);
+      point = await Point.findById(r1.pointId);
+      expect(point.headId).to.equal(r2.id);
 
-      let r3 = await Point.apiUpdate(r1.point_id, user, {
+      let r3 = await Point.apiUpdate(r1.pointId, user, {
         type: Point.SUBCLAIM,
         text: BAZ,
         points: [[{
-          id: r2a.point_id,
+          id: r2a.pointId,
           rev: r2a.id,
         }], []],
       });
       await r3.reload(PointRev.INCLUDE(2));
-      expect(r3.user_id).to.equal(user.id);
-      expect(r3.point_id).to.equal(r1.point_id);
-      expect(r3.parent_id).to.equal(r2.id);
+      expect(r3.userId).to.equal(user.id);
+      expect(r3.pointId).to.equal(r1.pointId);
+      expect(r3.parentId).to.equal(r2.id);
       expect(r3.blob.text).to.equal(BAZ);
       expect(r3.pointRevs).to.have.lengthOf(1);
       let r3a = r3.pointRevs[0];
       expect(r3a.id).to.equal(r2a.id);
 
-      point = await Point.findById(r1.point_id);
-      expect(point.head_id).to.equal(r3.id);
+      point = await Point.findById(r1.pointId);
+      expect(point.headId).to.equal(r3.id);
 
-      let r4 = await Point.apiUpdate(r1.point_id, user, {
+      let r4 = await Point.apiUpdate(r1.pointId, user, {
         type: Point.SUBCLAIM,
         text: BAZ,
         points: [[{
-          id: r3a.point_id,
+          id: r3a.pointId,
           type: Point.TEXT,
           text: BAR,
         }], []],
       });
       await r4.reload(PointRev.INCLUDE(2));
-      expect(r4.user_id).to.equal(user.id);
-      expect(r4.point_id).to.equal(r1.point_id);
-      expect(r4.parent_id).to.equal(r3.id);
+      expect(r4.userId).to.equal(user.id);
+      expect(r4.pointId).to.equal(r1.pointId);
+      expect(r4.parentId).to.equal(r3.id);
       expect(r4.blob.text).to.equal(BAZ);
       expect(r4.pointRevs).to.have.lengthOf(1);
       let r4a = r4.pointRevs[0];
-      expect(r4a.user_id).to.equal(user.id);
-      expect(r4a.point_id).to.equal(r2a.point_id);
-      expect(r4a.parent_id).to.equal(r2a.id);
+      expect(r4a.userId).to.equal(user.id);
+      expect(r4a.pointId).to.equal(r2a.pointId);
+      expect(r4a.parentId).to.equal(r2a.id);
       expect(r4a.blob.text).to.equal(BAR);
 
-      point = await Point.findById(r1.point_id);
-      expect(point.head_id).to.equal(r4.id);
+      point = await Point.findById(r1.pointId);
+      expect(point.headId).to.equal(r4.id);
     });
   });
 
@@ -181,12 +181,12 @@ describe('Point', function () {
         type: Point.TEXT,
         text: FOO,
       });
-      let star = await Point.apiToggleStar(rev.point_id, user);
+      let star = await Point.apiToggleStar(rev.pointId, user);
       expect(star).to.deep.equal({
         count: 1,
         starred: true,
       });
-      star = await Point.apiToggleStar(rev.point_id, user);
+      star = await Point.apiToggleStar(rev.pointId, user);
       expect(star).to.deep.equal({
         count: 0,
         starred: false,

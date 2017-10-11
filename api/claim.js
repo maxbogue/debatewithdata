@@ -15,8 +15,8 @@ router.post('/', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Claim.apiCreate(req.user, req.body);
-  let data = await Claim.apiGet(rev.claim_id, req.user);
-  data.id = rev.claim_id;
+  let data = await Claim.apiGet(rev.claimId, req.user);
+  data.id = rev.claimId;
   res.json(data);
 });
 
@@ -36,7 +36,7 @@ router.put('/:id', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Claim.apiUpdate(req.params.id, req.user, req.body);
-  let data = await Claim.apiGet(rev.claim_id, req.user);
+  let data = await Claim.apiGet(rev.claimId, req.user);
   res.json(data);
 });
 
@@ -45,7 +45,7 @@ router.delete('/:id', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Claim.apiDelete(req.params.id, req.user);
-  let data = Claim.apiGet(rev.claim_id, req.user);
+  let data = Claim.apiGet(rev.claimId, req.user);
   res.json(data);
 });
 

@@ -5,6 +5,7 @@ export default function (sequelize, DataTypes) {
   const Point = sequelize.define('point', {
     id: {
       type: DataTypes.TEXT,
+      allowNull: false,
       primaryKey: true,
       defaultValue: genId,
     },
@@ -18,6 +19,10 @@ export default function (sequelize, DataTypes) {
   Point.associate = function (models) {
     Point.Head = Point.belongsTo(models.PointRev, {
       as: 'head',
+      foreignKey: {
+        name: 'headId',
+        field: 'head_id',
+      },
       // sequelize.sync() fails without this because it doesn't handle cycles.
       constraints: false,
     });
@@ -33,11 +38,11 @@ export default function (sequelize, DataTypes) {
           starrable: 'point',
         }
       },
-      foreignKey: 'starrable_id',
+      foreignKey: 'starrableId',
       constraints: false,
     });
     Point.hasMany(models.Comment, {
-      foreignKey: 'commentable_id',
+      foreignKey: 'commentableId',
       constraints: false,
       scope: {
         commentable: 'point',

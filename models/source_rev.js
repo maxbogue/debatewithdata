@@ -4,6 +4,7 @@ export default function (sequelize, DataTypes) {
   const SourceRev = sequelize.define('source_rev', {
     id: {
       type: DataTypes.TEXT,
+      allowNull: false,
       primaryKey: true,
       defaultValue: genRevId,
     },
@@ -16,18 +17,42 @@ export default function (sequelize, DataTypes) {
     },
     deleted: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
       allowNull: false,
+      defaultValue: false,
     },
   });
 
   SourceRev.associate = function (models) {
-    SourceRev.belongsTo(models.User);
-    SourceRev.belongsTo(models.Source);
-    SourceRev.belongsTo(models.Blob);
+    SourceRev.belongsTo(models.User, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+        allowNull: false,
+      },
+      onDelete: 'RESTRICT',
+    });
+    SourceRev.belongsTo(models.Source, {
+      foreignKey: {
+        name: 'sourceId',
+        field: 'source_id',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
+    SourceRev.belongsTo(models.Blob, {
+      foreignKey: {
+        name: 'blobHash',
+        field: 'blob_hash',
+      },
+      onDelete: 'RESTRICT',
+    });
     SourceRev.belongsTo(models.SourceRev, {
       as: 'parent',
-      foreignKey: 'parent_id',
+      foreignKey: {
+        name: 'parentId',
+        field: 'parent_id',
+      },
+      onDelete: 'RESTRICT',
     });
   };
 
