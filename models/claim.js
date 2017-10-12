@@ -5,7 +5,6 @@ export default function (sequelize, DataTypes) {
   const Claim = sequelize.define('claim', {
     id: {
       type: DataTypes.TEXT,
-      allowNull: false,
       primaryKey: true,
       defaultValue: genId,
     },

@@ -5,7 +5,6 @@ export default function (sequelize, DataTypes) {
   const Source = sequelize.define('source', {
     id: {
       type: DataTypes.TEXT,
-      allowNull: false,
       primaryKey: true,
       defaultValue: genId,
     },

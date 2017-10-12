@@ -5,7 +5,6 @@ export default function (sequelize, DataTypes) {
   const Point = sequelize.define('point', {
     id: {
       type: DataTypes.TEXT,
-      allowNull: false,
       primaryKey: true,
       defaultValue: genId,
     },

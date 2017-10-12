@@ -2,7 +2,6 @@ export default function (sequelize, DataTypes) {
   const Star = sequelize.define('star', {
     id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       primaryKey: true,
       autoIncrement: true
     },

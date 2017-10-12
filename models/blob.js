@@ -10,7 +10,6 @@ export default function (sequelize, DataTypes) {
   const Blob = sequelize.define('blob', {
     hash: {
       type: DataTypes.TEXT,
-      allowNull: false,
       primaryKey: true,
     },
     text: {

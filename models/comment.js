@@ -6,7 +6,6 @@ export default function (sequelize, DataTypes) {
   const Comment = sequelize.define('comment', {
     id: {
       type: DataTypes.TEXT,
-      allowNull: false,
       primaryKey: true,
       defaultValue: genRevId,
     },

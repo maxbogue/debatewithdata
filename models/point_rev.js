@@ -17,7 +17,6 @@ export default function (sequelize, DataTypes) {
   const PointRev = sequelize.define('point_rev', {
     id: {
       type: DataTypes.TEXT,
-      allowNull: false,
       primaryKey: true,
       defaultValue: genRevId,
     },

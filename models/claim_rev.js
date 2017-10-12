@@ -4,7 +4,6 @@ export default function (sequelize, DataTypes) {
   const ClaimRev = sequelize.define('claim_rev', {
     id: {
       type: DataTypes.TEXT,
-      allowNull: false,
       primaryKey: true,
       defaultValue: genRevId,
     },
