@@ -45,6 +45,7 @@
     "pg-hstore": "^2.3.2",
     "properties": "^1.2.1",
     "sequelize": "^4.13.5",
+    "sequelize-cli": "^3.0.0",
     "style-loader": "^0.19.0",
     "url-search-params": "^0.10.0",
     "valid-url": "^1.0.9",
