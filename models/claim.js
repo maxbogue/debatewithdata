@@ -71,6 +71,7 @@ export default function (sequelize, DataTypes) {
         userId: user.id,
         claimId: claim.id,
         blobHash: blob.hash,
+        flag: data.flag,
       }, { transaction });
       await claim.setHead(claimRev, { transaction });
 
@@ -100,6 +101,7 @@ export default function (sequelize, DataTypes) {
         claimId: claim.id,
         parentId: claim.headId,
         blobHash: blob.hash,
+        flag: data.flag,
       }, { transaction });
       await claim.setHead(claimRev, { transaction });
 
@@ -158,6 +160,10 @@ export default function (sequelize, DataTypes) {
         depth: depth,
         star: await this.toStarData(user),
       };
+
+      if (this.head.flag) {
+        thisData.flag = this.head.flag;
+      }
 
       if (depth > 1) {
         thisData.points = await models.PointRev.toDatas(

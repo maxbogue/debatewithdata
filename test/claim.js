@@ -1,6 +1,7 @@
 import chai from 'chai';
 
 import { Claim, ClaimRev, Point } from '../models';
+import { Flag } from '../models/utils';
 import utils from './utils';
 
 const expect = chai.expect;
@@ -26,9 +27,20 @@ describe('Claim', function () {
       expect(claimRev.blob.text).to.equal(FOO);
       expect(claimRev.parentId).to.be.null;
       expect(claimRev.claimId).to.exist;
+      expect(claimRev.flag).to.be.null;
 
       let claim = await Claim.findById(claimRev.claimId);
       expect(claim.headId).to.equal(claimRev.id);
+    });
+
+    it('with flag', async function () {
+      let claimRev = await Claim.apiCreate(user, {
+        text: FOO,
+        flag: Flag.AD_HOMINEM,
+      });
+      await claimRev.reload(ClaimRev.INCLUDE(1));
+      expect(claimRev.blob.text).to.equal(FOO);
+      expect(claimRev.flag).to.equal(Flag.AD_HOMINEM);
     });
 
     it('with point for', async function () {
@@ -180,13 +192,17 @@ describe('Claim', function () {
 
   describe('.apiGet()', function () {
     it('no points', async function () {
-      let rev = await Claim.apiCreate(user, { text: FOO });
+      let rev = await Claim.apiCreate(user, {
+        text: FOO,
+        flag: Flag.AD_HOMINEM,
+      });
       let claimData = await Claim.apiGet(rev.claimId, user);
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
             rev: rev.id,
             text: FOO,
+            flag: Flag.AD_HOMINEM,
             depth: 3,
             star: {
               count: 0,

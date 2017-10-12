@@ -1,7 +1,7 @@
 import { sequelize } from '../models';
 
 beforeEach(function () {
-  return sequelize.sync({ force: true });
+  return sequelize.truncate({ cascade: true });
 });
 
 after(function () {

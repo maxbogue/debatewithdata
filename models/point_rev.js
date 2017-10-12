@@ -1,5 +1,5 @@
 import { ClientError } from '../api/error';
-import { genRevId } from './utils';
+import { genRevId, isValidFlag } from './utils';
 
 const CLAIM = 'claim';
 const SOURCE = 'source';
@@ -27,7 +27,11 @@ export default function (sequelize, DataTypes) {
       validate: {
         isIn: [VALID_POINT_TYPES],
       },
-    }
+    },
+    flag: {
+      type: DataTypes.TEXT,
+      validate: { isValidFlag },
+    },
   });
 
   PointRev.associate = function (models) {
@@ -171,7 +175,7 @@ export default function (sequelize, DataTypes) {
     };
 
     // Create a new 'subclaim' point, which can have subpoints.
-    async function createSubclaimRev(user, point, { text, points },
+    async function createSubclaimRev(user, point, { text, points, flag },
                                      transaction) {
       let blob = await models.Blob.fromText(text, transaction);
       let pointRev = await PointRev.create({
@@ -180,6 +184,7 @@ export default function (sequelize, DataTypes) {
         parentId: point.headId,
         type: SUBCLAIM,
         blobHash: blob.hash,
+        flag: flag,
       }, { transaction });
 
       await PointRev.createPoints(user, pointRev, points, transaction);
@@ -188,7 +193,7 @@ export default function (sequelize, DataTypes) {
     }
 
     // Create a new 'text' point.
-    async function createTextRev(user, point, { text }, transaction) {
+    async function createTextRev(user, point, { text, flag }, transaction) {
       let blob = await models.Blob.fromText(text, transaction);
       return PointRev.create({
         userId: user.id,
@@ -196,6 +201,7 @@ export default function (sequelize, DataTypes) {
         parentId: point.headId,
         type: TEXT,
         blobHash: blob.hash,
+        flag: flag,
       }, { transaction });
     }
 
@@ -262,10 +268,12 @@ export default function (sequelize, DataTypes) {
           thisData.points = await PointRev.toDatas(
               this.pointRevs, data, depth - 1, user);
         }
-        thisData.text = this.blob.text;
-        break;
+        /* eslint no-fallthrough: "off" */
       case TEXT:
         thisData.text = this.blob.text;
+        if (this.flag) {
+          thisData.flag = this.flag;
+        }
         break;
       default:
         throw new ClientError('Invalid point type: ' + data.type);

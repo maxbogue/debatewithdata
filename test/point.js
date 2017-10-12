@@ -1,6 +1,7 @@
 import chai from 'chai';
 
 import { Point, PointRev, Source } from '../models';
+import { Flag } from '../models/utils';
 import utils from './utils';
 
 const expect = chai.expect;
@@ -19,7 +20,7 @@ describe('Point', function () {
   });
 
   describe('.apiCreate()', function () {
-    it(Point.TEXT, async function () {
+    it('text', async function () {
       let pointRev = await Point.apiCreate(user, {
         type: Point.TEXT,
         text: FOO,
@@ -30,9 +31,21 @@ describe('Point', function () {
       expect(pointRev.parentId).to.be.null;
       expect(pointRev.type).to.equal(Point.TEXT);
       expect(pointRev.blob.text).to.equal(FOO);
+      expect(pointRev.flag).to.be.null;
 
       let point = await Point.findById(pointRev.pointId);
       expect(point.headId).to.equal(pointRev.id);
+    });
+
+    it('text with flag', async function () {
+      let pointRev = await Point.apiCreate(user, {
+        type: Point.TEXT,
+        text: FOO,
+        flag: Flag.AD_HOMINEM,
+      });
+      await pointRev.reload(PointRev.INCLUDE(1));
+      expect(pointRev.blob.text).to.equal(FOO);
+      expect(pointRev.flag).to.equal(Flag.AD_HOMINEM);
     });
 
     it('subclaim with for subpoint', async function () {

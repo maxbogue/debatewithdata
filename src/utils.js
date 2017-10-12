@@ -99,19 +99,16 @@ export const FLAGS = {
   'ad-hominem': {
     name: 'Ad Hominem',
   },
-  'appeal-to-authority': {
+  'authority': {
     name: 'Appeal to Authority',
-  },
-  'appeal-to-emotion': {
-    name: 'Appeal to Emotion',
-  },
-  'appeal-to-nature': {
-    name: 'Appeal to Nature',
   },
   'bandwagon': {
     name: 'Bandwagon',
   },
-  'black-or-white': {
+  'emotion': {
+    name: 'Appeal to Emotion',
+  },
+  'false-dichotemy': {
     name: 'False Dichotomy',
   },
   'false-cause': {
@@ -122,6 +119,9 @@ export const FLAGS = {
   },
   'middle-ground': {
     name: 'Middle Ground',
+  },
+  'nature': {
+    name: 'Appeal to Nature',
   },
   'non-sequitur': {
     name: 'Non Sequitur',

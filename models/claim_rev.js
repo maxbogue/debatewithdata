@@ -1,4 +1,4 @@
-import { genRevId } from './utils';
+import { genRevId, isValidFlag } from './utils';
 
 export default function (sequelize, DataTypes) {
   const ClaimRev = sequelize.define('claim_rev', {
@@ -7,6 +7,10 @@ export default function (sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true,
       defaultValue: genRevId,
+    },
+    flag: {
+      type: DataTypes.TEXT,
+      validate: { isValidFlag },
     },
     deleted: {
       type: DataTypes.BOOLEAN,
