@@ -3,48 +3,81 @@
   <form v-if="!needsData" class="row gutter-16" @submit.prevent="commit">
     <div class="col-sm-12">
       <div class="t1 bubble green content">
+        <label for="url" class="hint">
+          Link a source that provides data about the world.
+        </label>
+        <textarea id="url"
+                  rows="1"
+                  required
+                  autocomplete="off"
+                  placeholder="url"
+                  ref="url"
+                  v-model="url"
+                  :class="{invalid: !validUrl}"></textarea>
+        <label for="text" class="hint">
+          Describe the data the link provides.
+        </label>
+        <textarea id="text"
+                  rows="1"
+                  required
+                  autocomplete="off"
+                  placeholder="description"
+                  v-model="text"></textarea>
+        <label class="hint">Classify the type of source.</label>
         <div>
-          <label for="url" class="hint">
-            Link a source that provides data about the world.
+          <div class="type"
+               :class="{selected: type === 'misc'}"
+               @click="type = 'misc'">
+            <h2>Miscellaneous</h2>
+            <div>A source that does not fall under any other category.</div>
+          </div>
+          <div class="type"
+               :class="{selected: type === 'research'}"
+               @click="type = 'research'">
+            <h2>Research</h2>
+            <div>Scientific research published by an institution.</div>
+          </div>
+          <div class="type"
+               :class="{selected: type === 'article'}"
+               @click="type = 'article'">
+            <h2>Article</h2>
+            <div>A news article reporting on something that happened.</div>
+          </div>
+          <div class="type"
+               :class="{selected: type === 'authority'}"
+               @click="type = 'authority'">
+            <h2>Authority</h2>
+            <div>An authoritative source for the data.</div>
+          </div>
+        </div>
+        <template v-if="type === 'research' || type === 'authority'">
+          <label for="institution" class="hint">
+            What institution produced the data?
           </label>
-          <textarea id="url"
+          <textarea id="institution"
                     rows="1"
                     required
                     autocomplete="off"
-                    placeholder="url"
-                    ref="url"
-                    v-model="url"
-                    :class="{invalid: !validUrl}"></textarea>
-        </div>
-        <div>
-          <label for="text" class="hint">
-            Describe the data the link provides.
+                    placeholder="College, government agency, etc."
+                    v-model="institution"></textarea>
+        </template>
+        <template v-if="type === 'research' || type === 'article'">
+          <label for="publication" class="hint">
+            Where was the data published?
           </label>
-          <textarea id="text"
+          <textarea id="publication"
                     rows="1"
                     required
                     autocomplete="off"
-                    placeholder="description"
-                    v-model="text"></textarea>
-        </div>
-        <div>
-          <label class="hint">Classify the directness of the source.</label>
-          <div class="ary" :class="{selected: ary === 1}" @click="setAry(1)">
-            <h2>Primary</h2>
-            <div>Research paper, first reporting news article, authorative
-              institution, etc.</div>
-          </div>
-          <div class="ary" :class="{selected: ary === 2}" @click="setAry(2)">
-            <h2>Secondary</h2>
-            <div>Article about a primary source (research, news broken by
-              another institution, etc.)</div>
-          </div>
-          <div class="ary" :class="{selected: ary === 3}" @click="setAry(3)">
-            <h2>Tertiary</h2>
-            <div>Article about a secondary source (Wikipedia page with bad
-              sources, etc.)</div>
-          </div>
-        </div>
+                    placeholder="Scientific journal, newspaper, etc."
+                    v-model="publication"></textarea>
+        </template>
+        <template v-if="type === 'article'">
+          <label for="firstHand" class="hint">
+            Is the article a first-hand account of an event?
+          </label>
+          <input type="checkbox" id="firstHand" v-model="firstHand"></input>
+        </template>
       </div>
     </div>
     <div class="col-sm-12 center">
@@ -77,7 +110,10 @@ export default {
   data: () => ({
     text: '',
     url: '',
-    ary: 0,
+    type: 'misc',
+    institution: '',
+    publication: '',
+    firstHand: false,
   }),
   computed: {
     id: function () {
@@ -94,22 +130,27 @@ export default {
     },
   },
   methods: {
-    setAry: function (ary) {
-      if (this.ary === ary) {
-        this.ary = 0;
-      } else {
-        this.ary = ary;
-      }
-    },
     commit: function () {
       let action = 'addSource';
-      let payload = {
-        source: {
-          url: this.url,
-          text: this.text,
-          ary: this.ary,
-        },
+      let source = {
+        url: this.url,
+        text: this.text,
+        type: this.type,
       };
+      switch (this.type) {
+      case 'research':
+        source.institution = this.institution;
+        source.publication = this.publication;
+        break;
+      case 'article':
+        source.publication = this.publication;
+        source.firstHand = this.firstHand;
+        break;
+      case 'authority':
+        source.institution = this.institution;
+        break;
+      }
+      let payload = { source };
       if (this.id) {
         action = 'updateSource';
         payload.id = this.id;
@@ -131,7 +172,10 @@ export default {
     initialize: function () {
       this.url = this.source.url;
       this.text = this.source.text;
-      this.ary = this.source.ary;
+      this.type = this.source.type;
+      this.institution = this.source.institution;
+      this.publication = this.source.publication;
+      this.firstHand = this.source.firstHand;
     },
     checkLoaded: function () {
       if (this.needsData) {
@@ -166,7 +210,7 @@ export default {
 </script>
 
 <style>
-.ary {
+.type {
   background-color: #fff;
   border: 1px solid #aaa;
   border-radius: 5px;
@@ -174,17 +218,17 @@ export default {
   margin-top: 4px;
   padding: 4px;
   text-align: center;
-  width: 50%;
+  width: 300px;
 }
-.ary:hover {
+.type:hover {
   background-color: #eee;
   cursor: pointer;
 }
-.ary h2 {
+.type h2 {
   font-size: 16px;
   margin: 0;
 }
-.ary.selected {
+.type.selected {
   background-color: #43A047;
   border-color: #2E7D32;
   color: #fff;

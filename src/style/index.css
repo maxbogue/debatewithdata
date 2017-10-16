@@ -5,7 +5,7 @@ body {
   font-family: 'Roboto', 'Noto Sans', sans-serif;
   line-height: 1.5;
 }
-textarea, input {
+textarea {
   border: 1px solid #666;
   border-radius: 5px;
   display: block;
@@ -66,7 +66,7 @@ a.t1:hover {
 .hint {
   display: block;
   font-size: 0.75em;
-  margin-bottom: 2px;
+  margin-bottom: -8px;
 }
 .source-text {
   display: block;
@@ -96,4 +96,11 @@ a.t1:hover {
   opacity: 1;
   visibility: visible;
   max-height: 500px;
+}
+.tag {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.65em;
+  padding: 2px 4px;
 }

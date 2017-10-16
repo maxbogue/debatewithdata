@@ -19,7 +19,8 @@
       </template>
       <template v-else-if="source">
         <div class="source-text">
-          <span v-if="ary">{{ ary }}&nbsp;</span>
+          <span v-if="source.type && source.type !== 'misc'"
+                class="tag">{{ source.type }}</span>
           <router-link :to="sourceUrl(point.sourceId)">
             {{ source.text }}
           </router-link>
@@ -74,18 +75,6 @@ export default {
         return null;
       }
       return this.$store.state.sources[this.point.sourceId];
-    },
-    ary: function () {
-      if (!this.source) {
-        return '';
-      } else if (this.source.ary === 1) {
-        return '①';
-      } else if (this.source.ary === 2) {
-        return '②';
-      } else if (this.source.ary === 3) {
-        return '③';
-      }
-      return '';
     },
     flag: function () {
       if (this.claim) {

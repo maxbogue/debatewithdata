@@ -4,7 +4,8 @@
   <router-link v-else-if="point.type === 'claim'"
                :to="url">{{ text }}</router-link>
   <template v-else-if="source">
-    <span v-if="ary">{{ ary }}&nbsp;</span>
+    <span v-if="source.type && source.type !== 'misc'"
+          class="tag">{{ source.type }}</span>
     <router-link :to="url">{{ text }}</router-link>
   </template>
   <template v-else>{{ text }}</template>
@@ -45,18 +46,6 @@ export default {
         return this.claim.text;
       } else if (this.source) {
         return this.source.text;
-      }
-      return '';
-    },
-    ary: function () {
-      if (!this.source) {
-        return '';
-      } else if (this.source.ary === 1) {
-        return '①';
-      } else if (this.source.ary === 2) {
-        return '②';
-      } else if (this.source.ary === 3) {
-        return '③';
       }
       return '';
     },

@@ -1,3 +1,5 @@
+import isEqual from 'lodash/isEqual';
+
 import { NotFoundError } from '../api/error';
 import { genId } from './utils';
 
@@ -54,7 +56,10 @@ export default function (sequelize, DataTypes) {
         sourceId: source.id,
         blobHash: blob.hash,
         url: data.url,
-        ary: data.ary,
+        type: data.type,
+        institution: data.institution,
+        publication: data.publication,
+        firstHand: data.firstHand,
       }, { transaction });
       await source.setHead(rev, { transaction });
       return rev;
@@ -72,10 +77,9 @@ export default function (sequelize, DataTypes) {
         throw new NotFoundError('Source not found: ' + sourceId);
       }
 
-      if (!source.head.deleted &&
-          data.text === source.head.blob.text &&
-          data.url === source.head.url &&
-          data.ary === source.head.ary) {
+      let oldData = source.toData();
+      delete oldData.rev;
+      if (isEqual(data, oldData)) {
         return source.head;
       }
 
@@ -86,7 +90,10 @@ export default function (sequelize, DataTypes) {
         parentId: source.headId,
         blobHash: blob.hash,
         url: data.url,
-        ary: data.ary,
+        type: data.type,
+        institution: data.institution,
+        publication: data.publication,
+        firstHand: data.firstHand,
       }, { transaction });
       await source.setHead(rev, { transaction });
       return rev;
@@ -126,12 +133,28 @@ export default function (sequelize, DataTypes) {
         };
       }
 
-      return {
+      let data = {
         rev: this.headId,
         url: this.head.url,
         text: this.head.blob.text,
-        ary: this.head.ary,
+        type: this.head.type,
       };
+
+      switch (this.head.type) {
+      case 'research':
+        data.institution = this.head.institution;
+        data.publication = this.head.publication;
+        break;
+      case 'article':
+        data.publication = this.head.publication;
+        data.firstHand = this.head.firstHand;
+        break;
+      case 'authority':
+        data.institution = this.head.institution;
+        break;
+      }
+
+      return data;
     };
 
     Source.apiGet = async function (sourceId) {

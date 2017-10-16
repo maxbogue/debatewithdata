@@ -11,8 +11,18 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.TEXT,
       validate: { isUrl: true },
     },
-    ary: {
-      type: DataTypes.INTEGER,
+    type: {
+      type: DataTypes.TEXT,
+    },
+    institution: {
+      type: DataTypes.TEXT,
+    },
+    publication: {
+      type: DataTypes.TEXT,
+    },
+    firstHand: {
+      field: 'first_hand',
+      type: DataTypes.BOOLEAN,
     },
     deleted: {
       type: DataTypes.BOOLEAN,

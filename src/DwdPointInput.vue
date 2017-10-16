@@ -174,9 +174,6 @@ export default {
 .input > :not(:first-child) {
   margin-top: 8px;
 }
-label {
-  margin-bottom: -8px;
-}
 .side-0 > input {
   background-color: #F3E5F5;
 }
