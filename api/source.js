@@ -1,6 +1,6 @@
 import Router from 'express-promise-router';
 
-import { Comment, Source } from '../models';
+import { Claim, Comment, Source } from '../models';
 import { AuthError } from './error';
 
 const router = Router();
@@ -23,7 +23,14 @@ router.post('/', async function (req, res) {
 });
 
 router.get('/:id', async function (req, res) {
-  let data = await Source.apiGet(req.params.id);
+  let data;
+  if (req.query.trail) {
+    let claimIds = req.query.trail.split(',');
+    data = await Claim.apiGetAll(req.user, claimIds);
+  } else {
+    data = { sources: {} };
+  }
+  data.sources[req.params.id] = await Source.apiGet(req.params.id);
   res.json(data);
 });
 

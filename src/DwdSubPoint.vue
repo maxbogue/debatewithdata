@@ -37,7 +37,7 @@ export default {
       if (this.claim) {
         return this.claimUrl(this.point.claimId, this.trail);
       } else if (this.source) {
-        return this.sourceUrl(this.point.sourceId);
+        return this.sourceUrl(this.point.sourceId, this.trail);
       }
       return '';
     },

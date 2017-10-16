@@ -21,7 +21,7 @@
         <div class="source-text">
           <span v-if="source.type && source.type !== 'misc'"
                 class="tag">{{ source.type }}</span>
-          <router-link :to="sourceUrl(point.sourceId)">
+          <router-link :to="sourceUrl(point.sourceId, trail)">
             {{ source.text }}
           </router-link>
         </div>

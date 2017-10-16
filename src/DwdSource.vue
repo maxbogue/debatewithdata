@@ -1,8 +1,9 @@
 <template>
 <div>
+  <dwd-trail @lastIsFor="(v) => isFor = v"></dwd-trail>
   <div v-if="source" class="row gutter-16">
     <div class="col-sm-12">
-      <div class="t1 bubble green flex-row">
+      <div class="t1 bubble flex-row" :class="[bubbleColor]">
         <div class="content">
           <div>
             <div class="source-text">{{ source.text }}</div>
@@ -30,14 +31,17 @@
 <script>
 import DwdComments from './DwdComments.vue';
 import DwdLoader from './DwdLoader.vue';
+import DwdTrail from './DwdTrail.vue';
 
 export default {
   components: {
     DwdComments,
     DwdLoader,
+    DwdTrail,
   },
   data: () => ({
     showComments: false,
+    isFor: null,
   }),
   computed: {
     id: function () {
@@ -46,12 +50,25 @@ export default {
     source: function () {
       return this.$store.state.sources[this.id] || null;
     },
+    trail: function () {
+      if (!this.$route.query.trail) {
+        return [];
+      }
+      return this.$route.query.trail.split(',');
+    },
+    bubbleColor: function () {
+      if (this.isFor === null) {
+        return 'green';
+      }
+      return this.isFor ? 'purple' : 'amber';
+    },
   },
   methods: {
     checkLoaded: function () {
       if (!this.source) {
         this.$store.dispatch('getSource', {
           id: this.id,
+          trail: this.trail,
           loader: this.$refs.loader,
         });
       }

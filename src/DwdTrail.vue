@@ -79,6 +79,9 @@ export default {
             let trail = this.ids.slice(0, this.ids.indexOf(id));
             let url = this.claimUrl(id, trail);
             return [Boolean(claim), i === 0, claim, url];
+          } else if (point.type === 'source' && point.sourceId === id) {
+            let source = this.$store.state.sources[id];
+            return [Boolean(source), i === 0, source];
           } else if (point.type === 'subclaim' && pointId === id) {
             return [true, i === 0, point];
           }

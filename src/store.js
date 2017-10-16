@@ -129,9 +129,16 @@ export default new Vuex.Store({
         commit('setData', res.data);
       });
     },
-    getSource: function ({ commit }, { id, loader }) {
-      return axios.get('/api/source/' + id, { loader }).then((res) => {
-        commit('setSource', { id, source: res.data });
+    getSource: function ({ commit, state }, { id, trail, loader }) {
+      let url = '/api/source/' + id;
+      if (trail) {
+        trail = trail.filter((itemId) => !hasFullClaim(state, itemId));
+        if (trail.length > 0) {
+          url += '?trail=' + trail.join(',');
+        }
+      }
+      return axios.get(url, { loader }).then((res) => {
+        commit('setData', res.data);
       });
     },
     getSources: function ({ commit }, { loader }) {

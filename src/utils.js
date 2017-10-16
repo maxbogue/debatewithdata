@@ -89,8 +89,12 @@ export var DwdUtilsMixin = {
       }
       return url;
     },
-    sourceUrl: function (sourceId) {
-      return '/source/' + sourceId;
+    sourceUrl: function (sourceId, trail) {
+      let url = '/source/' + sourceId;
+      if (trail && trail.length > 0) {
+        url += '?trail=' + trail.join(',');
+      }
+      return url;
     },
   },
 };
