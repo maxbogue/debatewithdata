@@ -1,9 +1,9 @@
 <template>
 <div>
-  <dwd-trail></dwd-trail>
+  <dwd-trail @lastIsFor="(v) => isFor = v"></dwd-trail>
   <div v-if="claim" class="row gutter-16">
     <div class="col-sm-12">
-      <div class="t1 bubble blue flex-row">
+      <div class="t1 bubble flex-row" :class="[bubbleColor]">
         <div class="content">
           <div>{{ claim.text }}</div>
           <dwd-flag v-if="claim.flag" :flag="claim.flag"></dwd-flag>
@@ -69,6 +69,7 @@ export default {
   },
   data: () => ({
     showComments: false,
+    isFor: null,
   }),
   computed: {
     id: function () {
@@ -91,6 +92,12 @@ export default {
         return [];
       }
       return this.$route.query.trail.split(',');
+    },
+    bubbleColor: function () {
+      if (this.isFor === null) {
+        return 'blue';
+      }
+      return this.isFor ? 'purple' : 'amber';
     },
   },
   methods: {

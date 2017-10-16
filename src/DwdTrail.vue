@@ -1,14 +1,14 @@
 <template>
 <div v-if="items.length > 0" class="trail">
-  <div v-for="[item, nextIsFor, url] in items" :key="item.id">
+  <template v-for="[item, isFor, url] in items">
     <router-link v-if="url"
-                 class="bubble blue"
-                 :to="url">
+                 :class="itemClass(isFor)"
+                 :to="url"
+                 :key="item.id">
       {{ item.text }}
     </router-link>
-    <div v-else class="bubble blue">{{ item.text }}</div>
-    <div class="ind" :class="[nextIsFor ? 'for' : 'against']"></div>
-  </div>
+    <div v-else :class="itemClass(isFor)" :key="item.id">{{ item.text }}</div>
+  </template>
 </div>
 </template>
 
@@ -16,6 +16,9 @@
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
 export default {
+  data: () => ({
+    lastIsFor: null,
+  }),
   computed: {
     ids: function () {
       if (!this.$route.query.trail) {
@@ -32,18 +35,20 @@ export default {
       return ids;
     },
     items: function () {
+      this.lastIsFor = null;
       if (this.ids.length < 2) {
         return [];
       }
       let items = [];
       let item = this.$store.state.claims[this.ids[0]];
+      let isFor = null;
       let itemUrl = this.claimUrl(this.ids[0]);
       for (let i = 1; i < this.ids.length; i++) {
         if (!item) {
           return [];
         }
         let nextId = this.ids[i];
-        let [wasFound, isFor, next, nextUrl] =
+        let [wasFound, nextIsFor, next, nextUrl] =
             this.findInside(item.points, nextId);
         if (!wasFound) {
           console.warn('Broken link found in trail: ' + nextId);
@@ -51,8 +56,10 @@ export default {
         }
         items.push([item, isFor, itemUrl]);
         item = next;
+        isFor = nextIsFor;
         itemUrl = nextUrl;
       }
+      this.lastIsFor = isFor;
       return items;
     },
   },
@@ -79,17 +86,26 @@ export default {
       }
       return [false];
     },
+    itemClass: function (isFor) {
+      let color = isFor === null ? 'blue' : isFor ? 'purple' : 'amber';
+      return ['bubble', color];
+    },
+  },
+  watch: {
+    lastIsFor: function () {
+      this.$emit('lastIsFor', this.lastIsFor);
+    },
   },
 };
 </script>
 
 <style>
 .trail {
-  margin: 8px 0 -12px;
+  margin-bottom: -8px;
 }
 .trail .bubble {
   display: block;
-  margin: 4px auto;
+  margin: 8px auto 0;
   padding: 8px;
   text-decoration: none;
   width: 50%;
