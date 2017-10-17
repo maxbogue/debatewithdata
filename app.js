@@ -1,15 +1,29 @@
 import config from 'config';
 import express from 'express';
+import path from 'path';
 
 import api from './api';
 
+const IS_PROD = process.env.NODE_ENV === 'production';
+const DIRNAME = path.resolve(__dirname, '..');
+const INDEX_PATH = path.resolve(DIRNAME, 'index.html');
+const JS_FILE = IS_PROD ? 'client.prod.js' : 'client.dev.js';
+const JS_PATH = path.resolve(DIRNAME, 'build', JS_FILE);
+const JS_MAP_PATH = JS_PATH + '.map';
+
 const app = express();
 
-app.use('/static', express.static('static'));
-
 const sendIndex = function (req, res) {
-  res.sendFile('/var/www/debatewithdata/index.html');
+  res.sendFile(INDEX_PATH);
 };
+
+app.get('/index.js', function (req, res) {
+  res.sendFile(JS_PATH);
+});
+
+app.get('/index.js.map', function (req, res) {
+  res.sendFile(JS_MAP_PATH);
+});
 
 app.get('/', sendIndex);
 app.get('/account', sendIndex);

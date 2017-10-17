@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "backpack",
+    "prod": "webpack -p --progress --hide-modules --output-filename=client.prod.js && backpack build && NODE_ENV=production node build/main.js",
     "test": "mocha",
     "lint": "./bin/lint; exit 0;",
     "lint-all": "eslint $(git ls-files | egrep \"\\.(js|vue)$\"); exit 0;",

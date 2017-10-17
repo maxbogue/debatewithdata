@@ -5,9 +5,8 @@ var path = require('path');
 module.exports = {
   entry: './src/main.js',
   output: {
-    path: path.resolve(__dirname, './static'),
-    publicPath: '/static/',
-    filename: 'build.js'
+    path: path.resolve(__dirname, 'build'),
+    filename: 'client.dev.js'
   },
   module: {
     rules: [
