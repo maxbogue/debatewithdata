@@ -1,17 +1,19 @@
+import crypto from 'crypto';
 import includes from 'lodash/includes';
 
-const ID_CHARS = '0123456789abcdef';
-
-export function genId(n = 12) {
-  let chars = [];
-  for (let i = 0; i < n; i++) {
-    chars.push(ID_CHARS[Math.floor(Math.random() * ID_CHARS.length)]);
+export function randomHexString(n) {
+  if (n % 2 !== 0) {
+    throw Error('Hex string must be even length.');
   }
-  return chars.join('');
+  return crypto.randomBytes(n / 2).toString('hex');
+}
+
+export function genId() {
+  return randomHexString(12);
 }
 
 export function genRevId() {
-  return genId(24);
+  return randomHexString(24);
 }
 
 export const Flag = {

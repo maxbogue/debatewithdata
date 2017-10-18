@@ -3,6 +3,9 @@ import config from 'config';
 import jwt from 'jsonwebtoken';
 
 import { AuthError, ClientError } from '../api/error';
+import { randomHexString } from './utils';
+
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 export default function (sequelize, DataTypes) {
   const User = sequelize.define('user', {
@@ -17,13 +20,26 @@ export default function (sequelize, DataTypes) {
       allowNull: false,
     },
     passwordHash: {
+      field: 'password_hash',
       type: DataTypes.TEXT,
       allowNull: false,
-      field: 'password_hash',
     },
     email: {
       type: DataTypes.TEXT,
       allowNull: false,
+    },
+    emailVerificationToken: {
+      field: 'email_verification_token',
+      type: DataTypes.TEXT,
+      defaultValue: () => randomHexString(40),
+    },
+    passwordResetToken: {
+      field: 'password_reset_token',
+      type: DataTypes.TEXT,
+    },
+    passwordResetExpiration: {
+      field: 'password_reset_expiration',
+      type: DataTypes.DATE,
     },
   });
 
@@ -53,18 +69,20 @@ export default function (sequelize, DataTypes) {
     return username;
   }
 
-  function validatePassword(password) {
+  function hashPassword(password) {
     if (password.length < 8) {
       throw new ClientError('Password must be at least 8 characters.');
     }
+    return bcrypt.hash(password, 10);
   }
 
   User.login = async function (username, password) {
     let user = await User.findOne({ where: { username }});
     if (!user) {
       throw new AuthError('Invalid user.');
-    }
-    if (!await bcrypt.compare(password, user.passwordHash)) {
+    } else if (user.emailVerificationToken) {
+      throw new AuthError('Email verification required.');
+    } else if (!await bcrypt.compare(password, user.passwordHash)) {
       throw new AuthError('Invalid password.');
     }
     return user;
@@ -72,8 +90,7 @@ export default function (sequelize, DataTypes) {
 
   User.register = async function (username, password, email) {
     username = validateUsername(username);
-    validatePassword(password);
-    let passwordHash = await bcrypt.hash(password, 10);
+    let passwordHash = await hashPassword(password);
     return User.create({ username, passwordHash, email });
   };
 
@@ -96,6 +113,9 @@ export default function (sequelize, DataTypes) {
   };
 
   User.prototype.genAuthToken = function (exp = '7d') {
+    if (this.emailVerificationToken) {
+      throw new AuthError('Email verification required.');
+    }
     let user = {
       created: this.created_at,
       email: this.email,
@@ -104,6 +124,51 @@ export default function (sequelize, DataTypes) {
       subject: this.username,
       expiresIn: exp,
     });
+  };
+
+  User.verifyEmail = async function (emailVerificationToken) {
+    if (!emailVerificationToken) {
+      throw new AuthError('Null email verification token.');
+    }
+    let user = await User.findOne({ where: { emailVerificationToken }});
+    if (!user) {
+      throw new AuthError('Invalid email verification token.');
+    }
+    await user.update({ emailVerificationToken: null });
+    return user;
+  };
+
+  User.forgotPassword = async function (email) {
+    let user = await User.findOne({ where: { email }});
+    if (!user) {
+      return null;
+    }
+    await user.update({
+      passwordResetToken: randomHexString(40),
+      passwordResetExpiration: new Date(Date.now() + ONE_DAY_MS),
+    });
+    return user;
+  };
+
+  User.resetPassword = async function (passwordResetToken, password) {
+    let user = await User.findOne({
+      where: {
+        passwordResetToken,
+        passwordResetExpiration: {
+          [sequelize.Op.gt]: new Date(),
+        },
+      }
+    });
+    if (!user) {
+      throw new AuthError('Invalid password reset token.');
+    }
+    let passwordHash = await hashPassword(password);
+    await user.update({
+      passwordHash,
+      passwordResetToken: null,
+      passwordResetExpiration: null,
+    });
+    return user;
   };
 
   return User;

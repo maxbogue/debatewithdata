@@ -12,6 +12,12 @@ const USERNAME = 'test';
 const PASSWORD = 'testtest';
 const EMAIL = 'test@debatewithdata.org';
 
+async function registerAndVerifyUser() {
+  let user = await User.register(USERNAME, PASSWORD, EMAIL);
+  user = await User.verifyEmail(user.emailVerificationToken);
+  return user;
+}
+
 describe('User', function () {
   describe('.register()', function () {
     it('works with good args', async function () {
@@ -19,6 +25,9 @@ describe('User', function () {
       expect(user.username).to.equal(USERNAME);
       expect(user.passwordHash).to.not.be.empty;
       expect(user.email).to.equal(EMAIL);
+      expect(user.emailVerificationToken).to.have.lengthOf(40);
+      expect(user.passwordResetToken).to.be.null;
+      expect(user.passwordResetExpiration).to.be.null;
     });
 
     it('fails with bad args', async function () {
@@ -35,7 +44,7 @@ describe('User', function () {
 
   describe('.login()', function () {
     it('auths with good creds', async function () {
-      await User.register(USERNAME, PASSWORD, EMAIL);
+      await registerAndVerifyUser();
       let user = await User.login(USERNAME, PASSWORD);
       expect(user.username).to.equal(USERNAME);
       expect(user.passwordHash).to.not.be.empty;
@@ -45,7 +54,10 @@ describe('User', function () {
     it('fails with bad creds', async function () {
       await expect(User.login(USERNAME, PASSWORD)).to.be.rejectedWith(
           AuthError, /Invalid user/, 'missing user');
-      await User.register(USERNAME, PASSWORD, EMAIL);
+      let user = await User.register(USERNAME, PASSWORD, EMAIL);
+      await expect(User.login(USERNAME, PASSWORD)).to.be.rejectedWith(
+          AuthError, /Email verification required/, 'email verify');
+      await User.verifyEmail(user.emailVerificationToken);
       await expect(User.login('other user', PASSWORD)).to.be.rejectedWith(
           AuthError, /Invalid user/, 'other missing user');
       await expect(User.login(USERNAME, 'wrong')).to.be.rejectedWith(
@@ -55,7 +67,7 @@ describe('User', function () {
 
   describe('.genAuthToken()', function () {
     it('creates a valid token', async function () {
-      let user = await User.register(USERNAME, PASSWORD, EMAIL);
+      let user = await registerAndVerifyUser();
       let token = user.genAuthToken();
       let payload = jwt.decode(token);
       expect(payload.sub).to.equal(USERNAME);
@@ -66,7 +78,7 @@ describe('User', function () {
 
   describe('.verifyToken()', function () {
     it('verifies a valid token', async function () {
-      let user = await User.register(USERNAME, PASSWORD, EMAIL);
+      let user = await registerAndVerifyUser();
       let token = user.genAuthToken();
       let userFromToken = await User.verifyToken(token);
       expect(userFromToken.username).to.equal(USERNAME);
@@ -75,7 +87,7 @@ describe('User', function () {
     });
 
     it('fails for expired token', async function () {
-      let user = await User.register(USERNAME, PASSWORD, EMAIL);
+      let user = await registerAndVerifyUser();
       let token = user.genAuthToken(-1);
       await expect(User.verifyToken(token)).to.be.rejectedWith(
           AuthError, /Expired auth token/);
@@ -84,6 +96,20 @@ describe('User', function () {
     it('fails for malformed token', async function () {
       await expect(User.verifyToken('garbage')).to.be.rejectedWith(
           AuthError, /Malformed auth token/);
+    });
+  });
+
+  describe('.resetPassword()', function () {
+    it.only('happy', async function () {
+      await registerAndVerifyUser();
+      let user = await User.forgotPassword(EMAIL);
+      expect(user).to.be.not.null;
+      expect(user.passwordResetToken).has.lengthOf(40);
+      expect(user.passwordResetExpiration).to.be.not.null;
+      user = await User.resetPassword(user.passwordResetToken, 'newpassword');
+      expect(user.passwordResetToken).to.be.null;
+      expect(user.passwordResetExpiration).to.be.null;
+      await User.login(USERNAME, 'newpassword');
     });
   });
 });
