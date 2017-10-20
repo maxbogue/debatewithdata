@@ -59,12 +59,15 @@ export default {
   },
   methods: {
     makeSubClaim: function (text) {
-      return {
+      let subClaim = {
         type: 'subclaim',
         text: text,
         points: this.subpoints,
-        flag: this.flag,
       };
+      if (this.flag) {
+        subClaim.flag = this.flag;
+      }
+      return subClaim;
     },
     makePoint: function (type, input1, input2) {
       switch (type) {

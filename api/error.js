@@ -34,6 +34,7 @@ export class NotFoundError extends ApiError {
 
 export function apiErrorHandler(err, req, res, next) {
   if (err instanceof ApiError) {
+    console.error(err);
     res.status(err.httpStatus).json({ message: err.message });
   } else {
     next(err);
