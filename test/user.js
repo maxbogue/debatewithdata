@@ -100,7 +100,7 @@ describe('User', function () {
   });
 
   describe('.resetPassword()', function () {
-    it.only('happy', async function () {
+    it('happy', async function () {
       await registerAndVerifyUser();
       let user = await User.forgotPassword(EMAIL);
       expect(user).to.be.not.null;
