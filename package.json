@@ -42,6 +42,7 @@
     "loaders.css": "^0.1.2",
     "lodash": "^4.17.4",
     "node-gyp": "^3.6.2",
+    "nodemailer": "^4.2.0",
     "pg": "^6.4.2",
     "pg-hstore": "^2.3.2",
     "properties": "^1.2.1",

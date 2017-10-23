@@ -1,0 +1,9 @@
+.auth {
+  width: 300px;
+  margin: 0 auto;
+}
+.auth > input, .auth > button {
+  height: 3em;
+  margin-top: 10px;
+  width: 100%;
+}

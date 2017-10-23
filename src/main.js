@@ -9,13 +9,16 @@ import DwdClaim from './DwdClaim.vue';
 import DwdClaims from './DwdClaims.vue';
 import DwdEditClaim from './DwdEditClaim.vue';
 import DwdEditSource from './DwdEditSource.vue';
+import DwdForgotPassword from './DwdForgotPassword.vue';
 import DwdGuide from './DwdGuide.vue';
 import DwdHome from './DwdHome.vue';
 import DwdLogin from './DwdLogin.vue';
 import DwdLogout from './DwdLogout.vue';
 import DwdRegister from './DwdRegister.vue';
+import DwdResetPassword from './DwdResetPassword.vue';
 import DwdSource from './DwdSource.vue';
 import DwdSources from './DwdSources.vue';
+import DwdVerifyEmail from './DwdVerifyEmail.vue';
 import auth from './auth';
 import store from './store';
 import { DwdUtilsMixin } from './utils';
@@ -59,9 +62,12 @@ new Vue({
     routes: [
       { path: '/', component: DwdHome },
       { path: '/account', component: DwdAccount },
+      { path: '/register', component: DwdRegister },
+      { path: '/verify-email', component: DwdVerifyEmail },
       { path: '/login', component: DwdLogin },
       { path: '/logout', component: DwdLogout },
-      { path: '/register', component: DwdRegister },
+      { path: '/forgot-password', component: DwdForgotPassword },
+      { path: '/reset-password', component: DwdResetPassword },
       { path: '/guide', component: DwdGuide },
       { path: '/claims', component: DwdClaims },
       { path: '/claims/add', component: DwdEditClaim },

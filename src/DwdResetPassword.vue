@@ -1,17 +1,10 @@
 <template>
-<div class="center">
-  <dwd-loader ref="loader" :fill="true"></dwd-loader>
+<div>
+  <dwd-loader ref="loader"></dwd-loader>
   <form class="auth" @submit.prevent="submit">
-    <input type="text"
-           label="User name"
-           autocomplete="off"
-           placeholder="username"
-           autofocus
-           v-model="username" />
     <input type="password"
            placeholder="password"
            v-model="password" />
-    <a href="/forgot-password">Forgot password?</a>
     <button type="submit" class="btn btn-default">
       Submit
     </button>
@@ -29,19 +22,19 @@ export default {
     DwdLoader,
   },
   data: () => ({
-    username: '',
     password: '',
   }),
   computed: {
-    nextUrl: function () {
-      return this.$route.query.next || '/';
+    token: function () {
+      return this.$route.query.token;
     },
   },
   methods: {
     submit: function () {
-      auth.login(this.username, this.password, this.$refs.loader).then(() => {
-        this.$router.push(this.nextUrl);
-      });
+      auth.resetPassword(this.token, this.password, this.$refs.loader)
+        .then(() => {
+          this.$router.push('/');
+        });
     },
   },
 };

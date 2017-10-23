@@ -1,6 +1,7 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 
 import { AuthError, ClientError } from '../api/error';
 import { User } from '../models';
@@ -39,6 +40,23 @@ describe('User', function () {
           ClientError, /letters and numbers/, 'leading number');
       await expect(User.register(USERNAME, 'short', EMAIL)).to.be.rejectedWith(
           ClientError, /at least 8/, 'short password');
+    });
+
+    it.skip('sends email', async function () {
+      /* eslint no-invalid-this: "off" */
+      this.timeout(30000);
+      let user = await User.register(USERNAME, PASSWORD, EMAIL);
+      let account = await nodemailer.createTestAccount();
+      let transport = await nodemailer.createTransport({
+        ...account.smtp,
+        auth: {
+          user: account.user,
+          pass: account.pass,
+        },
+      });
+      let info = await user.sendVerificationEmail(transport);
+      /* eslint no-console: "off" */
+      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     });
   });
 

@@ -3,9 +3,17 @@ import config from 'config';
 import jwt from 'jsonwebtoken';
 
 import { AuthError, ClientError } from '../api/error';
-import { randomHexString } from './utils';
+import { ROOT_URL, randomHexString } from './utils';
+
+const VALID_USERNAME = /^[a-z][a-z0-9]+$/;
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+const VERIFY_EMAIL = 'To complete your registration, verify your '
+    + 'email by visiting the following link:';
+
+const FORGOT_PASSWORD = 'To reset your password, please visit the '
+    + 'following link:';
 
 export default function (sequelize, DataTypes) {
   const User = sequelize.define('user', {
@@ -56,8 +64,6 @@ export default function (sequelize, DataTypes) {
       constraints: false,
     });
   };
-
-  const VALID_USERNAME = /^[a-z][a-z0-9]+$/;
 
   function validateUsername(username) {
     username = username.toLowerCase();
@@ -126,6 +132,17 @@ export default function (sequelize, DataTypes) {
     });
   };
 
+  User.prototype.sendVerificationEmail = function (transport) {
+    let url = ROOT_URL + '/verify-email?token=' + this.emailVerificationToken;
+    return transport.sendMail({
+      from: 'DebateWithData <contact@debatewithdata.org>',
+      to: this.email,
+      subject: 'Email Verification',
+      text: VERIFY_EMAIL + '\n\n' + url,
+      html: `<p>${VERIFY_EMAIL}</p><p><a href="${url}">Verify Email</a></p>`,
+    });
+  };
+
   User.verifyEmail = async function (emailVerificationToken) {
     if (!emailVerificationToken) {
       throw new AuthError('Null email verification token.');
@@ -148,6 +165,18 @@ export default function (sequelize, DataTypes) {
       passwordResetExpiration: new Date(Date.now() + ONE_DAY_MS),
     });
     return user;
+  };
+
+  User.prototype.sendForgotPasswordEmail = function (transport) {
+    let url = ROOT_URL + '/reset-password?token=' + this.passwordResetToken;
+    return transport.sendMail({
+      from: 'DebateWithData <contact@debatewithdata.org>',
+      to: this.email,
+      subject: 'Reset Password',
+      text: FORGOT_PASSWORD + '\n\n' + url,
+      html: `<p>${FORGOT_PASSWORD}</p>`
+          + `<p><a href="${url}">Reset Password</a></p>`,
+    });
   };
 
   User.resetPassword = async function (passwordResetToken, password) {

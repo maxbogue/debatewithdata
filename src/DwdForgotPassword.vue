@@ -1,21 +1,13 @@
 <template>
-<div>
+<div class="center">
   <dwd-loader ref="loader" :fill="true"></dwd-loader>
-  <h3 v-if="success" class="center">
-    Success! Please check your email to complete registration.
-  </h3>
+  <div v-if="success">
+    A password reset email has been sent to {{ email }} if it is associated
+    with an account.
+  </div>
   <form v-else class="auth" @submit.prevent="submit">
     <input type="text"
-           label="User name"
-           autocomplete="off"
-           placeholder="username"
-           autofocus
-           v-model="username" />
-    <input type="password"
-           placeholder="password"
-           v-model="password" />
-    <input type="text"
-           placeholder="email address"
+           placeholder="email"
            v-model="email" />
     <button type="submit" class="btn btn-default">
       Submit
@@ -35,17 +27,15 @@ export default {
   },
   data: () => ({
     success: false,
-    username: '',
-    password: '',
     email: '',
   }),
   methods: {
     submit: function () {
-      auth.register(this.username, this.password, this.email, this.$refs.loader)
+      auth.forgotPassword(this.email, this.$refs.loader)
         .then(() => {
           this.success = true;
         });
-    }
+    },
   },
 };
 </script>
