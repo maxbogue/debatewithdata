@@ -51,6 +51,10 @@ export function isValidPoint(point) {
   return Boolean(pointToInput(point));
 }
 
+function starred(item) {
+  return !item.star.starred;
+}
+
 function starCount(item) {
   return -item.star.count;
 }
@@ -61,7 +65,7 @@ function prepItem(item, id) {
 }
 
 export function prepAndSortByStars(items) {
-  return sortBy(map(items, prepItem), [starCount, Math.random]);
+  return sortBy(map(items, prepItem), [starred, starCount, Math.random]);
 }
 
 export function pointMapsToLists(pointMaps) {
