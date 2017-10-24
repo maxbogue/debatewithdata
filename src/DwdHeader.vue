@@ -29,12 +29,12 @@
 </template>
 
 <script>
-import { navbar } from 'vue-strap';
+import Navbar from 'vue-strap/src/Navbar.vue';
 import { mapState } from 'vuex';
 
 export default {
   components: {
-    navbar,
+    Navbar,
   },
   computed: {
     ...mapState([

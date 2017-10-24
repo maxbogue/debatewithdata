@@ -12,7 +12,6 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
-        exclude: /node_modules/,
         loader: 'vue-loader',
         options: {
           loaders: {
@@ -22,7 +21,6 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        exclude: /node_modules/,
         loader: 'babel-loader',
       },
       {
