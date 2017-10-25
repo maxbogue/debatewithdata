@@ -113,7 +113,6 @@ module.exports = {
         allowNull: false,
         type: DataTypes.DATE,
       },
-    //})).then((() => { console.log('butt'); return Promise.resolve();
     })).then(() => queryInterface.createTable('sources', {
       id: {
         type: DataTypes.TEXT,

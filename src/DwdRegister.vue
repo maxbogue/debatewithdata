@@ -6,6 +6,13 @@
   </h3>
   <form v-else class="auth" @submit.prevent="submit">
     <input type="text"
+           class="mono"
+           label="Invite code"
+           autocomplete="off"
+           placeholder="invite code"
+           v-model="invite"
+           :disabled="$route.query.invite" />
+    <input type="text"
            label="User name"
            autocomplete="off"
            placeholder="username"
@@ -35,16 +42,22 @@ export default {
   },
   data: () => ({
     success: false,
+    invite: '',
     username: '',
     password: '',
     email: '',
   }),
   methods: {
     submit: function () {
-      auth.register(this.username, this.password, this.email, this.$refs.loader)
-        .then(() => {
-          this.success = true;
-        });
+      auth.register(this.invite, this.username, this.password, this.email,
+          this.$refs.loader).then(() => {
+        this.success = true;
+      });
+    }
+  },
+  mounted: function () {
+    if (this.$route.query.invite) {
+      this.invite = this.$route.query.invite;
     }
   },
 };

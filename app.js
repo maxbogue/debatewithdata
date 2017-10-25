@@ -27,6 +27,7 @@ app.get('/index.js.map', function (req, res) {
 
 app.get('/', sendIndex);
 app.get('/account', sendIndex);
+app.get('/admin', sendIndex);
 app.get('/register', sendIndex);
 app.get('/verify-email', sendIndex);
 app.get('/login', sendIndex);

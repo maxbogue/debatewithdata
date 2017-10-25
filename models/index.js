@@ -1,12 +1,13 @@
-import config from 'config';
 import Sequelize from 'sequelize';
-import { forOwn } from 'lodash';
+import config from 'config';
+import forOwn from 'lodash/forOwn';
 
 import makeBlob from './blob';
 import makeClaim from './claim';
 import makeClaimPoint from './claim_point';
 import makeClaimRev from './claim_rev';
 import makeComment from './comment';
+import makeInvite from './invite';
 import makePoint from './point';
 import makePointPoint from './point_point';
 import makePointRev from './point_rev';
@@ -36,6 +37,7 @@ export const Claim = makeModel('Claim', makeClaim);
 export const ClaimPoint = makeModel('ClaimPoint', makeClaimPoint);
 export const ClaimRev = makeModel('ClaimRev', makeClaimRev);
 export const Comment = makeModel('Comment', makeComment);
+export const Invite = makeModel('Invite', makeInvite);
 export const Point = makeModel('Point', makePoint);
 export const PointPoint = makeModel('PointPoint', makePointPoint);
 export const PointRev = makeModel('PointRev', makePointRev);

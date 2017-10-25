@@ -1,7 +1,7 @@
 import chai from 'chai';
 
 import { Source, SourceRev } from '../models';
-import utils from './utils';
+import { registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
@@ -46,7 +46,7 @@ describe('Source', function () {
   let user;
 
   beforeEach(async function () {
-    user = await utils.createUser();
+    user = await registerAndVerifyUser();
   });
 
   describe('.apiCreate()', function () {

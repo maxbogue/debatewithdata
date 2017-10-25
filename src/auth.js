@@ -47,8 +47,8 @@ function setAuthToken(authToken) {
 }
 
 export default {
-  register: function (username, password, email, loader) {
-    let payload = { username, password, email };
+  register: function (invite, username, password, email, loader) {
+    let payload = { invite, username, password, email };
     return axios.post('/api/register', payload, { loader });
   },
   verifyEmail: function (token, loader) {

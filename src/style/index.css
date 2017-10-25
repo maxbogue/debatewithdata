@@ -36,7 +36,7 @@ a:hover {
   text-align: center;
 }
 .mono {
-  font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+  font-family: "Roboto Mono",Menlo,Monaco,Consolas,"Courier New",monospace;
 }
 .click:hover {
   color: #aaa;

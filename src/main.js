@@ -4,6 +4,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import DwdAccount from './DwdAccount.vue';
+import DwdAdmin from './DwdAdmin.vue';
 import DwdApp from './DwdApp.vue';
 import DwdClaim from './DwdClaim.vue';
 import DwdClaims from './DwdClaims.vue';
@@ -62,6 +63,7 @@ new Vue({
     routes: [
       { path: '/', component: DwdHome },
       { path: '/account', component: DwdAccount },
+      { path: '/admin', component: DwdAdmin },
       { path: '/register', component: DwdRegister },
       { path: '/verify-email', component: DwdVerifyEmail },
       { path: '/login', component: DwdLogin },

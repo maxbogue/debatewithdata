@@ -15,6 +15,23 @@ const VERIFY_EMAIL = 'To complete your registration, verify your '
 const FORGOT_PASSWORD = 'To reset your password, please visit the '
     + 'following link:';
 
+function validateUsername(username) {
+  username = username.toLowerCase();
+  if (username.length < 3) {
+    throw new ClientError('Username must be at least 3 characters.');
+  } else if (!VALID_USERNAME.test(username)) {
+    throw new ClientError('Username can only use letters and numbers.');
+  }
+  return username;
+}
+
+function hashPassword(password) {
+  if (password.length < 8) {
+    throw new ClientError('Password must be at least 8 characters.');
+  }
+  return bcrypt.hash(password, 10);
+}
+
 export default function (sequelize, DataTypes) {
   const User = sequelize.define('user', {
     id: {
@@ -49,6 +66,11 @@ export default function (sequelize, DataTypes) {
       field: 'password_reset_expiration',
       type: DataTypes.DATE,
     },
+    admin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   });
 
   User.associate = function (models) {
@@ -65,139 +87,137 @@ export default function (sequelize, DataTypes) {
     });
   };
 
-  function validateUsername(username) {
-    username = username.toLowerCase();
-    if (username.length < 3) {
-      throw new ClientError('Username must be at least 3 characters.');
-    } else if (!VALID_USERNAME.test(username)) {
-      throw new ClientError('Username can only use letters and numbers.');
-    }
-    return username;
-  }
-
-  function hashPassword(password) {
-    if (password.length < 8) {
-      throw new ClientError('Password must be at least 8 characters.');
-    }
-    return bcrypt.hash(password, 10);
-  }
-
-  User.login = async function (username, password) {
-    let user = await User.findOne({ where: { username }});
-    if (!user) {
-      throw new AuthError('Invalid user.');
-    } else if (user.emailVerificationToken) {
-      throw new AuthError('Email verification required.');
-    } else if (!await bcrypt.compare(password, user.passwordHash)) {
-      throw new AuthError('Invalid password.');
-    }
-    return user;
-  };
-
-  User.register = async function (username, password, email) {
-    username = validateUsername(username);
-    let passwordHash = await hashPassword(password);
-    return User.create({ username, passwordHash, email });
-  };
-
-  User.verifyToken = async function (authToken) {
-    let decoded;
-    try {
-      decoded = jwt.verify(authToken, config.get('secretKey'));
-    } catch (e) {
-      if (e instanceof jwt.TokenExpiredError) {
-        throw new AuthError('Expired auth token.');
+  User.postAssociate = function (models) {
+    User.register = async function (username, password, email, inviteCode) {
+      let invite = await models.Invite.findById(inviteCode);
+      if (!invite) {
+        throw new AuthError('Invalid invite code.');
+      } else if (invite.user_id) {
+        throw new AuthError('Invite code already used.');
       }
-      throw new AuthError('Malformed auth token.');
-    }
-    let username = decoded.sub;
-    let user = await User.findOne({ where: { username }});
-    if (!user) {
-      throw new AuthError('User not found: ' + username);
-    }
-    return user;
-  };
-
-  User.prototype.genAuthToken = function (exp = '7d') {
-    if (this.emailVerificationToken) {
-      throw new AuthError('Email verification required.');
-    }
-    let user = {
-      created: this.created_at,
-      email: this.email,
+      username = validateUsername(username);
+      let passwordHash = await hashPassword(password);
+      return sequelize.transaction(async function(transaction) {
+        let user = await User.create({ username, passwordHash, email }, {
+          transaction,
+        });
+        await invite.setUser(user, { transaction });
+        return user;
+      });
     };
-    return jwt.sign({ user }, config.get('secretKey'), {
-      subject: this.username,
-      expiresIn: exp,
-    });
-  };
 
-  User.prototype.sendVerificationEmail = function (transport) {
-    let url = ROOT_URL + '/verify-email?token=' + this.emailVerificationToken;
-    return transport.sendMail({
-      from: 'DebateWithData <contact@debatewithdata.org>',
-      to: this.email,
-      subject: 'Email Verification',
-      text: VERIFY_EMAIL + '\n\n' + url,
-      html: `<p>${VERIFY_EMAIL}</p><p><a href="${url}">Verify Email</a></p>`,
-    });
-  };
-
-  User.verifyEmail = async function (emailVerificationToken) {
-    if (!emailVerificationToken) {
-      throw new AuthError('Null email verification token.');
-    }
-    let user = await User.findOne({ where: { emailVerificationToken }});
-    if (!user) {
-      throw new AuthError('Invalid email verification token.');
-    }
-    await user.update({ emailVerificationToken: null });
-    return user;
-  };
-
-  User.forgotPassword = async function (email) {
-    let user = await User.findOne({ where: { email }});
-    if (!user) {
-      return null;
-    }
-    await user.update({
-      passwordResetToken: randomHexString(40),
-      passwordResetExpiration: new Date(Date.now() + ONE_DAY_MS),
-    });
-    return user;
-  };
-
-  User.prototype.sendForgotPasswordEmail = function (transport) {
-    let url = ROOT_URL + '/reset-password?token=' + this.passwordResetToken;
-    return transport.sendMail({
-      from: 'DebateWithData <contact@debatewithdata.org>',
-      to: this.email,
-      subject: 'Reset Password',
-      text: FORGOT_PASSWORD + '\n\n' + url,
-      html: `<p>${FORGOT_PASSWORD}</p>`
-          + `<p><a href="${url}">Reset Password</a></p>`,
-    });
-  };
-
-  User.resetPassword = async function (passwordResetToken, password) {
-    let user = await User.findOne({
-      where: {
-        passwordResetToken,
-        passwordResetExpiration: {
-          [sequelize.Op.gt]: new Date(),
-        },
+    User.login = async function (username, password) {
+      let user = await User.findOne({ where: { username }});
+      if (!user) {
+        throw new AuthError('Invalid user.');
+      } else if (user.emailVerificationToken) {
+        throw new AuthError('Email verification required.');
+      } else if (!await bcrypt.compare(password, user.passwordHash)) {
+        throw new AuthError('Invalid password.');
       }
-    });
-    if (!user) {
-      throw new AuthError('Invalid password reset token.');
-    }
-    let passwordHash = await hashPassword(password);
-    await user.update({
-      passwordHash,
-      passwordResetToken: null,
-      passwordResetExpiration: null,
-    });
-    return user;
+      return user;
+    };
+
+    User.verifyToken = async function (authToken) {
+      let decoded;
+      try {
+        decoded = jwt.verify(authToken, config.get('secretKey'));
+      } catch (e) {
+        if (e instanceof jwt.TokenExpiredError) {
+          throw new AuthError('Expired auth token.');
+        }
+        throw new AuthError('Malformed auth token.');
+      }
+      let username = decoded.sub;
+      let user = await User.findOne({ where: { username }});
+      if (!user) {
+        throw new AuthError('User not found: ' + username);
+      }
+      return user;
+    };
+
+    User.prototype.genAuthToken = function (exp = '7d') {
+      if (this.emailVerificationToken) {
+        throw new AuthError('Email verification required.');
+      }
+      let user = {
+        created: this.created_at,
+        email: this.email,
+        admin: this.admin,
+      };
+      return jwt.sign({ user }, config.get('secretKey'), {
+        subject: this.username,
+        expiresIn: exp,
+      });
+    };
+
+    User.prototype.sendVerificationEmail = function (transport) {
+      let url = ROOT_URL + '/verify-email?token=' + this.emailVerificationToken;
+      return transport.sendMail({
+        from: 'DebateWithData <contact@debatewithdata.org>',
+        to: this.email,
+        subject: 'Email Verification',
+        text: VERIFY_EMAIL + '\n\n' + url,
+        html: `<p>${VERIFY_EMAIL}</p><p><a href="${url}">Verify Email</a></p>`,
+      });
+    };
+
+    User.verifyEmail = async function (emailVerificationToken) {
+      if (!emailVerificationToken) {
+        throw new AuthError('Null email verification token.');
+      }
+      let user = await User.findOne({ where: { emailVerificationToken }});
+      if (!user) {
+        throw new AuthError('Invalid email verification token.');
+      }
+      await user.update({ emailVerificationToken: null });
+      return user;
+    };
+
+    User.forgotPassword = async function (email) {
+      let user = await User.findOne({ where: { email }});
+      if (!user) {
+        return null;
+      }
+      await user.update({
+        passwordResetToken: randomHexString(40),
+        passwordResetExpiration: new Date(Date.now() + ONE_DAY_MS),
+      });
+      return user;
+    };
+
+    User.prototype.sendForgotPasswordEmail = function (transport) {
+      let url = ROOT_URL + '/reset-password?token=' + this.passwordResetToken;
+      return transport.sendMail({
+        from: 'DebateWithData <contact@debatewithdata.org>',
+        to: this.email,
+        subject: 'Reset Password',
+        text: FORGOT_PASSWORD + '\n\n' + url,
+        html: `<p>${FORGOT_PASSWORD}</p>`
+            + `<p><a href="${url}">Reset Password</a></p>`,
+      });
+    };
+
+    User.resetPassword = async function (passwordResetToken, password) {
+      let user = await User.findOne({
+        where: {
+          passwordResetToken,
+          passwordResetExpiration: {
+            [sequelize.Op.gt]: new Date(),
+          },
+        }
+      });
+      if (!user) {
+        throw new AuthError('Invalid password reset token.');
+      }
+      let passwordHash = await hashPassword(password);
+      await user.update({
+        passwordHash,
+        passwordResetToken: null,
+        passwordResetExpiration: null,
+      });
+      return user;
+    };
   };
 
   return User;

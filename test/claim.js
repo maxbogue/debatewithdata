@@ -2,7 +2,7 @@ import chai from 'chai';
 
 import { Claim, ClaimRev, Point } from '../models';
 import { Flag } from '../models/utils';
-import utils from './utils';
+import { registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
@@ -14,7 +14,7 @@ describe('Claim', function () {
   let user;
 
   beforeEach(async function () {
-    user = await utils.createUser();
+    user = await registerAndVerifyUser();
   });
 
   describe('.apiCreate()', function () {

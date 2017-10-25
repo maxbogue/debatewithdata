@@ -1,7 +1,7 @@
 import chai from 'chai';
 
 import { Claim, Comment } from '../models';
-import utils from './utils';
+import { registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
@@ -14,7 +14,7 @@ describe('Comment', function () {
   let claimId;
 
   beforeEach(async function () {
-    user = await utils.createUser();
+    user = await registerAndVerifyUser();
     let claimRev = await Claim.apiCreate(user, { text: BAZ });
     claimId = claimRev.claimId;
   });
