@@ -155,9 +155,11 @@ export default {
         claim: {
           text: this.text,
           points: this.points,
-          flag: this.flag,
         },
       };
+      if (this.flag) {
+        payload.claim.flag = this.flag;
+      }
       if (this.id) {
         action = 'updateClaim';
         payload.id = this.id;
