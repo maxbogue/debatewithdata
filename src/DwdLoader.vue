@@ -40,8 +40,8 @@ export default {
 .loader {
   align-items: center;
   display: flex;
-  height: 60px;
-  margin-top: 25px;
+  height: 40px;
+  margin-top: 10px;
   justify-content: center;
 }
 .loader > div > div {

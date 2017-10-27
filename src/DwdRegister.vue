@@ -1,9 +1,9 @@
 <template>
-<div>
-  <dwd-loader ref="loader" :fill="true"></dwd-loader>
-  <h3 v-if="success" class="center">
+<div class="center">
+  <h2>Register</h2>
+  <div v-if="success" class="auth">
     Success! Please check your email to complete registration.
-  </h3>
+  </div>
   <form v-else class="auth" @submit.prevent="submit">
     <input type="text"
            class="mono"
@@ -24,7 +24,8 @@
     <input type="text"
            placeholder="email address"
            v-model="email" />
-    <button type="submit" class="btn btn-default">
+    <dwd-loader ref="loader"></dwd-loader>
+    <button type="submit" class="btn btn-primary">
       Submit
     </button>
   </form>

@@ -1,7 +1,8 @@
 <template>
 <div class="center">
-  <dwd-loader ref="loader" :fill="true"></dwd-loader>
-  <div v-if="success">
+  <h2>Forgot Password</h2>
+  <div>Enter the email for your account to reset your password.</div>
+  <div v-if="success" class="auth">
     A password reset email has been sent to {{ email }} if it is associated
     with an account.
   </div>
@@ -9,7 +10,8 @@
     <input type="text"
            placeholder="email"
            v-model="email" />
-    <button type="submit" class="btn btn-default">
+    <dwd-loader ref="loader"></dwd-loader>
+    <button type="submit" class="btn btn-primary">
       Submit
     </button>
   </form>

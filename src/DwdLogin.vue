@@ -1,6 +1,6 @@
 <template>
 <div class="center">
-  <dwd-loader ref="loader" :fill="true"></dwd-loader>
+  <h2>Login</h2>
   <form class="auth" @submit.prevent="submit">
     <input type="text"
            label="User name"
@@ -11,8 +11,9 @@
     <input type="password"
            placeholder="password"
            v-model="password" />
-    <a href="/forgot-password">Forgot password?</a>
-    <button type="submit" class="btn btn-default">
+    <router-link to="/forgot-password">Forgot password?</router-link>
+    <dwd-loader ref="loader"></dwd-loader>
+    <button type="submit" class="btn btn-primary">
       Submit
     </button>
   </form>

@@ -1,11 +1,13 @@
 <template>
-<div>
-  <dwd-loader ref="loader"></dwd-loader>
+<div class="center">
+  <h2>Reset Password</h2>
+  <div>Enter a new password for your account.</div>
   <form class="auth" @submit.prevent="submit">
     <input type="password"
            placeholder="password"
            v-model="password" />
-    <button type="submit" class="btn btn-default">
+    <dwd-loader ref="loader"></dwd-loader>
+    <button type="submit" class="btn btn-primary">
       Submit
     </button>
   </form>
