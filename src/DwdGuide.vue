@@ -2,36 +2,53 @@
 <div>
   <h1>Guide</h1>
   <p>
-    The goal of DebateWithData is to create a reference for debates that people
-    have. Debates are represented by <strong>claims</strong>, which have
-    <strong>points</strong> for and against them. Points can either be other
-    claims or <strong>sources</strong>, which tie data sources into an
-    argument.
+    The goal of DebateWithData is to create a reference for the debates that
+    people have. Debates are represented by <strong>claims</strong>, which have
+    <strong>points</strong> for and against them. <strong>Sources</strong> are
+    linked to by points to tie data into an argument.
   </p>
-  <h2>Source<a href="#source"></a></h2>
+  <h2>Alpha</h2>
   <p>
-    A source on DWD is a source of <em>data</em>. It consists of a URL and a
-    short description of the data that URL provides. The closer to the origin
-    of the data, the better a source is. Primary sources like research papers
-    or firsthand news articles are best. An article about a primary source with
-    a citation is okay as well. Generally something like a Wikipedia article is
-    not good as a source, though it can be a great way to gain background
-    information.
+    Please keep in mind that this site is in an <strong>early alpha</strong>
+    phase. The two biggest things I need from alpha users are
+    <strong>feedback</strong> on any aspect of the site (looks, behavior, data
+    structure, etc) and <strong>content</strong> to help me explore how things
+    can be improved.
   </p>
-  <h2>Claim<a href="#claim"></a></h2>
+  <p>
+    Please add and edit content on any topic you'd like, and email
+    <a href="mailto:feedback@debatewithdata.org"
+       target="_blank">feedback@debatewithdata.org</a> with any feedback that
+    occurs to you. Things will undoubtedly break in various fun ways; please
+    email <a href="mailto:bugs@debatewithdata.org"
+             target="_blank">bugs@debatewithdata.org</a> if something seems
+    broken. Also feel free to ping me directly with bugs or feedback if you
+    know me and find that preferable.
+  </p>
+  <h2>Sources<a href="#sources"></a></h2>
+  <p>
+    A source here is a source of <em>data</em>. It consists of a URL and a
+    short description of the data that URL provides, as well as other optional
+    metadata. The closer to the origin of the data, the better a source is.
+    Primary sources like research papers or firsthand news articles are best.
+  </p>
+  <h2>Claims<a href="#claims"></a></h2>
   <p>
     In the real world, debates are often very broad in scope, which leads to a
     lot of confusion about exactly what positions each side is defending. To
-    keep things cleaner on DWD, debates are distilled down into one or more
+    keep things cleaner here, debates are distilled down into one or more
     claims. A claim is a clear, simple statement about the world. It is
     defended by points for it, and attacked by points against it.
   </p>
-  <h2>Point<a href="#point"></a></h2>
+  <h2>Points<a href="#points"></a></h2>
   <p>A point for or against a claim can be one of three things:</p>
   <ul>
-    <li>A link to a source.</li>
-    <li>A link to another claim.</li>
-    <li>A 'sub-claim' that only exists inside the claim.</li>
+    <li>
+      A link to a source (paste in an ID or create a new source by entering a
+      URL).
+    </li>
+    <li>A link to another claim (paste in an ID).</li>
+    <li>Text that only exists inside the parent claim.</li>
   </ul>
   <p>If a claim is the "what", the points are the "why" (or "why not").</p>
 </div>
