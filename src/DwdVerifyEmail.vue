@@ -25,7 +25,7 @@ export default {
     auth.verifyEmail(this.token, this.$refs.loader).then(() => {
       this.text = 'Success!';
       setTimeout(() => {
-        this.$router.push('/');
+        this.$router.push('/guide');
       }, 1500);
     });
   },
