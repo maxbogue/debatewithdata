@@ -7,6 +7,10 @@ export default function (sequelize, DataTypes) {
       primaryKey: true,
       defaultValue: () => randomHexString(20),
     },
+    note: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
   });
 
   Invite.associate = function (models) {
@@ -27,6 +31,7 @@ export default function (sequelize, DataTypes) {
     Invite.prototype.toData = function () {
       return {
         code: this.code,
+        note: this.note,
         user: this.user ? this.user.username : null,
         created: this.created_at,
       };

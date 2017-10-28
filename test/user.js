@@ -17,7 +17,7 @@ const EMAIL = 'test@debatewithdata.org';
 describe('User', function () {
   describe('.register()', function () {
     it('works with good args', async function () {
-      let invite = await Invite.create();
+      let invite = await Invite.create({ note: 'test' });
       let user = await User.register(USERNAME, PASSWORD, EMAIL, invite.code);
       expect(user.username).to.equal(USERNAME);
       expect(user.passwordHash).to.not.be.empty;
@@ -28,7 +28,7 @@ describe('User', function () {
     });
 
     it('fails with bad args', async function () {
-      let invite = await Invite.create();
+      let invite = await Invite.create({ note: 'test' });
       await expect(User.register('ab', PASSWORD, EMAIL, invite.code)).to.be
         .rejectedWith(ClientError, /at least 3/, 'short username');
       await expect(User.register('abc_', PASSWORD, EMAIL, invite.code)).to.be
@@ -42,7 +42,7 @@ describe('User', function () {
     it.skip('sends email', async function () {
       /* eslint no-invalid-this: "off" */
       this.timeout(30000);
-      let invite = await Invite.create();
+      let invite = await Invite.create({ note: 'test' });
       let user = await User.register(USERNAME, PASSWORD, EMAIL, invite.code);
       let account = await nodemailer.createTestAccount();
       let transport = await nodemailer.createTransport({
@@ -70,7 +70,7 @@ describe('User', function () {
     it('fails with bad creds', async function () {
       await expect(User.login(USERNAME, PASSWORD)).to.be.rejectedWith(
           AuthError, /Invalid user/, 'missing user');
-      let invite = await Invite.create();
+      let invite = await Invite.create({ note: 'test' });
       let user = await User.register(USERNAME, PASSWORD, EMAIL, invite.code);
       await expect(User.login(USERNAME, PASSWORD)).to.be.rejectedWith(
           AuthError, /Email verification required/, 'email verify');

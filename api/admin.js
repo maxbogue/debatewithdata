@@ -19,7 +19,7 @@ router.get('/invite', async function (req, res) {
 });
 
 router.post('/invite', async function (req, res) {
-  let invite = await Invite.create();
+  let invite = await Invite.create({ note: req.body.note });
   res.json(invite.toData());
 });
 

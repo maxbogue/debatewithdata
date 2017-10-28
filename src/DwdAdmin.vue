@@ -3,18 +3,26 @@
   <dwd-loader ref="loader"></dwd-loader>
   <template v-if="invites">
     <h2>Invite Codes</h2>
-    <button type="button"
-            class="btn btn-primary"
-            @click="createInvite">New Invite</button>
-    <ul class="invites">
+    <form class="auth" @submit.prevent="submit">
+      <input type="text"
+             placeholder="note"
+             v-model="note" />
+      <button type="submit"
+              class="btn btn-primary"
+              :disabled="!note">New Invite</button>
+    </form>
+    <ul class="invites mono">
       <li v-for="invite in sortedInvites" :key="invite.code">
         <template v-if="invite.user">
-          <span class="mono used">{{ invite.code }}</span>
-          <br><span>{{ invite.user }}</span>
+          <span class="used">{{ invite.code }}</span>
+          <br><span>{{ invite.note }} =&gt; {{ invite.user }}</span>
         </template>
-        <router-link v-else
-                     :to="'/register?invite=' + invite.code"
-                     class="mono">{{ invite.code }}</router-link>
+        <template v-else>
+          <router-link :to="'/register?invite=' + invite.code">
+            {{ invite.code }}
+          </router-link>
+          <br><span>{{ invite.note }}</span>
+        </template>
       </li>
     </ul>
   </template>
@@ -32,16 +40,17 @@ export default {
     DwdLoader,
   },
   data: () => ({
+    note: '',
     invites: null,
   }),
   computed: {
     sortedInvites: function () {
-      return sortBy(this.invites, (i) => i.created);
+      return sortBy(this.invites, (i) => -i.created);
     },
   },
   methods: {
-    createInvite: function () {
-      axios.post('/api/admin/invite').then((res) => {
+    submit: function () {
+      axios.post('/api/admin/invite', { note: this.note }).then((res) => {
         this.invites.push(res.data);
       });
     },
