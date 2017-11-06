@@ -3,19 +3,21 @@
   <span v-if="error">{{ error }}</span>
   <router-link v-else-if="point.type === 'claim'"
                :to="url">{{ text }}</router-link>
-  <template v-else-if="source">
-    <span v-if="source.type && source.type !== 'misc'"
-          class="tag">{{ source.type }}</span>
-    <router-link :to="url">{{ text }}</router-link>
-  </template>
+  <source-content v-else-if="point.type === 'source'"
+                  :source="source"
+                  :trail="trail"></source-content>
   <template v-else>{{ text }}</template>
 </li>
 </template>
 
 <script>
 import './style/sub-point.css';
+import SourceContent from './SourceContent.vue';
 
 export default {
+  components: {
+    SourceContent,
+  },
   props: ['point', 'side', 'trail'],
   computed: {
     claim: function () {

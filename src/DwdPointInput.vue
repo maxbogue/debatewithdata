@@ -35,11 +35,7 @@
                :to="claimUrl(point.claimId) + '/edit'">
     {{ claim.text }}
   </router-link>
-  <div v-else-if="source">
-    <router-link :to="sourceUrl(point.sourceId) + '/edit'"
-                 class="source-text">{{ source.text }}</router-link>
-    <a :href="source.url" class="source-url">{{ source.url }}</a>
-  </div>
+  <source-content v-else-if="source" :source="source"></source-content>
 </div>
 </template>
 
@@ -48,6 +44,7 @@ import 'loaders.css/loaders.min.css';
 import { isWebUri } from 'valid-url';
 
 import DwdFlag from './DwdFlag.vue';
+import SourceContent from './SourceContent.vue';
 import { pointToInput } from './utils';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
@@ -55,6 +52,7 @@ const ID_REGEX = /^[0-9a-f]{12}$/;
 export default {
   components: {
     DwdFlag,
+    SourceContent,
   },
   props: ['point', 'side'],
   data: () => ({

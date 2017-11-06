@@ -4,12 +4,7 @@
   <div v-if="source" class="row gutter-16">
     <div class="col-sm-12">
       <div class="t1 bubble flex-row" :class="[bubbleColor]">
-        <div class="content">
-          <div>
-            <div class="source-text">{{ source.text }}</div>
-          </div>
-          <a :href="source.url" class="source-url">{{ source.url }}</a>
-        </div>
+        <source-content class="content" :source="source"></source-content>
         <div class="controls">
           <router-link v-if="$store.state.user"
                        :to="sourceUrl(id) + '/edit'"
@@ -32,12 +27,14 @@
 import DwdComments from './DwdComments.vue';
 import DwdLoader from './DwdLoader.vue';
 import DwdTrail from './DwdTrail.vue';
+import SourceContent from './SourceContent.vue';
 
 export default {
   components: {
     DwdComments,
     DwdLoader,
     DwdTrail,
+    SourceContent,
   },
   data: () => ({
     showComments: false,

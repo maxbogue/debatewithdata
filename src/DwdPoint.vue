@@ -17,16 +17,9 @@
           </dwd-sub-point>
         </ul>
       </template>
-      <template v-else-if="source">
-        <div class="source-text">
-          <span v-if="source.type && source.type !== 'misc'"
-                class="tag">{{ source.type }}</span>
-          <router-link :to="sourceUrl(point.sourceId, trail)">
-            {{ source.text }}
-          </router-link>
-        </div>
-        <a :href="source.url" class="source-url">{{ source.url }}</a>
-      </template>
+      <source-content v-else-if="point.type === 'source'"
+                      :source="source"
+                      :trail="trail"></source-content>
       <span v-else>error</span>
     </div>
     <div class="controls">
@@ -47,6 +40,7 @@ import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdStar from './DwdStar.vue';
 import DwdSubPoint from './DwdSubPoint.vue';
+import SourceContent from './SourceContent.vue';
 import { pointMapsToLists, rotateWithIndexes } from './utils';
 
 export default {
@@ -55,6 +49,7 @@ export default {
     DwdFlag,
     DwdStar,
     DwdSubPoint,
+    SourceContent,
   },
   props: ['point', 'side', 'trail'],
   data: () => ({
