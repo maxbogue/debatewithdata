@@ -12,12 +12,26 @@
 .green.click:hover, a.green:hover {
   background-color: #C8E6C9;
 }
+.green-dark {
+  background-color: #43A047;
+  border: 1px solid #2E7D32;
+}
+.green-dark.click:hover, a.green-dark:hover {
+  background-color: #2E7D32;
+}
 .blue {
   background-color: #E3F2FD;
   border: 1px solid #BBDEFB;
 }
 .blue.click:hover, a.blue:hover {
   background-color: #BBDEFB;
+}
+.blue-dark {
+  background-color: #1E88E5;
+  border: 1px solid #1565C0;
+}
+.blue-dark.click:hover, a.blue-dark:hover {
+  background-color: #1565C0;
 }
 .purple {
   background-color: #F3E5F5;

@@ -3,7 +3,9 @@
   <h3 class="center">
     Sources are external sources of data used to support claims.
   </h3>
-  <router-link :to="addUrl" class="add click">+</router-link>
+  <div class="center">
+    <router-link :to="addUrl" class="add green-dark">New Source</router-link>
+  </div>
   <template v-if="sourcesLoaded">
     <router-link v-for="(source, id) in sources"
                  class="t1 bubble green"

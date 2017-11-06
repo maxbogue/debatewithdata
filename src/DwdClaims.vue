@@ -3,7 +3,9 @@
   <h3 class="center">
     Claims are simple statements about the world.
   </h3>
-  <router-link :to="addUrl" class="add click">+</router-link>
+  <div class="center">
+    <router-link :to="addUrl" class="add blue-dark">New Claim</router-link>
+  </div>
   <template v-if="claimsLoaded">
     <router-link v-for="claim in claims"
                  class="t1 bubble blue"
