@@ -1,14 +1,16 @@
 <template>
-<li class="t3 flex-row" :class="[side === 0 ? 'for' : 'against']">
-  <div class="content">
-    <dwd-point-input :point="point" :side="side" @update="updatePoint">
-    </dwd-point-input>
-  </div>
-  <div class="controls">
-    <span v-if="canDelete"
-          class="delete click glyphicon glyphicon-trash"
-          aria-hidden="true"
-          @click="$emit('delete')"></span>
+<li class="sub-point" :class="isFor | toSideString">
+  <div class="bubble">
+    <div class="content">
+      <dwd-point-input :point="point" :isFor="isFor" @update="updatePoint">
+      </dwd-point-input>
+    </div>
+    <div class="controls">
+      <span v-if="canDelete"
+            class="delete click glyphicon glyphicon-trash"
+            aria-hidden="true"
+            @click="$emit('delete')"></span>
+    </div>
   </div>
 </li>
 </template>
@@ -21,7 +23,7 @@ export default {
   components: {
     DwdPointInput,
   },
-  props: ['point', 'side', 'canDelete'],
+  props: ['point', 'isFor', 'canDelete'],
   methods: {
     makePoint: function (type, input1, input2) {
       switch (type) {

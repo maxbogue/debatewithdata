@@ -1,29 +1,30 @@
 <template>
-<div class="point t2 bubble flex-row"
-     :class="[side === 0 ? 'purple' : 'amber']">
-  <div class="content">
-    <dwd-point-input :point="point" :side="side" @update="updatePoint">
-    </dwd-point-input>
-    <ul v-if="isSubclaim">
-      <dwd-edit-subpoint v-for="[p, side, i] in zippedSubpoints"
-                         :point="p"
-                         :side="side"
-                         :canDelete="i < subpoints[side].length - 1"
-                         :key="p.id || p.tempId"
-                         @update="(p) => updateSubPoint(side, i, p)"
-                         @delete="() => deleteSubPoint(side, i)">
-      </dwd-edit-subpoint>
-    </ul>
+<div class="point" :class="isFor | toSideString">
+  <div class="bubble">
+    <div class="content">
+      <dwd-point-input :point="point" :isFor="isFor" @update="updatePoint">
+      </dwd-point-input>
+    </div>
+    <div class="controls">
+      <dwd-flag-dropdown v-if="isSubclaim"
+                         :flag="flag"
+                         @select="updateFlag"></dwd-flag-dropdown>
+      <span v-if="canDelete"
+            class="delete click glyphicon glyphicon-trash"
+            aria-hidden="true"
+            @click="$emit('delete')"></span>
+    </div>
   </div>
-  <div class="controls">
-    <dwd-flag-dropdown v-if="isSubclaim"
-                       :flag="flag"
-                       @select="updateFlag"></dwd-flag-dropdown>
-    <span v-if="canDelete"
-          class="delete click glyphicon glyphicon-trash"
-          aria-hidden="true"
-          @click="$emit('delete')"></span>
-  </div>
+  <ul v-if="isSubclaim">
+    <dwd-edit-subpoint v-for="[p, side, i] in zippedSubpoints"
+                       :point="p"
+                       :isFor="isFor === !side"
+                       :canDelete="i < subpoints[side].length - 1"
+                       :key="p.id || p.tempId"
+                       @update="(p) => updateSubPoint(side, i, p)"
+                       @delete="() => deleteSubPoint(side, i)">
+    </dwd-edit-subpoint>
+  </ul>
 </div>
 </template>
 
@@ -41,7 +42,7 @@ export default {
     DwdFlagDropdown,
     DwdPointInput,
   },
-  props: ['point', 'side', 'canDelete'],
+  props: ['point', 'isFor', 'canDelete'],
   data: () => ({
     subpoints: emptyPoints(),
     flag: '',
@@ -135,12 +136,6 @@ export default {
 </script>
 
 <style>
-.side-0 > input {
-  background-color: #F3E5F5;
-}
-.side-1 > input {
-  background-color: #FFF8E1;
-}
 .valid {
   color: #757575;
 }

@@ -54,6 +54,7 @@ export default {};
   font-size: 20px;
 }
 .guide {
+  display: block;
   margin: 20px 0;
   text-align: left;
 }

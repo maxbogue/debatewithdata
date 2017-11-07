@@ -1,6 +1,6 @@
 <template>
-<div class="point">
-  <div class="t2 bubble flex-row" :class="[side === 0 ? 'purple' : 'amber']">
+<div class="point" :class="isFor | toSideString">
+  <div class="bubble">
     <div class="content">
       <template v-if="claim">
         <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
@@ -8,14 +8,6 @@
                      :to="claimUrl(point.claimId, trail)"
                      class="source-text">{{ claim.text }}</router-link>
         <span v-else class="source-text">{{ claim.text }}</span>
-        <ul v-if="subPoints.length > 0" class="t3">
-          <dwd-sub-point v-for="[subPoint, subSide, i] in subPoints"
-                         :point="subPoint"
-                         :side="subSide"
-                         :trail="trail.concat(point.claimId || point.id)"
-                         :key="subPoint.id">
-          </dwd-sub-point>
-        </ul>
       </template>
       <source-content v-else-if="point.type === 'source'"
                       :source="source"
@@ -31,6 +23,14 @@
   </div>
   <dwd-comments v-if="showComments"
                 :url="'/api/point/' + point.id"></dwd-comments>
+  <ul v-if="subPoints.length > 0">
+    <dwd-sub-point v-for="[subPoint, subSide, i] in subPoints"
+                   :point="subPoint"
+                   :isFor="isFor === !subSide"
+                   :trail="trail.concat(point.claimId || point.id)"
+                   :key="subPoint.id">
+    </dwd-sub-point>
+  </ul>
 </div>
 </template>
 
@@ -51,7 +51,7 @@ export default {
     DwdSubPoint,
     SourceContent,
   },
-  props: ['point', 'side', 'trail'],
+  props: ['point', 'isFor', 'trail'],
   data: () => ({
     showComments: false,
   }),

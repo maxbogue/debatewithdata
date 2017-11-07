@@ -91,9 +91,6 @@ export default {
 <style>
 .comments {
 	padding: 16px;
-	background-color: #eee;
-	border-radius: 5px;
-	border: 1px solid #ddd;
 }
 .comments ul {
   margin: 0;

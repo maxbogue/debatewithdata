@@ -2,22 +2,24 @@
 <div>
   <form v-if="!needsData" class="row gutter-16" @submit.prevent="submit">
     <div class="col-xs-12">
-      <div class="t1 bubble blue flex-row">
-        <div class="content">
-          <label for="text" class="hint">
-            A claim should be a short, simple statement about the world.
-          </label>
-          <textarea id="text"
-                    rows="1"
-                    autocomplete="off"
-                    placeholder="claim"
-                    v-model="text"
-                    v-auto-resize></textarea>
-          <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
-        </div>
-        <div class="controls">
-          <dwd-flag-dropdown :flag="flag"
-                             @select="updateFlag"></dwd-flag-dropdown>
+      <div class="claim t1 neutral">
+        <div class="bubble">
+          <div class="content">
+            <label for="text" class="hint">
+              A claim should be a short, simple statement about the world.
+            </label>
+            <textarea id="text"
+                      rows="1"
+                      autocomplete="off"
+                      placeholder="claim"
+                      v-model="text"
+                      v-auto-resize></textarea>
+            <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
+          </div>
+          <div class="controls">
+            <dwd-flag-dropdown :flag="flag"
+                               @select="updateFlag"></dwd-flag-dropdown>
+          </div>
         </div>
       </div>
     </div>
@@ -26,7 +28,7 @@
            class="col-xs-12"
            :key="point.id || point.tempId">
         <dwd-edit-point :point="point"
-                        :side="side"
+                        :isFor="!side"
                         :canDelete="i < points[side].length - 1"
                         @update="(p) => updatePoint(side, i, p)"
                         @delete="points[side].splice(i, 1)">
@@ -39,7 +41,7 @@
            :key="'side-' + side">
         <dwd-edit-point v-for="(point, i) in sidePoints"
                         :point="point"
-                        :side="side"
+                        :isFor="!side"
                         :canDelete="i < sidePoints.length - 1"
                         :key="point.id || point.tempId"
                         @update="(p) => updatePoint(side, i, p)"

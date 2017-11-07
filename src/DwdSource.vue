@@ -3,16 +3,18 @@
   <dwd-trail @lastIsFor="(v) => isFor = v"></dwd-trail>
   <div v-if="source" class="row gutter-16">
     <div class="col-sm-12">
-      <div class="t1 bubble flex-row" :class="[bubbleColor]">
-        <source-content class="content" :source="source"></source-content>
-        <div class="controls">
-          <router-link v-if="$store.state.user"
-                       :to="sourceUrl(id) + '/edit'"
-                       class="glyphicon glyphicon-pencil click"
-                       aria-hidden="true"></router-link>
-          <span class="glyphicon glyphicon-comment click"
-                aria-hidden="true"
-                @click="showComments = !showComments"></span>
+      <div class="source t1" :class="isFor | toSideString">
+        <div class="bubble">
+          <source-content class="content" :source="source"></source-content>
+          <div class="controls">
+            <router-link v-if="$store.state.user"
+                         :to="sourceUrl(id) + '/edit'"
+                         class="glyphicon glyphicon-pencil click"
+                         aria-hidden="true"></router-link>
+            <span class="glyphicon glyphicon-comment click"
+                  aria-hidden="true"
+                  @click="showComments = !showComments"></span>
+          </div>
         </div>
       </div>
       <dwd-comments v-if="showComments"
@@ -52,12 +54,6 @@ export default {
         return [];
       }
       return this.$route.query.trail.split(',');
-    },
-    bubbleColor: function () {
-      if (this.isFor === null) {
-        return 'green';
-      }
-      return this.isFor ? 'purple' : 'amber';
     },
   },
   methods: {

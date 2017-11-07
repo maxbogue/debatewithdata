@@ -1,7 +1,7 @@
 <template>
 <div class="input">
   <label v-if="point.tempId" class="hint">
-    Add a point {{ side === 0 ? 'for' : 'against' }} the claim.
+    Add a point {{ isFor | toSideString }} the claim.
   </label>
   <textarea rows="1"
             autocomplete="off"
@@ -54,7 +54,7 @@ export default {
     DwdFlag,
     SourceContent,
   },
-  props: ['point', 'side'],
+  props: ['point', 'isFor'],
   data: () => ({
     input1: '',
     input2: '',
@@ -171,12 +171,6 @@ export default {
 <style scoped>
 .input > :not(:first-child) {
   margin-top: 8px;
-}
-.side-0 > input {
-  background-color: #F3E5F5;
-}
-.side-1 > input {
-  background-color: #FFF8E1;
 }
 .valid {
   color: #757575;

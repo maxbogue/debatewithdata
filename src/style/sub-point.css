@@ -1,19 +1,21 @@
-.t3 {
+.sub-point {
+  font-size: 12px;
   list-style: none;
-  margin-top: 8px;
-  padding: 0;
+  margin: 3px 0 0 3px;
 }
-.t3:before {
-  color: rgba(0, 0, 0, 0.65);
-  font-family: 'Glyphicons Halflings';
-  margin-right: 4px;
+.sub-point > .bubble {
+  padding: 12px;
 }
-.t3.for:before {
-  content: "\e081";
+.sub-point.for > .bubble {
+  background: none;
+  border: 1px solid #E1BEE7;
+  border-left-width: 0;
 }
-.t3.against:before {
-  content: "\e082";
+.sub-point.against > .bubble {
+  background: none;
+  border: 1px solid #FFE082;
+  border-left-width: 0;
 }
-.t3 > .controls {
+.sub-point > .controls {
   margin-left: 4px;
 }

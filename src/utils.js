@@ -85,6 +85,11 @@ export function rotateWithIndexes(lists) {
 }
 
 export var DwdUtilsMixin = {
+  filters: {
+    toSideString: function (isFor) {
+      return isFor === null ? 'neutral' : isFor ? 'for' : 'against';
+    },
+  },
   methods: {
     claimUrl: function (claimId, trail) {
       let url = '/claim/' + claimId;

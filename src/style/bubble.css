@@ -1,7 +1,19 @@
 .bubble {
-  border-radius: 5px;
-  display: block;
+  align-items: flex-start;
+  display: flex;
   padding: 20px;
+}
+.for {
+  border-left: 6px solid #E1BEE7;
+}
+.against {
+  border-left: 6px solid #FFE082;
+}
+.for > .bubble {
+  background-color: #F3E5F5;
+}
+.against > .bubble {
+  background-color: #FFF8E1;
 }
 .content {
   flex: auto;

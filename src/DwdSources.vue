@@ -7,13 +7,14 @@
     <router-link :to="addUrl" class="add green-dark">New Source</router-link>
   </div>
   <template v-if="sourcesLoaded">
-    <router-link v-for="(source, id) in sources"
-                 class="t1 bubble green"
-                 :to="sourceUrl(id)"
-                 :key="id">
-      <div class="source-text">{{ source.text }}</div>
-      <div class="source-url">{{ source.url }}</div>
-    </router-link>
+    <div v-for="source in sources"
+         class="source t1 neutral"
+         :key="source.id">
+      <router-link class="bubble"
+                   :to="sourceUrl(source.id)">
+        <source-content :source="source"></source-content>
+      </router-link>
+    </div>
   </template>
   <dwd-loader ref="loader"></dwd-loader>
 </div>
@@ -23,10 +24,12 @@
 import { mapState } from 'vuex';
 
 import DwdLoader from './DwdLoader.vue';
+import SourceContent from './SourceContent.vue';
 
 export default {
   components: {
     DwdLoader,
+    SourceContent,
   },
   computed: {
     ...mapState([

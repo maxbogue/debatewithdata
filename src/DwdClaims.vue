@@ -7,12 +7,12 @@
     <router-link :to="addUrl" class="add blue-dark">New Claim</router-link>
   </div>
   <template v-if="claimsLoaded">
-    <router-link v-for="claim in claims"
-                 class="t1 bubble blue"
-                 :to="claimUrl(claim.id)"
-                 :key="claim.id">
-      {{ claim.text }}
-    </router-link>
+    <div v-for="claim in claims"
+         class="claim t1 neutral"
+         :key="claim.id">
+      <router-link class="bubble"
+                   :to="claimUrl(claim.id)">{{ claim.text }}</router-link>
+    </div>
   </template>
   <dwd-loader ref="loader"></dwd-loader>
 </div>

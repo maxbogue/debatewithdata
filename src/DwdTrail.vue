@@ -56,7 +56,7 @@ export default {
         }
         items.push([item, isFor, itemUrl]);
         item = next;
-        isFor = nextIsFor;
+        isFor = isFor === null ? nextIsFor : isFor === nextIsFor;
         itemUrl = nextUrl;
       }
       this.lastIsFor = isFor;

@@ -1,12 +1,14 @@
 <template>
-<li class="t3 flex-row" :class="[side === 0 ? 'for' : 'against']">
-  <span v-if="error">{{ error }}</span>
-  <router-link v-else-if="point.type === 'claim'"
-               :to="url">{{ text }}</router-link>
-  <source-content v-else-if="point.type === 'source'"
-                  :source="source"
-                  :trail="trail"></source-content>
-  <template v-else>{{ text }}</template>
+<li class="sub-point" :class="isFor | toSideString">
+  <div class="bubble">
+    <span v-if="error">{{ error }}</span>
+    <router-link v-else-if="point.type === 'claim'"
+                 :to="url">{{ text }}</router-link>
+    <source-content v-else-if="point.type === 'source'"
+                    :source="source"
+                    :trail="trail"></source-content>
+    <template v-else>{{ text }}</template>
+  </div>
 </li>
 </template>
 
@@ -18,7 +20,7 @@ export default {
   components: {
     SourceContent,
   },
-  props: ['point', 'side', 'trail'],
+  props: ['point', 'isFor', 'trail'],
   computed: {
     claim: function () {
       if (this.point.type === 'claim') {
