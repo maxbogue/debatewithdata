@@ -64,17 +64,16 @@ export default {
 };
 </script>
 
-<style scoped>
-.invites {
-  list-style: none;
-  margin-top: 10px;
-  padding: 0;
-}
-.invites li {
-  padding: 4px;
-}
-.invites .used {
-  color: #aaa;
-  text-decoration: line-through;
-}
+<style lang="sass" scoped>
+.invites
+  list-style: none
+  margin-top: 10px
+  padding: 0
+
+  li
+    padding: 4px
+
+  .used
+    color: #aaa
+    text-decoration: line-through
 </style>

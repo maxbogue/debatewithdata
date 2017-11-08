@@ -29,15 +29,14 @@ export default {
 };
 </script>
 
-<style scoped>
-.sub {
-  color: #666;
-  font-size: 0.8em;
-}
-.sub a {
-  color: #666;
-}
-.sub strong {
-  color: #000;
-}
+<style lang="sass" scoped>
+.sub
+  color: #666
+  font-size: 0.8em
+
+  a
+    color: #666
+
+  strong
+    color: #000
 </style>

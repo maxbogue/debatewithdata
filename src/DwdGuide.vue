@@ -58,8 +58,7 @@
 export default {};
 </script>
 
-<style scoped>
-p {
-  width: 600px;
-}
+<style lang="sass" scoped>
+p
+  width: 600px
 </style>

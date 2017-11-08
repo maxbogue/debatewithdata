@@ -19,15 +19,14 @@ export default {
 };
 </script>
 
-<style>
-.flag {
-  font-size: 12px;
-}
-.flag span {
-  color: #D32F2F;
-  text-decoration: underline;
-}
-.flag a:hover {
-  text-decoration: underline;
-}
+<style lang="sass" scoped>
+.flag
+  font-size: 12px
+
+  span
+    color: #D32F2F
+    text-decoration: underline
+
+  a:hover
+    text-decoration: underline
 </style>

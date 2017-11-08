@@ -36,21 +36,20 @@ export default {
 };
 </script>
 
-<style scoped>
-.loader {
-  align-items: center;
-  display: flex;
-  height: 40px;
-  margin-top: 10px;
-  justify-content: center;
-}
-.loader > div > div {
-  background-color: #666;
-  border: none;
-}
-.loader.error {
-  color: red;
-  font-size: 1.1em;
-  text-align: center;
-}
+<style lang="sass" scoped>
+.loader
+  align-items: center
+  display: flex
+  height: 40px
+  margin-top: 10px
+  justify-content: center
+
+  > div > div
+    background-color: #666
+    border: none
+
+  &.error
+    color: red
+    font-size: 1.1em
+    text-align: center
 </style>

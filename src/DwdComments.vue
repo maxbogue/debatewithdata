@@ -88,34 +88,33 @@ export default {
 };
 </script>
 
-<style>
-.comments {
-	padding: 16px;
-}
-.comments ul {
-  margin: 0;
-  padding: 0 0.5em;
-}
-.comments li {
-  list-style: none;
-}
-.comments li:not(:first-child) {
-  margin-top: 4px;
-}
-.comments li :first-child {
-  flex: 1;
-}
-.comments li :not(:first-child) {
-  margin-left: 8px;
-}
-.comments textarea {
-  margin-top: 12px;
-  padding: 2px 0.5em;
-}
-.comments li:not(:hover) .delete {
-  display: none;
-}
-.timestamp {
-  color: #aaa;
-}
+<style lang="sass" scoped>
+.comments
+  padding: 16px
+
+  ul
+    margin: 0
+    padding: 0 0.5em
+
+  li
+    list-style: none
+
+    &:not(:first-child)
+      margin-top: 4px
+
+    &:not(:hover) .delete
+      display: none
+
+    & :first-child
+      flex: 1
+
+    & :not(:first-child)
+      margin-left: 8px
+
+  textarea
+    margin-top: 12px
+    padding: 2px 0.5em
+
+.timestamp
+  color: #aaa
 </style>

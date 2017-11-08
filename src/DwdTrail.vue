@@ -102,27 +102,14 @@ export default {
 };
 </script>
 
-<style>
-.trail {
-  margin-bottom: -8px;
-}
-.trail .bubble {
-  display: block;
-  margin: 8px auto 0;
-  padding: 8px;
-  text-decoration: none;
-  width: 50%;
-}
-.trail .ind {
-  color: rgba(0, 0, 0, 0.65);
-  display: block;
-  font-family: 'Glyphicons Halflings';
-  text-align: center;
-}
-.ind.for:before {
-  content: "\e081";
-}
-.ind.against:before {
-  content: "\e082";
-}
+<style lang="sass" scoped>
+.trail
+  margin-bottom: -8px
+
+  .bubble
+    display: block
+    margin: 8px auto 0
+    padding: 8px
+    text-decoration: none
+    width: 50%
 </style>

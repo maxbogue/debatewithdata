@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import './style/sub-point.css';
+import './style/sub-point.sass';
 import SourceContent from './SourceContent.vue';
 
 export default {

@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import './style/point.css';
+import './style/point.sass';
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdStar from './DwdStar.vue';

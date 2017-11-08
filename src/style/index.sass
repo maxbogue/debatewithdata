@@ -1,0 +1,150 @@
+@import "bubble"
+@import "colors"
+
+body
+  font-family: 'Roboto', 'Noto Sans', sans-serif
+  line-height: 1.5
+  margin-bottom: 50px
+
+textarea
+  border: 1px solid #666
+  border-radius: 5px
+  display: block
+  overflow: hidden
+  padding: 0.5em
+  resize: none
+  width: 100%
+
+input
+  &[type="text"], &[type="password"]
+    border: 1px solid #666
+    border-radius: 5px
+    display: block
+    overflow: hidden
+    padding: 0.5em
+    resize: none
+    width: 100%
+
+  &:focus
+    outline: none
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.75)
+
+textarea:focus
+  outline: none
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.75)
+
+a
+  color: #222
+  text-decoration: none
+
+  &:visited, &:focus
+    color: #222
+    text-decoration: none
+
+  &:hover
+    color: #222
+
+p a
+  color: #337ab7
+
+  &:visited, &:focus
+    color: #337ab7
+
+.gutter-16
+  &.row
+    margin-right: -8px
+    margin-left: -8px
+
+  > [class^="col-"],
+  > [class^=" col-"]
+    padding: 8px
+
+.center
+  text-align: center
+
+.mono
+  font-family: "Roboto Mono",Menlo,Monaco,Consolas,"Courier New",monospace
+
+.click:hover
+  color: #aaa
+  cursor: pointer
+  text-decoration: none
+
+.flex-row
+  align-items: flex-start
+  display: flex
+
+.t1
+  font-size: 20px
+  margin-top: 8px
+
+  > a:hover
+    text-decoration: none
+
+a.add
+  border-radius: 3px
+  color: #fff
+  display: inline-block
+  margin-top: 8px
+  padding: 8px 16px
+  text-align: center
+  text-decoration: none
+
+.hint
+  display: block
+  font-size: 0.75em
+  margin-bottom: -8px
+
+.claim.neutral
+  border-left: 6px solid #BBDEFB
+
+  > .bubble
+    background-color: #E3F2FD
+
+  > a.bubble:hover
+    background-color: #BBDEFB
+
+.source.neutral
+  border-left: 6px solid #C8E6C9
+
+  > .bubble
+    background-color: #E8F5E9
+
+  > a.bubble:hover
+    background-color: #C8E6C9
+
+.source-text
+  display: block
+
+.source-url, a.source-url
+  display: block
+  color: #666
+  font-size: 0.75em
+
+.dropdown
+  position: relative
+
+.dropdown-content
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2)
+  display: block
+  max-height: 0
+  min-width: 160px
+  opacity: 0
+  overflow: hidden
+  position: absolute
+  transition: max-height 0.3s, opacity 0.2s 0.1s, visibility 0s 0.3s
+  visibility: hidden
+  z-index: 1
+
+.open
+  transition: max-height 0.3s, opacity 0.2s, visibility 0s
+  opacity: 1
+  visibility: visible
+  max-height: 500px
+
+.tag
+  background-color: rgba(0, 0, 0, 0.5)
+  border-radius: 4px
+  color: #fff
+  font-size: 0.65em
+  padding: 2px 4px

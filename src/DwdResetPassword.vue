@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import './style/auth.css';
+import './style/auth.sass';
 import DwdLoader from './DwdLoader.vue';
 import auth from './auth';
 

@@ -23,7 +23,7 @@ import DwdVerifyEmail from './DwdVerifyEmail.vue';
 import auth from './auth';
 import store from './store';
 import { DwdUtilsMixin } from './utils';
-import './style/index.css';
+import './style/index.sass';
 
 Vue.use(VueRouter);
 Vue.mixin(DwdUtilsMixin);

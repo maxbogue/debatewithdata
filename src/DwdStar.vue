@@ -36,8 +36,7 @@ export default {
 };
 </script>
 
-<style>
-.disabled {
-  color: rgba(0, 0, 0, 0.1);
-}
+<style lang="sass" scoped>
+.disabled
+  color: rgba(0, 0, 0, 0.1)
 </style>

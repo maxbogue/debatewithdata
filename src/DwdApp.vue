@@ -12,6 +12,3 @@ export default {
   components: { DwdHeader },
 };
 </script>
-
-<style>
-</style>

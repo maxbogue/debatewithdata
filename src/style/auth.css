@@ -1,9 +1,0 @@
-.auth {
-  margin: 20px 0;
-}
-.auth > input[type="text"], .auth > input[type="password"], .auth > button {
-  display: block;
-  height: 3em;
-  margin: 10px auto 0;
-  width: 300px;
-}

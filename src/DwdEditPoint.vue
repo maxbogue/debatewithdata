@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import './style/point.css';
+import './style/point.sass';
 import DwdEditSubpoint from './DwdEditSubpoint.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdPointInput from './DwdPointInput.vue';
@@ -135,11 +135,10 @@ export default {
 };
 </script>
 
-<style>
-.valid {
-  color: #757575;
-}
-.invalid {
-  color: #F44336;
-}
+<style lang="sass" scoped>
+.valid
+  color: #757575
+
+.invalid
+  color: #F44336
 </style>

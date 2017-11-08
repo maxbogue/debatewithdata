@@ -33,24 +33,23 @@ export default {
 };
 </script>
 
-<style>
-.flags {
-  background-color: #fefefe;
-  border: 1px solid #666;
-  padding: 0;
-}
-.flags li {
-  cursor: pointer;
-  font-size: 12px;
-  list-style: none;
-  padding: 4px;
-}
-.flags .selected {
-  background-color: #D32F2F;
-  color: #fff;
-}
-.flags li:hover {
-  background-color: #EF9A9A;
-  color: #212121;
-}
+<style lang="sass" scoped>
+.flags
+  background-color: #fefefe
+  border: 1px solid #666
+  padding: 0
+
+  li
+    cursor: pointer
+    font-size: 12px
+    list-style: none
+    padding: 4px
+
+    &:hover
+      background-color: #EF9A9A
+      color: #212121
+
+  .selected
+    background-color: #D32F2F
+    color: #fff
 </style>

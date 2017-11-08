@@ -40,33 +40,33 @@
 export default {};
 </script>
 
-<style scoped>
-.home h1 {
-  font-size: 48px;
-  margin: 20px 0 8px;
-}
-.home h2 {
-  font-size: 24px;
-  font-weight: 400;
-  margin: 8px 0;
-}
-.home h3 {
-  font-size: 20px;
-}
-.guide {
-  display: block;
-  margin: 20px 0;
-  text-align: left;
-}
-.guide > h3 {
-  font-weight: bold;
-  margin: 0 0 8px;
-}
-.guide ul {
-  margin: 0;
-  padding-left: 16px;
-}
-.guide li {
-  margin-top: 4px;
-}
+<style lang="sass" scoped>
+.home
+  h1
+    font-size: 48px
+    margin: 20px 0 8px
+
+  h2
+    font-size: 24px
+    font-weight: 400
+    margin: 8px 0
+
+  h3
+    font-size: 20px
+
+.guide
+  display: block
+  margin: 20px 0
+  text-align: left
+
+  > h3
+    font-weight: bold
+    margin: 0 0 8px
+
+  ul
+    margin: 0
+    padding-left: 16px
+
+  li
+    margin-top: 4px
 </style>

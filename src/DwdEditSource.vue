@@ -211,31 +211,30 @@ export default {
 };
 </script>
 
-<style>
-.bubble.content {
-  display: block;
-}
-.type {
-  background-color: #fff;
-  border: 1px solid #aaa;
-  border-radius: 5px;
-  font-size: 10px;
-  margin-top: 4px;
-  padding: 4px;
-  text-align: center;
-  width: 300px;
-}
-.type:hover {
-  background-color: #eee;
-  cursor: pointer;
-}
-.type h2 {
-  font-size: 16px;
-  margin: 0;
-}
-.type.selected {
-  background-color: #43A047;
-  border-color: #2E7D32;
-  color: #fff;
-}
+<style lang="sass" scoped>
+.bubble.content
+  display: block
+
+.type
+  background-color: #fff
+  border: 1px solid #aaa
+  border-radius: 5px
+  font-size: 10px
+  margin-top: 4px
+  padding: 4px
+  text-align: center
+  width: 300px
+
+  h2
+    font-size: 16px
+    margin: 0
+
+.type:hover
+  background-color: #eee
+  cursor: pointer
+
+.type.selected
+  background-color: #43A047
+  border-color: #2E7D32
+  color: #fff
 </style>

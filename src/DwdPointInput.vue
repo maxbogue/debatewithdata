@@ -168,35 +168,34 @@ export default {
 };
 </script>
 
-<style scoped>
-.input > :not(:first-child) {
-  margin-top: 8px;
-}
-.valid {
-  color: #757575;
-}
-.warning {
-  color: #FFD600;
-}
-.invalid {
-  color: #F44336;
-}
-.loader {
-  align-items: center;
-  display: flex;
-  height: 30px;
-  justify-content: left;
-}
-.loader > div {
-  transform: scale(0.6);
-  transform-origin: left;
-}
-.loader > div > div {
-  background-color: #666;
-  border: none;
-}
-.error {
-  color: red;
-  font-size: 1.1em;
-}
+<style lang="sass" scoped>
+.input > :not(:first-child)
+  margin-top: 8px
+
+.valid
+  color: #757575
+
+.warning
+  color: #FFD600
+
+.invalid
+  color: #F44336
+
+.loader
+  align-items: center
+  display: flex
+  height: 30px
+  justify-content: left
+
+  > div
+    transform: scale(0.6)
+    transform-origin: left
+
+  > div > div
+    background-color: #666
+    border: none
+
+.error
+  color: red
+  font-size: 1.1em
 </style>

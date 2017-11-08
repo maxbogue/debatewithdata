@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import './style/sub-point.css';
+import './style/sub-point.sass';
 import DwdPointInput from './DwdPointInput.vue';
 
 export default {
