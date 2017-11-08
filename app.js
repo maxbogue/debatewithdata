@@ -35,6 +35,7 @@ app.get('/logout', sendIndex);
 app.get('/forgot-password', sendIndex);
 app.get('/reset-password', sendIndex);
 app.get('/guide', sendIndex);
+app.get('/status', sendIndex);
 app.get('/claims', sendIndex);
 app.get('/claims/add', sendIndex);
 app.get('/claim/:id', sendIndex);

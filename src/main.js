@@ -11,6 +11,7 @@ import DwdClaims from './DwdClaims.vue';
 import DwdEditClaim from './DwdEditClaim.vue';
 import DwdEditSource from './DwdEditSource.vue';
 import DwdForgotPassword from './DwdForgotPassword.vue';
+import DwdStatus from './DwdStatus.vue';
 import DwdGuide from './DwdGuide.vue';
 import DwdHome from './DwdHome.vue';
 import DwdLogin from './DwdLogin.vue';
@@ -71,6 +72,7 @@ new Vue({
       { path: '/forgot-password', component: DwdForgotPassword },
       { path: '/reset-password', component: DwdResetPassword },
       { path: '/guide', component: DwdGuide },
+      { path: '/status', component: DwdStatus },
       { path: '/claims', component: DwdClaims },
       { path: '/claims/add', component: DwdEditClaim },
       { path: '/claim/:id', component: DwdClaim },
