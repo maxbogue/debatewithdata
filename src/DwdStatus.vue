@@ -19,6 +19,13 @@
     <h2>Recent Changes</h2>
     <ul>
       <li>
+        <strong>2017-11-09:</strong> Fixed bug where first action in a point
+        input box didn't update the state.
+      </li>
+      <li>
+        <strong>2017-11-09:</strong> Sub-points can now be flagged.
+      </li>
+      <li>
         <strong>2017-11-08:</strong> This status page is added to make things
         clearer for alpha users.
       </li>
@@ -33,8 +40,7 @@
     <h2>Known Bugs</h2>
     <ul>
       <li>
-        First action in a new point's input doesn't update the state used
-        to save.
+        None at the moment.
       </li>
     </ul>
   </div>
