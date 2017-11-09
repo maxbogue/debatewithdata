@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="narrow">
   <h1>Guide</h1>
   <p>
     The goal of DebateWithData is to create a reference for the debates that
@@ -53,12 +53,3 @@
   <p>If a claim is the "what", the points are the "why" (or "why not").</p>
 </div>
 </template>
-
-<script>
-export default {};
-</script>
-
-<style lang="sass" scoped>
-p
-  width: 600px
-</style>
