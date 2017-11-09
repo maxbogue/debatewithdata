@@ -121,7 +121,7 @@ export default {
     },
   },
   mounted: function () {
-    this.flag = this.claim ? this.claim.flag : this.point.flag || '';
+    this.flag = this.point.flag || '';
     if (this.point.points) {
       this.subpoints = pointMapsToLists(this.point.points);
       if (this.subpoints.length === 0) {
@@ -134,11 +134,3 @@ export default {
   },
 };
 </script>
-
-<style lang="sass" scoped>
-.valid
-  color: #757575
-
-.invalid
-  color: #F44336
-</style>

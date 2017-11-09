@@ -1,19 +1,9 @@
 <template>
 <div class="point" :class="isFor | toSideString">
   <div class="bubble">
-    <div class="content">
-      <template v-if="claim">
-        <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
-        <router-link v-if="point.type === 'claim'"
-                     :to="claimUrl(point.claimId, trail)"
-                     class="source-text">{{ claim.text }}</router-link>
-        <span v-else class="source-text">{{ claim.text }}</span>
-      </template>
-      <source-content v-else-if="point.type === 'source'"
-                      :source="source"
-                      :trail="trail"></source-content>
-      <span v-else>error</span>
-    </div>
+    <point-content class="content"
+                   :point="point"
+                   :trail="trail"></point-content>
     <div class="controls">
       <dwd-star :star="point.star" :url="'/api/point/' + point.id"></dwd-star>
       <span class="glyphicon glyphicon-comment click"
@@ -37,53 +27,31 @@
 <script>
 import './style/point.sass';
 import DwdComments from './DwdComments.vue';
-import DwdFlag from './DwdFlag.vue';
 import DwdStar from './DwdStar.vue';
 import DwdSubPoint from './DwdSubPoint.vue';
-import SourceContent from './SourceContent.vue';
+import PointContent from './PointContent.vue';
 import { pointMapsToLists, rotateWithIndexes } from './utils';
 
 export default {
   components: {
     DwdComments,
-    DwdFlag,
     DwdStar,
     DwdSubPoint,
-    SourceContent,
+    PointContent,
   },
   props: ['point', 'isFor', 'trail'],
   data: () => ({
     showComments: false,
   }),
   computed: {
-    claim: function () {
-      if (this.point.type === 'claim') {
-        return this.$store.state.claims[this.point.claimId];
-      }
-      if (this.point.type === 'subclaim') {
-        return this.point;
-      }
-      return null;
-    },
-    source: function () {
-      if (this.point.type !== 'source') {
-        return null;
-      }
-      return this.$store.state.sources[this.point.sourceId];
-    },
-    flag: function () {
-      if (this.claim) {
-        return this.claim.flag;
-      } else if (this.point.type === 'subclaim') {
-        return this.point.flag;
-      }
-      return '';
-    },
     sortedSubpoints: function () {
-      if (!this.claim || !this.claim.points) {
-        return [];
+      if (this.point.type === 'subclaim') {
+        return pointMapsToLists(this.point.points);
+      } else if (this.point.type === 'claim') {
+        let claim = this.$store.state.claims[this.point.claimId];
+        return pointMapsToLists(claim.points);
       }
-      return pointMapsToLists(this.claim.points);
+      return [];
     },
     subPoints: function () {
       return rotateWithIndexes(this.sortedSubpoints);

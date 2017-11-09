@@ -29,13 +29,10 @@
     </div>
   </div>
   <div v-if="error" class="loader error">{{ error }}</div>
-  <dwd-flag v-if="point.flag" :flag="flag"></dwd-flag>
-  <router-link v-if="claim"
-               class="source-text"
-               :to="claimUrl(point.claimId) + '/edit'">
-    {{ claim.text }}
-  </router-link>
-  <source-content v-else-if="source" :source="source"></source-content>
+  <point-content v-if="claim || source"
+                 :point="point"
+                 :trail="[]"></point-content>
+  <dwd-flag v-else-if="point.flag" :flag="point.flag"></dwd-flag>
 </div>
 </template>
 
@@ -44,7 +41,7 @@ import 'loaders.css/loaders.min.css';
 import { isWebUri } from 'valid-url';
 
 import DwdFlag from './DwdFlag.vue';
-import SourceContent from './SourceContent.vue';
+import PointContent from './PointContent.vue';
 import { pointToInput } from './utils';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
@@ -52,7 +49,7 @@ const ID_REGEX = /^[0-9a-f]{12}$/;
 export default {
   components: {
     DwdFlag,
-    SourceContent,
+    PointContent,
   },
   props: ['point', 'isFor'],
   data: () => ({

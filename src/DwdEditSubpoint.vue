@@ -6,6 +6,9 @@
       </dwd-point-input>
     </div>
     <div class="controls">
+      <dwd-flag-dropdown v-if="point.type === 'text'"
+                         :flag="point.flag"
+                         @select="updateFlag"></dwd-flag-dropdown>
       <span v-if="canDelete"
             class="delete click glyphicon glyphicon-trash"
             aria-hidden="true"
@@ -17,14 +20,29 @@
 
 <script>
 import './style/sub-point.sass';
+import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdPointInput from './DwdPointInput.vue';
 
 export default {
   components: {
+    DwdFlagDropdown,
     DwdPointInput,
   },
   props: ['point', 'isFor', 'canDelete'],
+  data: () => ({
+    flag: '',
+  }),
   methods: {
+    makeTextPoint: function (text) {
+      let textPoint = {
+        type: 'text',
+        text: text,
+      };
+      if (this.flag) {
+        textPoint.flag = this.flag;
+      }
+      return textPoint;
+    },
     makePoint: function (type, input1, input2) {
       switch (type) {
       case 'claim':
@@ -40,13 +58,20 @@ export default {
           },
         };
       case 'text':
-        return { type, text: input1 };
+        return this.makeTextPoint(input1);
       default:
         return {};
       }
     },
     updatePoint: function (type, input1, input2) {
       this.emitPoint(this.makePoint(type, input1, input2));
+    },
+    updateTextPoint: function () {
+      this.emitPoint(this.makeTextPoint(this.point.text));
+    },
+    updateFlag: function (flag) {
+      this.flag = flag;
+      this.updateTextPoint();
     },
     emitPoint: function (p) {
       if (this.point.id) {
@@ -56,6 +81,9 @@ export default {
       }
       this.$emit('update', p);
     },
+  },
+  mounted: function () {
+    this.flag = this.point.flag || '';
   },
 };
 </script>

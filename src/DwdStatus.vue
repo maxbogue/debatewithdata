@@ -66,11 +66,26 @@
       functionality still needs to be polished in various ways:
     </p>
     <ul>
-      <li>Sub-points need to also be flaggable.</li>
       <li>The warning should elaborate on what the item is doing wrong.</li>
       <li>
         The warning should link to a guide section describing each fallacy that
         is supported.
+      </li>
+    </ul>
+
+    <h3>Comments</h3>
+    <p>
+      There is rudimentary comment support for claims and points, but it
+      currently lacks any sort of notifcation mechanism or indicator that there
+      are comments. This feature was intended to function similarly to a talk
+      page, so it may need to be completely redone at some point. For now it
+      should:
+    </p>
+    <ul>
+      <li>Indicate whether there are any comments on the icon.</li>
+      <li>
+        Maybe notify interested parties (people who have starred, edited, or
+        commented on the item).
       </li>
     </ul>
 
