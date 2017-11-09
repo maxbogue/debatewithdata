@@ -1,26 +1,43 @@
 <template>
 <li class="sub-point" :class="isFor | toSideString">
   <div class="bubble">
-    <span v-if="error">{{ error }}</span>
-    <router-link v-else-if="point.type === 'claim'"
-                 :to="url">{{ text }}</router-link>
-    <source-content v-else-if="point.type === 'source'"
-                    :source="source"
-                    :trail="trail"></source-content>
-    <template v-else>{{ text }}</template>
+    <div class="content">
+      <span v-if="error">{{ error }}</span>
+      <router-link v-else-if="point.type === 'claim'"
+                   :to="url">{{ text }}</router-link>
+      <source-content v-else-if="point.type === 'source'"
+                      :source="source"
+                      :trail="trail"></source-content>
+      <template v-else>{{ text }}</template>
+    </div>
+    <div class="controls">
+      <dwd-star :star="point.star" :url="'/api/point/' + point.id"></dwd-star>
+      <span class="glyphicon glyphicon-comment click"
+            aria-hidden="true"
+            @click="showComments = !showComments"></span>
+    </div>
   </div>
+  <dwd-comments v-if="showComments"
+                :url="'/api/point/' + point.id"></dwd-comments>
 </li>
 </template>
 
 <script>
 import './style/sub-point.sass';
+import DwdComments from './DwdComments.vue';
+import DwdStar from './DwdStar.vue';
 import SourceContent from './SourceContent.vue';
 
 export default {
   components: {
+    DwdComments,
+    DwdStar,
     SourceContent,
   },
   props: ['point', 'isFor', 'trail'],
+  data: () => ({
+    showComments: false,
+  }),
   computed: {
     claim: function () {
       if (this.point.type === 'claim') {

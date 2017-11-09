@@ -10,7 +10,7 @@
               aria-hidden="true"
               @click="deleteComment(comment.id)"></div>
       </li>
-      <li v-if="comments.length === 0">No comments.</li>
+      <li v-if="comments.length === 0">No comments yet.</li>
     </ul>
     <textarea v-if="$store.state.user"
               rows="1"
@@ -90,11 +90,12 @@ export default {
 
 <style lang="sass" scoped>
 .comments
-  padding: 16px
+  font-size: 12px
+  padding: 1em
 
   ul
     margin: 0
-    padding: 0 0.5em
+    padding: 0
 
   li
     list-style: none

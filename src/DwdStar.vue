@@ -2,6 +2,7 @@
 <span v-if="user"
       class="glyphicon"
       :class="classes"
+      :title="star.count + ' stars'"
       @click="toggle"
       aria-hidden="true"></span>
 </template>
