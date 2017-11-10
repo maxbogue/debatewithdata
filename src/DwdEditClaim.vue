@@ -49,14 +49,14 @@
         </dwd-edit-point>
       </div>
     </template>
-    <div class="col-xs-12 center">
+    <div v-if="id" class="col-xs-12 center">
+      <delete-button noun="Claim" @delete="remove"></delete-button>
+    </div>
+    <div class="col-xs-12 center fixed-bottom blue">
       <button type="submit" class="btn btn-primary">Submit</button>
       <button type="button"
               class="btn btn-default"
               @click="cancel">Cancel</button>
-    </div>
-    <div v-if="id" class="col-xs-12 center">
-      <delete-button noun="Claim" @delete="remove"></delete-button>
     </div>
   </form>
   <dwd-loader ref="loader"></dwd-loader>
@@ -212,3 +212,16 @@ export default {
   },
 };
 </script>
+
+<style lang="sass" scoped>
+.fixed-bottom
+  background-color: #E3F2FD
+  border-left: 6px solid #BBDEFB
+  bottom: 0
+  left: 50%
+  margin-left: -150px
+  padding: 8px
+  position: fixed
+  width: 300px
+  z-index: 1
+</style>
