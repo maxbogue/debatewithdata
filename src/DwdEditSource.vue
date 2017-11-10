@@ -212,6 +212,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import "style/constants"
+
 .bubble.content
   display: block
 
@@ -234,7 +236,7 @@ export default {
   cursor: pointer
 
 .type.selected
-  background-color: #43A047
-  border-color: #2E7D32
+  background-color: $green-dark-primary
+  border-color: $green-dark-accent
   color: #fff
 </style>

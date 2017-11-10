@@ -1,19 +1,21 @@
+@import "constants"
+
 .bubble
   align-items: flex-start
   display: flex
   padding: 20px
 
 .for
-  border-left: 6px solid #E1BEE7
+  border-left: $accent-border-width solid $purple-accent
 
   > .bubble
-    background-color: #F3E5F5
+    background-color: $purple-primary
 
 .against
-  border-left: 6px solid #FFE082
+  border-left: $accent-border-width solid $amber-accent
 
   > .bubble
-    background-color: #FFF8E1
+    background-color: $amber-primary
 
 .content
   flex: auto

@@ -215,8 +215,6 @@ export default {
 
 <style lang="sass" scoped>
 .fixed-bottom
-  background-color: #E3F2FD
-  border-left: 6px solid #BBDEFB
   bottom: 0
   left: 50%
   margin-left: -150px

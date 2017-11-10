@@ -115,51 +115,30 @@ a.add
   font-size: 0.75em
   margin-bottom: -8px
 
-.claim
+=t1($primary-color, $accent-color)
   font-size: 20px
   margin: 8px 0 0
 
   &.block
-    background-color: #E3F2FD
-    border-left: 6px solid #BBDEFB
+    background-color: $primary-color
+    border-left: $accent-border-width solid $accent-color
     padding: 20px
 
     &:hover
-      background-color: #BBDEFB
+      background-color: $accent-color
       text-decoration: none
 
   &.neutral
-    border-left: 6px solid #BBDEFB
+    border-left: $accent-border-width solid $accent-color
 
     > .bubble
-      background-color: #E3F2FD
+      background-color: $primary-color
+
+.claim
+  +t1($blue-primary, $blue-accent)
 
 .source
-  font-size: 20px
-  margin: 8px 0 0
-
-  &.block
-    background-color: #E8F5E9
-    border-left: 6px solid #C8E6C9
-    padding: 20px
-
-    &:hover
-      background-color: #C8E6C9
-      text-decoration: none
-
-  &.neutral
-    border-left: 6px solid #C8E6C9
-
-    > .bubble
-      background-color: #E8F5E9
-
-.source-text
-  display: block
-
-.source-url, a.source-url
-  display: block
-  color: #666
-  font-size: 0.75em
+  +t1($green-primary, $green-accent)
 
 .dropdown
   position: relative

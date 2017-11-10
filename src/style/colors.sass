@@ -1,69 +1,30 @@
-.red
-  background-color: #FFEBEE
-  border-left: 6px solid #FFCDD2
+@import "constants"
 
+=color($primary, $accent)
+  background-color: $primary
+  border-left: $accent-border-width solid $accent
+
+  @at-root a#{&}:hover,
   &.click:hover
-    background-color: #FFCDD2
+    background-color: $accent
 
-a.red:hover
-  background-color: #FFCDD2
+.red
+  +color($red-primary, $red-accent)
 
 .green
-  background-color: #E8F5E9
-  border-left: 6px solid #C8E6C9
-
-  &.click:hover
-    background-color: #C8E6C9
-
-a.green:hover
-  background-color: #C8E6C9
+  +color($green-primary, $green-accent)
 
 .green-dark
-  background-color: #43A047
-  border-left: 6px solid #2E7D32
-
-  &.click:hover
-    background-color: #2E7D32
-
-a.green-dark:hover
-  background-color: #2E7D32
+  +color($green-dark-primary, $green-dark-accent)
 
 .blue
-  background-color: #E3F2FD
-  border-left: 6px solid #BBDEFB
-
-  &.click:hover
-    background-color: #BBDEFB
-
-a.blue:hover
-  background-color: #BBDEFB
+  +color($blue-primary, $blue-accent)
 
 .blue-dark
-  background-color: #1E88E5
-  border-left: 6px solid #1565C0
-
-  &.click:hover
-    background-color: #1565C0
-
-a.blue-dark:hover
-  background-color: #1565C0
+  +color($blue-dark-primary, $blue-dark-accent)
 
 .purple
-  background-color: #F3E5F5
-  border-left: 6px solid #E1BEE7
-
-  &.click:hover
-    background-color: #E1BEE7
-
-a.purple:hover
-  background-color: #E1BEE7
+  +color($purple-primary, $purple-accent)
 
 .amber
-  background-color: #FFF8E1
-  border-left: 6px solid #FFE082
-
-  &.click:hover
-    background-color: #FFE082
-
-a.amber:hover
-  background-color: #FFE082
+  +color($amber-primary, $amber-accent)
