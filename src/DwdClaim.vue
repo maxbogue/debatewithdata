@@ -3,12 +3,11 @@
   <dwd-trail @lastIsFor="(v) => isFor = v"></dwd-trail>
   <div v-if="claim" class="row gutter-16">
     <div class="col-sm-12">
-      <div class="claim t1" :class="isFor | toSideString">
+      <div class="claim" :class="isFor | toSideString">
         <div class="bubble">
-          <div class="content">
-            <div>{{ claim.text }}</div>
-            <dwd-flag v-if="claim.flag" :flag="claim.flag"></dwd-flag>
-          </div>
+          <claim-content class="content"
+                         :claim="claim"
+                         :trail="trail"></claim-content>
           <div class="controls">
             <dwd-star :star="claim.star"
                       :url="'/api' + claimUrl(id)"></dwd-star>
@@ -53,6 +52,7 @@
 </template>
 
 <script>
+import ClaimContent from './ClaimContent.vue';
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdLoader from './DwdLoader.vue';
@@ -63,6 +63,7 @@ import { pointMapsToLists, rotateWithIndexes } from './utils';
 
 export default {
   components: {
+    ClaimContent,
     DwdComments,
     DwdFlag,
     DwdLoader,

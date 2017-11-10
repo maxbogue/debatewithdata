@@ -3,7 +3,7 @@
   <dwd-trail @lastIsFor="(v) => isFor = v"></dwd-trail>
   <div v-if="source" class="row gutter-16">
     <div class="col-sm-12">
-      <div class="source t1" :class="isFor | toSideString">
+      <div class="source" :class="isFor | toSideString">
         <div class="bubble">
           <source-content class="content" :source="source"></source-content>
           <div class="controls">

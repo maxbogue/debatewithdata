@@ -1,27 +1,22 @@
 <template>
 <div>
-  <template v-if="point.type === 'claim'">
-    <dwd-flag v-if="claim.flag" :flag="claim.flag"></dwd-flag>
-    <router-link :to="claimUrl(claim.id, trail)"
-                 class="source-text">{{ claim.text }}</router-link>
-  </template>
+  <claim-content v-if="point.type === 'claim'"
+                 :claim="claim"
+                 :trail="trail"></claim-content>
   <source-content v-else-if="point.type === 'source'"
                   :source="source"
                   :trail="trail"></source-content>
-  <template v-else>
-    <dwd-flag v-if="point.flag" :flag="point.flag"></dwd-flag>
-    <span class="source-text">{{ point.text }}</span>
-  </template>
+  <claim-content v-else :claim="point"></claim-content>
 </div>
 </template>
 
 <script>
-import DwdFlag from './DwdFlag.vue';
+import ClaimContent from './ClaimContent.vue';
 import SourceContent from './SourceContent.vue';
 
 export default {
   components: {
-    DwdFlag,
+    ClaimContent,
     SourceContent,
   },
   props: ['point', 'trail'],

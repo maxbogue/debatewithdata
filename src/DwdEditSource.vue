@@ -2,7 +2,7 @@
 <div>
   <form v-if="!needsData" class="row gutter-16" @submit.prevent="commit">
     <div class="col-sm-12">
-      <div class="source t1 neutral">
+      <div class="source neutral">
         <div class="bubble content">
           <label for="url" class="hint">
             Link a source that provides data about the world.

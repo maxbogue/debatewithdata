@@ -101,13 +101,6 @@ p a
   align-items: flex-start
   display: flex
 
-.t1
-  font-size: 20px
-  margin-top: 8px
-
-  > a:hover
-    text-decoration: none
-
 a.add
   border-radius: 3px
   color: #fff
@@ -122,23 +115,43 @@ a.add
   font-size: 0.75em
   margin-bottom: -8px
 
-.claim.neutral
-  border-left: 6px solid #BBDEFB
+.claim
+  font-size: 20px
+  margin: 8px 0 0
 
-  > .bubble
+  &.block
     background-color: #E3F2FD
+    border-left: 6px solid #BBDEFB
+    padding: 20px
 
-  > a.bubble:hover
-    background-color: #BBDEFB
+    &:hover
+      background-color: #BBDEFB
+      text-decoration: none
 
-.source.neutral
-  border-left: 6px solid #C8E6C9
+  &.neutral
+    border-left: 6px solid #BBDEFB
 
-  > .bubble
+    > .bubble
+      background-color: #E3F2FD
+
+.source
+  font-size: 20px
+  margin: 8px 0 0
+
+  &.block
     background-color: #E8F5E9
+    border-left: 6px solid #C8E6C9
+    padding: 20px
 
-  > a.bubble:hover
-    background-color: #C8E6C9
+    &:hover
+      background-color: #C8E6C9
+      text-decoration: none
+
+  &.neutral
+    border-left: 6px solid #C8E6C9
+
+    > .bubble
+      background-color: #E8F5E9
 
 .source-text
   display: block

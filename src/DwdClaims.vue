@@ -7,12 +7,12 @@
     <router-link :to="addUrl" class="add blue-dark">New Claim</router-link>
   </div>
   <template v-if="claimsLoaded">
-    <div v-for="claim in claims"
-         class="claim t1 neutral"
-         :key="claim.id">
-      <router-link class="bubble"
-                   :to="claimUrl(claim.id)">{{ claim.text }}</router-link>
-    </div>
+    <router-link v-for="claim in claims"
+                 class="claim block"
+                 :to="claimUrl(claim.id)"
+                 :key="claim.id">
+        <claim-content :claim="claim"></claim-content>
+    </router-link>
   </template>
   <dwd-loader ref="loader"></dwd-loader>
 </div>
@@ -21,11 +21,13 @@
 <script>
 import { mapState } from 'vuex';
 
+import ClaimContent from './ClaimContent.vue';
 import DwdLoader from './DwdLoader.vue';
 import { prepAndSortByStars } from './utils';
 
 export default {
   components: {
+    ClaimContent,
     DwdLoader,
   },
   computed: {

@@ -7,14 +7,12 @@
     <router-link :to="addUrl" class="add green-dark">New Source</router-link>
   </div>
   <template v-if="sourcesLoaded">
-    <div v-for="source in sources"
-         class="source t1 neutral"
-         :key="source.id">
-      <router-link class="bubble"
-                   :to="sourceUrl(source.id)">
-        <source-content :source="source"></source-content>
-      </router-link>
-    </div>
+    <router-link v-for="source in sources"
+                 class="source block"
+                 :to="sourceUrl(source.id)"
+                 :key="source.id">
+      <source-content :source="source"></source-content>
+    </router-link>
   </template>
   <dwd-loader ref="loader"></dwd-loader>
 </div>

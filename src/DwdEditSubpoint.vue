@@ -1,10 +1,10 @@
 <template>
 <li class="sub-point" :class="isFor | toSideString">
   <div class="bubble">
-    <div class="content">
-      <dwd-point-input :point="point" :isFor="isFor" @update="updatePoint">
-      </dwd-point-input>
-    </div>
+    <dwd-point-input class="content"
+                     :point="point"
+                     :isFor="isFor"
+                     @update="updatePoint"></dwd-point-input>
     <div class="controls">
       <dwd-flag-dropdown v-if="point.type === 'text'"
                          :flag="point.flag"
