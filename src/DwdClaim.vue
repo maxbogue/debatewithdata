@@ -6,8 +6,7 @@
       <div class="claim" :class="isFor | toSideString">
         <div class="bubble">
           <claim-content class="content"
-                         :claim="claim"
-                         :trail="trail"></claim-content>
+                         :claim="claim"></claim-content>
           <div class="controls">
             <dwd-star :star="claim.star"
                       :url="'/api' + claimUrl(id)"></dwd-star>
