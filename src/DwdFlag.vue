@@ -7,13 +7,13 @@
 </template>
 
 <script>
-import { FLAGS } from './utils';
+import { FlagData } from '../common/flag';
 
 export default {
   props: ['flag'],
   computed: {
     name: function () {
-      return FLAGS[this.flag].name;
+      return FlagData[this.flag].name;
     },
   },
 };

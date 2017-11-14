@@ -1,7 +1,7 @@
 import chai from 'chai';
 
 import { Point, PointRev, Source } from '../models';
-import { Flag } from '../models/utils';
+import { Flag } from '../common/flag';
 import { registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;

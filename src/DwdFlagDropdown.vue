@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import { FLAGS } from './utils';
+import { FlagData } from '../common/flag';
 
 export default {
   props: ['flag'],
   computed: {
     flags: function () {
-      return FLAGS;
+      return FlagData;
     },
   },
   methods: {
