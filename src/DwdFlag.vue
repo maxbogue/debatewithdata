@@ -1,8 +1,7 @@
 <template>
 <div class="flag">
-  <span>Logical fallacy warning:</span>
-  <a :href="'https://yourlogicalfallacyis.com/' + flag"
-     target="_blank">{{ name }}</a>
+  <span>Warning:</span>
+  <a :href="'/guide#' + flag">{{ data.tldr }}</a>
 </div>
 </template>
 
@@ -12,8 +11,8 @@ import { FlagData } from '../common/flag';
 export default {
   props: ['flag'],
   computed: {
-    name: function () {
-      return FlagData[this.flag].name;
+    data: function () {
+      return FlagData[this.flag];
     },
   },
 };

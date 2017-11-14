@@ -7,6 +7,7 @@
     <strong>points</strong> for and against them. <strong>Sources</strong> are
     linked to by points to tie data into an argument.
   </p>
+
   <h2>Alpha</h2>
   <p>
     Please keep in mind that this site is in an <strong>early alpha</strong>
@@ -25,6 +26,7 @@
     broken. Also feel free to ping me directly with bugs or feedback if you
     know me and find that preferable.
   </p>
+
   <h2>Sources<a href="#sources"></a></h2>
   <p>
     A source here is a source of <em>data</em>. It consists of a URL and a
@@ -32,6 +34,7 @@
     metadata. The closer to the origin of the data, the better a source is.
     Primary sources like research papers or firsthand news articles are best.
   </p>
+
   <h2>Claims<a href="#claims"></a></h2>
   <p>
     In the real world, debates are often very broad in scope, which leads to a
@@ -40,6 +43,7 @@
     claims. A claim is a clear, simple statement about the world. It is
     defended by points for it, and attacked by points against it.
   </p>
+
   <h2>Points<a href="#points"></a></h2>
   <p>A point for or against a claim can be one of three things:</p>
   <ul>
@@ -51,5 +55,70 @@
     <li>Text that only exists inside the parent claim.</li>
   </ul>
   <p>If a claim is the "what", the points are the "why" (or "why not").</p>
+
+  <h2>Logical Fallacies<a href="#fallacies"></a></h2>
+  <p>
+    It is very common in debates (especially verbal ones) for people to use
+    arguments that contain well-known logical fallacies. They may look or feel
+    relevant, but on closer inspection there is no logical connection between
+    what they say and the correctness of the topic being discussed. This
+    project allows users to flag these logic errors and display a warning about
+    them. The supported fallacies are listed below.
+  </p>
+
+  <div v-for="[flag, data] in flags" :key="flag">
+    <h3 :id="flag">
+      <div>
+        <span>{{ data.name }}</span>
+        <a :href="'#' + flag"
+           :class="$style.anchor"
+           class="glyphicon glyphicon-link"></a>
+      </div>
+    </h3>
+    <p :class="$style.links">
+    <span v-for="[title, url] in data.links" :key="title">
+      <a :href="url">{{ title }}</a>
+    </span>
+    </p>
+    <p v-html="data.desc"></p>
+  </div>
 </div>
 </template>
+
+<script>
+import map from 'lodash/map';
+import sortBy from 'lodash/sortBy';
+
+import { FlagData } from '../common/flag';
+
+export default {
+  computed: {
+    flags: function () {
+      let flagList = map(FlagData, (v, k) => [k, v]);
+      return sortBy(flagList, ([, v]) => v.name);
+    },
+  },
+};
+</script>
+
+<style lang="sass" module>
+.anchor
+  color: #aaa
+  font-size: 0.75em
+  visibility: hidden
+
+  &:hover
+    color: #000
+    text-decoration: none
+
+h3:hover .anchor
+  visibility: visible
+
+.links
+  font-size: 12px
+  font-weight: 400
+  margin-top: -10px
+
+  > :not(:first-child)::before
+    content: ' | '
+</style>

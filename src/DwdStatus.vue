@@ -19,6 +19,14 @@
     <h2>Recent Changes</h2>
     <ul>
       <li>
+        <strong>2017-11-13:</strong> Flag warnings are now more descriptive
+        and link to a guide section containing more explanation.
+      </li>
+      <li>
+        <strong>2017-11-10:</strong> Submit and cancel buttons now always
+        visible when editing a claim.
+      </li>
+      <li>
         <strong>2017-11-09:</strong> Fixed bug where first action in a point
         input box didn't update the state.
       </li>
@@ -64,19 +72,6 @@
         information?
       </li>
       <li>Might eventually require a higher trust tier to edit.</li>
-    </ul>
-
-    <h3>Flags</h3>
-    <p>
-      Claims and points can already be flagged as having logical fallacies. This
-      functionality still needs to be polished in various ways:
-    </p>
-    <ul>
-      <li>The warning should elaborate on what the item is doing wrong.</li>
-      <li>
-        The warning should link to a guide section describing each fallacy that
-        is supported.
-      </li>
     </ul>
 
     <h3>Comments</h3>
