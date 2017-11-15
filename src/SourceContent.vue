@@ -17,7 +17,7 @@
       <div><strong>Research by:</strong> {{ source.institution }}</div>
       <div><strong>Published in:</strong> {{ source.publication }}</div>
     </template>
-    <div><a :href="source.url">{{ source.url }}</a></div>
+    <div><a :href="source.url" target="_blank">{{ source.url }}</a></div>
   </div>
 </div>
 <div v-else>Source not found.</div>
