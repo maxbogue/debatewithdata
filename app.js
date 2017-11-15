@@ -28,22 +28,22 @@ app.get('/index.js.map', function (req, res) {
 app.get('/', sendIndex);
 app.get('/account', sendIndex);
 app.get('/admin', sendIndex);
-app.get('/register', sendIndex);
-app.get('/verify-email', sendIndex);
-app.get('/login', sendIndex);
-app.get('/logout', sendIndex);
-app.get('/forgot-password', sendIndex);
-app.get('/reset-password', sendIndex);
-app.get('/guide', sendIndex);
-app.get('/status', sendIndex);
-app.get('/claims', sendIndex);
-app.get('/claims/add', sendIndex);
 app.get('/claim/:id', sendIndex);
 app.get('/claim/:id/edit', sendIndex);
-app.get('/sources', sendIndex);
-app.get('/sources/add', sendIndex);
+app.get('/claims', sendIndex);
+app.get('/claims/add', sendIndex);
+app.get('/forgot-password', sendIndex);
+app.get('/guide', sendIndex);
+app.get('/login', sendIndex);
+app.get('/logout', sendIndex);
+app.get('/register', sendIndex);
+app.get('/reset-password', sendIndex);
 app.get('/source/:id', sendIndex);
 app.get('/source/:id/edit', sendIndex);
+app.get('/sources', sendIndex);
+app.get('/sources/add', sendIndex);
+app.get('/status', sendIndex);
+app.get('/verify-email', sendIndex);
 
 app.use('/api', api);
 
