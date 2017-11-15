@@ -99,6 +99,26 @@ export default function (sequelize, DataTypes) {
       }
       return point.toStarData(user);
     };
+
+    Point.getClaimId = async function (pointId) {
+      let point = await Point.findById(pointId, {
+        include: {
+          association: Point.Head,
+        },
+      });
+      let claimRevs = await point.head.getClaimRevs({ limit: 1 });
+      if (claimRevs.length === 0) {
+        let pointRevs = await point.head.getSuperPointRevs({ limit: 1 });
+        if (pointRevs.length === 0) {
+          throw new NotFoundError('No super point found for ' + pointId);
+        }
+        claimRevs = await pointRevs[0].getClaimRevs({ limit: 1 });
+      }
+      if (claimRevs.length === 0) {
+        throw new NotFoundError('No claim found for ' + pointId);
+      }
+      return claimRevs[0].claimId;
+    };
   };
 
   return Point;

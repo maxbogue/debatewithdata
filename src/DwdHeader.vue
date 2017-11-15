@@ -6,6 +6,7 @@
                class="navbar-brand">DebateWithData</router-link>
   <li><router-link to="/guide" title="Guide">Guide</router-link></li>
   <li><router-link to="/status" title="Status">Status</router-link></li>
+  <li><router-link to="/activity" title="Activity">Activity</router-link></li>
   <li><router-link to="/claims" title="Claims">Claims</router-link></li>
   <li><router-link to="/sources" title="Sources">Sources</router-link></li>
   <template v-if="user">

@@ -2,6 +2,7 @@ import config from 'config';
 import express from 'express';
 import path from 'path';
 
+import { Point } from './models';
 import api from './api';
 
 const IS_PROD = process.env.NODE_ENV === 'production';
@@ -27,6 +28,7 @@ app.get('/index.js.map', function (req, res) {
 
 app.get('/', sendIndex);
 app.get('/account', sendIndex);
+app.get('/activity', sendIndex);
 app.get('/admin', sendIndex);
 app.get('/claim/:id', sendIndex);
 app.get('/claim/:id/edit', sendIndex);
@@ -44,6 +46,11 @@ app.get('/sources', sendIndex);
 app.get('/sources/add', sendIndex);
 app.get('/status', sendIndex);
 app.get('/verify-email', sendIndex);
+
+app.get('/point/:id', async function (req, res) {
+  let claimId = await Point.getClaimId(req.params.id);
+  res.redirect('/claim/' + claimId);
+});
 
 app.use('/api', api);
 

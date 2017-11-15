@@ -19,7 +19,11 @@
     <h2>Recent Changes</h2>
     <ul>
       <li>
-        <strong>2017-11-13:</strong> Flag warnings are now more descriptive
+        <strong>2017-11-15:</strong> Added a rudimentary activity view to see
+        what's going on until a proper notification system is in place.
+      </li>
+      <li>
+        <strong>2017-11-14:</strong> Flag warnings are now more descriptive
         and link to a guide section containing more explanation.
       </li>
       <li>

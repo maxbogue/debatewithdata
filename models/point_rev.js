@@ -86,7 +86,14 @@ export default function (sequelize, DataTypes) {
     PointRev.SubPointRevs = PointRev.belongsToMany(PointRev, {
       through: models.PointPoint,
       as: 'pointRevs',
+      foreignKey: 'point_rev_id',
       otherKey: 'subpoint_rev_id',
+    });
+    PointRev.SuperPointRevs = PointRev.belongsToMany(PointRev, {
+      through: models.PointPoint,
+      as: 'superPointRevs',
+      foreignKey: 'subpoint_rev_id',
+      otherKey: 'point_rev_id',
     });
   };
 

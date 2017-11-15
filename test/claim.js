@@ -422,6 +422,31 @@ describe('Claim', function () {
       });
     });
 
+    it('point to claim', async function () {
+      let c1 = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[{
+          type: Point.SUBCLAIM,
+          text: BAR,
+          points: [[{
+            type: Point.TEXT,
+            text: BAZ,
+          }], []],
+        }], []],
+      });
+      await c1.reload(ClaimRev.INCLUDE(3));
+      expect(c1.pointRevs).to.have.lengthOf(1);
+      let p1 = c1.pointRevs[0];
+      expect(p1.pointRevs).to.have.lengthOf(1);
+      let p1a = p1.pointRevs[0];
+
+      let claimId = c1.claimId;
+      let pointId = p1.pointId;
+      let subPointId = p1a.pointId;
+      await expect(Point.getClaimId(pointId)).to.eventually.equal(claimId);
+      await expect(Point.getClaimId(subPointId)).to.eventually.equal(claimId);
+    });
+
     it('bad ID', function () {
       return expect(Claim.apiGet('bad id')).to.be.rejected;
     });
