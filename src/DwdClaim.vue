@@ -4,10 +4,11 @@
   <div v-if="claim" class="row gutter-16">
     <div class="col-sm-12">
       <div class="claim" :class="isFor | toSideString">
-        <div class="bubble">
-          <claim-content class="content"
-                         :claim="claim"></claim-content>
-          <div class="controls">
+        <claim-content class="bubble click"
+                       @click.native="showDrawer = !showDrawer"
+                       :claim="claim"></claim-content>
+        <drawer v-if="showDrawer">
+          <div class="info">
             <dwd-star :star="claim.star"
                       :url="'/api' + claimUrl(id)"></dwd-star>
             <router-link v-if="$store.state.user"
@@ -18,9 +19,9 @@
                   aria-hidden="true"
                   @click="showComments = !showComments"></span>
           </div>
-        </div>
-        <dwd-comments v-if="showComments"
-                      :url="'/api/claim/' + id"></dwd-comments>
+          <dwd-comments v-if="showComments"
+                        :url="'/api/claim/' + id"></dwd-comments>
+        </drawer>
       </div>
     </div>
     <template v-if="$store.state.singleColumn">
@@ -52,6 +53,7 @@
 
 <script>
 import ClaimContent from './ClaimContent.vue';
+import Drawer from './Drawer.vue';
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdLoader from './DwdLoader.vue';
@@ -63,6 +65,7 @@ import { pointMapsToLists, rotateWithIndexes } from './utils';
 export default {
   components: {
     ClaimContent,
+    Drawer,
     DwdComments,
     DwdFlag,
     DwdLoader,
@@ -72,6 +75,7 @@ export default {
   },
   data: () => ({
     showComments: false,
+    showDrawer: false,
     isFor: null,
   }),
   computed: {

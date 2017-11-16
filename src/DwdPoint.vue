@@ -1,10 +1,9 @@
 <template>
 <div class="point" :class="isFor | toSideString">
-  <div class="bubble click" @click="showDrawer = !showDrawer">
-    <point-content class="content"
-                   :point="point"
-                   :trail="trail"></point-content>
-  </div>
+  <point-content class="bubble click"
+                 @click.native="showDrawer = !showDrawer"
+                 :point="point"
+                 :trail="trail"></point-content>
   <drawer v-if="showDrawer">
     <div class="info">
       <dwd-star :star="point.star" :url="'/api/point/' + point.id"></dwd-star>
@@ -14,7 +13,7 @@
     </div>
     <dwd-comments v-if="showComments"
                   :url="'/api/point/' + point.id"></dwd-comments>
-    <ul v-if="subPoints.length > 0" class="subpoints">
+    <ul v-if="subPoints.length > 0" class="sub-points">
       <dwd-sub-point v-for="[subPoint, subSide, i] in subPoints"
                      :point="subPoint"
                      :isFor="isFor === !subSide"

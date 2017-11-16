@@ -4,9 +4,11 @@
   <div v-if="source" class="row gutter-16">
     <div class="col-sm-12">
       <div class="source" :class="isFor | toSideString">
-        <div class="bubble">
-          <source-content class="content" :source="source"></source-content>
-          <div class="controls">
+        <source-content class="bubble click"
+                        @click.native="showDrawer = !showDrawer"
+                        :source="source"></source-content>
+        <drawer v-if="showDrawer">
+          <div class="info">
             <router-link v-if="$store.state.user"
                          :to="sourceUrl(id) + '/edit'"
                          class="glyphicon glyphicon-pencil click"
@@ -15,10 +17,10 @@
                   aria-hidden="true"
                   @click="showComments = !showComments"></span>
           </div>
-        </div>
+          <dwd-comments v-if="showComments"
+                        :url="'/api/source/' + id"></dwd-comments>
+        </drawer>
       </div>
-      <dwd-comments v-if="showComments"
-                    :url="'/api/source/' + id"></dwd-comments>
     </div>
   </div>
   <dwd-loader ref="loader"></dwd-loader>
@@ -26,6 +28,7 @@
 </template>
 
 <script>
+import Drawer from './Drawer.vue';
 import DwdComments from './DwdComments.vue';
 import DwdLoader from './DwdLoader.vue';
 import DwdTrail from './DwdTrail.vue';
@@ -33,6 +36,7 @@ import SourceContent from './SourceContent.vue';
 
 export default {
   components: {
+    Drawer,
     DwdComments,
     DwdLoader,
     DwdTrail,
@@ -40,6 +44,7 @@ export default {
   },
   data: () => ({
     showComments: false,
+    showDrawer: false,
     isFor: null,
   }),
   computed: {

@@ -1,19 +1,17 @@
 <template>
 <li class="sub-point" :class="isFor | toSideString">
-  <div class="bubble">
-    <dwd-point-input class="content"
-                     :point="point"
-                     :isFor="isFor"
-                     @update="updatePoint"></dwd-point-input>
-    <div class="controls">
-      <dwd-flag-dropdown v-if="point.type === 'text'"
-                         :flag="point.flag"
-                         @select="updateFlag"></dwd-flag-dropdown>
-      <span v-if="canDelete"
-            class="delete click glyphicon glyphicon-trash"
-            aria-hidden="true"
-            @click="$emit('delete')"></span>
-    </div>
+  <dwd-point-input class="bubble"
+                   :point="point"
+                   :isFor="isFor"
+                   @update="updatePoint"></dwd-point-input>
+  <div class="info">
+    <dwd-flag-dropdown v-if="point.type === 'text'"
+                       :flag="point.flag"
+                       @select="updateFlag"></dwd-flag-dropdown>
+    <span v-if="canDelete"
+          class="delete click glyphicon glyphicon-trash"
+          aria-hidden="true"
+          @click="$emit('delete')"></span>
   </div>
 </li>
 </template>

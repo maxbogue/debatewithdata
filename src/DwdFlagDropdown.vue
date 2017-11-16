@@ -1,5 +1,5 @@
 <template>
-<div class="dropdown">
+<span class="dropdown">
   <span class="dropdown-toggle click glyphicon glyphicon-flag"
         aria-hidden="true"
         @click="toggleDropdown"></span>
@@ -9,7 +9,7 @@
         :key="k"
         @click="selectFlag(k)">{{ v.name }}</li>
   </ul>
-</div>
+</span>
 </template>
 
 <script>

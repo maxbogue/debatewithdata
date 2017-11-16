@@ -1,50 +1,30 @@
 @import "constants"
 
 .bubble
-  align-items: flex-start
-  display: flex
   padding: 20px
+
+  > :not(:first-child)
+    margin-top: 8px
 
 .for
   border-left: $accent-border-width solid $purple-accent
 
-  > .bubble
+  .info, .bubble
     background-color: $purple-primary
 
-    &.click:hover
-      background-color: $purple-accent
-      color: #000
+  .bubble.click:hover
+    background-color: $purple-accent
+    color: #000
 
 .against
   border-left: $accent-border-width solid $amber-accent
 
-  > .bubble
+  .info, .bubble
     background-color: $amber-primary
 
-    &.click:hover
-      background-color: $amber-accent
-      color: #000
-
-.content
-  flex: auto
-
-  > :not(:first-child)
-    margin-top: 8px
-
-.controls
-  margin-left: 8px
-
-  > *
-    display: block
-
-  > :not(:first-child)
-    margin-top: 8px
-
-  .click
-    color: rgba(0, 0, 0, 0.15)
-
-    &:hover
-      color: rgba(0, 0, 0, 0.85)
+  .bubble.click:hover
+    background-color: $amber-accent
+    color: #000
 
 .info
   line-height: 1
@@ -52,7 +32,12 @@
   text-align: right
 
   .click
-    color: #ccc
+    color: rgba(0, 0, 0, 0.15)
 
     &:hover
-      color: #444
+      color: rgba(0, 0, 0, 0.85)
+
+.hint
+  display: block
+  font-size: 0.75em
+  margin-bottom: -8px

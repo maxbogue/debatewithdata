@@ -4,22 +4,20 @@
     <div class="col-xs-12">
       <div class="claim t1 neutral">
         <div class="bubble">
-          <div class="content">
-            <label for="text" class="hint">
-              A claim should be a short, simple statement about the world.
-            </label>
-            <textarea id="text"
-                      rows="1"
-                      autocomplete="off"
-                      placeholder="claim"
-                      v-model="text"
-                      v-auto-resize></textarea>
-            <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
-          </div>
-          <div class="controls">
-            <dwd-flag-dropdown :flag="flag"
-                               @select="updateFlag"></dwd-flag-dropdown>
-          </div>
+          <label for="text" class="hint">
+            A claim should be a short, simple statement about the world.
+          </label>
+          <textarea id="text"
+                    rows="1"
+                    autocomplete="off"
+                    placeholder="claim"
+                    v-model="text"
+                    v-auto-resize></textarea>
+          <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
+        </div>
+        <div class="info">
+          <dwd-flag-dropdown :flag="flag"
+                             @select="updateFlag"></dwd-flag-dropdown>
         </div>
       </div>
     </div>

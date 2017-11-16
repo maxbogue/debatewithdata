@@ -19,6 +19,11 @@
     <h2>Recent Changes</h2>
     <ul>
       <li>
+        <strong>2017-11-16:</strong> Big UI/UX change to move the controls and
+        sub-points inside a slide-down drawer to keep the UI cleaner and allow
+        more information along with the controls in the near future.
+      </li>
+      <li>
         <strong>2017-11-15:</strong> Added a rudimentary activity view to see
         what's going on until a proper notification system is in place.
       </li>

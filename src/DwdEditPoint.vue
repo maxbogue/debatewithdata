@@ -1,21 +1,19 @@
 <template>
 <div class="point" :class="isFor | toSideString">
-  <div class="bubble">
-    <div class="content">
-      <dwd-point-input :point="point" :isFor="isFor" @update="updatePoint">
-      </dwd-point-input>
-    </div>
-    <div class="controls">
-      <dwd-flag-dropdown v-if="isSubclaim"
-                         :flag="flag"
-                         @select="updateFlag"></dwd-flag-dropdown>
-      <span v-if="canDelete"
-            class="delete click glyphicon glyphicon-trash"
-            aria-hidden="true"
-            @click="$emit('delete')"></span>
-    </div>
+  <dwd-point-input class="bubble"
+                   :point="point"
+                   :isFor="isFor"
+                   @update="updatePoint"></dwd-point-input>
+  <div class="info">
+    <dwd-flag-dropdown v-if="isSubclaim"
+                       :flag="flag"
+                       @select="updateFlag"></dwd-flag-dropdown>
+    <span v-if="canDelete"
+          class="delete click glyphicon glyphicon-trash"
+          aria-hidden="true"
+          @click="$emit('delete')"></span>
   </div>
-  <ul v-if="isSubclaim">
+  <ul v-if="isSubclaim" class="sub-points">
     <dwd-edit-subpoint v-for="[p, side, i] in zippedSubpoints"
                        :point="p"
                        :isFor="isFor === !side"
