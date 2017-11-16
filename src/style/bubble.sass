@@ -11,11 +11,19 @@
   > .bubble
     background-color: $purple-primary
 
+    &.click:hover
+      background-color: $purple-accent
+      color: #000
+
 .against
   border-left: $accent-border-width solid $amber-accent
 
   > .bubble
     background-color: $amber-primary
+
+    &.click:hover
+      background-color: $amber-accent
+      color: #000
 
 .content
   flex: auto
@@ -37,3 +45,14 @@
 
     &:hover
       color: rgba(0, 0, 0, 0.85)
+
+.info
+  line-height: 1
+  padding: 8px
+  text-align: right
+
+  .click
+    color: #ccc
+
+    &:hover
+      color: #444

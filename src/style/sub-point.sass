@@ -3,20 +3,25 @@
 .sub-point
   font-size: 12px
   list-style: none
-  margin: 3px 0 0 3px
+  margin-left: 3px
+
+  &:not(:first-child)
+    margin-top: 3px
 
   > .bubble
     padding: 12px
 
   &.for > .bubble
     background: none
-    border: 1px solid $purple-accent
-    border-left-width: 0
+    border-top: 1px solid $purple-accent
+    border-right: 1px solid $purple-accent
+    border-bottom: 1px solid $purple-accent
 
   &.against > .bubble
     background: none
-    border: 1px solid $amber-accent
-    border-left-width: 0
+    border-top: 1px solid $amber-accent
+    border-right: 1px solid $amber-accent
+    border-bottom: 1px solid $amber-accent
 
   > .controls
     margin-left: 4px
