@@ -6,6 +6,7 @@
                  :trail="trail"></point-content>
   <drawer v-if="showDrawer">
     <div class="info">
+      <span class="id mono">{{ point.id }}</span>
       <dwd-star :star="point.star" :url="'/api/point/' + point.id"></dwd-star>
       <span class="glyphicon glyphicon-comment click"
             aria-hidden="true"

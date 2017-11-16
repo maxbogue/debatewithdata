@@ -27,15 +27,21 @@
     color: #000
 
 .info
+  align-items: center
+  color: rgba(0, 0, 0, 0.4)
+  display: flex
   line-height: 1
   padding: 8px
-  text-align: right
 
-  .click
-    color: rgba(0, 0, 0, 0.15)
+  > :not(:first-child)
+    margin-left: 5px
 
-    &:hover
-      color: rgba(0, 0, 0, 0.85)
+  .id
+    flex: 1
+    font-size: 0.8em
+
+  .click:hover
+    color: rgba(0, 0, 0, 0.9)
 
 .hint
   display: block
