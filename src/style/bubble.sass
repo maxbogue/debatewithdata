@@ -31,7 +31,7 @@
   color: rgba(0, 0, 0, 0.4)
   display: flex
   line-height: 1
-  padding: 8px
+  padding: 0.5em
 
   > :not(:first-child)
     margin-left: 0.8em
@@ -40,8 +40,11 @@
     flex: 1
     font-size: 0.8em
 
-  .click:hover
-    color: rgba(0, 0, 0, 0.9)
+  a, .click
+    color: rgba(0, 0, 0, 0.4)
+
+    &:hover
+      color: rgba(0, 0, 0, 0.9)
 
 .hint
   display: block

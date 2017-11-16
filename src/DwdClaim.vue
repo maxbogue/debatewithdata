@@ -9,6 +9,7 @@
                        :claim="claim"></claim-content>
         <drawer v-if="showDrawer">
           <div class="info">
+            <span class="id mono">{{ claim.id }}</span>
             <dwd-star :star="claim.star"
                       :url="'/api' + claimUrl(id)"></dwd-star>
             <router-link v-if="$store.state.user"

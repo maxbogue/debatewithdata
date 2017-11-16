@@ -9,6 +9,7 @@
                         :source="source"></source-content>
         <drawer v-if="showDrawer">
           <div class="info">
+            <span class="id mono">{{ source.id }}</span>
             <router-link v-if="$store.state.user"
                          :to="sourceUrl(id) + '/edit'"
                          class="glyphicon glyphicon-pencil click"
