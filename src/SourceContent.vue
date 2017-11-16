@@ -1,10 +1,10 @@
 <template>
 <div v-if="source">
   <div>
-    <router-link v-if="trail" :to="sourceUrl(source.id, trail)">
-      {{ source.text }}
-    </router-link>
-    <template v-else>{{ source.text }}</template>
+    <router-link v-if="trail"
+                 :to="sourceUrl(source.id, trail)"
+                 class="link-icon glyphicon glyphicon-link"></router-link>
+    <span>{{ source.text }}</span>
   </div>
   <div class="sub">
     <template v-if="source.type === 'article'">

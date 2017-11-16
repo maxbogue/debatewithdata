@@ -1,10 +1,10 @@
 <template>
 <div>
   <dwd-flag v-if="claim.flag" :flag="claim.flag"></dwd-flag>
-  <router-link v-if="trail" :to="claimUrl(claim.id, trail)">
-    {{ claim.text }}
-  </router-link>
-  <div v-else>{{ claim.text }}</div>
+  <router-link v-if="trail"
+               :to="claimUrl(claim.id, trail)"
+               class="link-icon glyphicon glyphicon-link"></router-link>
+  <span>{{ claim.text }}</span>
 </div>
 </template>
 
