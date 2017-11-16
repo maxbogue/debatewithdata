@@ -1,10 +1,13 @@
 <template>
-<span v-if="user"
-      class="glyphicon"
-      :class="classes"
-      :title="star.count + ' stars'"
-      @click="toggle"
-      aria-hidden="true"></span>
+<span :class="$style.star">
+  <span class="glyphicon"
+        :class="classes"
+        :title="star.count + ' stars'"
+        @click="toggle"
+        aria-hidden="true"></span>
+  <span class="mono"
+        :class="$style.count">{{ star.count }}</span>
+</span>
 </template>
 
 <script>
@@ -19,7 +22,7 @@ export default {
     classes: function () {
       return [
         this.star.starred ? 'glyphicon-star' : 'glyphicon-star-empty',
-        this.user ? 'click' : 'disabled',
+        this.user ? 'click' : this.$style.disabled,
       ];
     },
   },
@@ -37,7 +40,14 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
+.star
+  display: flex
+  align-items: center
+
 .disabled
   color: rgba(0, 0, 0, 0.1)
+
+.count
+  font-size: 0.8em
 </style>
