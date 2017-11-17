@@ -11,7 +11,7 @@
 <style lang="sass">
 .drawer
   max-height: 300px
-  overflow: scroll
+  overflow: auto
 
 .drawer-enter-active,
 .drawer-leave-active,
