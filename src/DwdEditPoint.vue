@@ -4,7 +4,8 @@
                    :point="point"
                    :isFor="isFor"
                    @update="updatePoint"></dwd-point-input>
-  <div class="info">
+  <div v-if="point.type" class="info">
+    <span class="id mono">{{ point.id || 'new' }}</span>
     <dwd-flag-dropdown v-if="isSubclaim"
                        :flag="flag"
                        @select="updateFlag"></dwd-flag-dropdown>

@@ -15,7 +15,8 @@
                     v-auto-resize></textarea>
           <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
         </div>
-        <div class="info">
+        <div v-if="text" class="info">
+          <span class="id mono">{{ id || 'new' }}</span>
           <dwd-flag-dropdown :flag="flag"
                              @select="updateFlag"></dwd-flag-dropdown>
         </div>

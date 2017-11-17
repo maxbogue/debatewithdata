@@ -1,6 +1,6 @@
 <template>
 <div class="input">
-  <label v-if="point.tempId" class="hint">
+  <label v-if="!point.type" class="hint">
     Add a point {{ isFor | toSideString }} the claim.
   </label>
   <textarea rows="1"
