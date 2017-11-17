@@ -3,6 +3,7 @@ import forOwn from 'lodash/forOwn';
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import map from 'lodash/map';
+import md5 from 'md5';
 import sortBy from 'lodash/sortBy';
 
 export function walk(o, f) {
@@ -51,12 +52,20 @@ export function isValidPoint(point) {
   return Boolean(pointToInput(point));
 }
 
-function starred(item) {
-  return !item.star.starred;
+// This random string acts as a seed to keep the sort stable.
+const sortSeed = genId();
+
+// Sorts randomly each page refresh.
+function stableRandom(item) {
+  return md5(item.id + sortSeed);
 }
 
 function starCount(item) {
   return -item.star.count;
+}
+
+function starred(item) {
+  return !item.star.starred;
 }
 
 function prepItem(item, id) {
@@ -65,7 +74,7 @@ function prepItem(item, id) {
 }
 
 export function prepAndSortByStars(items) {
-  return sortBy(map(items, prepItem), [starred, starCount, Math.random]);
+  return sortBy(map(items, prepItem), [starred, starCount, stableRandom]);
 }
 
 export function pointMapsToLists(pointMaps) {

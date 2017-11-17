@@ -26,26 +26,30 @@
       </div>
     </div>
     <template v-if="$store.state.singleColumn">
-      <div v-for="[point, side, i] in zippedPoints"
-           class="col-xs-12"
-           :key="point.id">
-        <dwd-point :point="point"
-                   :isFor="claimIsFor === !side"
-                   :trail="trail.concat(id)"></dwd-point>
-        </dwd-point>
-      </div>
+      <transition-group :move-class="$style.pointsMove" tag="div">
+        <div v-for="[point, side, i] in zippedPoints"
+             class="col-xs-12"
+             :key="point.id">
+          <dwd-point :point="point"
+                     :isFor="claimIsFor === !side"
+                     :trail="trail.concat(id)"></dwd-point>
+          </dwd-point>
+        </div>
+      </transition-group>
     </template>
     <template v-else>
-      <div v-for="(sidePoints, side) in points"
-           class="col-sm-6"
-           :key="'side-' + side">
+      <transition-group tag="div"
+                        v-for="(sidePoints, side) in points"
+                        class="col-sm-6"
+                        :move-class="$style.pointsMove"
+                        :key="'side-' + side">
         <dwd-point v-for="(point, i) in sidePoints"
                    :point="point"
                    :isFor="claimIsFor === !side"
                    :trail="trail.concat(id)"
                    :key="point.id">
         </dwd-point>
-      </div>
+      </transition-group>
     </template>
   </div>
   <dwd-loader ref="loader"></dwd-loader>
@@ -126,3 +130,8 @@ export default {
   },
 };
 </script>
+
+<style lang="sass" module>
+.pointsMove
+  transition: transform 1s
+</style>

@@ -14,14 +14,17 @@
     </div>
     <dwd-comments v-if="showComments"
                   :url="'/api/point/' + point.id"></dwd-comments>
-    <ul v-if="subPoints.length > 0" class="sub-points">
+    <transition-group tag="ul"
+                      v-if="subPoints.length > 0"
+                      class="sub-points"
+                      :move-class="$style.subPointsMove">
       <dwd-sub-point v-for="[subPoint, subSide, i] in subPoints"
                      :point="subPoint"
                      :isFor="isFor === !subSide"
                      :trail="trail.concat(point.claimId || point.id)"
                      :key="subPoint.id">
       </dwd-sub-point>
-    </ul>
+    </transition-group>
   </drawer>
 </div>
 </template>
@@ -64,3 +67,8 @@ export default {
   },
 };
 </script>
+
+<style lang="sass" module>
+.subPointsMove
+  transition: transform 1s
+</style>
