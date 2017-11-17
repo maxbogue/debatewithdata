@@ -7,7 +7,7 @@
         <claim-content class="bubble click"
                        @click.native="showDrawer = !showDrawer"
                        :claim="claim"></claim-content>
-        <drawer v-if="showDrawer">
+        <drawer :show="showDrawer">
           <div class="info">
             <span class="id mono">{{ claim.id }}</span>
             <dwd-star :star="claim.star"

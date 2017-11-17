@@ -4,7 +4,7 @@
                  @click.native="showDrawer = !showDrawer"
                  :point="point"
                  :trail="trail"></point-content>
-  <drawer v-if="showDrawer">
+  <drawer :show="showDrawer">
     <div class="info">
       <span class="id mono">{{ point.id }}</span>
       <dwd-star :star="point.star" :url="'/api/point/' + point.id"></dwd-star>
