@@ -194,6 +194,7 @@ describe('Source', function () {
       let sourceData = await Source.apiGet(rev.sourceId);
       expect(sourceData).to.deep.equal({
         rev: rev.id,
+        commentCount: 0,
         ...MISC,
       });
     });
@@ -221,10 +222,12 @@ describe('Source', function () {
       expect(sourcesData).to.deep.equal({
         [s1r.sourceId]: {
           rev: s1r.id,
+          commentCount: 0,
           ...RESEARCH,
         },
         [s2r.sourceId]: {
           rev: s2r.id,
+          commentCount: 0,
           ...ARTICLE,
         },
       });
@@ -238,6 +241,7 @@ describe('Source', function () {
       expect(sourcesData).to.deep.equal({
         [s1r.sourceId]: {
           rev: s1r.id,
+          commentCount: 0,
           ...RESEARCH,
         }
       });

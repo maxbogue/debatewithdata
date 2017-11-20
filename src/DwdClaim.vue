@@ -16,9 +16,8 @@
                          :to="claimUrl(id) + '/edit'"
                          class="glyphicon glyphicon-pencil click"
                          aria-hidden="true"></router-link>
-            <span class="glyphicon glyphicon-comment click"
-                  aria-hidden="true"
-                  @click="showComments = !showComments"></span>
+            <comment-icon @click.native="showComments = !showComments"
+                          :count="claim.commentCount"></comment-icon>
           </div>
           <dwd-comments v-if="showComments"
                         :url="'/api/claim/' + id"></dwd-comments>
@@ -58,6 +57,7 @@
 
 <script>
 import ClaimContent from './ClaimContent.vue';
+import CommentIcon from './CommentIcon.vue';
 import Drawer from './Drawer.vue';
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
@@ -70,6 +70,7 @@ import { pointMapsToLists, rotateWithIndexes } from './utils';
 export default {
   components: {
     ClaimContent,
+    CommentIcon,
     Drawer,
     DwdComments,
     DwdFlag,

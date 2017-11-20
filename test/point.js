@@ -95,15 +95,44 @@ describe('Point', function () {
     });
 
     it('source link', async function () {
-      let sourceRev = await Source.apiCreate(user, { url: URL, text: FOO });
+      let sourceRev = await Source.apiCreate(user, {
+        url: URL,
+        text: FOO,
+        type: 'misc',
+      });
       let pointRev = await Point.apiCreate(user, {
         type: Point.SOURCE,
         sourceId: sourceRev.sourceId,
       });
+      await pointRev.reload(PointRev.INCLUDE(1));
       expect(pointRev.userId).to.equal(user.id);
       expect(pointRev.parentId).to.be.null;
       expect(pointRev.type).to.equal(Point.SOURCE);
       expect(pointRev.sourceId).to.equal(sourceRev.sourceId);
+
+      let data = { sources: {} };
+      let pointData = await pointRev.toData(data, 1, null);
+      expect(data).to.deep.equal({
+        sources: {
+          [sourceRev.sourceId]: {
+            rev: sourceRev.id,
+            url: URL,
+            text: FOO,
+            type: 'misc',
+            commentCount: 0,
+          },
+        },
+      });
+      expect(pointData).to.deep.equal({
+        rev: pointRev.id,
+        type: 'source',
+        sourceId: sourceRev.sourceId,
+        star: {
+          count: 0,
+          starred: false,
+        },
+        commentCount: 0,
+      });
     });
   });
 

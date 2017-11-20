@@ -158,6 +158,7 @@ export default function (sequelize, DataTypes) {
         text: this.head.blob.text,
         depth: depth,
         star: await this.toStarData(user),
+        commentCount: await this.countComments(),
       };
 
       if (this.head.flag) {

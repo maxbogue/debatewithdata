@@ -14,9 +14,8 @@
                          :to="sourceUrl(id) + '/edit'"
                          class="glyphicon glyphicon-pencil click"
                          aria-hidden="true"></router-link>
-            <span class="glyphicon glyphicon-comment click"
-                  aria-hidden="true"
-                  @click="showComments = !showComments"></span>
+            <comment-icon @click.native="showComments = !showComments"
+                          :count="source.commentCount"></comment-icon>
           </div>
           <dwd-comments v-if="showComments"
                         :url="'/api/source/' + id"></dwd-comments>
@@ -29,6 +28,7 @@
 </template>
 
 <script>
+import CommentIcon from './CommentIcon.vue';
 import Drawer from './Drawer.vue';
 import DwdComments from './DwdComments.vue';
 import DwdLoader from './DwdLoader.vue';
@@ -37,6 +37,7 @@ import SourceContent from './SourceContent.vue';
 
 export default {
   components: {
+    CommentIcon,
     Drawer,
     DwdComments,
     DwdLoader,

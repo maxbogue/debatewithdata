@@ -208,6 +208,7 @@ describe('Claim', function () {
               count: 0,
               starred: false,
             },
+            commentCount: 0,
             points: [{}, {}],
           },
         },
@@ -229,6 +230,7 @@ describe('Claim', function () {
               count: 1,
               starred: true,
             },
+            commentCount: 0,
             points: [{}, {}],
           },
         },
@@ -245,6 +247,7 @@ describe('Claim', function () {
               count: 1,
               starred: false,
             },
+            commentCount: 0,
             points: [{}, {}],
           },
         },
@@ -279,6 +282,7 @@ describe('Claim', function () {
               count: 0,
               starred: false,
             },
+            commentCount: 0,
             points: [{
               [p1.pointId]: {
                 rev: p1.id,
@@ -288,6 +292,7 @@ describe('Claim', function () {
                   count: 0,
                   starred: false,
                 },
+                commentCount: 0,
               },
             }, {
               [p2.pointId]: {
@@ -298,6 +303,7 @@ describe('Claim', function () {
                   count: 1,
                   starred: true,
                 },
+                commentCount: 0,
               },
             }],
           },
@@ -335,6 +341,7 @@ describe('Claim', function () {
               count: 0,
               starred: false,
             },
+            commentCount: 0,
             points: [{
               [p1.pointId]: {
                 rev: p1.id,
@@ -344,6 +351,7 @@ describe('Claim', function () {
                   count: 0,
                   starred: false,
                 },
+                commentCount: 0,
                 points: [{
                   [p1a.pointId]: {
                     rev: p1a.id,
@@ -353,6 +361,7 @@ describe('Claim', function () {
                       count: 1,
                       starred: true,
                     },
+                    commentCount: 0,
                   },
                 }, {}],
               },
@@ -385,6 +394,7 @@ describe('Claim', function () {
               count: 0,
               starred: false,
             },
+            commentCount: 0,
             points: [{
               [p3.pointId]: {
                 rev: p3.id,
@@ -394,6 +404,7 @@ describe('Claim', function () {
                   count: 0,
                   starred: false,
                 },
+                commentCount: 0,
               },
             }, {}],
           },
@@ -405,6 +416,7 @@ describe('Claim', function () {
               count: 0,
               starred: false,
             },
+            commentCount: 0,
             points: [{
               [p1.pointId]: {
                 rev: p1.id,
@@ -414,6 +426,7 @@ describe('Claim', function () {
                   count: 0,
                   starred: false,
                 },
+                commentCount: 0,
               },
             }, {}],
           },
@@ -484,6 +497,7 @@ describe('Claim', function () {
               count: 0,
               starred: false,
             },
+            commentCount: 0,
           },
           [c2r.claimId]: {
             rev: c2r.id,
@@ -493,6 +507,7 @@ describe('Claim', function () {
               count: 1,
               starred: true,
             },
+            commentCount: 0,
           },
         },
         sources: {},
@@ -514,6 +529,7 @@ describe('Claim', function () {
               count: 0,
               starred: false,
             },
+            commentCount: 0,
           },
         },
         sources: {},

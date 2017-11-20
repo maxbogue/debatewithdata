@@ -77,8 +77,9 @@ export default function (sequelize, DataTypes) {
         throw new NotFoundError('Source not found: ' + sourceId);
       }
 
-      let oldData = source.toData();
+      let oldData = await source.toData();
       delete oldData.rev;
+      delete oldData.commentCount;
       if (isEqual(data, oldData)) {
         return source.head;
       }
@@ -125,7 +126,7 @@ export default function (sequelize, DataTypes) {
       return rev;
     };
 
-    Source.prototype.toData = function () {
+    Source.prototype.toData = async function () {
       if (this.head.deleted) {
         return {
           rev: this.headId,
@@ -138,6 +139,7 @@ export default function (sequelize, DataTypes) {
         url: this.head.url,
         text: this.head.blob.text,
         type: this.head.type,
+        commentCount: await this.countComments(),
       };
 
       switch (this.head.type) {
@@ -162,7 +164,7 @@ export default function (sequelize, DataTypes) {
       if (!source) {
         throw new NotFoundError('Source not found: ' + sourceId);
       }
-      return source.toData();
+      return await source.toData();
     };
 
     Source.apiGetAll = async function () {
@@ -170,7 +172,7 @@ export default function (sequelize, DataTypes) {
       let ret = {};
       for (let source of sources) {
         if (!source.head.deleted) {
-          ret[source.id] = source.toData();
+          ret[source.id] = await source.toData();
         }
       }
       return ret;

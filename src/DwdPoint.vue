@@ -8,9 +8,8 @@
     <div class="info">
       <span class="id mono">{{ point.id }}</span>
       <dwd-star :star="point.star" :url="'/api/point/' + point.id"></dwd-star>
-      <span class="glyphicon glyphicon-comment click"
-            aria-hidden="true"
-            @click="showComments = !showComments"></span>
+      <comment-icon @click.native="showComments = !showComments"
+                    :count="point.commentCount"></comment-icon>
     </div>
     <dwd-comments v-if="showComments"
                   :url="'/api/point/' + point.id"></dwd-comments>
@@ -31,6 +30,7 @@
 
 <script>
 import './style/point.sass';
+import CommentIcon from './CommentIcon.vue';
 import Drawer from './Drawer.vue';
 import DwdComments from './DwdComments.vue';
 import DwdStar from './DwdStar.vue';
@@ -40,6 +40,7 @@ import { pointMapsToLists, rotateWithIndexes } from './utils';
 
 export default {
   components: {
+    CommentIcon,
     Drawer,
     DwdComments,
     DwdStar,

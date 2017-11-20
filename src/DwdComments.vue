@@ -32,7 +32,12 @@ import dateFormat from 'dateformat';
 const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 
 export default {
-  props: ['url'],
+  props: {
+    url: {
+      type: String,
+      required: true,
+    },
+  },
   computed: {
     commentsUrl: function () {
       return this.url + '/comment';

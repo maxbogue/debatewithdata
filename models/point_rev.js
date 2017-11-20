@@ -259,6 +259,7 @@ export default function (sequelize, DataTypes) {
         rev: this.id,
         type: this.type,
         star: await this.point.toStarData(user),
+        commentCount: await this.point.countComments(),
       };
       switch (this.type) {
       case CLAIM:
@@ -267,7 +268,7 @@ export default function (sequelize, DataTypes) {
         break;
       case SOURCE:
         thisData.sourceId = this.sourceId;
-        data.sources[this.sourceId] = this.source.toData();
+        data.sources[this.sourceId] = await this.source.toData();
         break;
       case SUBCLAIM:
         if (depth > 1) {
