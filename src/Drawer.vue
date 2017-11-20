@@ -2,7 +2,10 @@
 <transition name="drawer"
             @after-enter="afterEnter"
             @after-leave="afterLeave">
-  <div v-show="innerShow" class="drawer" ref="drawer">
+  <div v-show="innerShow"
+       ref="drawer"
+       class="drawer"
+       :style="{ maxHeight }">
     <div>
       <slot></slot>
     </div>
@@ -24,44 +27,38 @@ export default {
   },
   data: () => ({
     innerShow: false,
+    height: 0,
   }),
+  computed: {
+    maxHeight: function () {
+      return Math.min(this.height, MAX_HEIGHT) + 'px';
+    },
+  },
   methods: {
     open: function () {
       let { drawer } = this.$refs;
 
       // Briefly override the v-show style to grab the height.
       drawer.style.display = 'block';
-      let height = Math.min(drawer.scrollHeight, MAX_HEIGHT);
+      let height = drawer.scrollHeight;
       drawer.style.display = '';
 
-      // Set the starting point for the transition.
-      drawer.style.maxHeight = '0px';
-
-      // Begin the animation on the next tick so it can do interpolation.
-      Vue.nextTick(() => {
-        drawer.style.maxHeight = height + 'px';
-        // Allow Vue to take over now that the target height is set.
-        this.innerShow = true;
-      });
+      this.height = height;
+      this.innerShow = true;
     },
     close: function () {
       let { drawer } = this.$refs;
-      let height = Math.min(drawer.scrollHeight, MAX_HEIGHT);
-      drawer.style.maxHeight = height + 'px';
-
+      this.height = drawer.scrollHeight;
       Vue.nextTick(() => {
-        drawer.style.maxHeight = '0px';
+        this.height = 0;
         this.innerShow = false;
       });
     },
     afterEnter: function () {
-      let { drawer } = this.$refs;
-      // The actual non-transitional maxHeight of the drawer.
-      drawer.style.maxHeight = MAX_HEIGHT + 'px';
+      this.height = MAX_HEIGHT;
     },
     afterLeave: function () {
-      let { drawer } = this.$refs;
-      drawer.style.maxHeight = '';
+      this.height = 0;
     },
   },
   watch: {

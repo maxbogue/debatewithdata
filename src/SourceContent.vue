@@ -36,7 +36,6 @@ export default {
 
   a
     color: #666
-    display: block
 
   strong
     color: #000
