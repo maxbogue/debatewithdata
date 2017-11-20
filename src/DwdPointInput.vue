@@ -38,7 +38,6 @@
 
 <script>
 import 'loaders.css/loaders.min.css';
-import Vue from 'vue';
 import { isWebUri } from 'valid-url';
 
 import DwdFlag from './DwdFlag.vue';
@@ -127,7 +126,7 @@ export default {
   },
   mounted: function () {
     this.input1 = pointToInput(this.point);
-    Vue.nextTick(() => {
+    this.$nextTick(() => {
       // If this is done immediately, the watch functions get called.
       this.initialized = true;
     });

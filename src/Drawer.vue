@@ -14,8 +14,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
-
 const MAX_HEIGHT = 300;
 
 export default {
@@ -49,7 +47,7 @@ export default {
     close: function () {
       let { drawer } = this.$refs;
       this.height = drawer.scrollHeight;
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         this.height = 0;
         this.innerShow = false;
       });
