@@ -6,6 +6,7 @@
   <div class="center">
     <router-link :to="addUrl" class="add blue-dark">New Claim</router-link>
   </div>
+  <dwd-loader ref="loader"></dwd-loader>
   <template v-if="claimsLoaded">
     <router-link v-for="claim in claims"
                  class="claim block"
@@ -14,7 +15,6 @@
         <claim-content :claim="claim"></claim-content>
     </router-link>
   </template>
-  <dwd-loader ref="loader"></dwd-loader>
 </div>
 </template>
 
@@ -46,7 +46,9 @@ export default {
     },
   },
   mounted: function () {
-    this.$store.dispatch('getClaims', { loader: this.$refs.loader });
+    if (!this.claimsLoaded) {
+      this.$store.dispatch('getClaims', { loader: this.$refs.loader });
+    }
   },
 };
 </script>

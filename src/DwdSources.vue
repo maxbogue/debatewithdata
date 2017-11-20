@@ -6,6 +6,7 @@
   <div class="center">
     <router-link :to="addUrl" class="add green-dark">New Source</router-link>
   </div>
+  <dwd-loader ref="loader"></dwd-loader>
   <template v-if="sourcesLoaded">
     <router-link v-for="source in sources"
                  class="source block"
@@ -14,7 +15,6 @@
       <source-content :source="source"></source-content>
     </router-link>
   </template>
-  <dwd-loader ref="loader"></dwd-loader>
 </div>
 </template>
 
@@ -43,7 +43,9 @@ export default {
     },
   },
   mounted: function () {
-    this.$store.dispatch('getSources', { loader: this.$refs.loader });
+    if (!this.sourcesLoaded) {
+      this.$store.dispatch('getSources', { loader: this.$refs.loader });
+    }
   },
 };
 </script>
