@@ -1,12 +1,13 @@
 <template>
 <transition name="drawer"
-            @after-enter="afterEnter"
-            @after-leave="afterLeave">
+            :enter-active-class="$style.drawerActive"
+            :leave-active-class="$style.drawerActive"
+            @after-enter="afterEnter">
   <div v-show="innerShow"
        ref="drawer"
-       class="drawer"
+       :class="$style.drawer"
        :style="{ maxHeight }">
-    <div>
+    <div :style="{ transform }">
       <slot></slot>
     </div>
   </div>
@@ -23,13 +24,19 @@ export default {
       required: true,
     },
   },
-  data: () => ({
-    innerShow: false,
-    height: 0,
-  }),
+  data: function () {
+    return {
+      innerShow: this.show,
+      height: this.show ? MAX_HEIGHT : 0,
+      translateY: this.show ? '0%' : '-100%',
+    };
+  },
   computed: {
     maxHeight: function () {
       return Math.min(this.height, MAX_HEIGHT) + 'px';
+    },
+    transform: function () {
+      return 'translateY(' + this.translateY + ')';
     },
   },
   methods: {
@@ -42,21 +49,24 @@ export default {
       drawer.style.display = '';
 
       this.height = height;
+      this.translateY = '0%';
       this.innerShow = true;
     },
     close: function () {
       let { drawer } = this.$refs;
       this.height = drawer.scrollHeight;
-      this.$nextTick(() => {
+
+      // For some reason nextTick does not work correctly here. The new start
+      // height doesn't take effect in time and the animation is broken for
+      // drawers shorter than the max height.
+      setTimeout(() => {
         this.height = 0;
+        this.translateY = '-100%';
         this.innerShow = false;
-      });
+      }, 0);
     },
     afterEnter: function () {
       this.height = MAX_HEIGHT;
-    },
-    afterLeave: function () {
-      this.height = 0;
     },
   },
   watch: {
@@ -71,21 +81,10 @@ export default {
 };
 </script>
 
-<style lang="sass">
+<style lang="sass" module>
 .drawer
   overflow: auto
 
-.drawer-enter-active,
-.drawer-leave-active,
-.drawer-enter-active > div,
-.drawer-leave-active > div
+.drawerActive, .drawerActive > div
   transition: all 0.5s
-
-.drawer-enter > div,
-.drawer-leave-to > div
-  transform: translateY(-100%)
-
-.drawer-leave > div,
-.drawer-enter-to > div
-  transform: translateY(0)
 </style>
