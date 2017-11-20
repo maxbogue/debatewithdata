@@ -18,7 +18,12 @@
 import 'loaders.css/loaders.min.css';
 
 export default {
-  props: ['fill'],
+  props: {
+    fill: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({
     loading: false,
     error: '',
@@ -41,7 +46,7 @@ export default {
   align-items: center
   display: flex
   height: 40px
-  margin-top: 10px
+  margin: 25px 0
   justify-content: center
 
   > div > div
