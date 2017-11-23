@@ -45,6 +45,10 @@ app.get('/source/:id/edit', sendIndex);
 app.get('/sources', sendIndex);
 app.get('/sources/add', sendIndex);
 app.get('/status', sendIndex);
+app.get('/topic/:id', sendIndex);
+app.get('/topic/:id/edit', sendIndex);
+app.get('/topics', sendIndex);
+app.get('/topics/add', sendIndex);
 app.get('/verify-email', sendIndex);
 
 app.get('/point/:id', async function (req, res) {

@@ -42,8 +42,10 @@ function singleColumnPlugin(store) {
 
 export default new Vuex.Store({
   state: {
+    topics: {},
     claims: {},
     sources: {},
+    topicsLoaded: false,
     claimsLoaded: false,
     sourcesLoaded: false,
     user: null,
@@ -51,6 +53,12 @@ export default new Vuex.Store({
   },
   mutations: {
     setData: function (state, data) {
+      if (data.topics) {
+        forOwn(data.topics, (topic, id) => {
+          topic.id = id;
+          Vue.set(state.topics, id, topic);
+        });
+      }
       if (data.claims) {
         forOwn(data.claims, (claim, id) => {
           if (shouldWriteClaim(id, data, state)) {
@@ -66,19 +74,8 @@ export default new Vuex.Store({
         });
       }
     },
-    setClaim: function (state, { id, claim }) {
-      claim.id = id;
-      Vue.set(state.claims, id, claim);
-    },
-    removeClaim: function (state, id) {
-      Vue.delete(state.claims, id);
-    },
-    setSource: function (state, { id, source }) {
-      source.id = id;
-      Vue.set(state.sources, id, source);
-    },
-    removeSource: function (state, id) {
-      Vue.delete(state.sources, id);
+    setTopicsLoaded: function (state) {
+      state.topicsLoaded = true;
     },
     setClaimsLoaded: function (state) {
       state.claimsLoaded = true;
@@ -94,6 +91,34 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    getTopic: function ({ commit }, { id, loader }) {
+      return axios.get('/api/topic/' + id, { loader }).then((res) => {
+        commit('setData', res.data);
+      });
+    },
+    getTopics: function ({ commit }, { loader }) {
+      return axios.get('/api/topic', { loader }).then((res) => {
+        commit('setData', res.data);
+        commit('setTopicsLoaded');
+      });
+    },
+    updateTopic: function ({ commit }, { id, topic }) {
+      return axios.put('/api/topic/' + id, topic).then((res) => {
+        commit('setData', res.data);
+        return id;
+      });
+    },
+    addTopic: function ({ commit }, { topic }) {
+      return axios.post('/api/topic', topic).then((res) => {
+        commit('setData', res.data);
+        return res.data.id;
+      });
+    },
+    removeTopic: function ({ commit }, { id }) {
+      return axios.delete('/api/topic/' + id).then((res) => {
+        commit('setData', res.data);
+      });
+    },
     getClaim: function ({ commit, state }, { id, trail, loader }) {
       let url = '/api/claim/' + id;
       if (trail) {

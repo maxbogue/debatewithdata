@@ -2,7 +2,7 @@
 <div>
   <form v-if="!needsData" class="row gutter-16" @submit.prevent="submit">
     <div class="col-xs-12">
-      <div class="claim t1 neutral">
+      <div class="claim t1">
         <div class="bubble">
           <label for="text" class="hint">
             A claim should be a short, simple statement about the world.

@@ -8,6 +8,7 @@ import claim from './claim';
 import item from './item';
 import point from './point';
 import source from './source';
+import topic from './topic';
 import user, { parseAuthHeader } from './user';
 
 const router = Router();
@@ -22,6 +23,7 @@ router.use('/claim', claim);
 router.use('/item', item);
 router.use('/point', point);
 router.use('/source', source);
+router.use('/topic', topic);
 
 router.use(apiErrorHandler);
 

@@ -3,6 +3,7 @@ import find from 'lodash/find';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
+import './style/index.sass';
 import DwdAccount from './DwdAccount.vue';
 import DwdActivity from './DwdActivity.vue';
 import DwdAdmin from './DwdAdmin.vue';
@@ -11,8 +12,8 @@ import DwdClaim from './DwdClaim.vue';
 import DwdClaims from './DwdClaims.vue';
 import DwdEditClaim from './DwdEditClaim.vue';
 import DwdEditSource from './DwdEditSource.vue';
+import DwdEditTopic from './DwdEditTopic.vue';
 import DwdForgotPassword from './DwdForgotPassword.vue';
-import DwdStatus from './DwdStatus.vue';
 import DwdGuide from './DwdGuide.vue';
 import DwdHome from './DwdHome.vue';
 import DwdLogin from './DwdLogin.vue';
@@ -21,11 +22,13 @@ import DwdRegister from './DwdRegister.vue';
 import DwdResetPassword from './DwdResetPassword.vue';
 import DwdSource from './DwdSource.vue';
 import DwdSources from './DwdSources.vue';
+import DwdStatus from './DwdStatus.vue';
+import DwdTopic from './DwdTopic.vue';
+import DwdTopics from './DwdTopics.vue';
 import DwdVerifyEmail from './DwdVerifyEmail.vue';
 import auth from './auth';
 import store from './store';
 import { DwdUtilsMixin } from './utils';
-import './style/index.sass';
 
 Vue.use(VueRouter);
 Vue.mixin(DwdUtilsMixin);
@@ -82,6 +85,10 @@ new Vue({
       { path: '/sources', component: DwdSources },
       { path: '/sources/add', component: DwdEditSource },
       { path: '/status', component: DwdStatus },
+      { path: '/topic/:id', component: DwdTopic },
+      { path: '/topic/:id/edit', component: DwdEditTopic },
+      { path: '/topics', component: DwdTopics },
+      { path: '/topics/add', component: DwdEditTopic },
       { path: '/verify-email', component: DwdVerifyEmail },
     ],
   }),

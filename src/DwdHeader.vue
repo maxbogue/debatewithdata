@@ -4,6 +4,7 @@
                to="/"
                title="Home"
                class="navbar-brand">DebateWithData</router-link>
+  <li><router-link to="/topics" title="Topics">Topics</router-link></li>
   <li><router-link to="/claims" title="Claims">Claims</router-link></li>
   <li><router-link to="/sources" title="Sources">Sources</router-link></li>
   <li><router-link to="/guide" title="Guide">Guide</router-link></li>

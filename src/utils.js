@@ -69,7 +69,9 @@ function starred(item) {
 }
 
 function prepItem(item, id) {
-  item.id = id;
+  if (!item.id) {
+    item.id = id;
+  }
   return item;
 }
 
@@ -100,6 +102,9 @@ export var DwdUtilsMixin = {
     },
   },
   methods: {
+    topicUrl: function (topicId) {
+      return '/topic/' + topicId;
+    },
     claimUrl: function (claimId, trail) {
       let url = '/claim/' + claimId;
       if (trail && trail.length > 0) {
