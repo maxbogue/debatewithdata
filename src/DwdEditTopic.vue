@@ -7,7 +7,9 @@
           <label v-if="!id" for="id" class="hint">
             The ID shows up in the URL.
           </label>
-          <textarea v-if="!id" id="id"
+          <textarea v-if="!id"
+                    id="id"
+                    class="mono"
                     rows="1"
                     autocomplete="off"
                     placeholder="id"
@@ -28,7 +30,7 @@
           <textarea id="text"
                     rows="1"
                     autocomplete="off"
-                    placeholder="claim"
+                    placeholder="description"
                     v-model="text"
                     v-auto-resize></textarea>
         </div>
@@ -38,7 +40,7 @@
       </div>
       <h3>Key Claims</h3>
       <claim-input v-for="(claimId, i) in claimIds"
-                   class="col-xs-12 claim block"
+                   class="claim block"
                    :id="claimId"
                    @update="(newId) => updateClaimId(i, newId)"
                    :key="'claim-' + i"></claim-input>
@@ -76,7 +78,7 @@ export default {
     tempId: '',
     title: '',
     text: '',
-    claimIds: [],
+    claimIds: [''],
   }),
   computed: {
     id: function () {

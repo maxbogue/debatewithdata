@@ -2,7 +2,7 @@
 <div class="input">
   <textarea rows="1"
             autocomplete="off"
-            placeholder="12-letter ID"
+            placeholder="12-letter claim ID"
             ref="input1"
             v-model="input1"
             v-auto-resize
