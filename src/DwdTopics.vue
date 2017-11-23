@@ -1,6 +1,6 @@
 <template>
 <div>
-  <h1 class="center">Topics</h1>
+  <h3 class="center">Topics represent common topics of debate.</h3>
   <div class="center">
     <router-link :to="addUrl" class="add pink-dark">New Topic</router-link>
   </div>

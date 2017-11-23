@@ -1,5 +1,5 @@
 <template>
-<navbar placement="top" type="inverse">
+<navbar placement="static" type="inverse" style="margin-bottom: 0">
   <router-link slot="brand"
                to="/"
                title="Home"
