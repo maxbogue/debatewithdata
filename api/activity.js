@@ -2,7 +2,7 @@ import Router from 'express-promise-router';
 import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 
-import { ClaimRev, Comment, SourceRev, User } from '../models';
+import { ClaimRev, Comment, SourceRev, TopicRev, User } from '../models';
 
 const router = Router();
 
@@ -22,6 +22,13 @@ function itemToEntry(item) {
     username: item.user.username,
     action: itemToAction(item),
   };
+}
+
+function topicRevToEntry(topicRev) {
+  let entry = itemToEntry(topicRev);
+  entry.type = 'topic';
+  entry.id = topicRev.topicId;
+  return entry;
 }
 
 function claimRevToEntry(claimRev) {
@@ -49,6 +56,15 @@ function commentToEntry(comment) {
 }
 
 router.get('/', async function (req, res) {
+  let topicRevs = await TopicRev.findAll({
+    attributes: ['deleted', 'topicId', 'parentId', 'created_at'],
+    include: {
+      model: User,
+      attributes: ['username'],
+    },
+    order: [['created_at', 'DESC']],
+    limit: 100,
+  });
   let claimRevs = await ClaimRev.findAll({
     attributes: ['deleted', 'claimId', 'parentId', 'created_at'],
     include: {
@@ -77,10 +93,12 @@ router.get('/', async function (req, res) {
     order: [['created_at', 'DESC']],
     limit: 100,
   });
+  let topicEntries = map(topicRevs, topicRevToEntry);
   let claimEntries = map(claimRevs, claimRevToEntry);
   let sourceEntries = map(sourceRevs, sourceRevToEntry);
   let commentEntries = map(comments, commentToEntry);
-  let activity = claimEntries.concat(sourceEntries, commentEntries);
+  let activity = topicEntries.concat(
+      claimEntries, sourceEntries, commentEntries);
   res.json(sortBy(activity, (e) => -e.timestamp).slice(0, 100));
 });
 
