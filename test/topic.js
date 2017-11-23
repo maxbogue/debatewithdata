@@ -38,7 +38,7 @@ describe('Topic', function () {
         id: ID,
         title: TITLE,
         text: FOO,
-        claims: [claimRev.claimId],
+        claimIds: [claimRev.claimId],
       });
       await topicRev.reload(TopicRev.INCLUDE());
       expect(topicRev.topicId).to.equal(ID);
@@ -65,14 +65,14 @@ describe('Topic', function () {
         id: ID,
         title: TITLE,
         text: FOO,
-        claims: [c1r.claimId],
+        claimIds: [c1r.claimId],
       });
 
       let c2r = await Claim.apiCreate(user, { text: BAZ });
       let r2 = await Topic.apiUpdate(ID, user, {
         title: TITLE2,
         text: BAR,
-        claims: [c2r.claimId],
+        claimIds: [c2r.claimId],
       });
 
       await r2.reload(TopicRev.INCLUDE());
@@ -96,7 +96,7 @@ describe('Topic', function () {
         id: ID,
         title: TITLE,
         text: FOO,
-        claims: [],
+        claimIds: [],
       });
 
       let r2 = await Topic.apiDelete(ID, user);
@@ -118,7 +118,7 @@ describe('Topic', function () {
         id: ID,
         title: TITLE,
         text: FOO,
-        claims: [],
+        claimIds: [],
       });
 
       let r2 = await Topic.apiDelete(ID, user);
@@ -136,7 +136,7 @@ describe('Topic', function () {
         id: ID,
         title: TITLE,
         text: FOO,
-        claims: [c1r.claimId],
+        claimIds: [c1r.claimId],
       });
       let data = await Topic.apiGet(ID);
       expect(data).to.deep.equal({
@@ -145,7 +145,7 @@ describe('Topic', function () {
             rev: r1.id,
             title: TITLE,
             text: FOO,
-            claims: [c1r.claimId],
+            claimIds: [c1r.claimId],
             ...STARS_AND_COMMENTS,
           },
         },
@@ -169,7 +169,7 @@ describe('Topic', function () {
         id: ID,
         title: TITLE,
         text: FOO,
-        claims: [],
+        claimIds: [],
       });
       let r2 = await Topic.apiDelete(ID, user);
       let data = await Topic.apiGet(ID);
@@ -191,13 +191,13 @@ describe('Topic', function () {
         id: ID,
         title: TITLE,
         text: FOO,
-        claims: [],
+        claimIds: [],
       });
       let t2r = await Topic.apiCreate(user, {
         id: ID2,
         title: TITLE2,
         text: BAR,
-        claims: [],
+        claimIds: [],
       });
       let data = await Topic.apiGetAll();
       expect(data).to.deep.equal({
@@ -206,14 +206,14 @@ describe('Topic', function () {
             rev: t1r.id,
             title: TITLE,
             text: FOO,
-            claims: [],
+            claimIds: [],
             ...STARS_AND_COMMENTS,
           },
           [ID2]: {
             rev: t2r.id,
             title: TITLE2,
             text: BAR,
-            claims: [],
+            claimIds: [],
             ...STARS_AND_COMMENTS,
           },
         },
@@ -226,12 +226,12 @@ describe('Topic', function () {
         id: ID,
         title: TITLE,
         text: FOO,
-        claims: [],
+        claimIds: [],
       });
       await Topic.apiCreate(user, {
         id: ID2,
         text: BAR,
-        claims: [],
+        claimIds: [],
       });
       await Topic.apiDelete(ID2, user);
       let data = await Topic.apiGetAll();
@@ -241,7 +241,7 @@ describe('Topic', function () {
             rev: t1r.id,
             title: TITLE,
             text: FOO,
-            claims: [],
+            claimIds: [],
             ...STARS_AND_COMMENTS,
           },
         },
@@ -255,7 +255,7 @@ describe('Topic', function () {
       await Topic.apiCreate(user, {
         id: ID,
         text: FOO,
-        claims: [],
+        claimIds: [],
       });
       let star = await Topic.apiToggleStar(ID, user);
       expect(star).to.deep.equal({

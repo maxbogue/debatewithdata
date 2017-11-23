@@ -36,6 +36,7 @@
           <span class="id mono">{{ id || 'new' }}</span>
         </div>
       </div>
+      <h3>Key Claims</h3>
       <claim-input v-for="(claimId, i) in claimIds"
                    class="col-xs-12 claim block"
                    :id="claimId"
@@ -58,10 +59,12 @@
 
 <script>
 import filter from 'lodash/filter';
+import sortBy from 'lodash/sortBy';
 
 import ClaimInput from './ClaimInput.vue';
 import DeleteButton from './DeleteButton.vue';
 import DwdLoader from './DwdLoader.vue';
+import { pipe, stableRandom, starCount, starred } from './utils';
 
 export default {
   components: {
@@ -99,7 +102,7 @@ export default {
         topic: {
           title: this.title,
           text: this.text,
-          claims: filter(this.claimIds, (id) => this.$store.state.claims[id]),
+          claimIds: filter(this.claimIds, this.lookupClaim),
         },
       };
       if (this.id) {
@@ -125,7 +128,13 @@ export default {
     initialize: function () {
       this.title = this.topic.title;
       this.text = this.topic.text;
-      this.claimIds = this.topic.claims;
+
+      let claimStarred = pipe(this.lookupClaim, starred);
+      let claimStarCount = pipe(this.lookupClaim, starCount);
+      this.claimIds = sortBy(this.topic.claimIds,
+          [claimStarred, claimStarCount, stableRandom]);
+
+      // Append an empty input for new claims.
       this.claimIds.push('');
     },
     checkLoaded: function () {

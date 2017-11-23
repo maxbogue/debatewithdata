@@ -6,6 +6,10 @@ import map from 'lodash/map';
 import md5 from 'md5';
 import sortBy from 'lodash/sortBy';
 
+export function pipe(...fns) {
+  return fns.reduce((f, g) => (...args) => g(f(...args)));
+}
+
 export function walk(o, f) {
   if (isObject(o)) {
     f(o);
@@ -55,17 +59,26 @@ export function isValidPoint(point) {
 // This random string acts as a seed to keep the sort stable.
 const sortSeed = genId();
 
-// Sorts randomly each page refresh.
-function stableRandom(item) {
-  return md5(item.id + sortSeed);
+// Sorts randomly each page refresh. Requires a string or object with ID.
+export function stableRandom(item) {
+  if (typeof item === 'string') {
+    return md5(item + sortSeed);
+  } else if (item.id) {
+    return md5(item.id + sortSeed);
+  }
+  throw Error('stableRandom requires a string or object with an ID.');
 }
 
-function starCount(item) {
+export function starCount(item) {
   return -item.star.count;
 }
 
-function starred(item) {
+export function starred(item) {
   return !item.star.starred;
+}
+
+export function sortByStars(items) {
+  return sortBy(items, [starred, starCount, stableRandom]);
 }
 
 function prepItem(item, id) {
@@ -75,8 +88,8 @@ function prepItem(item, id) {
   return item;
 }
 
-export function prepAndSortByStars(items) {
-  return sortBy(map(items, prepItem), [starred, starCount, stableRandom]);
+function prepAndSortByStars(items) {
+  return sortByStars(map(items, prepItem));
 }
 
 export function pointMapsToLists(pointMaps) {
@@ -102,6 +115,9 @@ export var DwdUtilsMixin = {
     },
   },
   methods: {
+    lookupClaim: function (claimId) {
+      return this.$store.state.claims[claimId];
+    },
     topicUrl: function (topicId) {
       return '/topic/' + topicId;
     },

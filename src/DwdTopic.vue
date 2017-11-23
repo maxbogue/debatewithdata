@@ -46,7 +46,7 @@ import Drawer from './Drawer.vue';
 import DwdComments from './DwdComments.vue';
 import DwdLoader from './DwdLoader.vue';
 import DwdStar from './DwdStar.vue';
-import { prepAndSortByStars } from './utils';
+import { sortByStars } from './utils';
 
 export default {
   components: {
@@ -72,8 +72,7 @@ export default {
       if (!this.topic) {
         return [];
       }
-      let claims = map(this.topic.claims, (id) => this.$store.state.claims[id]);
-      return prepAndSortByStars(claims);
+      return sortByStars(map(this.topic.claimIds, this.lookupClaim));
     },
   },
   methods: {

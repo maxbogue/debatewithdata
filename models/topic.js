@@ -70,7 +70,7 @@ export default function (sequelize, DataTypes) {
         blobHash: blob.hash,
       }, { transaction });
 
-      await topicRev.addClaims(data.claims, { transaction });
+      await topicRev.addClaims(data.claimIds, { transaction });
       await topic.setHead(topicRev, { transaction });
       return topicRev;
     };
@@ -96,7 +96,7 @@ export default function (sequelize, DataTypes) {
         blobHash: blob.hash,
       }, { transaction });
 
-      await topicRev.addClaims(data.claims, { transaction });
+      await topicRev.addClaims(data.claimIds, { transaction });
       await topic.setHead(topicRev, { transaction });
       return topicRev;
     };
@@ -140,7 +140,7 @@ export default function (sequelize, DataTypes) {
         rev: this.headId,
         text: this.head.blob.text,
         title: this.head.title,
-        claims: map(this.head.claims, (claim) => claim.id),
+        claimIds: map(this.head.claims, (claim) => claim.id),
         star: await this.toStarData(user),
         commentCount: await this.countComments(),
       };

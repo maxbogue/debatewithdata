@@ -2,7 +2,7 @@
 <div>
   <h1 class="center">Topics</h1>
   <div class="center">
-    <router-link :to="addUrl" class="add blue-dark">New Topic</router-link>
+    <router-link :to="addUrl" class="add pink-dark">New Topic</router-link>
   </div>
   <dwd-loader ref="loader"></dwd-loader>
   <template v-if="topicsLoaded">
@@ -20,7 +20,7 @@
 import { mapState } from 'vuex';
 
 import DwdLoader from './DwdLoader.vue';
-import { prepAndSortByStars } from './utils';
+import { sortByStars } from './utils';
 
 export default {
   components: {
@@ -32,7 +32,7 @@ export default {
       'user',
     ]),
     topics: function () {
-      return prepAndSortByStars(this.$store.state.topics);
+      return sortByStars(this.$store.state.topics);
     },
     addUrl: function () {
       if (this.user) {
