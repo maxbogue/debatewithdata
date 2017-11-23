@@ -19,6 +19,13 @@
     <h2>Recent Changes</h2>
     <ul>
       <li>
+        <strong>2017-11-23:</strong> Introduce Topics, a better way to browse
+        for claims of interest.
+      </li>
+      <li>
+        <strong>2017-11-20:</strong> Added comment counts to the UI.
+      </li>
+      <li>
         <strong>2017-11-16:</strong> Big UI/UX change to move the controls and
         sub-points inside a slide-down drawer to keep the UI cleaner and allow
         more information along with the controls in the near future.
@@ -65,39 +72,24 @@
   <div class="block purple">
     <h2>Coming Improvements</h2>
 
-    <h3>Topics</h3>
+    <h3>History</h3>
     <p>
-      A new data type called topics will serve as a browsable way of getting to
-      key claims.
+      Claims and sources currently store revision history as they are changed,
+      but there is no way to view it. There will be:
     </p>
     <ul>
-      <li>Each topic item would represent a political topic.</li>
+      <li>A history view that shows all the changes that have been made.</li>
       <li>
-        Topics will link key claims representing the debate surrounding the
-        topic.
+        A revision view that shows the differences between that revision and the
+        previous one.
       </li>
-      <li>
-        Might allow context links (e.g. Wikipedia articles) for further
-        information?
-      </li>
-      <li>Might eventually require a higher trust tier to edit.</li>
     </ul>
 
-    <h3>Comments</h3>
+    <h3>Notifications</h3>
     <p>
-      There is rudimentary comment support for claims and points, but it
-      currently lacks any sort of notifcation mechanism or indicator that there
-      are comments. This feature was intended to function similarly to a talk
-      page, so it may need to be completely redone at some point. For now it
-      should:
+      There needs to be some sort of notification system for when people edit
+      or comment on things that you've starred or edited yourself.
     </p>
-    <ul>
-      <li>Indicate whether there are any comments on the icon.</li>
-      <li>
-        Maybe notify interested parties (people who have starred, edited, or
-        commented on the item).
-      </li>
-    </ul>
 
     <h3>Search</h3>
     <p>It&#39;s difficult to find things right now. There will be:</p>
@@ -112,20 +104,7 @@
       </li>
     </ul>
 
-    <h3>History</h3>
-    <p>
-      Claims and sources currently store revision history as they are changed,
-      but there is no way to view it. There will be:
-    </p>
-    <ul>
-      <li>A history view that shows all the changes that have been made.</li>
-      <li>
-        A revision view that shows the differences between that revision and the
-        previous one.
-      </li>
-    </ul>
-
-    <h3>Enforcing Sources</h3>
+    <h3>Encouraging Sources</h3>
     <p>
       Whether or not a claim needs more sources is unclear right now. There
       should either be a visual indication of how well-sourced a claim is, or a
