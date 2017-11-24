@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+
+// A simple script to generate secret keys and add them to local config files.
+
+const crypto = require('crypto');
+const fs = require('fs');
+
+const CONFIG_FILES = [
+  'config/local-development.json',
+  'config/local-production.json',
+  'config/local-test.json',
+];
+
+try {
+  fs.accessSync('./config');
+} catch (e) {
+  console.error('Couldn\'t find config directory; run from root of repo.');
+  process.exit();
+}
+
+for (let cf of CONFIG_FILES) {
+  let data = {};
+  if (fs.existsSync(cf)) {
+    data = JSON.parse(fs.readFileSync(cf, 'utf-8'));
+  }
+  if (data.secretKey) {
+    console.log(cf + ' already has a secretKey, skipping...');
+    continue;
+  }
+  data.secretKey = crypto.randomBytes(40).toString('base64');
+  fs.writeFileSync(cf, JSON.stringify(data, null, 2));
+  console.log('Wrote new secretKey to ' + cf);
+}

@@ -1,0 +1,4 @@
+{
+  "port": 7143,
+  "db": "postgresql://dwd@localhost:5432/dwd"
+}

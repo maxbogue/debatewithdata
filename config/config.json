@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "dwd",
+    "database": "dwd_dev",
+    "host": "127.0.0.1",
+    "dialect": "postgresql",
+    "migrationStorageTableName": "migrations"
+  },
+  "test": {
+    "username": "dwd",
+    "database": "dwd_test",
+    "host": "127.0.0.1",
+    "dialect": "postgresql",
+    "migrationStorageTableName": "migrations"
+  },
+  "production": {
+    "username": "dwd",
+    "database": "dwd",
+    "host": "127.0.0.1",
+    "dialect": "postgresql",
+    "migrationStorageTableName": "migrations"
+  }
+}
