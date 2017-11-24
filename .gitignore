@@ -1,4 +1,4 @@
-config/local-*.json
+config/local*.json
 node_modules/
 static/
 package-lock.json

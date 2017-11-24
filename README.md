@@ -5,33 +5,44 @@ around issues.
 
 ## Installation
 
+Install node modules:
+
+    npm i
+
 Create the database:
 
+    # linux:
     sudo -u postgres psql
+    # or on mac:
+    psql -d postgres
     CREATE DATABASE dwd;
+    CREATE DATABASE dwd_dev;
+    CREATE DATABASE dwd_test;
     CREATE USER dwd;
     GRANT ALL PRIVILEGES ON DATABASE dwd TO dwd;
+    GRANT ALL PRIVILEGES ON DATABASE dwd_dev TO dwd;
+    GRANT ALL PRIVILEGES ON DATABASE dwd_test TO dwd;
     \password dwd
     \q
-    sudo -u postgres psql dwd < unique_short_id.sql
 
-Now you must set the [`SQLALCHEMY_DATABASE_URI`][db-config] variable in your
-`local_settings.cfg` file to match the credentials you set for your database.
-Then you can set up the server:
+Now create a ~/.pgpass file with the form
 
-    python3 -m venv env
-    echo '\nexport FLASK_APP=routes.py\nexport PYTHONPATH=$PYTHONPATH:/var/www' >> env/bin/activate
-    . env/bin/activate
-    pip install --upgrade pip setuptools
-    pip install flask flask-sqlalchemy flask-migrate psycopg2 bcrypt pre-commit
-    pre-commit install
-    flask db init
-    flask db upgrade
-    flask run
+    # hostname:port:database:username:password
+    *:*:*:dwd:<your_password_here>
 
-And finally build the client code:
+Now generate secret keys and migrate your databases:
 
-    npm install
-    webpack --watch --progress
+    ./bin/generate_keys
+    sequelize db:migrate --env test
+    sequelize db:migrate --env development
+    sequelize db:migrate --env production
 
-[db-config]: http://flask-sqlalchemy.pocoo.org/2.2/config/
+Finally, set up your smtpConfig in config/local.json and you're ready to go:
+
+    npm run dev
+
+in one terminal and
+
+    webpack --progress --watch
+
+in another to get the dev server working at localhost:7142.
