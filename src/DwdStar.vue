@@ -22,7 +22,7 @@ export default {
     classes: function () {
       return [
         this.star.starred ? 'glyphicon-star' : 'glyphicon-star-empty',
-        this.user ? 'click' : this.$style.disabled,
+        this.user ? 'click' : '',
       ];
     },
   },
@@ -44,9 +44,6 @@ export default {
 .star
   display: flex
   align-items: center
-
-.disabled
-  color: rgba(0, 0, 0, 0.1)
 
 .count
   font-size: 0.8em

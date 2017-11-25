@@ -43,17 +43,17 @@ textarea:focus
   box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.75)
 
 a
-  color: #222
+  color: $text-dark
   text-decoration: none
 
   &:hover
-    color: #222
+    color: $text-dark
 
 p a
-  color: #337ab7
+  color: $blue-dark-primary
 
   &:visited, &:focus
-    color: #337ab7
+    color: $blue-dark-primary
 
 .container.narrow
   max-width: 700px
@@ -97,7 +97,7 @@ p a
   font-family: "Roboto Mono",Menlo,Monaco,Consolas,"Courier New",monospace
 
 .click:hover
-  color: #aaa
+  color: $text-light-accent
   cursor: pointer
   text-decoration: none
 
@@ -107,7 +107,7 @@ p a
 
 a.add
   border-radius: 3px
-  color: #fff
+  color: $text-light
   display: inline-block
   margin-top: 8px
   padding: 8px 16px
@@ -135,7 +135,7 @@ a.add
 
     .bubble.click:hover
       background-color: $accent-color
-      color: #000
+      color: $text-dark
 
 .topic
   +t1($pink-primary, $pink-accent)
@@ -169,14 +169,14 @@ a.add
   max-height: 500px
 
 .tag
-  background-color: rgba(0, 0, 0, 0.5)
+  background-color: $transparent-light
   border-radius: 4px
-  color: #fff
+  color: $text-light
   font-size: 0.65em
   padding: 2px 4px
 
 .link-icon
-  color: rgba(0, 0, 0, 0.4)
+  color: $transparent-light
   float: right
   padding-left: 5px
 

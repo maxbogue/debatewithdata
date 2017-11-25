@@ -11,10 +11,10 @@
               class="btn btn-primary"
               :disabled="!note">New Invite</button>
     </form>
-    <ul class="invites mono">
+    <ul :class="$style.invites" class="mono">
       <li v-for="invite in sortedInvites" :key="invite.code">
         <template v-if="invite.user">
-          <span class="used">{{ invite.code }}</span>
+          <span :class="$style.used">{{ invite.code }}</span>
           <br><span>{{ invite.note }} =&gt; {{ invite.user }}</span>
         </template>
         <template v-else>
@@ -64,7 +64,9 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
+@import "style/constants"
+
 .invites
   list-style: none
   margin-top: 10px
@@ -74,6 +76,6 @@ export default {
     padding: 4px
 
   .used
-    color: #aaa
+    color: $text-dark-accent
     text-decoration: line-through
 </style>

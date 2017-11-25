@@ -1,12 +1,13 @@
 <template>
-<div class="comments">
+<div :class="$style.comments">
   <template v-if="loaded">
     <ul>
       <li v-for="comment in comments" class="flex-row" :key="comment.id">
         <div><strong>{{ comment.author }}</strong>: {{ comment.text }}</div>
-        <div class="timestamp">{{ comment.created | timestamp }}</div>
+        <div :class="$style.timestamp">{{ comment.created | timestamp }}</div>
         <div v-if="user && comment.author === user.username"
-              class="delete click glyphicon glyphicon-trash"
+              :class="$style.delete"
+              class="click glyphicon glyphicon-trash"
               aria-hidden="true"
               @click="deleteComment(comment.id)"></div>
       </li>
@@ -93,7 +94,9 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
+@import "style/constants"
+
 .comments
   font-size: 12px
   padding: 1em
@@ -122,5 +125,5 @@ export default {
     padding: 2px 0.5em
 
 .timestamp
-  color: #aaa
+  color: $text-light-accent
 </style>

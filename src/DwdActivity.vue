@@ -47,6 +47,8 @@ export default {
 </script>
 
 <style lang="sass" module>
+@import "style/constants"
+
 .activity td
   padding: 0 10px
 
@@ -54,7 +56,7 @@ export default {
   padding-left: 0
 
 .timestamp
-  color: #aaa
+  color: $text-dark-accent
 
 .username, .link
   font-weight: bold

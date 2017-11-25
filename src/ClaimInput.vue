@@ -116,17 +116,19 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import "style/constants"
+
 .input > :not(:first-child)
   margin-top: 8px
 
 .valid
-  color: #757575
+  color: $green-dark-primary
 
 .warning
-  color: #FFD600
+  color: $amber-dark-primary
 
 .invalid
-  color: #F44336
+  color: $red-dark-primary
 
 .loader
   align-items: center
@@ -139,10 +141,10 @@ export default {
     transform-origin: left
 
   > div > div
-    background-color: #666
+    background-color: $loader-color
     border: none
 
 .error
-  color: red
+  color: $red-dark-primary
   font-size: 1.1em
 </style>

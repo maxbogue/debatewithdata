@@ -15,7 +15,7 @@
 
   .bubble.click:hover
     background-color: $purple-accent
-    color: #000
+    color: $text-dark
 
 .against
   border-left: $accent-border-width solid $amber-accent
@@ -25,11 +25,11 @@
 
   .bubble.click:hover
     background-color: $amber-accent
-    color: #000
+    color: $text-dark
 
 .info
   align-items: center
-  color: rgba(0, 0, 0, 0.4)
+  color: $transparent-light
   display: flex
   line-height: 1
   padding: 0.5em
@@ -42,10 +42,10 @@
     font-size: 0.8em
 
   a, .click
-    color: rgba(0, 0, 0, 0.4)
+    color: $transparent-light
 
     &:hover
-      color: rgba(0, 0, 0, 0.9)
+      color: $transparent-dark
 
 .hint
   display: block

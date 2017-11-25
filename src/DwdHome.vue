@@ -12,7 +12,7 @@
       <li>Dive into the sources to see the data behind each side.</li>
     </ul>
   </div>
-  <div class="block red">
+  <div class="block pink">
     <h3>Talk</h3>
     <ul>
       <li>If you find yourself in a discussion, find the claim that best

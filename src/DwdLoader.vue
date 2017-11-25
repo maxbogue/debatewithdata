@@ -42,6 +42,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import "style/constants"
+
 .loader
   align-items: center
   display: flex
@@ -50,11 +52,11 @@ export default {
   justify-content: center
 
   > div > div
-    background-color: #666
+    background-color: $loader-color
     border: none
 
   &.error
-    color: red
+    color: $red-dark-primary
     font-size: 1.1em
     text-align: center
 </style>

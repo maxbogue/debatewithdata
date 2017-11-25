@@ -1,5 +1,5 @@
 <template>
-<div class="flag">
+<div :class="$style.flag">
   <span>Warning:</span>
   <a :href="'/guide#' + flag">{{ data.tldr }}</a>
 </div>
@@ -18,12 +18,14 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
+@import "style/constants"
+
 .flag
   font-size: 12px
 
   span
-    color: #D32F2F
+    color: $red-dark-primary
     text-decoration: underline
 
   a:hover

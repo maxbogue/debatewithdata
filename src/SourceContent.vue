@@ -30,13 +30,15 @@ export default {
 </script>
 
 <style lang="sass" module>
+@import "style/constants"
+
 .metadata
-  color: #666
+  color: $text-dark-accent
   font-size: 0.8em
 
   a
-    color: #666
+    color: $text-dark-accent
 
   strong
-    color: #000
+    color: $text-dark
 </style>

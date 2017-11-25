@@ -3,9 +3,9 @@
   <span class="dropdown-toggle click glyphicon glyphicon-flag"
         aria-hidden="true"
         @click="toggleDropdown"></span>
-  <ul ref="flags" class="flags dropdown-content">
+  <ul ref="flags" :class="$style.flags" class="dropdown-content">
     <li v-for="(v, k) in flags"
-        :class="{ selected: k === flag }"
+        :class="{ [$style.selected]: k === flag }"
         :key="k"
         @click="selectFlag(k)">{{ v.name }}</li>
   </ul>
@@ -33,10 +33,13 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
+@import "style/constants"
+
 .flags
-  background-color: #fefefe
-  border: 1px solid #666
+  background-color: $background-light
+  border: 1px solid $background-dark
+  color: $text-dark
   padding: 0
 
   li
@@ -46,10 +49,12 @@ export default {
     padding: 4px
 
     &:hover
-      background-color: #EF9A9A
-      color: #212121
+      background-color: $red-accent
 
-  .selected
-    background-color: #D32F2F
-    color: #fff
+    &.selected
+      background-color: $red-dark-primary
+      color: $text-light
+
+    &:hover.selected
+      background-color: $red-dark-accent
 </style>

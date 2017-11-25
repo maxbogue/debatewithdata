@@ -102,13 +102,15 @@ export default {
 </script>
 
 <style lang="sass" module>
+@import "style/constants"
+
 .anchor
-  color: #aaa
+  color: $text-light-accent
   font-size: 0.75em
   visibility: hidden
 
   &:hover
-    color: #000
+    color: $text-dark
     text-decoration: none
 
 h3:hover .anchor

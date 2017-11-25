@@ -215,8 +215,8 @@ export default {
 @import "style/constants"
 
 .type
-  background-color: #fff
-  border: 1px solid #aaa
+  background-color: $background-light
+  border: 1px solid $background-dark
   border-radius: 5px
   font-size: 10px
   margin-top: 4px
@@ -229,11 +229,11 @@ export default {
     margin: 0
 
 .type:hover
-  background-color: #eee
+  background-color: $background-light-accent
   cursor: pointer
 
 .type.selected
   background-color: $green-dark-primary
   border-color: $green-dark-accent
-  color: #fff
+  color: $text-light
 </style>
