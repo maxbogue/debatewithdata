@@ -39,7 +39,7 @@ router.delete('/:id', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Topic.apiDelete(req.params.id, req.user);
-  let data = Topic.apiGet(rev.topicId, req.user);
+  let data = await Topic.apiGet(rev.topicId, req.user);
   res.json(data);
 });
 

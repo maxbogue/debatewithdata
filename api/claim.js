@@ -45,7 +45,7 @@ router.delete('/:id', async function (req, res) {
     throw new AuthError();
   }
   let rev = await Claim.apiDelete(req.params.id, req.user);
-  let data = Claim.apiGet(rev.claimId, req.user);
+  let data = await Claim.apiGet(rev.claimId, req.user);
   res.json(data);
 });
 
