@@ -1,5 +1,5 @@
 <template>
-<div class="input">
+<div :class="$style.input">
   <textarea rows="1"
             autocomplete="off"
             placeholder="12-letter claim ID"
@@ -8,14 +8,14 @@
             v-auto-resize
             class="mono"
             :class="[inputClass]" />
-  <div v-if="loading" class="loader">
+  <div v-if="loading" :class="$style.loader">
     <div class="ball-pulse-sync">
       <div></div>
       <div></div>
       <div></div>
     </div>
   </div>
-  <div v-if="error" class="loader error">{{ error }}</div>
+  <div v-if="error" :class="$style.loader" class="error">{{ error }}</div>
   <claim-content v-if="claim"
                  :claim="claim"
                  :trail="[]"></claim-content>
@@ -67,7 +67,7 @@ export default {
           if (this.id === newId) {
             this.error = err;
             this.loading = false;
-            this.inputClass = 'invalid';
+            this.inputClass = 'error';
           }
         },
       };
@@ -103,32 +103,23 @@ export default {
           loader: this.makeLoader(newId),
         }).then(() => {
           if (this.id === newId) {
-            this.inputClass = 'valid';
+            this.inputClass = 'success';
             this.updateInputError();
           }
         }).catch(() => {});
       } else if (this.claim) {
-        this.inputClass = 'valid';
+        this.inputClass = 'success';
       }
     },
   },
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
 @import "style/constants"
 
 .input > :not(:first-child)
   margin-top: 8px
-
-.valid
-  color: $green-dark-primary
-
-.warning
-  color: $amber-dark-primary
-
-.invalid
-  color: $red-dark-primary
 
 .loader
   align-items: center
@@ -143,8 +134,4 @@ export default {
   > div > div
     background-color: $loader-color
     border: none
-
-.error
-  color: $red-dark-primary
-  font-size: 1.1em
 </style>

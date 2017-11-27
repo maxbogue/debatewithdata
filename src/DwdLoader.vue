@@ -1,15 +1,15 @@
 <template>
-<div v-if="loading" class="loader">
+<div v-if="loading" :class="$style.loader">
   <div class="ball-pulse-sync">
     <div></div>
     <div></div>
     <div></div>
   </div>
 </div>
-<div v-else-if="error" class="loader error">
+<div v-else-if="error" :class="[$style.loader, $style.error]">
   {{ error }}
 </div>
-<div v-else-if="fill" class="loader">
+<div v-else-if="fill" :class="$style.loader">
 </div>
 <div v-else></div>
 </template>
@@ -41,7 +41,7 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
 @import "style/constants"
 
 .loader

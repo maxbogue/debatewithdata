@@ -1,5 +1,5 @@
 <template>
-<div v-if="items.length > 0" class="trail">
+<div v-if="items.length > 0" :class="$style.trail">
   <template v-for="[item, isFor, url] in items">
     <router-link v-if="url"
                  :class="itemClass(isFor)"
@@ -102,11 +102,11 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
 .trail
   margin-bottom: -8px
 
-  .bubble
+  \:global(.bubble)
     display: block
     margin: 8px auto 0
     padding: 8px

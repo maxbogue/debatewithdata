@@ -1,5 +1,5 @@
 <template>
-<div class="center home">
+<div :class="$style.home" class="center">
   <h1>DebateWithData</h1>
   <h2>A crowdsourced reference for the world's discussions.</h2>
   <hr></hr>
@@ -36,7 +36,7 @@
 </div>
 </template>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
 .home
   h1
     margin: 20px 0 8px

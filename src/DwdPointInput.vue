@@ -1,5 +1,5 @@
 <template>
-<div class="input">
+<div :class="$style.input">
   <label v-if="!point.type" class="hint">
     Add a point {{ isFor | toSideString }} the claim.
   </label>
@@ -21,14 +21,14 @@
               v-model="input2"
               v-auto-resize />
   </template>
-  <div v-if="loading" class="loader">
+  <div v-if="loading" :class="$style.loader">
     <div class="ball-pulse-sync">
       <div></div>
       <div></div>
       <div></div>
     </div>
   </div>
-  <div v-if="error" class="loader error">{{ error }}</div>
+  <div v-if="error" :class="$style.loader" class="error">{{ error }}</div>
   <point-content v-if="claim || source"
                  :point="point"
                  :trail="[]"></point-content>
@@ -118,7 +118,7 @@ export default {
           if (this.id === newId) {
             this.error = err;
             this.loading = false;
-            this.inputClass = 'mono invalid';
+            this.inputClass = 'mono error';
           }
         },
       };
@@ -153,32 +153,23 @@ export default {
           loader: this.makeLoader(newId),
         }).then(() => {
           if (this.id === newId) {
-            this.inputClass = 'mono valid';
+            this.inputClass = 'mono success';
             this.update();
           }
         }).catch(() => {});
       } else if (this.claim || this.source) {
-        this.inputClass = 'mono valid';
+        this.inputClass = 'mono success';
       }
     },
   },
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
 @import "style/constants"
 
 .input > :not(:first-child)
   margin-top: 8px
-
-.valid
-  color: $green-dark-primary
-
-.warning
-  color: $amber-dark-primary
-
-.invalid
-  color: $red-dark-primary
 
 .loader
   align-items: center
@@ -193,8 +184,4 @@ export default {
   > div > div
     background-color: $loader-color
     border: none
-
-.error
-  color: $red-dark-primary
-  font-size: 1.1em
 </style>

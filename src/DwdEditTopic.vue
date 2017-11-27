@@ -48,7 +48,7 @@
     <div v-if="id" class="col-xs-12 center">
       <delete-button noun="Claim" @delete="remove"></delete-button>
     </div>
-    <div class="col-xs-12 center fixed-bottom blue">
+    <div :class="$style.fixedBottom" class="col-xs-12 center blue">
       <button type="submit" class="btn btn-primary">Submit</button>
       <button type="button"
               class="btn btn-default"
@@ -163,8 +163,8 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
-.fixed-bottom
+<style lang="sass" module>
+.fixedBottom
   bottom: 0
   left: 50%
   margin-left: -150px

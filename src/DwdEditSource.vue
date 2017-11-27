@@ -26,26 +26,22 @@
                     v-model="text"></textarea>
           <label class="hint">Classify the type of source.</label>
           <div>
-            <div class="type"
-                 :class="{selected: type === 'misc'}"
+            <div :class="typeClass('misc')"
                  @click="type = 'misc'">
               <h2>Miscellaneous</h2>
               <div>A source that does not fall under any other category.</div>
             </div>
-            <div class="type"
-                 :class="{selected: type === 'research'}"
+            <div :class="typeClass('research')"
                  @click="type = 'research'">
               <h2>Research</h2>
               <div>Scientific research published by an institution.</div>
             </div>
-            <div class="type"
-                 :class="{selected: type === 'article'}"
+            <div :class="typeClass('article')"
                  @click="type = 'article'">
               <h2>Article</h2>
               <div>A news article reporting on something that happened.</div>
             </div>
-            <div class="type"
-                 :class="{selected: type === 'authority'}"
+            <div :class="typeClass('authority')"
                  @click="type = 'authority'">
               <h2>Authority</h2>
               <div>An authoritative source for the data.</div>
@@ -132,6 +128,12 @@ export default {
     },
   },
   methods: {
+    typeClass: function (type) {
+      return {
+        [this.$style.type]: true,
+        [this.$style.selected]: type === this.type,
+      };
+    },
     commit: function () {
       let action = 'addSource';
       let source = {
@@ -211,7 +213,7 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
 @import "style/constants"
 
 .type

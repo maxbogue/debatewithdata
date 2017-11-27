@@ -1,5 +1,5 @@
 <template>
-<div class="account center">
+<div :class="$style.account" class="center">
   <div><span>user</span><span>{{ user.username }}</span></div>
   <div><span>created</span><span>{{ created }}</span></div>
   <div><span>email</span><span>{{ user.email }}</span></div>
@@ -20,7 +20,7 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass" module>
 .account
   margin-top: 50px
 
