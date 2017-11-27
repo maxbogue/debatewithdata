@@ -7,9 +7,9 @@
             autocomplete="off"
             placeholder="Text, URL, or 12-letter ID"
             ref="input1"
+            :class="[inputClass]"
             v-model="input1"
-            v-auto-resize
-            :class="[inputClass]" />
+            v-auto-resize></textarea>
   <template v-if="isUrl">
     <label class="hint">
       URL detected; describe the data this new source provides.
@@ -19,7 +19,7 @@
               placeholder="source description"
               ref="input2"
               v-model="input2"
-              v-auto-resize />
+              v-auto-resize></textarea>
   </template>
   <div v-if="loading" :class="$style.loader">
     <div class="ball-pulse-sync">

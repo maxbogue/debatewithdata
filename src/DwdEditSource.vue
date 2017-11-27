@@ -13,8 +13,9 @@
                     autocomplete="off"
                     placeholder="url"
                     ref="url"
+                    :class="{invalid: !validUrl}"
                     v-model="url"
-                    :class="{invalid: !validUrl}"></textarea>
+                    v-auto-resize></textarea>
           <label for="text" class="hint">
             Describe the data the link provides.
           </label>
@@ -23,7 +24,8 @@
                     required
                     autocomplete="off"
                     placeholder="description"
-                    v-model="text"></textarea>
+                    v-model="text"
+                    v-auto-resize></textarea>
           <label class="hint">Classify the type of source.</label>
           <div>
             <div :class="typeClass('misc')"
@@ -218,8 +220,8 @@ export default {
 
 .type
   background-color: $background-light
-  border: 1px solid $background-dark
-  border-radius: 5px
+  border: 1px solid $text-light-accent
+  border-radius: 3px
   font-size: 10px
   margin-top: 4px
   padding: 4px

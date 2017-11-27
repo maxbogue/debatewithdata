@@ -4,10 +4,10 @@
             autocomplete="off"
             placeholder="12-letter claim ID"
             ref="input1"
-            v-model="input1"
-            v-auto-resize
             class="mono"
-            :class="[inputClass]" />
+            :class="[inputClass]"
+            v-model="input1"
+            v-auto-resize></textarea>
   <div v-if="loading" :class="$style.loader">
     <div class="ball-pulse-sync">
       <div></div>
