@@ -1,4 +1,5 @@
 import axios from 'axios';
+import clone from 'lodash/clone';
 import cloneDeep from 'lodash/cloneDeep';
 import forOwn from 'lodash/forOwn';
 import Vue from 'vue';
@@ -7,6 +8,33 @@ import Vuex from 'vuex';
 import { walk } from './utils';
 
 Vue.use(Vuex);
+
+function setTopicDepth(topics, id, depth) {
+  let topic = topics[id];
+  if (!topic) {
+    console.warn('Broken sub-topic link: ' + id);
+    return;
+  }
+  if (topic.depth && topic.depth <= depth) {
+    return;
+  }
+  topic.depth = depth;
+  for (let subTopicId of topic.subTopicIds) {
+    setTopicDepth(topics, subTopicId, depth + 1);
+  }
+}
+
+function setTopicDepths(topics) {
+  let rootTopics = clone(topics);
+  forOwn(topics, (topic) => {
+    for (let subTopicId of topic.subTopicIds) {
+      delete rootTopics[subTopicId];
+    }
+  });
+  forOwn(rootTopics, (topic) => {
+    setTopicDepth(topics, topic.id, 1);
+  });
+}
 
 // Whether the claim for claimId in s1 should be written to s2.
 // This is the case if:
@@ -58,6 +86,7 @@ export default new Vuex.Store({
           topic.id = id;
           Vue.set(state.topics, id, topic);
         });
+        setTopicDepths(state.topics);
       }
       if (data.claims) {
         forOwn(data.claims, (claim, id) => {

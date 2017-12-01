@@ -2,7 +2,7 @@
 <div :class="$style.input">
   <textarea rows="1"
             autocomplete="off"
-            placeholder="12-letter claim ID"
+            placeholder="sub-topic ID"
             ref="input1"
             class="mono"
             :class="[inputClass]"
@@ -16,23 +16,14 @@
     </div>
   </div>
   <div v-if="error" :class="$style.loader" class="error">{{ error }}</div>
-  <claim-content v-if="claim"
-                 :claim="claim"
-                 :trail="[]"></claim-content>
+  <div v-if="topic">{{ topic.title }}</div>
 </div>
 </template>
 
 <script>
 import 'loaders.css/loaders.min.css';
 
-import ClaimContent from './ClaimContent.vue';
-
-const ID_REGEX = /^[0-9a-f]{12}$/;
-
 export default {
-  components: {
-    ClaimContent,
-  },
   props: ['id'],
   data: () => ({
     input1: '',
@@ -43,15 +34,15 @@ export default {
     initialized: false,
   }),
   computed: {
-    claim: function () {
-      return this.lookupClaim(this.id);
+    topic: function () {
+      return this.lookupTopic(this.id);
     },
   },
   methods: {
     updateInputError: function () {
       let error = '';
-      if (this.id && !this.claim) {
-        error = 'Invalid claim ID';
+      if (this.id && !this.topic) {
+        error = 'Invalid topic ID';
       }
       this.$refs.input1.setCustomValidity(error);
     },
@@ -92,13 +83,9 @@ export default {
       this.inputClass = '';
       this.updateInputError();
 
-      if (!ID_REGEX.test(newId)) {
-        return;
-      }
-
       if (newId && !this.claim) {
         this.inputClass = 'warning';
-        this.$store.dispatch('getClaim', {
+        this.$store.dispatch('getTopic', {
           id: newId,
           loader: this.makeLoader(newId),
         }).then(() => {

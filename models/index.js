@@ -17,6 +17,7 @@ import makeStar from './star';
 import makeTopic from './topic';
 import makeTopicClaim from './topic_claim';
 import makeTopicRev from './topic_rev';
+import makeTopicTopic from './topic_topic';
 import makeUser from './user';
 
 export const sequelize = new Sequelize(config.get('db'), {
@@ -50,6 +51,7 @@ export const Star = makeModel('Star', makeStar);
 export const Topic = makeModel('Topic', makeTopic);
 export const TopicClaim = makeModel('TopicClaim', makeTopicClaim);
 export const TopicRev = makeModel('TopicRev', makeTopicRev);
+export const TopicTopic = makeModel('TopicTopic', makeTopicTopic);
 export const User = makeModel('User', makeUser);
 
 forOwn(models, (model) => {

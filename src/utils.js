@@ -116,7 +116,16 @@ export var DwdUtilsMixin = {
   },
   methods: {
     lookupClaim: function (claimId) {
-      return this.$store.state.claims[claimId];
+      if (!claimId) {
+        return null;
+      }
+      return this.$store.state.claims[claimId] || null;
+    },
+    lookupTopic: function (topicId) {
+      if (!topicId) {
+        return null;
+      }
+      return this.$store.state.topics[topicId] || null;
     },
     topicUrl: function (topicId) {
       return '/topic/' + topicId;

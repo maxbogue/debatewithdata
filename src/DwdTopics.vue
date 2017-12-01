@@ -6,7 +6,7 @@
   </div>
   <dwd-loader ref="loader"></dwd-loader>
   <template v-if="topicsLoaded">
-    <router-link v-for="topic in topics"
+    <router-link v-for="topic in rootTopics"
                  class="topic block"
                  :to="topicUrl(topic.id)"
                  :key="topic.id">
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import pickBy from 'lodash/pickBy';
 import { mapState } from 'vuex';
 
 import DwdLoader from './DwdLoader.vue';
@@ -28,11 +29,12 @@ export default {
   },
   computed: {
     ...mapState([
+      'topics',
       'topicsLoaded',
       'user',
     ]),
-    topics: function () {
-      return sortByStars(this.$store.state.topics);
+    rootTopics: function () {
+      return sortByStars(pickBy(this.topics, (topic) => topic.depth === 1));
     },
     addUrl: function () {
       if (this.user) {

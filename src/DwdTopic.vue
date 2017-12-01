@@ -24,13 +24,24 @@
                         :url="'/api/topic/' + id"></dwd-comments>
         </drawer>
       </div>
-      <h3>Key Claims</h3>
-      <router-link v-for="claim in claims"
-                   class="claim block"
-                   :to="claimUrl(claim.id)"
-                   :key="claim.id">
-          <claim-content :claim="claim"></claim-content>
-      </router-link>
+      <template v-if="subTopics.length > 0">
+        <h3>Sub-Topics</h3>
+        <router-link v-for="subTopic in subTopics"
+                    class="topic block"
+                    :to="topicUrl(subTopic.id)"
+                    :key="subTopic.id">
+            {{ subTopic.title }}
+        </router-link>
+      </template>
+      <template v-if="claims.length > 0">
+        <h3>Key Claims</h3>
+        <router-link v-for="claim in claims"
+                    class="claim block"
+                    :to="claimUrl(claim.id)"
+                    :key="claim.id">
+            <claim-content :claim="claim"></claim-content>
+        </router-link>
+      </template>
     </div>
   </div>
   <dwd-loader ref="loader"></dwd-loader>
@@ -46,6 +57,7 @@ import Drawer from './Drawer.vue';
 import DwdComments from './DwdComments.vue';
 import DwdLoader from './DwdLoader.vue';
 import DwdStar from './DwdStar.vue';
+import TopicInput from './TopicInput.vue';
 import { sortByStars } from './utils';
 
 export default {
@@ -56,6 +68,7 @@ export default {
     DwdComments,
     DwdLoader,
     DwdStar,
+    TopicInput,
   },
   data: () => ({
     showComments: false,
@@ -67,6 +80,12 @@ export default {
     },
     topic: function () {
       return this.$store.state.topics[this.id] || null;
+    },
+    subTopics: function () {
+      if (!this.topic) {
+        return [];
+      }
+      return sortByStars(map(this.topic.subTopicIds, this.lookupTopic));
     },
     claims: function () {
       if (!this.topic) {

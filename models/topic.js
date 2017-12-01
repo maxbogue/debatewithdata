@@ -45,11 +45,11 @@ export default function (sequelize, DataTypes) {
   };
 
   Topic.postAssociate = function (models) {
-    Topic.INCLUDE = function () {
+    Topic.INCLUDE = function (n) {
       return {
         include: [{
           association: Topic.Head,
-          ...models.TopicRev.INCLUDE(),
+          ...models.TopicRev.INCLUDE(n),
         }],
       };
     };
@@ -71,6 +71,7 @@ export default function (sequelize, DataTypes) {
       }, { transaction });
 
       await topicRev.addClaims(data.claimIds, { transaction });
+      await topicRev.addSubTopics(data.subTopicIds, { transaction });
       await topic.setHead(topicRev, { transaction });
       return topicRev;
     };
@@ -82,7 +83,7 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      const topic = await Topic.findById(id, Topic.INCLUDE());
+      const topic = await Topic.findById(id, Topic.INCLUDE(3));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
@@ -97,6 +98,7 @@ export default function (sequelize, DataTypes) {
       }, { transaction });
 
       await topicRev.addClaims(data.claimIds, { transaction });
+      await topicRev.addSubTopics(data.subTopicIds, { transaction });
       await topic.setHead(topicRev, { transaction });
       return topicRev;
     };
@@ -108,7 +110,7 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      let topic = await Topic.findById(id, Topic.INCLUDE());
+      let topic = await Topic.findById(id, Topic.INCLUDE(3));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
@@ -127,7 +129,7 @@ export default function (sequelize, DataTypes) {
       return topicRev;
     };
 
-    Topic.prototype.fillData = async function (data, user) {
+    Topic.prototype.fillData = async function (data, depth, user) {
       if (this.head.deleted) {
         data.topics[this.id] = {
           rev: this.headId,
@@ -136,14 +138,27 @@ export default function (sequelize, DataTypes) {
         return;
       }
 
+      if (data.topics[this.id] && data.topics[this.id].depth >= depth) {
+        // This topic has already been loaded with at least as much depth.
+        return;
+      }
+
       let thisData = {
         rev: this.headId,
         text: this.head.blob.text,
         title: this.head.title,
         claimIds: map(this.head.claims, (claim) => claim.id),
+        subTopicIds: map(this.head.subTopics, (topic) => topic.id),
+        depth: depth,
         star: await this.toStarData(user),
         commentCount: await this.countComments(),
       };
+
+      if (depth > 1) {
+        for (let subTopic of this.head.subTopics) {
+          await subTopic.fillData(data, depth - 1, user);
+        }
+      }
 
       for (let claim of this.head.claims) {
         await claim.fillData(data, 1, user);
@@ -153,21 +168,21 @@ export default function (sequelize, DataTypes) {
     };
 
     Topic.apiGet = async function (id, user) {
-      let topic = await Topic.findById(id, Topic.INCLUDE());
+      let topic = await Topic.findById(id, Topic.INCLUDE(3));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
       let data = { topics: {}, claims: {} };
-      await topic.fillData(data, user);
+      await topic.fillData(data, 3, user);
       return data;
     };
 
     Topic.apiGetAll = async function (user) {
-      let topics = await Topic.findAll(Topic.INCLUDE());
+      let topics = await Topic.findAll(Topic.INCLUDE(2));
       let data = { topics: {}, claims: {} };
       for (let topic of topics) {
         if (!topic.head.deleted) {
-          await topic.fillData(data, user);
+          await topic.fillData(data, 2, user);
         }
       }
       return data;

@@ -53,14 +53,26 @@ export default function (sequelize, DataTypes) {
       through: models.TopicClaim,
       as: 'claims',
     });
+    TopicRev.SubTopics = TopicRev.belongsToMany(models.Topic, {
+      through: models.TopicTopic,
+      as: 'subTopics',
+      otherKey: 'sub_topic_id',
+      onDelete: 'RESTRICT',
+    });
   };
 
   TopicRev.postAssociate = function (models) {
-    TopicRev.INCLUDE = function () {
+    TopicRev.INCLUDE = function (n) {
       let include = [models.Blob, {
         association: TopicRev.Claims,
         ...models.Claim.INCLUDE(1),
       }];
+      if (n > 1 ) {
+        include.push({
+          association: TopicRev.SubTopics,
+          ...models.Topic.INCLUDE(n - 1),
+        });
+      }
       return { include };
     };
   };

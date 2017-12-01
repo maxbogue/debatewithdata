@@ -39,8 +39,9 @@ describe('Topic', function () {
         title: TITLE,
         text: FOO,
         claimIds: [claimRev.claimId],
+        subTopicIds: [],
       });
-      await topicRev.reload(TopicRev.INCLUDE());
+      await topicRev.reload(TopicRev.INCLUDE(3));
       expect(topicRev.topicId).to.equal(ID);
       expect(topicRev.parentId).to.be.null;
       expect(topicRev.userId).to.equal(user.id);
@@ -48,10 +49,44 @@ describe('Topic', function () {
       expect(topicRev.title).to.equal(TITLE);
       expect(topicRev.blob.text).to.equal(FOO);
       expect(topicRev.claims).to.have.lengthOf(1);
+      expect(topicRev.subTopics).to.have.lengthOf(0);
 
       let claim = topicRev.claims[0];
       expect(claim.id).to.equal(claimRev.claimId);
       expect(claim.head.blob.text).to.equal(BAR);
+
+      let topic = await Topic.findById(topicRev.topicId);
+      expect(topic.headId).to.equal(topicRev.id);
+    });
+
+    it('nested', async function () {
+      let subTopicRev = await Topic.apiCreate(user, {
+        id: ID2,
+        title: TITLE2,
+        text: BAR,
+        claimIds: [],
+        subTopicIds: [],
+      });
+      let topicRev = await Topic.apiCreate(user, {
+        id: ID,
+        title: TITLE,
+        text: FOO,
+        claimIds: [],
+        subTopicIds: [subTopicRev.topicId],
+      });
+      await topicRev.reload(TopicRev.INCLUDE(3));
+      expect(topicRev.topicId).to.equal(ID);
+      expect(topicRev.parentId).to.be.null;
+      expect(topicRev.userId).to.equal(user.id);
+      expect(topicRev.deleted).to.be.false;
+      expect(topicRev.title).to.equal(TITLE);
+      expect(topicRev.blob.text).to.equal(FOO);
+      expect(topicRev.claims).to.have.lengthOf(0);
+      expect(topicRev.subTopics).to.have.lengthOf(1);
+
+      let subTopic = topicRev.subTopics[0];
+      expect(subTopic.id).to.equal(subTopicRev.topicId);
+      expect(subTopic.head.blob.text).to.equal(BAR);
 
       let topic = await Topic.findById(topicRev.topicId);
       expect(topic.headId).to.equal(topicRev.id);
@@ -66,6 +101,7 @@ describe('Topic', function () {
         title: TITLE,
         text: FOO,
         claimIds: [c1r.claimId],
+        subTopicIds: [],
       });
 
       let c2r = await Claim.apiCreate(user, { text: BAZ });
@@ -73,9 +109,10 @@ describe('Topic', function () {
         title: TITLE2,
         text: BAR,
         claimIds: [c2r.claimId],
+        subTopicIds: [],
       });
 
-      await r2.reload(TopicRev.INCLUDE());
+      await r2.reload(TopicRev.INCLUDE(3));
       expect(r2.topicId).to.equal(ID);
       expect(r2.parentId).to.equal(r1.id);
       expect(r2.userId).to.equal(user.id);
@@ -84,6 +121,7 @@ describe('Topic', function () {
       expect(r2.blob.text).to.equal(BAR);
       expect(r2.claims).to.have.lengthOf(1);
       expect(r2.claims[0].id).to.equal(c2r.claimId);
+      expect(r2.subTopics).to.have.lengthOf(0);
 
       let topic = await Topic.findById(ID);
       expect(topic.headId).to.equal(r2.id);
@@ -97,17 +135,19 @@ describe('Topic', function () {
         title: TITLE,
         text: FOO,
         claimIds: [],
+        subTopicIds: [],
       });
 
       let r2 = await Topic.apiDelete(ID, user);
 
-      await r2.reload(TopicRev.INCLUDE());
+      await r2.reload(TopicRev.INCLUDE(3));
       expect(r2.topicId).to.equal(ID);
       expect(r2.parentId).to.equal(r1.id);
       expect(r2.userId).to.equal(user.id);
       expect(r2.deleted).to.be.true;
       expect(r2.blobHash).to.be.null;
       expect(r2.claims).to.have.lengthOf(0);
+      expect(r2.subTopics).to.have.lengthOf(0);
 
       let topic = await Topic.findById(ID);
       expect(topic.headId).to.equal(r2.id);
@@ -119,6 +159,7 @@ describe('Topic', function () {
         title: TITLE,
         text: FOO,
         claimIds: [],
+        subTopicIds: [],
       });
 
       let r2 = await Topic.apiDelete(ID, user);
@@ -137,6 +178,7 @@ describe('Topic', function () {
         title: TITLE,
         text: FOO,
         claimIds: [c1r.claimId],
+        subTopicIds: [],
       });
       let data = await Topic.apiGet(ID);
       expect(data).to.deep.equal({
@@ -146,6 +188,8 @@ describe('Topic', function () {
             title: TITLE,
             text: FOO,
             claimIds: [c1r.claimId],
+            subTopicIds: [],
+            depth: 3,
             ...STARS_AND_COMMENTS,
           },
         },
@@ -170,6 +214,7 @@ describe('Topic', function () {
         title: TITLE,
         text: FOO,
         claimIds: [],
+        subTopicIds: [],
       });
       let r2 = await Topic.apiDelete(ID, user);
       let data = await Topic.apiGet(ID);
@@ -192,12 +237,14 @@ describe('Topic', function () {
         title: TITLE,
         text: FOO,
         claimIds: [],
+        subTopicIds: [],
       });
       let t2r = await Topic.apiCreate(user, {
         id: ID2,
         title: TITLE2,
         text: BAR,
         claimIds: [],
+        subTopicIds: [],
       });
       let data = await Topic.apiGetAll();
       expect(data).to.deep.equal({
@@ -207,6 +254,8 @@ describe('Topic', function () {
             title: TITLE,
             text: FOO,
             claimIds: [],
+            subTopicIds: [],
+            depth: 2,
             ...STARS_AND_COMMENTS,
           },
           [ID2]: {
@@ -214,6 +263,8 @@ describe('Topic', function () {
             title: TITLE2,
             text: BAR,
             claimIds: [],
+            subTopicIds: [],
+            depth: 2,
             ...STARS_AND_COMMENTS,
           },
         },
@@ -227,11 +278,13 @@ describe('Topic', function () {
         title: TITLE,
         text: FOO,
         claimIds: [],
+        subTopicIds: [],
       });
       await Topic.apiCreate(user, {
         id: ID2,
         text: BAR,
         claimIds: [],
+        subTopicIds: [],
       });
       await Topic.apiDelete(ID2, user);
       let data = await Topic.apiGetAll();
@@ -242,6 +295,8 @@ describe('Topic', function () {
             title: TITLE,
             text: FOO,
             claimIds: [],
+            subTopicIds: [],
+            depth: 2,
             ...STARS_AND_COMMENTS,
           },
         },
@@ -256,6 +311,7 @@ describe('Topic', function () {
         id: ID,
         text: FOO,
         claimIds: [],
+        subTopicIds: [],
       });
       let star = await Topic.apiToggleStar(ID, user);
       expect(star).to.deep.equal({
