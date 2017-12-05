@@ -1,5 +1,5 @@
 <template>
-<div class="point" :class="isFor | toSideString">
+<li :class="pointClasses">
   <point-content class="bubble click"
                  @click.native="showDrawer = !showDrawer"
                  :point="point"
@@ -17,15 +17,15 @@
                       v-if="subPoints.length > 0"
                       class="sub-points"
                       :move-class="$style.subPointsMove">
-      <dwd-sub-point v-for="[subPoint, subSide, i] in subPoints"
-                     :point="subPoint"
-                     :isFor="isFor === !subSide"
-                     :trail="trail.concat(point.claimId || point.id)"
-                     :key="subPoint.id">
-      </dwd-sub-point>
+      <dwd-point v-for="[subPoint, subSide, i] in subPoints"
+                 :point="subPoint"
+                 :isFor="isFor === !subSide"
+                 :isSubPoint="true"
+                 :trail="trail.concat(point.claimId || point.id)"
+                 :key="subPoint.id"></dwd-point>
     </transition-group>
   </drawer>
-</div>
+</li>
 </template>
 
 <script>
@@ -34,30 +34,55 @@ import CommentIcon from './CommentIcon.vue';
 import Drawer from './Drawer.vue';
 import DwdComments from './DwdComments.vue';
 import DwdStar from './DwdStar.vue';
-import DwdSubPoint from './DwdSubPoint.vue';
 import PointContent from './PointContent.vue';
 import { pointMapsToLists, rotateWithIndexes } from './utils';
 
 export default {
+  name: 'DwdPoint',
   components: {
     CommentIcon,
     Drawer,
     DwdComments,
     DwdStar,
-    DwdSubPoint,
     PointContent,
   },
-  props: ['point', 'isFor', 'trail'],
+  props: {
+    point: {
+      type: Object,
+      required: true,
+    },
+    isFor: {
+      type: Boolean,
+      required: true,
+    },
+    trail: {
+      type: Array,
+      required: false,
+    },
+    isSubPoint: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({
     showComments: false,
     showDrawer: false,
   }),
   computed: {
+    pointClasses: function () {
+      return [
+        this.isSubPoint ? 'sub-point' : 'point',
+        this.$options.filters.toSideString(this.isFor),
+      ];
+    },
     sortedSubpoints: function () {
+      if (this.isSubPoint) {
+        return [];
+      }
       if (this.point.type === 'subclaim') {
         return pointMapsToLists(this.point.points);
       } else if (this.point.type === 'claim') {
-        let claim = this.$store.state.claims[this.point.claimId];
+        let claim = this.lookupClaim(this.point.claimId);
         return pointMapsToLists(claim.points);
       }
       return [];

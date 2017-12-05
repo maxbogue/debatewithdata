@@ -25,14 +25,13 @@
       </div>
     </div>
     <template v-if="$store.state.singleColumn">
-      <transition-group :move-class="$style.pointsMove" tag="div">
+      <transition-group tag="div" :move-class="$style.pointsMove">
         <div v-for="[point, side, i] in zippedPoints"
              class="col-xs-12"
              :key="point.id">
           <dwd-point :point="point"
                      :isFor="claimIsFor === !side"
                      :trail="trail.concat(id)"></dwd-point>
-          </dwd-point>
         </div>
       </transition-group>
     </template>
@@ -46,8 +45,7 @@
                    :point="point"
                    :isFor="claimIsFor === !side"
                    :trail="trail.concat(id)"
-                   :key="point.id">
-        </dwd-point>
+                   :key="point.id"></dwd-point>
       </transition-group>
     </template>
   </div>

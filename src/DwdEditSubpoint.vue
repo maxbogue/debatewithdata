@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import './style/sub-point.sass';
+import './style/point.sass';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdPointInput from './DwdPointInput.vue';
 
