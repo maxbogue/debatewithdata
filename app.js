@@ -32,6 +32,8 @@ app.get('/activity', sendIndex);
 app.get('/admin', sendIndex);
 app.get('/claim/:id', sendIndex);
 app.get('/claim/:id/edit', sendIndex);
+app.get('/claim/:id/history', sendIndex);
+app.get('/claim/:id/rev/:revId', sendIndex);
 app.get('/claims', sendIndex);
 app.get('/claims/add', sendIndex);
 app.get('/forgot-password', sendIndex);

@@ -53,6 +53,7 @@
     "sequelize": "^4.22.15",
     "sequelize-cli": "^3.1.0",
     "style-loader": "^0.19.0",
+    "text-diff": "^1.0.1",
     "url-search-params": "^0.10.0",
     "valid-url": "^1.0.9",
     "vue": "^2.5.8",

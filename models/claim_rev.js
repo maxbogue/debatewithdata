@@ -57,18 +57,47 @@ export default function (sequelize, DataTypes) {
   };
 
   ClaimRev.postAssociate = function (models) {
-    ClaimRev.INCLUDE = function (n) {
+    ClaimRev.INCLUDE = function (n, includeUser=false) {
       if (n < 1) {
         throw new Error('Must include at least 1 tier.');
       }
       let include = [models.Blob];
+      if (includeUser) {
+        include.push(models.User);
+      }
       if (n > 1) {
         include.push({
           association: ClaimRev.PointRevs,
-          ...models.PointRev.INCLUDE(n-1),
+          ...models.PointRev.INCLUDE(n - 1, includeUser),
         });
       }
       return { include };
+    };
+
+    ClaimRev.prototype.toRevData = function (pointRevDatas) {
+      let thisData = {
+        id: this.id,
+        username: this.user.username,
+        createdAt: this.created_at,
+      };
+
+      if (this.deleted) {
+        thisData.deleted = true;
+        return thisData;
+      }
+
+      thisData.text = this.blob.text;
+
+      if (this.flag) {
+        thisData.flag = this.flag;
+      }
+
+      if (this.pointRevs) {
+        thisData.points = models.PointRev.toRevDatas(
+            this.pointRevs, pointRevDatas);
+      }
+
+      return thisData;
     };
   };
 

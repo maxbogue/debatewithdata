@@ -26,7 +26,6 @@ export default {
 
   span
     color: $red-dark-primary
-    text-decoration: underline
 
   a:hover
     text-decoration: underline

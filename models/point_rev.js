@@ -98,7 +98,7 @@ export default function (sequelize, DataTypes) {
   };
 
   PointRev.postAssociate = function (models) {
-    PointRev.INCLUDE = function (n) {
+    PointRev.INCLUDE = function (n, includeUser=false) {
       if (n < 1) {
         throw new Error('Must include at least 1 tier.');
       }
@@ -109,10 +109,13 @@ export default function (sequelize, DataTypes) {
         model: models.Source,
         ...models.Source.INCLUDE(),
       }];
+      if (includeUser) {
+        include.push(models.User);
+      }
       if (n > 1) {
         include.push({
           association: PointRev.SubPointRevs,
-          ...models.PointRev.INCLUDE(n-1),
+          ...models.PointRev.INCLUDE(n - 1, includeUser),
         });
       }
       return { include };
@@ -247,6 +250,21 @@ export default function (sequelize, DataTypes) {
     };
 
     /**
+     * Returns the API data format for multiple point revisions.
+     *
+     * @param pointRevs - The PointRev array from the association.
+     * @param pointRevDatas - The output map of PointRev data.
+     */
+    PointRev.toRevDatas = function (pointRevs, pointRevDatas) {
+      let points = [{}, {}];
+      for (let pointRev of pointRevs) {
+        let i = isFor(pointRev) ? 0 : 1;
+        points[i][pointRev.pointId] = pointRev.toRevData(pointRevDatas);
+      }
+      return points;
+    };
+
+    /**
      * Returns the API data format for this point.
      *
      * @param data - Linked claims and sources are added to this object as a
@@ -283,9 +301,45 @@ export default function (sequelize, DataTypes) {
         }
         break;
       default:
-        throw new ClientError('Invalid point type: ' + data.type);
+        throw new ClientError('Invalid point type: ' + this.type);
       }
       return thisData;
+    };
+
+    /**
+     * Returns the API data format for this point.
+     */
+    PointRev.prototype.toRevData = function (pointRevDatas) {
+      let thisData = {
+        type: this.type,
+        username: this.user.username,
+        createdAt: this.created_at,
+      };
+      switch (this.type) {
+      case CLAIM:
+        thisData.text = this.claim.head.blob.text;
+        thisData.claimId = this.claimId;
+        break;
+      case SOURCE:
+        thisData.text = this.source.head.blob.text;
+        thisData.sourceId = this.sourceId;
+        break;
+      case SUBCLAIM:
+        if (this.pointRevs) {
+          thisData.points = PointRev.toRevDatas(this.pointRevs, pointRevDatas);
+        }
+        /* eslint no-fallthrough: "off" */
+      case TEXT:
+        thisData.text = this.blob.text;
+        if (this.flag) {
+          thisData.flag = this.flag;
+        }
+        break;
+      default:
+        throw new ClientError('Invalid point type: ' + this.type);
+      }
+      pointRevDatas[this.id] = thisData;
+      return this.id;
     };
   };
 

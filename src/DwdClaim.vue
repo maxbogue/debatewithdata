@@ -12,6 +12,9 @@
             <span class="id mono">{{ claim.id }}</span>
             <dwd-star :star="claim.star"
                       :url="'/api' + claimUrl(id)"></dwd-star>
+            <router-link :to="claimUrl(id) + '/history'"
+                         class="glyphicon glyphicon-time click"
+                         aria-hidden="true"></router-link>
             <router-link v-if="$store.state.user"
                          :to="claimUrl(id) + '/edit'"
                          class="glyphicon glyphicon-pencil click"

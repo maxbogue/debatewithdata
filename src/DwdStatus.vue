@@ -19,6 +19,13 @@
     <h2>Recent Changes</h2>
     <ul>
       <li>
+        <strong>2017-12-08:</strong> Add history view for claims.
+      </li>
+      <li>
+        <strong>2017-12-01:</strong> Add sub-topics so they can be organized
+        more effectively.
+      </li>
+      <li>
         <strong>2017-11-23:</strong> Introduce Topics, a better way to browse
         for claims of interest.
       </li>

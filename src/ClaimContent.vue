@@ -1,6 +1,6 @@
 <template>
 <div>
-  <dwd-flag v-if="claim.flag" :flag="claim.flag"></dwd-flag>
+  <dwd-flag v-if="claim.flag" :flag="claim.flag" />
   <router-link v-if="trail"
                :to="claimUrl(claim.id, trail)"
                class="link-icon glyphicon glyphicon-link"></router-link>
@@ -15,6 +15,15 @@ export default {
   components: {
     DwdFlag,
   },
-  props: ['claim', 'trail'],
+  props: {
+    claim: {
+      type: Object,
+      required: true,
+    },
+    trail: {
+      type: Array,
+      required: false,
+    },
+  },
 };
 </script>

@@ -1,6 +1,7 @@
 import Router from 'express-promise-router';
+import map from 'lodash/map';
 
-import { Claim, Comment } from '../models';
+import { Claim, ClaimRev, Comment } from '../models';
 import { AuthError } from './error';
 
 const router = Router();
@@ -47,6 +48,22 @@ router.delete('/:id', async function (req, res) {
   let rev = await Claim.apiDelete(req.params.id, req.user);
   let data = await Claim.apiGet(rev.claimId, req.user);
   res.json(data);
+});
+
+router.get('/:id/rev', async function (req, res) {
+  let claimRevs = await ClaimRev.findAll({
+    where: {
+      claimId: req.params.id,
+    },
+    order: [['created_at', 'DESC']],
+    ...ClaimRev.INCLUDE(3, true),
+  });
+  let pointRevData = {};
+  let claimRevData = map(claimRevs, (rev) => rev.toRevData(pointRevData));
+  res.json({
+    claimRevs: claimRevData,
+    pointRevs: pointRevData,
+  });
 });
 
 router.post('/:id/star', async function (req, res) {

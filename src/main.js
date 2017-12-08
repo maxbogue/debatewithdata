@@ -4,6 +4,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import './style/index.sass';
+import ClaimHistory from './ClaimHistory.vue';
 import DwdAccount from './DwdAccount.vue';
 import DwdActivity from './DwdActivity.vue';
 import DwdAdmin from './DwdAdmin.vue';
@@ -72,6 +73,8 @@ new Vue({
       { path: '/admin', component: DwdAdmin },
       { path: '/claim/:id', component: DwdClaim },
       { path: '/claim/:id/edit', component: DwdEditClaim },
+      { path: '/claim/:id/history', component: ClaimHistory },
+      { path: '/claim/:id/rev/:revId', component: ClaimHistory },
       { path: '/claims', component: DwdClaims },
       { path: '/claims/add', component: DwdEditClaim },
       { path: '/forgot-password', component: DwdForgotPassword },
