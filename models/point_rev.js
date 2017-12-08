@@ -317,11 +317,19 @@ export default function (sequelize, DataTypes) {
       };
       switch (this.type) {
       case CLAIM:
-        thisData.text = this.claim.head.blob.text;
+        if (this.claim.head.deleted) {
+          thisData.text = '<deleted>';
+        } else {
+          thisData.text = this.claim.head.blob.text;
+        }
         thisData.claimId = this.claimId;
         break;
       case SOURCE:
-        thisData.text = this.source.head.blob.text;
+        if (this.source.head.deleted) {
+          thisData.text = '<deleted>';
+        } else {
+          thisData.text = this.source.head.blob.text;
+        }
         thisData.sourceId = this.sourceId;
         break;
       case SUBCLAIM:

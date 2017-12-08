@@ -65,10 +65,6 @@ export default {
     prev: function () {
       return this.pointRevs[this.prevId] || null;
     },
-    hasSubClaims: function () {
-      return this.curr && this.curr.type === 'subclaim'
-          || this.prev && this.prev.type === 'subclaim';
-    },
     isClaimLike: function () {
       return this.curr && this.prev
           && this.curr.type === this.prev.type
@@ -81,14 +77,17 @@ export default {
       ];
     },
     subPointRevs: function () {
-      if (this.isSubPoint || !this.hasSubClaims) {
+      if (this.isSubPoint) {
         return [];
       }
 
+      let currHasPoints = this.curr && this.curr.points;
+      let prevHasPoints = this.prev && this.prev.points;
       let pointRevs = [];
+
       for (let i of [0, 1]) {
-        let currPoints = this.curr ? this.curr.points[i] : {};
-        let prevPoints = this.prev ? this.prev.points[i] : {};
+        let currPoints = currHasPoints ? this.curr.points[i] : {};
+        let prevPoints = prevHasPoints ? this.prev.points[i] : {};
 
         let inPrev = (id) => prevPoints[id];
         let isModified = (id) => currPoints[id] === prevPoints[id];
