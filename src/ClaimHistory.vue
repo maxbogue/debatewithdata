@@ -1,17 +1,19 @@
 <template>
 <div>
-  <h3 class="center">
-    History for
-    <router-link :to="claimUrl(claimId)"
-                 class="mono">{{ claimId }}</router-link>
-  </h3>
-  <ul v-if="data && !revId" class="mono" :class="$style.revs">
-    <li v-for="rev in data.claimRevs" :key="rev.id">
-      <router-link :to="revUrl(rev)">{{ rev.id }}</router-link>
-      <span :class="$style.username">{{ rev.username }}</span>
-      <span>{{ rev.createdAt | timestamp }}</span>
-    </li>
-  </ul>
+  <template v-if="data && !revId">
+    <h3 class="center">
+      History for
+      <router-link :to="claimUrl(claimId)"
+                  class="mono">{{ claimId }}</router-link>
+    </h3>
+    <ul class="mono" :class="$style.revs">
+      <li v-for="rev in data.claimRevs" :key="rev.id">
+        <router-link :to="revUrl(rev)">{{ rev.id }}</router-link>
+        <span :class="$style.username">{{ rev.username }}</span>
+        <span>{{ rev.createdAt | timestamp }}</span>
+      </li>
+    </ul>
+  </template>
   <claim-rev v-if="data && revId"
              :claimId="claimId"
              :revId="revId"

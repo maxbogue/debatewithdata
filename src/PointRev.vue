@@ -4,8 +4,8 @@
     <point-rev-content v-if="currId === prevId" :rev="curr" />
     <claim-rev-content v-else-if="isClaimLike" :curr="curr" :prev="prev" />
     <template v-else>
-      <del v-if="prev"><point-rev-content :rev="prev" /></del>
-      <ins v-if="curr"><point-rev-content :rev="curr" /></ins>
+      <point-rev-content v-if="prev" :rev="prev" class="del" />
+      <point-rev-content v-if="curr" :rev="curr" class="ins" />
     </template>
   </div>
   <div>
