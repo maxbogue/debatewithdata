@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import find from 'lodash/find';
 import Vue from 'vue';
