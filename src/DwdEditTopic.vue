@@ -1,67 +1,65 @@
 <template>
 <div>
-  <form v-if="!needsData" class="row gutter-16" @submit.prevent="submit">
-    <div class="col-xs-12">
-      <div class="topic t1">
-        <div class="bubble">
-          <label v-if="!id" for="id" class="hint">
-            The ID shows up in the URL.
-          </label>
-          <textarea v-if="!id"
-                    id="id"
-                    class="mono"
-                    rows="1"
-                    autocomplete="off"
-                    placeholder="id"
-                    v-model="tempId"
-                    v-auto-resize></textarea>
-          <label for="title" class="hint">
-            The title of this topic.
-          </label>
-          <textarea id="title"
-                    rows="1"
-                    autocomplete="off"
-                    placeholder="title"
-                    v-model="title"
-                    v-auto-resize></textarea>
-          <label for="text" class="hint">
-            Describe this topic.
-          </label>
-          <textarea id="text"
-                    rows="1"
-                    autocomplete="off"
-                    placeholder="description"
-                    v-model="text"
-                    v-auto-resize></textarea>
-        </div>
-        <div v-if="text" class="info">
-          <span class="id mono">{{ id || 'new' }}</span>
-        </div>
+  <form v-if="!needsData" @submit.prevent="submit">
+    <div class="topic t1">
+      <div class="bubble">
+        <label v-if="!id" for="id" class="hint">
+          The ID shows up in the URL.
+        </label>
+        <textarea v-if="!id"
+                  id="id"
+                  class="mono"
+                  rows="1"
+                  autocomplete="off"
+                  placeholder="id"
+                  v-model="tempId"
+                  v-auto-resize></textarea>
+        <label for="title" class="hint">
+          The title of this topic.
+        </label>
+        <textarea id="title"
+                  rows="1"
+                  autocomplete="off"
+                  placeholder="title"
+                  v-model="title"
+                  v-auto-resize></textarea>
+        <label for="text" class="hint">
+          Describe this topic.
+        </label>
+        <textarea id="text"
+                  rows="1"
+                  autocomplete="off"
+                  placeholder="description"
+                  v-model="text"
+                  v-auto-resize></textarea>
       </div>
-      <h3>Sub-Topics</h3>
-      <topic-input v-for="(subTopicId, i) in subTopicIds"
-                   class="topic block"
-                   :id="subTopicId"
-                   @update="(newId) => updateSubTopicId(i, newId)"
-                   :key="'topic-' + i"></topic-input>
-      <h3>Key Claims</h3>
-      <claim-input v-for="(claimId, i) in claimIds"
-                   class="claim block"
-                   :id="claimId"
-                   @update="(newId) => updateClaimId(i, newId)"
-                   :key="'claim-' + i"></claim-input>
+      <div v-if="text" class="info">
+        <span class="id mono">{{ id || 'new' }}</span>
+      </div>
     </div>
-    <div v-if="id" class="col-xs-12 center">
-      <delete-button noun="Claim" @delete="remove"></delete-button>
+    <h3>Sub-Topics</h3>
+    <topic-input v-for="(subTopicId, i) in subTopicIds"
+                  class="topic block"
+                  :id="subTopicId"
+                  @update="(newId) => updateSubTopicId(i, newId)"
+                  :key="'topic-' + i" />
+    <h3>Key Claims</h3>
+    <claim-input v-for="(claimId, i) in claimIds"
+                  class="claim block"
+                  :id="claimId"
+                  @update="(newId) => updateClaimId(i, newId)"
+                  :key="'claim-' + i" />
+    <div v-if="id" class="block no-pad center">
+      <delete-button noun="Claim" @delete="remove" />
     </div>
-    <div :class="$style.fixedBottom" class="col-xs-12 center blue">
+    <div :class="$style.fixedBottom" class="center blue">
       <button type="submit" class="btn btn-primary">Submit</button>
       <button type="button"
               class="btn btn-default"
               @click="cancel">Cancel</button>
     </div>
   </form>
-  <dwd-loader ref="loader"></dwd-loader>
+  <dwd-loader ref="loader" />
 </div>
 </template>
 

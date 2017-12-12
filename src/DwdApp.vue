@@ -1,7 +1,7 @@
 <template>
 <div>
   <dwd-header></dwd-header>
-  <router-view class="container"></router-view>
+  <router-view class="dwd-container"></router-view>
 </div>
 </template>
 

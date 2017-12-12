@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="narrow">
   <template v-if="data && !revId">
     <h3 class="center">
       History for
@@ -81,7 +81,6 @@ export default {
 .revs
   margin: 20px auto
   padding: 0
-  width: 600px
 
   li
     display: flex

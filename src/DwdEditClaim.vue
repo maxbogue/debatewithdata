@@ -1,64 +1,58 @@
 <template>
 <div>
-  <form v-if="!needsData" class="row gutter-16" @submit.prevent="submit">
-    <div class="col-xs-12">
-      <div class="claim t1">
-        <div class="bubble">
-          <label for="text" class="hint">
-            A claim should be a short, simple statement about the world.
-          </label>
-          <textarea id="text"
-                    rows="1"
-                    autocomplete="off"
-                    placeholder="claim"
-                    v-model="text"
-                    v-auto-resize></textarea>
-          <dwd-flag v-if="flag" :flag="flag"></dwd-flag>
-        </div>
-        <div v-if="text" class="info">
-          <span class="id mono">{{ id || 'new' }}</span>
-          <dwd-flag-dropdown :flag="flag"
-                             @select="updateFlag"></dwd-flag-dropdown>
-        </div>
+  <form v-if="!needsData" @submit.prevent="submit">
+    <div class="claim t1">
+      <div class="bubble">
+        <label for="text" class="hint">
+          A claim should be a short, simple statement about the world.
+        </label>
+        <textarea id="text"
+                  rows="1"
+                  autocomplete="off"
+                  placeholder="claim"
+                  v-model="text"
+                  v-auto-resize></textarea>
+        <dwd-flag v-if="flag" :flag="flag" />
+      </div>
+      <div v-if="text" class="info">
+        <span class="id mono">{{ id || 'new' }}</span>
+        <dwd-flag-dropdown :flag="flag"
+                            @select="updateFlag" />
       </div>
     </div>
     <template v-if="$store.state.singleColumn">
-      <div v-for="[point, side, i] in zippedPoints"
-           class="col-xs-12"
-           :key="point.id || point.tempId">
-        <dwd-edit-point :point="point"
-                        :isFor="!side"
-                        :canDelete="i < points[side].length - 1"
-                        @update="(p) => updatePoint(side, i, p)"
-                        @delete="points[side].splice(i, 1)">
-        </dwd-edit-point>
-      </div>
+      <dwd-edit-point v-for="[point, side, i] in zippedPoints"
+                      :key="point.id || point.tempId"
+                      :point="point"
+                      :isFor="!side"
+                      :canDelete="i < points[side].length - 1"
+                      @update="(p) => updatePoint(side, i, p)"
+                      @delete="points[side].splice(i, 1)" />
     </template>
     <template v-else>
       <div v-for="(sidePoints, side) in points"
-           class="col-sm-6"
+           class="dwd-col"
            :key="'side-' + side">
         <dwd-edit-point v-for="(point, i) in sidePoints"
+                        :key="point.id || point.tempId"
                         :point="point"
                         :isFor="!side"
                         :canDelete="i < sidePoints.length - 1"
-                        :key="point.id || point.tempId"
                         @update="(p) => updatePoint(side, i, p)"
-                        @delete="sidePoints.splice(i, 1)">
-        </dwd-edit-point>
+                        @delete="sidePoints.splice(i, 1)" />
       </div>
     </template>
-    <div v-if="id" class="col-xs-12 center">
-      <delete-button noun="Claim" @delete="remove"></delete-button>
+    <div v-if="id" class="block center">
+      <delete-button noun="Claim" @delete="remove" />
     </div>
-    <div :class="$style.fixedBottom" class="col-xs-12 center blue">
+    <div :class="$style.fixedBottom" class="center blue">
       <button type="submit" class="btn btn-primary">Submit</button>
       <button type="button"
               class="btn btn-default"
               @click="cancel">Cancel</button>
     </div>
   </form>
-  <dwd-loader ref="loader"></dwd-loader>
+  <dwd-loader ref="loader" />
 </div>
 </template>
 

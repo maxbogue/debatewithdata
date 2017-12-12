@@ -1,35 +1,29 @@
 <template>
-<div class="row gutter-16">
-  <div class="col-sm-12">
-    <div class="center">
-      <div>
-        <h3 class="mono">{{ curr.id }}</h3>
-        <div>
-           <strong>by</strong> <span>{{ curr.username }}</span>
-        </div>
-        <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
-      </div>
-      <div :class="$style.nav">
-        <router-link v-if="prev" :to="prevUrl">Prev</router-link>
-        <router-link :to="url + '/history'">History</router-link>
-        <router-link v-if="next" :to="nextUrl">Next</router-link>
-      </div>
+<div>
+  <div class="block no-pad center">
+    <h3 class="mono">{{ curr.id }}</h3>
+    <div>
+        <strong>by</strong> <span>{{ curr.username }}</span>
     </div>
-    <claim-rev-content class="claim block" :curr="curr" :prev="prev" />
+    <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
+    <div :class="$style.nav">
+      <router-link v-if="prev" :to="prevUrl">Prev</router-link>
+      <router-link :to="url + '/history'">History</router-link>
+      <router-link v-if="next" :to="nextUrl">Next</router-link>
+    </div>
   </div>
+  <claim-rev-content class="claim block" :curr="curr" :prev="prev" />
   <template v-if="$store.state.singleColumn">
-    <div v-for="[[currId, prevId], side] in zippedPointRevs"
-          class="col-xs-12"
-          :key="currId">
-      <point-rev :currId="currId"
-                 :prevId="prevId"
-                 :pointRevs="data.pointRevs"
-                 :isFor="!side" />
-    </div>
+    <point-rev v-for="[[currId, prevId], side] in zippedPointRevs"
+               :currId="currId"
+               :prevId="prevId"
+               :pointRevs="data.pointRevs"
+               :isFor="!side"
+               :key="currId" />
   </template>
   <template v-else>
     <div v-for="(sidePointRevs, side) in pointRevs"
-         class="col-sm-6"
+         class="dwd-col"
          :key="'side-' + side">
       <point-rev v-for="[currId, prevId] in sidePointRevs"
                  :currId="currId"
@@ -133,7 +127,7 @@ export default {
 .nav
   display: flex
   justify-content: center
-  padding: 8px
+  padding: 8px 0 0 0
 
   a
     background-color: $text-light-accent

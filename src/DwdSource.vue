@@ -1,29 +1,27 @@
 <template>
 <div>
-  <dwd-trail @lastIsFor="(v) => isFor = v"></dwd-trail>
-  <div v-if="source" class="row gutter-16">
-    <div class="col-sm-12">
-      <div class="source" :class="isFor | toSideString">
-        <source-content class="bubble click"
-                        @click.native="showDrawer = !showDrawer"
-                        :source="source"></source-content>
-        <drawer :show="showDrawer">
-          <div class="info">
-            <span class="id mono">{{ source.id }}</span>
-            <router-link v-if="$store.state.user"
-                         :to="sourceUrl(id) + '/edit'"
-                         class="glyphicon glyphicon-pencil click"
-                         aria-hidden="true"></router-link>
-            <comment-icon @click.native="showComments = !showComments"
-                          :count="source.commentCount"></comment-icon>
-          </div>
-          <dwd-comments v-if="showComments"
-                        :url="'/api/source/' + id"></dwd-comments>
-        </drawer>
-      </div>
+  <dwd-trail @lastIsFor="(v) => isFor = v" />
+  <template v-if="source">
+    <div class="source" :class="isFor | toSideString">
+      <source-content class="bubble click"
+                      @click.native="showDrawer = !showDrawer"
+                      :source="source" />
+      <drawer :show="showDrawer">
+        <div class="info">
+          <span class="id mono">{{ source.id }}</span>
+          <router-link v-if="$store.state.user"
+                        :to="sourceUrl(id) + '/edit'"
+                        class="glyphicon glyphicon-pencil click"
+                        aria-hidden="true"></router-link>
+          <comment-icon @click.native="showComments = !showComments"
+                        :count="source.commentCount" />
+        </div>
+        <dwd-comments v-if="showComments"
+                      :url="'/api/source/' + id" />
+      </drawer>
     </div>
-  </div>
-  <dwd-loader ref="loader"></dwd-loader>
+  </template>
+  <dwd-loader ref="loader" />
 </div>
 </template>
 

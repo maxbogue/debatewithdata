@@ -1,58 +1,54 @@
 <template>
 <div>
-  <dwd-trail @lastIsFor="(v) => isFor = v"></dwd-trail>
-  <div v-if="claim" class="row gutter-16">
-    <div class="col-sm-12">
-      <div class="claim" :class="isFor | toSideString">
-        <claim-content class="bubble click"
-                       @click.native="showDrawer = !showDrawer"
-                       :claim="claim"></claim-content>
-        <drawer :show="showDrawer">
-          <div class="info">
-            <span class="id mono">{{ claim.id }}</span>
-            <dwd-star :star="claim.star"
-                      :url="'/api' + claimUrl(id)"></dwd-star>
-            <router-link :to="claimUrl(id) + '/history'"
-                         class="glyphicon glyphicon-time click"
-                         aria-hidden="true"></router-link>
-            <router-link v-if="$store.state.user"
-                         :to="claimUrl(id) + '/edit'"
-                         class="glyphicon glyphicon-pencil click"
-                         aria-hidden="true"></router-link>
-            <comment-icon @click.native="showComments = !showComments"
-                          :count="claim.commentCount"></comment-icon>
-          </div>
-          <dwd-comments v-if="showComments"
-                        :url="'/api/claim/' + id"></dwd-comments>
-        </drawer>
-      </div>
+  <dwd-trail @lastIsFor="(v) => isFor = v" />
+  <template v-if="claim">
+    <div class="claim" :class="isFor | toSideString">
+      <claim-content class="bubble click"
+                      @click.native="showDrawer = !showDrawer"
+                      :claim="claim" />
+      <drawer :show="showDrawer">
+        <div class="info">
+          <span class="id mono">{{ claim.id }}</span>
+          <dwd-star :star="claim.star"
+                    :url="'/api' + claimUrl(id)" />
+          <router-link :to="claimUrl(id) + '/history'"
+                        class="glyphicon glyphicon-time click"
+                        aria-hidden="true"></router-link>
+          <router-link v-if="$store.state.user"
+                        :to="claimUrl(id) + '/edit'"
+                        class="glyphicon glyphicon-pencil click"
+                        aria-hidden="true"></router-link>
+          <comment-icon @click.native="showComments = !showComments"
+                        :count="claim.commentCount" />
+        </div>
+        <dwd-comments v-if="showComments"
+                      :url="'/api/claim/' + id" />
+      </drawer>
     </div>
     <template v-if="$store.state.singleColumn">
       <transition-group tag="div" :move-class="$style.pointsMove">
-        <div v-for="[point, side, i] in zippedPoints"
-             class="col-xs-12"
-             :key="point.id">
-          <dwd-point :point="point"
-                     :isFor="claimIsFor === !side"
-                     :trail="trail.concat(id)"></dwd-point>
-        </div>
+        <dwd-point v-for="[point, side, i] in zippedPoints"
+                    :point="point"
+                    :isFor="claimIsFor === !side"
+                    :trail="trail.concat(id)"
+                    :key="point.id" />
       </transition-group>
     </template>
     <template v-else>
       <transition-group tag="div"
                         v-for="(sidePoints, side) in points"
-                        class="col-sm-6"
+                        class="dwd-col"
                         :move-class="$style.pointsMove"
                         :key="'side-' + side">
         <dwd-point v-for="(point, i) in sidePoints"
                    :point="point"
                    :isFor="claimIsFor === !side"
                    :trail="trail.concat(id)"
-                   :key="point.id"></dwd-point>
+                   :key="point.id" />
       </transition-group>
     </template>
-  </div>
-  <dwd-loader ref="loader"></dwd-loader>
+  </template>
+  <dwd-loader ref="loader" />
 </div>
 </template>
 

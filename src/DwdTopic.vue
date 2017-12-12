@@ -1,50 +1,48 @@
 <template>
 <div>
-  <div v-if="topic" class="row gutter-16">
-    <div class="col-sm-12">
-      <div class="topic t1">
-        <div class="bubble click"
-             @click="showDrawer = !showDrawer">
-          <h2>{{ topic.title }}</h2>
-          <p>{{ topic.text }}</p>
-        </div>
-        <drawer :show="showDrawer">
-          <div class="info">
-            <span class="id mono">{{ id }}</span>
-            <dwd-star :star="topic.star"
-                      :url="'/api' + topicUrl(id)"></dwd-star>
-            <router-link v-if="$store.state.user"
-                         :to="topicUrl(id) + '/edit'"
-                         class="glyphicon glyphicon-pencil click"
-                         aria-hidden="true"></router-link>
-            <comment-icon @click.native="showComments = !showComments"
-                          :count="topic.commentCount"></comment-icon>
-          </div>
-          <dwd-comments v-if="showComments"
-                        :url="'/api/topic/' + id"></dwd-comments>
-        </drawer>
+  <template v-if="topic">
+    <div class="topic t1">
+      <div class="bubble click"
+            @click="showDrawer = !showDrawer">
+        <h2>{{ topic.title }}</h2>
+        <p>{{ topic.text }}</p>
       </div>
-      <template v-if="subTopics.length > 0">
-        <h3>Sub-Topics</h3>
-        <router-link v-for="subTopic in subTopics"
-                    class="topic block"
-                    :to="topicUrl(subTopic.id)"
-                    :key="subTopic.id">
-            {{ subTopic.title }}
-        </router-link>
-      </template>
-      <template v-if="claims.length > 0">
-        <h3>Key Claims</h3>
-        <router-link v-for="claim in claims"
-                    class="claim block"
-                    :to="claimUrl(claim.id)"
-                    :key="claim.id">
-            <claim-content :claim="claim"></claim-content>
-        </router-link>
-      </template>
+      <drawer :show="showDrawer">
+        <div class="info">
+          <span class="id mono">{{ id }}</span>
+          <dwd-star :star="topic.star"
+                    :url="'/api' + topicUrl(id)"></dwd-star>
+          <router-link v-if="$store.state.user"
+                        :to="topicUrl(id) + '/edit'"
+                        class="glyphicon glyphicon-pencil click"
+                        aria-hidden="true"></router-link>
+          <comment-icon @click.native="showComments = !showComments"
+                        :count="topic.commentCount"></comment-icon>
+        </div>
+        <dwd-comments v-if="showComments"
+                      :url="'/api/topic/' + id"></dwd-comments>
+      </drawer>
     </div>
-  </div>
-  <dwd-loader ref="loader"></dwd-loader>
+    <template v-if="subTopics.length > 0">
+      <h3>Sub-Topics</h3>
+      <router-link v-for="subTopic in subTopics"
+                  class="topic block"
+                  :to="topicUrl(subTopic.id)"
+                  :key="subTopic.id">
+          {{ subTopic.title }}
+      </router-link>
+    </template>
+    <template v-if="claims.length > 0">
+      <h3>Key Claims</h3>
+      <router-link v-for="claim in claims"
+                  class="claim block"
+                  :to="claimUrl(claim.id)"
+                  :key="claim.id">
+          <claim-content :claim="claim" />
+      </router-link>
+    </template>
+  </template>
+  <dwd-loader ref="loader" />
 </div>
 </template>
 

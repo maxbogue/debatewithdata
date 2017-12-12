@@ -49,11 +49,14 @@ export default {
 <style lang="sass" module>
 @import "style/constants"
 
-.activity td
-  padding: 0 10px
+.activity
+  width: 100%
 
-.activity td:first-child
-  padding-left: 0
+  td
+    padding: 0 10px
+
+    &:first-child
+      padding-left: 0
 
 .timestamp
   color: $text-dark-accent

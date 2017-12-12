@@ -1,96 +1,94 @@
 <template>
 <div>
-  <form v-if="!needsData" class="row gutter-16" @submit.prevent="commit">
-    <div class="col-sm-12">
-      <div class="source neutral">
-        <div class="bubble">
-          <label for="url" class="hint">
-            Link a source that provides data about the world.
-          </label>
-          <textarea id="url"
-                    rows="1"
-                    required
-                    autocomplete="off"
-                    placeholder="url"
-                    ref="url"
-                    :class="{invalid: !validUrl}"
-                    v-model="url"
-                    v-auto-resize></textarea>
-          <label for="text" class="hint">
-            Describe the data the link provides.
-          </label>
-          <textarea id="text"
-                    rows="1"
-                    required
-                    autocomplete="off"
-                    placeholder="description"
-                    v-model="text"
-                    v-auto-resize></textarea>
-          <label class="hint">Classify the type of source.</label>
-          <div>
-            <div :class="typeClass('misc')"
-                 @click="type = 'misc'">
-              <h2>Miscellaneous</h2>
-              <div>A source that does not fall under any other category.</div>
-            </div>
-            <div :class="typeClass('research')"
-                 @click="type = 'research'">
-              <h2>Research</h2>
-              <div>Scientific research published by an institution.</div>
-            </div>
-            <div :class="typeClass('article')"
-                 @click="type = 'article'">
-              <h2>Article</h2>
-              <div>A news article reporting on something that happened.</div>
-            </div>
-            <div :class="typeClass('authority')"
-                 @click="type = 'authority'">
-              <h2>Authority</h2>
-              <div>An authoritative source for the data.</div>
-            </div>
+  <form v-if="!needsData" @submit.prevent="commit">
+    <div class="source neutral">
+      <div class="bubble">
+        <label for="url" class="hint">
+          Link a source that provides data about the world.
+        </label>
+        <textarea id="url"
+                  rows="1"
+                  required
+                  autocomplete="off"
+                  placeholder="url"
+                  ref="url"
+                  :class="{invalid: !validUrl}"
+                  v-model="url"
+                  v-auto-resize></textarea>
+        <label for="text" class="hint">
+          Describe the data the link provides.
+        </label>
+        <textarea id="text"
+                  rows="1"
+                  required
+                  autocomplete="off"
+                  placeholder="description"
+                  v-model="text"
+                  v-auto-resize></textarea>
+        <label class="hint">Classify the type of source.</label>
+        <div>
+          <div :class="typeClass('misc')"
+                @click="type = 'misc'">
+            <h2>Miscellaneous</h2>
+            <div>A source that does not fall under any other category.</div>
           </div>
-          <template v-if="type === 'research' || type === 'authority'">
-            <label for="institution" class="hint">
-              What institution produced the data?
-            </label>
-            <textarea id="institution"
-                      rows="1"
-                      required
-                      autocomplete="off"
-                      placeholder="College, government agency, etc."
-                      v-model="institution"></textarea>
-          </template>
-          <template v-if="type === 'research' || type === 'article'">
-            <label for="publication" class="hint">
-              Where was the {{ type }} published?
-            </label>
-            <textarea id="publication"
-                      rows="1"
-                      required
-                      autocomplete="off"
-                      placeholder="Scientific journal, newspaper, etc."
-                      v-model="publication"></textarea>
-          </template>
-          <template v-if="type === 'article'">
-            <label for="firstHand" class="hint">
-              Is the article a first-hand account of an event?
-            </label>
-            <input type="checkbox" id="firstHand" v-model="firstHand"></input>
-          </template>
+          <div :class="typeClass('research')"
+                @click="type = 'research'">
+            <h2>Research</h2>
+            <div>Scientific research published by an institution.</div>
+          </div>
+          <div :class="typeClass('article')"
+                @click="type = 'article'">
+            <h2>Article</h2>
+            <div>A news article reporting on something that happened.</div>
+          </div>
+          <div :class="typeClass('authority')"
+                @click="type = 'authority'">
+            <h2>Authority</h2>
+            <div>An authoritative source for the data.</div>
+          </div>
         </div>
+        <template v-if="type === 'research' || type === 'authority'">
+          <label for="institution" class="hint">
+            What institution produced the data?
+          </label>
+          <textarea id="institution"
+                    rows="1"
+                    required
+                    autocomplete="off"
+                    placeholder="College, government agency, etc."
+                    v-model="institution"></textarea>
+        </template>
+        <template v-if="type === 'research' || type === 'article'">
+          <label for="publication" class="hint">
+            Where was the {{ type }} published?
+          </label>
+          <textarea id="publication"
+                    rows="1"
+                    required
+                    autocomplete="off"
+                    placeholder="Scientific journal, newspaper, etc."
+                    v-model="publication"></textarea>
+        </template>
+        <template v-if="type === 'article'">
+          <label for="firstHand" class="hint">
+            Is the article a first-hand account of an event?
+          </label>
+          <input type="checkbox" id="firstHand" v-model="firstHand"></input>
+        </template>
       </div>
     </div>
-    <div class="col-sm-12 center">
+    <div class="block no-pad center">
       <button type="submit" class="btn btn-primary">Submit</button>
       <button type="button"
               class="btn btn-default"
               @click="cancel">Cancel</button>
     </div>
-    <div v-if="id" class="col-xs-12 center">
-      <delete-button noun="Source" @delete="remove"></delete-button>
+    <div v-if="id" class="block no-pad center">
+      <delete-button noun="Source" @delete="remove" />
     </div>
   </form>
-  <dwd-loader ref="loader"></dwd-loader>
+  <dwd-loader ref="loader" />
 </div>
 </template>
 

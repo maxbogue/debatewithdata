@@ -41,14 +41,41 @@ p a
   &:visited, &:focus
     color: $blue-dark-primary
 
-.container.narrow
-  max-width: 700px
+.dwd-container
+  margin: 0 auto $block-spacing
+  overflow: auto
+  padding: 0 $block-spacing
+
+  @media (min-width: $screen-sm-min)
+    width: $container-sm
+  @media (min-width: $screen-md-min)
+    width: $container-md
+  @media (min-width: $screen-lg-min)
+    width: $container-lg
+
+  &.narrow
+    @media (min-width: $screen-md-min)
+      width: $container-sm
+    @media (min-width: $screen-lg-min)
+      width: $container-sm
+
+  .dwd-col
+    float: left
+    padding: 0 ($block-spacing / 2) 0 0
+    width: 50%
+
+    & + .dwd-col
+      padding: 0 0 0 ($block-spacing / 2)
 
 .block
+  clear: both
   display: block
-  margin: 20px 0
-  padding: 20px
+  margin-top: $block-spacing
+  padding: $block-padding
   text-align: left
+
+  &.no-pad
+    padding: 0
 
   > h2:first-child,
   > h3:first-child
@@ -58,15 +85,6 @@ p a
   ul
     margin: 0
     padding-left: 16px
-
-.gutter-16
-  &.row
-    margin-right: -8px
-    margin-left: -8px
-
-  [class^="col-"],
-  [class^=" col-"]
-    padding: 8px
 
 .center
   text-align: center
@@ -94,7 +112,7 @@ a.add
 
 =t1($primary-color, $accent-color)
   font-size: 20px
-  margin: 8px 0 0
+  margin-top: $block-spacing
 
   &.block
     background-color: $primary-color
