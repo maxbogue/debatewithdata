@@ -34,6 +34,7 @@
     "body-parser": "^1.18.2",
     "config": "^1.28.1",
     "css-loader": "^0.28.7",
+    "dashify": "^1.0.0",
     "dateformat": "^3.0.2",
     "express": "^4.16.2",
     "express-promise-router": "^2.0.0",

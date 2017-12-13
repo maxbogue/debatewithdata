@@ -22,9 +22,17 @@
 
 <script>
 import 'loaders.css/loaders.min.css';
+import debounce from 'lodash/debounce';
+
+import { DEBOUNCE_DELAY_MS } from './constants';
 
 export default {
-  props: ['id'],
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+  },
   data: () => ({
     input1: '',
     inputClass: '',
@@ -66,6 +74,11 @@ export default {
   },
   mounted: function () {
     this.input1 = this.id || '';
+    if (this.topic) {
+      this.inputClass = 'success';
+    } else {
+      this.updateInputError();
+    }
     this.$nextTick(() => {
       // If this is done immediately, the watch functions get called.
       this.initialized = true;
@@ -77,13 +90,14 @@ export default {
         this.$emit('update', this.input1);
       }
     },
-    id: function (newId) {
+    id: debounce(function (newId) {
+      /* eslint no-invalid-this: "off" */
       this.loading = false;
       this.error = '';
       this.inputClass = '';
       this.updateInputError();
 
-      if (newId && !this.claim) {
+      if (newId && !this.topic) {
         this.inputClass = 'warning';
         this.$store.dispatch('getTopic', {
           id: newId,
@@ -94,10 +108,10 @@ export default {
             this.updateInputError();
           }
         }).catch(() => {});
-      } else if (this.claim) {
+      } else if (this.topic) {
         this.inputClass = 'success';
       }
-    },
+    }, DEBOUNCE_DELAY_MS),
   },
 };
 </script>

@@ -3,17 +3,6 @@
   <form v-if="!needsData" @submit.prevent="submit">
     <div class="topic t1">
       <div class="bubble">
-        <label v-if="!id" for="id" class="hint">
-          The ID shows up in the URL.
-        </label>
-        <textarea v-if="!id"
-                  id="id"
-                  class="mono"
-                  rows="1"
-                  autocomplete="off"
-                  placeholder="id"
-                  v-model="tempId"
-                  v-auto-resize></textarea>
         <label for="title" class="hint">
           The title of this topic.
         </label>
@@ -22,6 +11,17 @@
                   autocomplete="off"
                   placeholder="title"
                   v-model="title"
+                  v-auto-resize></textarea>
+        <label v-if="!id" for="id" class="hint">
+          The ID shows up in the URL and cannot be changed.
+        </label>
+        <textarea v-if="!id"
+                  id="id"
+                  class="mono"
+                  rows="1"
+                  autocomplete="off"
+                  placeholder="id"
+                  v-model="tempId"
                   v-auto-resize></textarea>
         <label for="text" class="hint">
           Describe this topic.
@@ -64,6 +64,7 @@
 </template>
 
 <script>
+import dashify from 'dashify';
 import filter from 'lodash/filter';
 import sortBy from 'lodash/sortBy';
 
@@ -84,8 +85,8 @@ export default {
     tempId: '',
     title: '',
     text: '',
-    subTopicIds: [''],
-    claimIds: [''],
+    subTopicIds: [],
+    claimIds: [],
   }),
   computed: {
     id: function () {
@@ -142,20 +143,23 @@ export default {
       this.$router.push(this.id ? this.topicUrl(this.id) : '/topics');
     },
     initialize: function () {
-      this.title = this.topic.title;
-      this.text = this.topic.text;
+      if (this.topic) {
+        this.title = this.topic.title;
+        this.text = this.topic.text;
 
-      let topicStarred = pipe(this.lookupTopic, starred);
-      let topicStarCount = pipe(this.lookupTopic, starCount);
-      this.subTopicIds = sortBy(this.topic.subTopicIds,
-          [topicStarred, topicStarCount, stableRandom]);
+        let topicStarred = pipe(this.lookupTopic, starred);
+        let topicStarCount = pipe(this.lookupTopic, starCount);
+        this.subTopicIds = sortBy(this.topic.subTopicIds,
+            [topicStarred, topicStarCount, stableRandom]);
+
+        let claimStarred = pipe(this.lookupClaim, starred);
+        let claimStarCount = pipe(this.lookupClaim, starCount);
+        this.claimIds = sortBy(this.topic.claimIds,
+            [claimStarred, claimStarCount, stableRandom]);
+      }
+
       // Append an empty input for new sub-topics.
       this.subTopicIds.push('');
-
-      let claimStarred = pipe(this.lookupClaim, starred);
-      let claimStarCount = pipe(this.lookupClaim, starCount);
-      this.claimIds = sortBy(this.topic.claimIds,
-          [claimStarred, claimStarCount, stableRandom]);
       // Append an empty input for new claims.
       this.claimIds.push('');
     },
@@ -167,7 +171,7 @@ export default {
         }).then(() => {
           this.initialize();
         });
-      } else if (this.id) {
+      } else {
         this.initialize();
       }
     },
@@ -175,6 +179,13 @@ export default {
   watch: {
     id: function () {
       this.checkLoaded();
+    },
+    title: function (newTitle, oldTitle) {
+      let oldId = dashify(oldTitle);
+      let newId = dashify(newTitle);
+      if (!this.tempId || this.tempId === oldId) {
+        this.tempId = newId;
+      }
     },
   },
   mounted: function () {
