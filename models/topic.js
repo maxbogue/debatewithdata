@@ -62,18 +62,7 @@ export default function (sequelize, DataTypes) {
       }
 
       const topic = await Topic.create({ id: data.id }, { transaction });
-      const blob = await models.Blob.fromText(data.text, transaction);
-      const topicRev = await models.TopicRev.create({
-        title: data.title,
-        userId: user.id,
-        topicId: topic.id,
-        blobHash: blob.hash,
-      }, { transaction });
-
-      await topicRev.addClaims(data.claimIds, { transaction });
-      await topicRev.addSubTopics(data.subTopicIds, { transaction });
-      await topic.setHead(topicRev, { transaction });
-      return topicRev;
+      return models.TopicRev.createForApi(topic, user, data, transaction);
     };
 
     Topic.apiUpdate = async function (id, user, data, transaction) {
@@ -88,19 +77,7 @@ export default function (sequelize, DataTypes) {
         throw new NotFoundError('Topic not found: ' + id);
       }
 
-      const blob = await models.Blob.fromText(data.text, transaction);
-      const topicRev = await models.TopicRev.create({
-        title: data.title,
-        userId: user.id,
-        topicId: topic.id,
-        parentId: topic.headId,
-        blobHash: blob.hash,
-      }, { transaction });
-
-      await topicRev.addClaims(data.claimIds, { transaction });
-      await topicRev.addSubTopics(data.subTopicIds, { transaction });
-      await topic.setHead(topicRev, { transaction });
-      return topicRev;
+      return models.TopicRev.createForApi(topic, user, data, transaction);
     };
 
     Topic.apiDelete = async function (id, user, transaction) {

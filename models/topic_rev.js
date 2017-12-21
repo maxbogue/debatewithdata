@@ -75,6 +75,34 @@ export default function (sequelize, DataTypes) {
       }
       return { include };
     };
+
+    TopicRev.createForApi = async function (topic, user, data, transaction) {
+      const blob = await models.Blob.fromText(data.text, transaction);
+      const topicRev = await models.TopicRev.create({
+        title: data.title,
+        userId: user.id,
+        topicId: topic.id,
+        parentId: topic.headId,
+        blobHash: blob.hash,
+      }, { transaction });
+
+      let subTopicIds = data.subTopicIds;
+
+      if (data.newSubTopics) {
+        let newSubTopicIds = Object.keys(data.newSubTopics);
+        for (let subTopicId of newSubTopicIds) {
+          let subTopicData = data.newSubTopics[subTopicId];
+          await models.Topic.apiCreate(user, subTopicData, transaction);
+        }
+        subTopicIds = subTopicIds.concat(newSubTopicIds);
+      }
+
+      await topicRev.addClaims(data.claimIds, { transaction });
+      await topicRev.addSubTopics(subTopicIds, { transaction });
+      await topic.setHead(topicRev, { transaction });
+
+      return topicRev;
+    };
   };
 
   return TopicRev;
