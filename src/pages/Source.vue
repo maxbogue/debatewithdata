@@ -26,12 +26,12 @@
 </template>
 
 <script>
-import CommentIcon from './CommentIcon.vue';
-import Drawer from './Drawer.vue';
-import DwdComments from './DwdComments.vue';
-import DwdLoader from './DwdLoader.vue';
-import DwdTrail from './DwdTrail.vue';
-import SourceContent from './SourceContent.vue';
+import CommentIcon from '../CommentIcon.vue';
+import Drawer from '../Drawer.vue';
+import DwdComments from '../DwdComments.vue';
+import DwdLoader from '../DwdLoader.vue';
+import DwdTrail from '../DwdTrail.vue';
+import SourceContent from '../SourceContent.vue';
 
 export default {
   components: {

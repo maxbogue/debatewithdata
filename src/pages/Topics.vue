@@ -20,8 +20,8 @@
 import pickBy from 'lodash/pickBy';
 import { mapState } from 'vuex';
 
-import DwdLoader from './DwdLoader.vue';
-import { sortByStars } from './utils';
+import DwdLoader from '../DwdLoader.vue';
+import { sortByStars } from '../utils';
 
 export default {
   components: {

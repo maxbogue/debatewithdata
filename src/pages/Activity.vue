@@ -20,7 +20,7 @@
 import axios from 'axios';
 import dateFormat from 'dateformat';
 
-import DwdLoader from './DwdLoader.vue';
+import DwdLoader from '../DwdLoader.vue';
 
 export default {
   components: {
@@ -47,7 +47,7 @@ export default {
 </script>
 
 <style lang="sass" module>
-@import "style/constants"
+@import "../style/constants"
 
 .activity
   width: 100%

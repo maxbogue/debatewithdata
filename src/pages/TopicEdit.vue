@@ -68,11 +68,11 @@ import dashify from 'dashify';
 import filter from 'lodash/filter';
 import sortBy from 'lodash/sortBy';
 
-import ClaimInput from './ClaimInput.vue';
-import DeleteButton from './DeleteButton.vue';
-import DwdLoader from './DwdLoader.vue';
-import TopicInput from './TopicInput.vue';
-import { pipe, stableRandom, starCount, starred } from './utils';
+import ClaimInput from '../ClaimInput.vue';
+import DeleteButton from '../DeleteButton.vue';
+import DwdLoader from '../DwdLoader.vue';
+import TopicInput from '../TopicInput.vue';
+import { pipe, stableRandom, starCount, starred } from '../utils';
 
 export default {
   components: {

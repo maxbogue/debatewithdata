@@ -21,8 +21,8 @@
 <script>
 import { mapState } from 'vuex';
 
-import DwdLoader from './DwdLoader.vue';
-import SourceContent from './SourceContent.vue';
+import DwdLoader from '../DwdLoader.vue';
+import SourceContent from '../SourceContent.vue';
 
 export default {
   components: {

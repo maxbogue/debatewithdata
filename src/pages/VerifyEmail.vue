@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import DwdLoader from './DwdLoader.vue';
-import auth from './auth';
+import DwdLoader from '../DwdLoader.vue';
+import auth from '../auth';
 
 export default {
   components: {

@@ -5,29 +5,29 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import './style/index.sass';
-import ClaimHistory from './ClaimHistory.vue';
-import DwdAccount from './DwdAccount.vue';
-import DwdActivity from './DwdActivity.vue';
-import DwdAdmin from './DwdAdmin.vue';
-import DwdApp from './DwdApp.vue';
-import DwdClaim from './DwdClaim.vue';
-import DwdClaims from './DwdClaims.vue';
-import DwdEditClaim from './DwdEditClaim.vue';
-import DwdEditSource from './DwdEditSource.vue';
-import DwdEditTopic from './DwdEditTopic.vue';
-import DwdForgotPassword from './DwdForgotPassword.vue';
-import DwdGuide from './DwdGuide.vue';
-import DwdHome from './DwdHome.vue';
-import DwdLogin from './DwdLogin.vue';
-import DwdLogout from './DwdLogout.vue';
-import DwdRegister from './DwdRegister.vue';
-import DwdResetPassword from './DwdResetPassword.vue';
-import DwdSource from './DwdSource.vue';
-import DwdSources from './DwdSources.vue';
-import DwdStatus from './DwdStatus.vue';
-import DwdTopic from './DwdTopic.vue';
-import DwdTopics from './DwdTopics.vue';
-import DwdVerifyEmail from './DwdVerifyEmail.vue';
+import Account from './pages/Account.vue';
+import Activity from './pages/Activity.vue';
+import Admin from './pages/Admin.vue';
+import AppLayout from './AppLayout.vue';
+import Claim from './pages/Claim.vue';
+import ClaimEdit from './pages/ClaimEdit.vue';
+import ClaimHistory from './pages/ClaimHistory.vue';
+import Claims from './pages/Claims.vue';
+import ForgotPassword from './pages/ForgotPassword.vue';
+import Guide from './pages/Guide.vue';
+import Home from './pages/Home.vue';
+import Login from './pages/Login.vue';
+import Logout from './pages/Logout.vue';
+import Register from './pages/Register.vue';
+import ResetPassword from './pages/ResetPassword.vue';
+import Source from './pages/Source.vue';
+import SourceEdit from './pages/SourceEdit.vue';
+import Sources from './pages/Sources.vue';
+import Status from './pages/Status.vue';
+import Topic from './pages/Topic.vue';
+import TopicEdit from './pages/TopicEdit.vue';
+import Topics from './pages/Topics.vue';
+import VerifyEmail from './pages/VerifyEmail.vue';
 import auth from './auth';
 import store from './store';
 import { DwdUtilsMixin } from './utils';
@@ -63,37 +63,37 @@ function axiosError(err) {
 
 new Vue({
   el: '#app',
-  components: { DwdApp },
+  components: { AppLayout },
   store,
   router: new VueRouter({
     mode: 'history',
     routes: [
-      { path: '/', component: DwdHome },
-      { path: '/account', component: DwdAccount },
-      { path: '/activity', component: DwdActivity },
-      { path: '/admin', component: DwdAdmin },
-      { path: '/claim/:id', component: DwdClaim },
-      { path: '/claim/:id/edit', component: DwdEditClaim },
+      { path: '/', component: Home },
+      { path: '/account', component: Account },
+      { path: '/activity', component: Activity },
+      { path: '/admin', component: Admin },
+      { path: '/claim/:id', component: Claim },
+      { path: '/claim/:id/edit', component: ClaimEdit },
       { path: '/claim/:id/history', component: ClaimHistory },
       { path: '/claim/:id/rev/:revId', component: ClaimHistory },
-      { path: '/claims', component: DwdClaims },
-      { path: '/claims/add', component: DwdEditClaim },
-      { path: '/forgot-password', component: DwdForgotPassword },
-      { path: '/guide', component: DwdGuide },
-      { path: '/login', component: DwdLogin },
-      { path: '/logout', component: DwdLogout },
-      { path: '/register', component: DwdRegister },
-      { path: '/reset-password', component: DwdResetPassword },
-      { path: '/source/:id', component: DwdSource },
-      { path: '/source/:id/edit', component: DwdEditSource },
-      { path: '/sources', component: DwdSources },
-      { path: '/sources/add', component: DwdEditSource },
-      { path: '/status', component: DwdStatus },
-      { path: '/topic/:id', component: DwdTopic },
-      { path: '/topic/:id/edit', component: DwdEditTopic },
-      { path: '/topics', component: DwdTopics },
-      { path: '/topics/add', component: DwdEditTopic },
-      { path: '/verify-email', component: DwdVerifyEmail },
+      { path: '/claims', component: Claims },
+      { path: '/claims/add', component: ClaimEdit },
+      { path: '/forgot-password', component: ForgotPassword },
+      { path: '/guide', component: Guide },
+      { path: '/login', component: Login },
+      { path: '/logout', component: Logout },
+      { path: '/register', component: Register },
+      { path: '/reset-password', component: ResetPassword },
+      { path: '/source/:id', component: Source },
+      { path: '/source/:id/edit', component: SourceEdit },
+      { path: '/sources', component: Sources },
+      { path: '/sources/add', component: SourceEdit },
+      { path: '/status', component: Status },
+      { path: '/topic/:id', component: Topic },
+      { path: '/topic/:id/edit', component: TopicEdit },
+      { path: '/topics', component: Topics },
+      { path: '/topics/add', component: TopicEdit },
+      { path: '/verify-email', component: VerifyEmail },
     ],
   }),
   created: function () {

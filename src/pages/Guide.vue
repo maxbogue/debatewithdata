@@ -89,7 +89,7 @@
 import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 
-import { FlagData } from '../common/flag';
+import { FlagData } from '../../common/flag';
 
 export default {
   computed: {
@@ -102,7 +102,7 @@ export default {
 </script>
 
 <style lang="sass" module>
-@import "style/constants"
+@import "../style/constants"
 
 .anchor
   color: $text-light-accent

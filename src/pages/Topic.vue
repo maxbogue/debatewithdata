@@ -49,14 +49,14 @@
 <script>
 import map from 'lodash/map';
 
-import ClaimContent from './ClaimContent.vue';
-import CommentIcon from './CommentIcon.vue';
-import Drawer from './Drawer.vue';
-import DwdComments from './DwdComments.vue';
-import DwdLoader from './DwdLoader.vue';
-import DwdStar from './DwdStar.vue';
-import TopicInput from './TopicInput.vue';
-import { sortByStars } from './utils';
+import ClaimContent from '../ClaimContent.vue';
+import CommentIcon from '../CommentIcon.vue';
+import Drawer from '../Drawer.vue';
+import DwdComments from '../DwdComments.vue';
+import DwdLoader from '../DwdLoader.vue';
+import DwdStar from '../DwdStar.vue';
+import TopicInput from '../TopicInput.vue';
+import { sortByStars } from '../utils';
 
 export default {
   components: {

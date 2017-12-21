@@ -21,9 +21,9 @@
 <script>
 import { mapState } from 'vuex';
 
-import ClaimContent from './ClaimContent.vue';
-import DwdLoader from './DwdLoader.vue';
-import { sortByStars } from './utils';
+import ClaimContent from '../ClaimContent.vue';
+import DwdLoader from '../DwdLoader.vue';
+import { sortByStars } from '../utils';
 
 export default {
   components: {

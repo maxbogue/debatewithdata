@@ -95,8 +95,8 @@
 <script>
 import { isWebUri } from 'valid-url';
 
-import DeleteButton from './DeleteButton.vue';
-import DwdLoader from './DwdLoader.vue';
+import DeleteButton from '../DeleteButton.vue';
+import DwdLoader from '../DwdLoader.vue';
 
 const ERROR_MSG_INVALID_URL = 'Please enter a URL.';
 
@@ -214,7 +214,7 @@ export default {
 </script>
 
 <style lang="sass" module>
-@import "style/constants"
+@import "../style/constants"
 
 .type
   background-color: $background-light

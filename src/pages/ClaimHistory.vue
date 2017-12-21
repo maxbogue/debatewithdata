@@ -26,8 +26,8 @@
 import axios from 'axios';
 import dateFormat from 'dateformat';
 
-import ClaimRev from './ClaimRev.vue';
-import DwdLoader from './DwdLoader.vue';
+import ClaimRev from '../ClaimRev.vue';
+import DwdLoader from '../DwdLoader.vue';
 
 export default {
   components: {
@@ -76,7 +76,7 @@ export default {
 </script>
 
 <style lang="sass" module>
-@import "style/constants"
+@import "../style/constants"
 
 .revs
   margin: 20px auto

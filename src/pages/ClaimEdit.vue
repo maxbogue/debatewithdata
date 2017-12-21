@@ -59,14 +59,14 @@
 <script>
 import filter from 'lodash/filter';
 
-import DeleteButton from './DeleteButton.vue';
-import DwdEditPoint from './DwdEditPoint.vue';
-import DwdFlag from './DwdFlag.vue';
-import DwdFlagDropdown from './DwdFlagDropdown.vue';
-import DwdLoader from './DwdLoader.vue';
+import DeleteButton from '../DeleteButton.vue';
+import DwdEditPoint from '../DwdEditPoint.vue';
+import DwdFlag from '../DwdFlag.vue';
+import DwdFlagDropdown from '../DwdFlagDropdown.vue';
+import DwdLoader from '../DwdLoader.vue';
 import {
   emptyPoint, emptyPoints, isValidPoint, pointMapsToLists, rotateWithIndexes
-} from './utils';
+} from '../utils';
 
 function makeNewSources(store, points) {
   let promises = [];

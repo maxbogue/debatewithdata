@@ -53,16 +53,16 @@
 </template>
 
 <script>
-import ClaimContent from './ClaimContent.vue';
-import CommentIcon from './CommentIcon.vue';
-import Drawer from './Drawer.vue';
-import DwdComments from './DwdComments.vue';
-import DwdFlag from './DwdFlag.vue';
-import DwdLoader from './DwdLoader.vue';
-import DwdPoint from './DwdPoint.vue';
-import DwdStar from './DwdStar.vue';
-import DwdTrail from './DwdTrail.vue';
-import { pointMapsToLists, rotateWithIndexes } from './utils';
+import ClaimContent from '../ClaimContent.vue';
+import CommentIcon from '../CommentIcon.vue';
+import Drawer from '../Drawer.vue';
+import DwdComments from '../DwdComments.vue';
+import DwdFlag from '../DwdFlag.vue';
+import DwdLoader from '../DwdLoader.vue';
+import DwdPoint from '../DwdPoint.vue';
+import DwdStar from '../DwdStar.vue';
+import DwdTrail from '../DwdTrail.vue';
+import { pointMapsToLists, rotateWithIndexes } from '../utils';
 
 export default {
   components: {
