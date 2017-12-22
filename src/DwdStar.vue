@@ -14,7 +14,16 @@
 import axios from 'axios';
 
 export default {
-  props: ['star', 'url'],
+  props: {
+    star: {
+      type: Object,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+  },
   computed: {
     user: function () {
       return this.$store.state.user;

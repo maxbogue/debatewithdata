@@ -9,7 +9,12 @@
 import { FlagData } from '../common/flag';
 
 export default {
-  props: ['flag'],
+  props: {
+    flag: {
+      type: String,
+      required: true,
+    },
+  },
   computed: {
     data: function () {
       return FlagData[this.flag];

@@ -33,7 +33,12 @@ export default {
   components: {
     ClaimContent,
   },
-  props: ['id'],
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+  },
   data: () => ({
     input1: '',
     inputClass: '',

@@ -19,7 +19,16 @@ export default {
     ClaimContent,
     SourceContent,
   },
-  props: ['point', 'trail'],
+  props: {
+    point: {
+      type: Object,
+      required: true,
+    },
+    trail: {
+      type: Array,
+      required: true,
+    },
+  },
   computed: {
     claim: function () {
       if (this.point.type !== 'claim') {

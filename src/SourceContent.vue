@@ -25,7 +25,16 @@
 
 <script>
 export default {
-  props: ['source', 'trail'],
+  props: {
+    source: {
+      type: Object,
+      required: true,
+    },
+    trail: {
+      type: Array,
+      required: false,
+    },
+  },
 };
 </script>
 

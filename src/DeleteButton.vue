@@ -6,7 +6,12 @@
 
 <script>
 export default {
-  props: ['noun'],
+  props: {
+    noun: {
+      type: String,
+      required: true,
+    },
+  },
   data: () => ({
     awaitingConfirmation: false,
   }),

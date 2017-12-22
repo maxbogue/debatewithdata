@@ -51,7 +51,16 @@ export default {
     DwdFlag,
     PointContent,
   },
-  props: ['point', 'isFor'],
+  props: {
+    point: {
+      type: Object,
+      required: true,
+    },
+    isFor: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data: () => ({
     input1: '',
     input2: '',

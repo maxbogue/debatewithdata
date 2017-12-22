@@ -27,7 +27,20 @@ export default {
     DwdFlagDropdown,
     DwdPointInput,
   },
-  props: ['point', 'isFor', 'canDelete'],
+  props: {
+    point: {
+      type: Object,
+      required: true,
+    },
+    isFor: {
+      type: Boolean,
+      required: true,
+    },
+    canDelete: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data: () => ({
     flag: '',
   }),
