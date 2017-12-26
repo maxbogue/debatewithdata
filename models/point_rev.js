@@ -329,6 +329,7 @@ export default function (sequelize, DataTypes) {
           thisData.text = '<deleted>';
         } else {
           thisData.text = this.source.head.blob.text;
+          thisData.url = this.source.head.url;
         }
         thisData.sourceId = this.sourceId;
         break;
