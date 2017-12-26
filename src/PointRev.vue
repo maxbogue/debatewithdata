@@ -1,6 +1,7 @@
 <template>
 <li :class="pointClasses">
-  <div class="bubble">
+  <div class="bubble click"
+       @click="showDrawer = !showDrawer">
     <point-rev-content v-if="currId === prevId" :rev="curr" />
     <claim-rev-content v-else-if="isClaimLike" :curr="curr" :prev="prev" />
     <template v-else>
@@ -8,9 +9,13 @@
       <point-rev-content v-if="curr" :rev="curr" class="ins" />
     </template>
   </div>
-  <div>
+  <drawer :show="showDrawer">
+    <div class="info">
+      <span class="id mono">{{ pointId }}</span>
+    </div>
     <ul v-if="subPointRevs.length > 0" class="sub-points">
-      <point-rev v-for="[[subCurrId, subPrevId], subSide] in subPointRevs"
+      <point-rev v-for="[[pId, subCurrId, subPrevId], subSide] in subPointRevs"
+                 :pointId="pId"
                  :currId="subCurrId"
                  :prevId="subPrevId"
                  :pointRevs="pointRevs"
@@ -18,7 +23,7 @@
                  :isSubPoint="true"
                  :key="subCurrId" />
     </ul>
-  </div>
+  </drawer>
 </li>
 </template>
 
@@ -27,6 +32,7 @@ import partition from 'lodash/partition';
 
 import './style/point.sass';
 import ClaimRevContent from './ClaimRevContent.vue';
+import Drawer from './Drawer.vue';
 import PointRevContent from './PointRevContent.vue';
 import { rotateWithIndexes } from './utils';
 
@@ -34,9 +40,14 @@ export default {
   name: 'PointRev',
   components: {
     ClaimRevContent,
+    Drawer,
     PointRevContent,
   },
   props: {
+    pointId: {
+      type: String,
+      required: true,
+    },
     currId: {
       type: String,
       default: '',
@@ -58,6 +69,9 @@ export default {
       default: false,
     },
   },
+  data: () => ({
+    showDrawer: false,
+  }),
   computed: {
     curr: function () {
       return this.pointRevs[this.currId] || null;
@@ -90,10 +104,11 @@ export default {
         let prevPoints = prevHasPoints ? this.prev.points[i] : {};
 
         let inPrev = (id) => prevPoints[id];
+        let notInCurr = (id) => !currPoints[id];
         let isModified = (id) => currPoints[id] === prevPoints[id];
 
         let [inBoth, added] = partition(Object.keys(currPoints), inPrev);
-        let removed = Object.keys(prevPoints).filter((id) => !currPoints[id]);
+        let removed = Object.keys(prevPoints).filter(notInCurr);
         let [modified, unmodified] = partition(inBoth, isModified);
 
         added.sort();
@@ -102,10 +117,23 @@ export default {
         unmodified.sort();
         let pointIds = added.concat(removed, modified, unmodified);
 
-        pointRevs.push(pointIds.map((id) => [currPoints[id], prevPoints[id]]));
+        pointRevs.push(pointIds.map((id) => [id, currPoints[id], prevPoints[id]]));
       }
       return rotateWithIndexes(pointRevs);
     },
+    hasChangedSubPoints: function () {
+      let isChanged = (val) => val[0][1] !== val[0][2];
+      let anyChanged = (acc, val) => acc || isChanged(val);
+      return this.subPointRevs.reduce(anyChanged, false);
+    },
+  },
+  watch: {
+    hasChangedSubPoints: function () {
+      this.showDrawer = this.hasChangedSubPoints;
+    },
+  },
+  mounted: function () {
+    this.showDrawer = this.hasChangedSubPoints;
   },
 };
 </script>
