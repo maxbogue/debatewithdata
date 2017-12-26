@@ -1,5 +1,5 @@
 <template>
-<div class="narrow">
+<div :class="{ narrow: data && !revId }">
   <template v-if="data && !revId">
     <h3 class="center">
       History for
