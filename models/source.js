@@ -126,20 +126,17 @@ export default function (sequelize, DataTypes) {
       return rev;
     };
 
-    Source.prototype.toData = async function () {
+    Source.prototype.toCoreData = function () {
       if (this.head.deleted) {
         return {
-          rev: this.headId,
           deleted: true,
         };
       }
 
       let data = {
-        rev: this.headId,
         url: this.head.url,
         text: this.head.blob.text,
         type: this.head.type,
-        commentCount: await this.countComments(),
       };
 
       switch (this.head.type) {
@@ -156,6 +153,18 @@ export default function (sequelize, DataTypes) {
         break;
       }
 
+      return data;
+    };
+
+    Source.prototype.toData = async function () {
+      let data = this.toCoreData();
+      data.rev = this.headId;
+
+      if (this.head.deleted) {
+        return data;
+      }
+
+      data.commentCount = await this.countComments();
       return data;
     };
 

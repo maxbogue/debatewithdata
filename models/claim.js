@@ -138,32 +138,42 @@ export default function (sequelize, DataTypes) {
       return claimRev;
     };
 
-    Claim.prototype.fillData = async function (data, depth, user) {
+    Claim.prototype.toCoreData = function () {
       if (this.head.deleted) {
-        data.claims[this.id] = {
-          rev: this.headId,
-          depth: 3,
+        return {
           deleted: true,
         };
-        return;
       }
 
+      let data = {
+        text: this.head.blob.text,
+      };
+
+      if (this.head.flag) {
+        data.flag = this.head.flag;
+      }
+
+      return data;
+    };
+
+    Claim.prototype.fillData = async function (data, depth, user) {
       if (data.claims[this.id] && data.claims[this.id].depth >= depth) {
         // This claim has already been loaded with at least as much depth.
         return;
       }
 
-      let thisData = {
-        rev: this.headId,
-        text: this.head.blob.text,
-        depth: depth,
-        star: await this.toStarData(user),
-        commentCount: await this.countComments(),
-      };
+      let thisData = this.toCoreData();
+      thisData.rev = this.headId;
 
-      if (this.head.flag) {
-        thisData.flag = this.head.flag;
+      if (thisData.deleted) {
+        thisData.depth = 3;
+        data.claims[this.id] = thisData;
+        return;
       }
+
+      thisData.depth = depth;
+      thisData.star = await this.toStarData(user);
+      thisData.commentCount = await this.countComments();
 
       if (depth > 1) {
         thisData.points = await models.PointRev.toDatas(

@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import clone from 'lodash/clone';
+
 import ClaimContent from './ClaimContent.vue';
 import SourceContent from './SourceContent.vue';
 
@@ -24,20 +26,17 @@ export default {
       if (this.rev.type !== 'claim') {
         return null;
       }
-      return {
-        id: this.rev.claimId,
-        text: this.rev.text,
-      };
+      let claim = clone(this.rev.claim);
+      claim.id = this.rev.claimId;
+      return claim;
     },
     source: function () {
       if (this.rev.type !== 'source') {
         return null;
       }
-      return {
-        id: this.rev.sourceId,
-        text: this.rev.text,
-        url: this.rev.url,
-      };
+      let source = clone(this.rev.source);
+      source.id = this.rev.sourceId;
+      return source;
     },
   },
 };
