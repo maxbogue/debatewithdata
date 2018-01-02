@@ -6,11 +6,16 @@
         <strong>by</strong> <span>{{ curr.username }}</span>
     </div>
     <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
-    <div :class="$style.nav">
-      <router-link v-if="prev" :to="prevUrl">Prev</router-link>
-      <router-link :to="url + '/history'">History</router-link>
-      <router-link v-if="next" :to="nextUrl">Next</router-link>
-    </div>
+  </div>
+  <div class="block no-pad center" :class="$style.nav">
+    <router-link v-if="prev"
+                  :to="prevUrl"
+                  class="dwd-btn grey">Prev</router-link>
+    <router-link :to="url + '/history'"
+                  class="dwd-btn grey">History</router-link>
+    <router-link v-if="next"
+                  :to="nextUrl"
+                  class="dwd-btn grey">Next</router-link>
   </div>
   <claim-rev-content class="claim block" :curr="curr" :prev="prev" />
   <template v-if="$store.state.singleColumn">
@@ -127,22 +132,14 @@ export default {
 @import "style/constants"
 
 .nav
+  align-items: center
   display: flex
   justify-content: center
   padding: 8px 0 0 0
 
   a
-    background-color: $text-light-accent
-    border-left: $accent-border-width solid $text-dark-accent
-    color: $text-light
-    display: inline-block;
-    padding: 4px;
-    width: 75px;
+    width: 7em;
 
     &:not(:first-child)
       margin-left: $accent-border-width
-
-    &:hover
-      background-color: $text-dark-accent
-      text-decoration: none
 </style>

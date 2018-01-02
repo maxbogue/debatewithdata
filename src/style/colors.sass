@@ -5,7 +5,7 @@
   border-left: $accent-border-width solid $accent
   color: if($is-light, $text-dark, $text-light)
 
-  @at-root a#{&}:hover,
+  @at-root a#{&}:hover, a#{&}:focus,
   &.dwd-btn:hover,
   &.click:hover
     background-color: $accent
@@ -13,6 +13,9 @@
 
 .white
   +color($white-primary, $white-accent, true)
+
+.grey
+  +color($grey-primary, $grey-accent, false)
 
 .red
   +color($red-primary, $red-accent, true)
