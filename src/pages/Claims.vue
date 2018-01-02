@@ -3,8 +3,8 @@
   <h3 class="center">
     Claims are simple statements about the world.
   </h3>
-  <div class="center">
-    <router-link :to="addUrl" class="add blue-dark">New Claim</router-link>
+  <div class="block no-pad center">
+    <router-link :to="addUrl" class="dwd-btn blue-dark">New Claim</router-link>
   </div>
   <dwd-loader ref="loader"></dwd-loader>
   <template v-if="claimsLoaded">

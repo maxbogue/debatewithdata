@@ -45,12 +45,12 @@
     <div v-if="id" class="block center">
       <delete-button noun="Claim" @delete="remove" />
     </div>
-    <div :class="$style.fixedBottom" class="center blue">
-      <button type="submit" class="btn btn-primary">Submit</button>
+    <fixed-bottom class="center blue">
+      <button type="submit" class="dwd-btn blue-dark">Submit</button>
       <button type="button"
-              class="btn btn-default"
+              class="dwd-btn white"
               @click="cancel">Cancel</button>
-    </div>
+    </fixed-bottom>
   </form>
   <dwd-loader ref="loader" />
 </div>
@@ -64,6 +64,7 @@ import DwdEditPoint from '../DwdEditPoint.vue';
 import DwdFlag from '../DwdFlag.vue';
 import DwdFlagDropdown from '../DwdFlagDropdown.vue';
 import DwdLoader from '../DwdLoader.vue';
+import FixedBottom from '../FixedBottom.vue';
 import {
   emptyPoint, emptyPoints, isValidPoint, pointMapsToLists, rotateWithIndexes
 } from '../utils';
@@ -107,6 +108,7 @@ export default {
     DwdFlag,
     DwdFlagDropdown,
     DwdLoader,
+    FixedBottom,
   },
   data: () => ({
     points: emptyPoints(),
@@ -205,14 +207,3 @@ export default {
   },
 };
 </script>
-
-<style lang="sass" module>
-.fixedBottom
-  bottom: 0
-  left: 50%
-  margin-left: -150px
-  padding: 8px
-  position: fixed
-  width: 300px
-  z-index: 1
-</style>

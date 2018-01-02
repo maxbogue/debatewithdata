@@ -52,12 +52,12 @@
     <div v-if="id" class="block no-pad center">
       <delete-button noun="Claim" @delete="remove" />
     </div>
-    <div :class="$style.fixedBottom" class="center blue">
-      <button type="submit" class="btn btn-primary">Submit</button>
+    <fixed-bottom class="center pink">
+      <button type="submit" class="dwd-btn blue-dark">Submit</button>
       <button type="button"
-              class="btn btn-default"
+              class="dwd-btn white"
               @click="cancel">Cancel</button>
-    </div>
+    </fixed-bottom>
   </form>
   <dwd-loader ref="loader" />
 </div>
@@ -71,6 +71,7 @@ import sortBy from 'lodash/sortBy';
 import ClaimInput from '../ClaimInput.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
+import FixedBottom from '../FixedBottom.vue';
 import TopicInput from '../TopicInput.vue';
 import { pipe, stableRandom, starCount, starred } from '../utils';
 
@@ -79,6 +80,7 @@ export default {
     ClaimInput,
     DeleteButton,
     DwdLoader,
+    FixedBottom,
     TopicInput,
   },
   data: () => ({
@@ -193,14 +195,3 @@ export default {
   },
 };
 </script>
-
-<style lang="sass" module>
-.fixedBottom
-  bottom: 0
-  left: 50%
-  margin-left: -150px
-  padding: 8px
-  position: fixed
-  width: 300px
-  z-index: 1
-</style>

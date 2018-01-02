@@ -3,8 +3,9 @@
   <h3 class="center">
     Sources are external sources of data used to support claims.
   </h3>
-  <div class="center">
-    <router-link :to="addUrl" class="add green-dark">New Source</router-link>
+  <div class="block no-pad center">
+    <router-link :to="addUrl"
+                 class="dwd-btn green-dark">New Source</router-link>
   </div>
   <dwd-loader ref="loader"></dwd-loader>
   <template v-if="sourcesLoaded">

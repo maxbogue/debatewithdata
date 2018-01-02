@@ -1,8 +1,8 @@
 <template>
 <div>
   <h3 class="center">Topics represent common topics of debate.</h3>
-  <div class="center">
-    <router-link :to="addUrl" class="add pink-dark">New Topic</router-link>
+  <div class="block no-pad center">
+    <router-link :to="addUrl" class="dwd-btn pink-dark">New Topic</router-link>
   </div>
   <dwd-loader ref="loader"></dwd-loader>
   <template v-if="topicsLoaded">

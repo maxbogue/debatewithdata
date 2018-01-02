@@ -1,6 +1,6 @@
 <template>
   <button type="button"
-          class="btn btn-danger"
+          class="dwd-btn red-dark"
           @click="click">{{ text }}</button>
 </template>
 
