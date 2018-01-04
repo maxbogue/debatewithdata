@@ -1,42 +1,8 @@
 <template>
 <div>
   <form v-if="!needsData" @submit.prevent="submit">
-    <div class="topic t1">
-      <div class="bubble">
-        <label for="title" class="hint">
-          The title of this topic.
-        </label>
-        <textarea id="title"
-                  rows="1"
-                  autocomplete="off"
-                  placeholder="title"
-                  v-model="title"
-                  v-auto-resize></textarea>
-        <label v-if="!id" for="id" class="hint">
-          The ID shows up in the URL and cannot be changed.
-        </label>
-        <textarea v-if="!id"
-                  id="id"
-                  class="mono"
-                  rows="1"
-                  autocomplete="off"
-                  placeholder="id"
-                  v-model="tempId"
-                  v-auto-resize></textarea>
-        <label for="text" class="hint">
-          Describe this topic.
-        </label>
-        <textarea id="text"
-                  rows="1"
-                  autocomplete="off"
-                  placeholder="description"
-                  v-model="text"
-                  v-auto-resize></textarea>
-      </div>
-      <div v-if="text" class="info">
-        <span class="id mono">{{ id || 'new' }}</span>
-      </div>
-    </div>
+    <topic-edit-partial :oldTopic="topic"
+                        @update="(t) => newTopicPartial = t" />
     <h3>Sub-Topics</h3>
     <topic-input v-for="(subTopicId, i) in subTopicIds"
                   class="topic block"
@@ -64,7 +30,8 @@
 </template>
 
 <script>
-import dashify from 'dashify';
+import assign from 'lodash/assign';
+import clone from 'lodash/clone';
 import filter from 'lodash/filter';
 import sortBy from 'lodash/sortBy';
 
@@ -72,6 +39,7 @@ import ClaimInput from '../ClaimInput.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
+import TopicEditPartial from '../TopicEditPartial.vue';
 import TopicInput from '../TopicInput.vue';
 import { pipe, stableRandom, starCount, starred } from '../utils';
 
@@ -81,12 +49,11 @@ export default {
     DeleteButton,
     DwdLoader,
     FixedBottom,
+    TopicEditPartial,
     TopicInput,
   },
   data: () => ({
-    tempId: '',
-    title: '',
-    text: '',
+    newTopicPartial: {},
     subTopicIds: [],
     claimIds: [],
   }),
@@ -117,18 +84,14 @@ export default {
     submit: function () {
       let action = 'addTopic';
       let payload = {
-        topic: {
-          title: this.title,
-          text: this.text,
+        topic: assign(clone(this.newTopicPartial), {
           subTopicIds: filter(this.subTopicIds, this.lookupTopic),
           claimIds: filter(this.claimIds, this.lookupClaim),
-        },
+        }),
       };
       if (this.id) {
         action = 'updateTopic';
         payload.id = this.id;
-      } else {
-        payload.topic.id = this.tempId;
       }
       this.$store.dispatch(action, payload).then((id) => {
         this.$router.push(this.topicUrl(id));
@@ -146,9 +109,6 @@ export default {
     },
     initialize: function () {
       if (this.topic) {
-        this.title = this.topic.title;
-        this.text = this.topic.text;
-
         let topicStarred = pipe(this.lookupTopic, starred);
         let topicStarCount = pipe(this.lookupTopic, starCount);
         this.subTopicIds = sortBy(this.topic.subTopicIds,
@@ -181,13 +141,6 @@ export default {
   watch: {
     id: function () {
       this.checkLoaded();
-    },
-    title: function (newTitle, oldTitle) {
-      let oldId = dashify(oldTitle);
-      let newId = dashify(newTitle);
-      if (!this.tempId || this.tempId === oldId) {
-        this.tempId = newId;
-      }
     },
   },
   mounted: function () {
