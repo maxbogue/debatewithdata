@@ -1,20 +1,30 @@
 <template>
 <div>
   <form v-if="!needsData" @submit.prevent="submit">
-    <topic-edit-partial :oldTopic="topic"
-                        @update="(t) => newTopicPartial = t" />
+    <div class="topic t1">
+      <topic-rev-content class="bubble click"
+                         :prev="topic"
+                         :curr="newTopicPartial"
+                         @click.native="showModal = true" />
+      <div class="info">
+        <span class="id mono">{{ id }}</span>
+      </div>
+    </div>
+    <topic-edit-modal :show.sync="showModal"
+                      :oldTopic="topic"
+                      @update="(t) => newTopicPartial = t" />
     <h3>Sub-Topics</h3>
     <topic-input v-for="(subTopicId, i) in subTopicIds"
-                  class="topic block"
-                  :id="subTopicId"
-                  @update="(newId) => updateSubTopicId(i, newId)"
-                  :key="'topic-' + i" />
+                 class="topic block"
+                 :id="subTopicId"
+                 @update="(newId) => updateSubTopicId(i, newId)"
+                 :key="'topic-' + i" />
     <h3>Key Claims</h3>
     <claim-input v-for="(claimId, i) in claimIds"
-                  class="claim block"
-                  :id="claimId"
-                  @update="(newId) => updateClaimId(i, newId)"
-                  :key="'claim-' + i" />
+                 class="claim block"
+                 :id="claimId"
+                 @update="(newId) => updateClaimId(i, newId)"
+                 :key="'claim-' + i" />
     <div v-if="id" class="block no-pad center">
       <delete-button noun="Claim" @delete="remove" />
     </div>
@@ -39,7 +49,8 @@ import ClaimInput from '../ClaimInput.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
-import TopicEditPartial from '../TopicEditPartial.vue';
+import TopicEditModal from '../TopicEditModal.vue';
+import TopicRevContent from '../TopicRevContent.vue';
 import TopicInput from '../TopicInput.vue';
 import { pipe, stableRandom, starCount, starred } from '../utils';
 
@@ -49,13 +60,15 @@ export default {
     DeleteButton,
     DwdLoader,
     FixedBottom,
-    TopicEditPartial,
+    TopicEditModal,
+    TopicRevContent,
     TopicInput,
   },
   data: () => ({
-    newTopicPartial: {},
+    newTopicPartial: undefined,
     subTopicIds: [],
     claimIds: [],
+    showModal: false,
   }),
   computed: {
     id: function () {

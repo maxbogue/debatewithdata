@@ -3,7 +3,7 @@
   <template v-if="topic">
     <div class="topic t1">
       <div class="bubble click"
-            @click="showDrawer = !showDrawer">
+           @click="showDrawer = !showDrawer">
         <h2>{{ topic.title }}</h2>
         <p>{{ topic.text }}</p>
       </div>
@@ -13,9 +13,9 @@
           <dwd-star :star="topic.star"
                     :url="'/api' + topicUrl(id)"></dwd-star>
           <router-link v-if="$store.state.user"
-                        :to="topicUrl(id) + '/edit'"
-                        class="glyphicon glyphicon-pencil click"
-                        aria-hidden="true"></router-link>
+                       :to="topicUrl(id) + '/edit'"
+                       class="glyphicon glyphicon-pencil click"
+                       aria-hidden="true"></router-link>
           <comment-icon @click.native="showComments = !showComments"
                         :count="topic.commentCount"></comment-icon>
         </div>
@@ -26,18 +26,18 @@
     <template v-if="subTopics.length > 0">
       <h3>Sub-Topics</h3>
       <router-link v-for="subTopic in subTopics"
-                  class="topic block"
-                  :to="topicUrl(subTopic.id)"
-                  :key="subTopic.id">
-          {{ subTopic.title }}
+                   class="topic block"
+                   :to="topicUrl(subTopic.id)"
+                   :key="subTopic.id">
+        {{ subTopic.title }}
       </router-link>
     </template>
     <template v-if="claims.length > 0">
       <h3>Key Claims</h3>
       <router-link v-for="claim in claims"
-                  class="claim block"
-                  :to="claimUrl(claim.id)"
-                  :key="claim.id">
+                   class="claim block"
+                   :to="claimUrl(claim.id)"
+                   :key="claim.id">
           <claim-content :claim="claim" />
       </router-link>
     </template>
