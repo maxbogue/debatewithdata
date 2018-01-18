@@ -22,7 +22,7 @@
                   rows="1"
                   autocomplete="off"
                   placeholder="id"
-                  v-model="tempId"
+                  v-model="id"
                   @keydown.enter.prevent
                   v-auto-resize></textarea>
       </template>
@@ -58,21 +58,19 @@ export default {
       type: Boolean,
       required: true,
     },
-    oldTopic: {
+    topic: {
       type: Object,
     },
   },
-  data: function () {
-    return {
-      tempId: '',
-      title: '',
-      text: '',
-    };
-  },
+  data: () => ({
+    id: '',
+    title: '',
+    text: '',
+  }),
   computed: {
     oldId: function () {
-      if (this.oldTopic && this.oldTopic.id) {
-        return this.oldTopic.id;
+      if (this.topic && this.topic.id) {
+        return this.topic.id;
       }
       return null;
     },
@@ -92,29 +90,29 @@ export default {
         text: this.text,
       };
       if (!this.oldId) {
-        topic.id = this.tempId;
+        topic.id = this.id;
       }
       this.$emit('update', topic);
     },
     initialize: function () {
-      if (this.oldTopic) {
-        this.title = this.oldTopic.title;
-        this.text = this.oldTopic.text;
+      if (this.topic) {
+        this.title = this.topic.title;
+        this.text = this.topic.text;
       }
     },
   },
   watch: {
-    oldTopic: function () {
+    topic: function () {
       this.initialize();
     },
-    tempId: function () {
+    id: function () {
       this.update();
     },
     title: function (newTitle, oldTitle) {
       let oldId = dashify(oldTitle);
       let newId = dashify(newTitle);
-      if (!this.tempId || this.tempId === oldId) {
-        this.tempId = newId;
+      if (!this.id || this.id === oldId) {
+        this.id = newId;
       }
       this.update();
     },

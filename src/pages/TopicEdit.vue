@@ -5,14 +5,14 @@
       <topic-rev-content class="bubble click"
                          :prev="topic"
                          :curr="newTopicPartial"
-                         @click.native="showModal = true" />
+                         @click.native="editThisTopic" />
       <div class="info">
         <span class="id mono">{{ id || 'new' }}</span>
       </div>
     </div>
     <topic-edit-modal :show.sync="showModal"
-                      :oldTopic="topic"
-                      @update="(t) => newTopicPartial = t" />
+                      :topic="modalTopic"
+                      @update="(v) => modalCallback(v)" />
     <h3>Sub-Topics</h3>
     <topic-input v-for="(subTopicId, i) in subTopicIds"
                  class="topic block"
@@ -69,6 +69,8 @@ export default {
     subTopicIds: [],
     claimIds: [],
     showModal: false,
+    modalTopic: null,
+    modalCallback: null,
   }),
   computed: {
     id: function () {
@@ -90,6 +92,14 @@ export default {
     },
   },
   methods: {
+    editTopic: function (topic, callback) {
+      this.modalTopic = topic;
+      this.modalCallback = callback;
+      this.showModal = true;
+    },
+    editThisTopic: function () {
+      this.editTopic(this.newTopicPartial, (t) => this.newTopicPartial = t);
+    },
     updateSubTopicId: function (i, subTopicId) {
       this.$set(this.subTopicIds, i, subTopicId);
       if (i === this.subTopicIds.length - 1) {
@@ -130,6 +140,8 @@ export default {
     },
     initialize: function () {
       if (this.topic) {
+        this.newTopicPartial = this.topic;
+
         let topicStarred = pipe(this.lookupTopic, starred);
         let topicStarCount = pipe(this.lookupTopic, starCount);
         this.subTopicIds = sortBy(this.topic.subTopicIds,
@@ -139,9 +151,9 @@ export default {
         let claimStarCount = pipe(this.lookupClaim, starCount);
         this.claimIds = sortBy(this.topic.claimIds,
             [claimStarred, claimStarCount, stableRandom]);
+      } else {
+        this.editThisTopic();
       }
-
-      this.showModal = true;
 
       // Append an empty input for new sub-topics.
       this.subTopicIds.push('');
