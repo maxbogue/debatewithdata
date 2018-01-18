@@ -20,10 +20,12 @@ export default {
     curr: {
       type: Object,
       default: emptyTopic,
+      required: true,
     },
     prev: {
       type: Object,
       default: emptyTopic,
+      required: true,
     },
   },
   methods: {

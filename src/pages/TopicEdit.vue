@@ -7,7 +7,7 @@
                          :curr="newTopicPartial"
                          @click.native="showModal = true" />
       <div class="info">
-        <span class="id mono">{{ id }}</span>
+        <span class="id mono">{{ id || 'new' }}</span>
       </div>
     </div>
     <topic-edit-modal :show.sync="showModal"
@@ -25,7 +25,7 @@
                  :id="claimId"
                  @update="(newId) => updateClaimId(i, newId)"
                  :key="'claim-' + i" />
-    <div v-if="id" class="block no-pad center">
+    <div v-if="topic" class="block no-pad center">
       <delete-button noun="Claim" @delete="remove" />
     </div>
     <fixed-bottom class="center pink">
@@ -72,13 +72,21 @@ export default {
   }),
   computed: {
     id: function () {
+      if (this.routeId) {
+        return this.routeId;
+      } else if (this.newTopicPartial) {
+        return this.newTopicPartial.id;
+      }
+      return null;
+    },
+    routeId: function () {
       return this.$route.params.id;
     },
     topic: function () {
-      return this.$store.state.topics[this.id] || null;
+      return this.$store.state.topics[this.routeId] || undefined;
     },
     needsData: function () {
-      return this.id && !this.topic;
+      return this.routeId && !this.topic;
     },
   },
   methods: {
@@ -102,9 +110,9 @@ export default {
           claimIds: filter(this.claimIds, this.lookupClaim),
         }),
       };
-      if (this.id) {
+      if (this.topic) {
         action = 'updateTopic';
-        payload.id = this.id;
+        payload.id = this.topic.id;
       }
       this.$store.dispatch(action, payload).then((id) => {
         this.$router.push(this.topicUrl(id));
@@ -112,13 +120,13 @@ export default {
     },
     remove: function () {
       this.$store.dispatch('removeTopic', {
-        id: this.id,
+        id: this.topic.id,
       }).then(() => {
         this.$router.push('/topics');
       });
     },
     cancel: function () {
-      this.$router.push(this.id ? this.topicUrl(this.id) : '/topics');
+      this.$router.push(this.topic ? this.topicUrl(this.topic.id) : '/topics');
     },
     initialize: function () {
       if (this.topic) {
@@ -132,6 +140,8 @@ export default {
         this.claimIds = sortBy(this.topic.claimIds,
             [claimStarred, claimStarCount, stableRandom]);
       }
+
+      this.showModal = true;
 
       // Append an empty input for new sub-topics.
       this.subTopicIds.push('');
@@ -152,7 +162,7 @@ export default {
     },
   },
   watch: {
-    id: function () {
+    topic: function () {
       this.checkLoaded();
     },
   },
