@@ -74,6 +74,16 @@ export default {
       }
       return null;
     },
+    newTopic: function () {
+      let topic = {
+        title: this.title,
+        text: this.text,
+      };
+      if (!this.oldId) {
+        topic.id = this.id;
+      }
+      return topic;
+    },
   },
   methods: {
     close: function () {
@@ -83,16 +93,6 @@ export default {
       this.close();
       this.initialize();
       this.update();
-    },
-    update: function () {
-      let topic = {
-        title: this.title,
-        text: this.text,
-      };
-      if (!this.oldId) {
-        topic.id = this.id;
-      }
-      this.$emit('update', topic);
     },
     initialize: function () {
       if (this.topic) {
@@ -105,8 +105,8 @@ export default {
     topic: function () {
       this.initialize();
     },
-    id: function () {
-      this.update();
+    newTopic: function () {
+      this.$emit('update', this.newTopic);
     },
     title: function (newTitle, oldTitle) {
       let oldId = dashify(oldTitle);
@@ -114,10 +114,6 @@ export default {
       if (!this.id || this.id === oldId) {
         this.id = newId;
       }
-      this.update();
-    },
-    text: function () {
-      this.update();
     },
   },
   mounted: function () {
