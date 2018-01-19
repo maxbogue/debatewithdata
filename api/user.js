@@ -5,9 +5,17 @@ import nodemailer from 'nodemailer';
 import { User } from '../models';
 import { AuthError } from './error';
 
-const AUTH_HEADER_REGEX = /^Bearer (.+)$/;
+function makeSmtpTransport() {
+  if (!config.has('smtpConfig')) {
+    /* eslint no-console: "off" */
+    console.warn('Missing SMTP configuration; emails will not work.');
+    return null;
+  }
+  return nodemailer.createTransport(config.get('smtpConfig'));
+}
 
-const smtpTransport = nodemailer.createTransport(config.get('smtpConfig'));
+const AUTH_HEADER_REGEX = /^Bearer (.+)$/;
+const SMTP_TRANSPORT = makeSmtpTransport();
 
 // A middleware that parses the authorization request header and sets req.user
 // if it is valid.
@@ -33,7 +41,7 @@ router.post('/login', async function (req, res) {
 router.post('/register', async function (req, res) {
   let user = await User.register(
       req.body.username, req.body.password, req.body.email, req.body.invite);
-  await user.sendVerificationEmail(smtpTransport);
+  await user.sendVerificationEmail(SMTP_TRANSPORT);
   res.json({ message: 'Email verification required.' });
 });
 
@@ -45,7 +53,7 @@ router.post('/verify-email', async function (req, res) {
 router.post('/forgot-password', async function (req, res) {
   let user = await User.forgotPassword(req.body.email);
   if (user) {
-    await user.sendForgotPasswordEmail(smtpTransport);
+    await user.sendForgotPasswordEmail(SMTP_TRANSPORT);
   }
   res.json({ message: 'success' });
 });

@@ -151,9 +151,16 @@ export default function (sequelize, DataTypes) {
       });
     };
 
-    User.prototype.sendVerificationEmail = function (transport) {
+    User.prototype.sendVerificationEmail = async function (transport) {
       let url = ROOT_URL + '/verify-email?token=' + this.emailVerificationToken;
-      return transport.sendMail({
+
+      if (!transport) {
+        /* eslint no-console: "off" */
+        console.log('Verify ' + this.email + ': ' + url);
+        return;
+      }
+
+      await transport.sendMail({
         from: 'DebateWithData <contact@debatewithdata.org>',
         to: this.email,
         subject: 'Email Verification',
@@ -186,9 +193,16 @@ export default function (sequelize, DataTypes) {
       return user;
     };
 
-    User.prototype.sendForgotPasswordEmail = function (transport) {
+    User.prototype.sendForgotPasswordEmail = async function (transport) {
       let url = ROOT_URL + '/reset-password?token=' + this.passwordResetToken;
-      return transport.sendMail({
+
+      if (!transport) {
+        /* eslint no-console: "off" */
+        console.log('Reset ' + this.email + ': ' + url);
+        return;
+      }
+
+      await transport.sendMail({
         from: 'DebateWithData <contact@debatewithdata.org>',
         to: this.email,
         subject: 'Reset Password',
