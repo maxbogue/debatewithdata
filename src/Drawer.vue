@@ -86,5 +86,6 @@ export default {
   overflow: auto
 
 .drawerActive, .drawerActive > div
+  overflow: hidden
   transition: all 0.5s
 </style>
