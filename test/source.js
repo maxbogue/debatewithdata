@@ -192,10 +192,15 @@ describe('Source', function () {
     it('source exists', async function () {
       let rev = await Source.apiCreate(user, MISC);
       let sourceData = await Source.apiGet(rev.sourceId);
+
       expect(sourceData).to.deep.equal({
-        rev: rev.id,
-        commentCount: 0,
-        ...MISC,
+        sources: {
+          [rev.sourceId]: {
+            rev: rev.id,
+            commentCount: 0,
+            ...MISC,
+          },
+        },
       });
     });
 
@@ -208,8 +213,12 @@ describe('Source', function () {
       let r2 = await Source.apiDelete(r1.sourceId, user);
       let sourceData = await Source.apiGet(r1.sourceId);
       expect(sourceData).to.deep.equal({
-        rev: r2.id,
-        deleted: true,
+        sources: {
+          [r1.sourceId]: {
+            rev: r2.id,
+            deleted: true,
+          },
+        }
       });
     });
   });

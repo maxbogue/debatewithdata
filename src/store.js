@@ -202,20 +202,20 @@ export default new Vuex.Store({
       });
     },
     updateSource: function ({ commit }, { id, source }) {
-      return axios.put('/api/source/' + id, source).then(() => {
-        commit('setSource', { id, source });
-        return id;
+      return axios.put('/api/source/' + id, source).then((res) => {
+        commit('setData', res.data);
+        return res.data.id;
       });
     },
     addSource: function ({ commit }, { source }) {
       return axios.post('/api/source', source).then((res) => {
-        commit('setSource', { id: res.data.id, source });
+        commit('setData', res.data);
         return res.data.id;
       });
     },
     removeSource: function ({ commit }, { id }) {
-      return axios.delete('/api/source/' + id).then(() => {
-        commit('removeSource', id);
+      return axios.delete('/api/source/' + id).then((res) => {
+        commit('setData', res.data);
       });
     },
     getItem: function ({ commit }, { id, loader }) {

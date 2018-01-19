@@ -173,7 +173,12 @@ export default function (sequelize, DataTypes) {
       if (!source) {
         throw new NotFoundError('Source not found: ' + sourceId);
       }
-      return await source.toData();
+      let sourceData = await source.toData();
+      return {
+        sources: {
+          [sourceId]: sourceData,
+        },
+      };
     };
 
     Source.apiGetAll = async function () {

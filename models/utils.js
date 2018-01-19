@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import forOwn from 'lodash/forOwn';
 
 import { FlagData } from '../common/flag';
 
@@ -23,5 +24,35 @@ export const ROOT_URL = process.env.NODE_ENV === 'production'
 export function isValidFlag(flag) {
   if (!FlagData[flag]) {
     throw new Error('Invalid flag: ' + flag);
+  }
+}
+
+// Modifies |data| by adding all data in |otherData| to it.
+export function addApiData(data, otherData) {
+  if (otherData.topics) {
+    if (!data.topics) {
+      data.topics = {};
+    }
+    forOwn(otherData.topics, (topic, id) => {
+      data.topics[id] = topic;
+    });
+  }
+  if (otherData.claims) {
+    if (!data.claims) {
+      data.claims = {};
+    }
+    forOwn(otherData.claims, (claim, id) => {
+      if (!data.claims[id] || data.claims[id].depth < claim.depth) {
+        data.claims[id] = claim;
+      }
+    });
+  }
+  if (otherData.sources) {
+    if (!data.sources) {
+      data.sources = {};
+    }
+    forOwn(otherData.sources, (source, id) => {
+      data.sources[id] = source;
+    });
   }
 }
