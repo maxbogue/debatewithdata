@@ -6,12 +6,7 @@
         <label for="text" class="hint">
           A claim should be a short, simple statement about the world.
         </label>
-        <textarea id="text"
-                  rows="1"
-                  autocomplete="off"
-                  placeholder="claim"
-                  v-model="text"
-                  v-auto-resize></textarea>
+        <dwd-input v-model="text" id="text" placeholder="claim" />
         <dwd-flag v-if="flag" :flag="flag" />
       </div>
       <div v-if="text" class="info">
@@ -63,6 +58,7 @@ import DeleteButton from '../DeleteButton.vue';
 import DwdEditPoint from '../DwdEditPoint.vue';
 import DwdFlag from '../DwdFlag.vue';
 import DwdFlagDropdown from '../DwdFlagDropdown.vue';
+import DwdInput from '../DwdInput.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import {
@@ -107,6 +103,7 @@ export default {
     DwdEditPoint,
     DwdFlag,
     DwdFlagDropdown,
+    DwdInput,
     DwdLoader,
     FixedBottom,
   },

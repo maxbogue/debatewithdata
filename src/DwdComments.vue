@@ -13,14 +13,10 @@
       </li>
       <li v-if="comments.length === 0">No comments yet.</li>
     </ul>
-    <textarea v-if="$store.state.user"
-              rows="1"
-              autocomplete="off"
-              placeholder="new comment"
-              @keydown.enter.prevent
-              @keyup.enter="submit"
-              v-model="newComment"
-              v-auto-resize></textarea>
+    <dwd-input v-if="$store.state.user"
+               v-model="newComment"
+               placeholder="new comment"
+               @keyup.enter.native="submit" />
   </template>
   <div v-else>Loading...</div>
 </div>
@@ -30,9 +26,14 @@
 import axios from 'axios';
 import dateFormat from 'dateformat';
 
+import DwdInput from './DwdInput.vue';
+
 const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 
 export default {
+  components: {
+    DwdInput,
+  },
   props: {
     url: {
       type: String,

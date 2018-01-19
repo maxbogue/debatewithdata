@@ -1,13 +1,10 @@
 <template>
 <div :class="$style.input">
-  <textarea rows="1"
-            autocomplete="off"
-            placeholder="12-letter claim ID"
-            ref="input1"
-            class="mono"
-            :class="[inputClass]"
-            v-model="input1"
-            v-auto-resize></textarea>
+  <dwd-input v-model="input1"
+             placeholder="12-letter claim ID"
+             class="mono"
+             :class="[inputClass]"
+             :error="inputError" />
   <div v-if="loading" :class="$style.loader">
     <div class="ball-pulse-sync">
       <div></div>
@@ -26,12 +23,14 @@
 import 'loaders.css/loaders.min.css';
 
 import ClaimContent from './ClaimContent.vue';
+import DwdInput from './DwdInput.vue';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
 export default {
   components: {
     ClaimContent,
+    DwdInput,
   },
   props: {
     id: {
@@ -51,15 +50,14 @@ export default {
     claim: function () {
       return this.lookupClaim(this.id);
     },
+    inputError: function () {
+      if (this.id && !this.claim) {
+        return 'Invalid claim ID';
+      }
+      return '';
+    },
   },
   methods: {
-    updateInputError: function () {
-      let error = '';
-      if (this.id && !this.claim) {
-        error = 'Invalid claim ID';
-      }
-      this.$refs.input1.setCustomValidity(error);
-    },
     makeLoader: function (newId) {
       return {
         setLoading: (loading) => {
@@ -95,7 +93,6 @@ export default {
       this.loading = false;
       this.error = '';
       this.inputClass = '';
-      this.updateInputError();
 
       if (!ID_REGEX.test(newId)) {
         return;
@@ -109,7 +106,6 @@ export default {
         }).then(() => {
           if (this.id === newId) {
             this.inputClass = 'success';
-            this.updateInputError();
           }
         }).catch(() => {});
       } else if (this.claim) {

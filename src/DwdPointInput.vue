@@ -3,23 +3,18 @@
   <label v-if="!point.type" class="hint">
     Add a point {{ isFor | toSideString }} the claim.
   </label>
-  <textarea rows="1"
-            autocomplete="off"
-            placeholder="Text, URL, or 12-letter ID"
-            ref="input1"
-            :class="[inputClass]"
-            v-model="input1"
-            v-auto-resize></textarea>
+  <dwd-input v-model="input1"
+             placeholder="Text, URL, or 12-letter ID"
+             :class="[inputClass]"
+             :error="input1Error" />
   <template v-if="isUrl">
     <label class="hint">
       URL detected; describe the data this new source provides.
     </label>
-    <textarea rows="1"
-              autocomplete="off"
-              placeholder="source description"
-              ref="input2"
-              v-model="input2"
-              v-auto-resize></textarea>
+    <dwd-input v-model="input2"
+               placeholder="source description"
+               :class="[inputClass]"
+               :error="input2Error" />
   </template>
   <div v-if="loading" :class="$style.loader">
     <div class="ball-pulse-sync">
@@ -41,6 +36,7 @@ import 'loaders.css/loaders.min.css';
 import { isWebUri } from 'valid-url';
 
 import DwdFlag from './DwdFlag.vue';
+import DwdInput from './DwdInput.vue';
 import PointContent from './PointContent.vue';
 import { pointToInput } from './utils';
 
@@ -49,6 +45,7 @@ const ID_REGEX = /^[0-9a-f]{12}$/;
 export default {
   components: {
     DwdFlag,
+    DwdInput,
     PointContent,
   },
   props: {
@@ -86,10 +83,21 @@ export default {
     source: function () {
       return this.id ? this.$store.state.sources[this.id] : null;
     },
+    input1Error: function () {
+      if (this.id && !this.claim && !this.source) {
+        return 'Invalid ID';
+      }
+      return '';
+    },
+    input2Error: function () {
+      if (!this.input1Error && this.isUrl && !this.input2) {
+        return 'Source description required';
+      }
+      return '';
+    },
   },
   methods: {
     update: function () {
-      this.updateError();
       let type = '';
       if (this.source) {
         type = 'source';
@@ -101,19 +109,6 @@ export default {
         type = 'text';
       }
       this.$emit('update', type, this.input1, this.input2);
-    },
-    updateError: function () {
-      let error1 = '';
-      let error2 = '';
-      if (this.id && !this.claim && !this.source) {
-        error1 = 'Invalid ID';
-      } else if (this.isUrl && !this.input2) {
-        error2 = 'Source description required';
-      }
-      this.$refs.input1.setCustomValidity(error1);
-      if (this.$refs.input2) {
-        this.$refs.input2.setCustomValidity(error2);
-      }
     },
     makeLoader: function (newId) {
       return {

@@ -1,13 +1,10 @@
 <template>
 <div :class="$style.input">
-  <textarea rows="1"
-            autocomplete="off"
-            placeholder="sub-topic ID"
-            ref="input1"
-            class="mono"
-            :class="[inputClass]"
-            v-model="input1"
-            v-auto-resize></textarea>
+  <dwd-input v-model="input1"
+             placeholder="sub-topic ID"
+             class="mono"
+             :class="[inputClass]"
+             :error="inputError" />
   <div v-if="loading" :class="$style.loader">
     <div class="ball-pulse-sync">
       <div></div>
@@ -24,9 +21,14 @@
 import 'loaders.css/loaders.min.css';
 import debounce from 'lodash/debounce';
 
+import DwdInput from './DwdInput.vue';
+
 import { DEBOUNCE_DELAY_MS } from './constants';
 
 export default {
+  components: {
+    DwdInput,
+  },
   props: {
     id: {
       type: String,
@@ -45,15 +47,14 @@ export default {
     topic: function () {
       return this.lookupTopic(this.id);
     },
+    inputError: function () {
+      if (this.id && !this.topic) {
+        return 'Invalid topic ID';
+      }
+      return '';
+    },
   },
   methods: {
-    updateInputError: function () {
-      let error = '';
-      if (this.id && !this.topic) {
-        error = 'Invalid topic ID';
-      }
-      this.$refs.input1.setCustomValidity(error);
-    },
     makeLoader: function (newId) {
       return {
         setLoading: (loading) => {
@@ -76,8 +77,6 @@ export default {
     this.input1 = this.id || '';
     if (this.topic) {
       this.inputClass = 'success';
-    } else {
-      this.updateInputError();
     }
     this.$nextTick(() => {
       // If this is done immediately, the watch functions get called.
@@ -95,7 +94,6 @@ export default {
       this.loading = false;
       this.error = '';
       this.inputClass = '';
-      this.updateInputError();
 
       if (newId && !this.topic) {
         this.inputClass = 'warning';
@@ -105,7 +103,6 @@ export default {
         }).then(() => {
           if (this.id === newId) {
             this.inputClass = 'success';
-            this.updateInputError();
           }
         }).catch(() => {});
       } else if (this.topic) {

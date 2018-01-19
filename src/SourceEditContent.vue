@@ -4,25 +4,15 @@
     <label for="url" class="hint">
       Link a source that provides data about the world.
     </label>
-    <textarea id="url"
-              rows="1"
-              required
-              autocomplete="off"
-              placeholder="url"
-              ref="url"
-              :class="{invalid: !validUrl}"
-              v-model="url"
-              v-auto-resize></textarea>
+    <dwd-input v-model="url"
+               id="url"
+               placeholder="url"
+               autofocus
+               :error="urlError" />
     <label for="text" class="hint">
       Describe the data the link provides.
     </label>
-    <textarea id="text"
-              rows="1"
-              required
-              autocomplete="off"
-              placeholder="description"
-              v-model="text"
-              v-auto-resize></textarea>
+    <dwd-input v-model="text" id="text" placeholder="description" />
     <label class="hint">Classify the type of source.</label>
     <div>
       <div :class="typeClass('misc')"
@@ -50,23 +40,19 @@
       <label for="institution" class="hint">
         What institution produced the data?
       </label>
-      <textarea id="institution"
-                rows="1"
-                required
-                autocomplete="off"
-                placeholder="College, government agency, etc."
-                v-model="institution"></textarea>
+      <dwd-input v-model="institution"
+                 id="institution"
+                 placeholder="College, government agency, etc."
+                 required />
     </template>
     <template v-if="type === 'research' || type === 'article'">
       <label for="publication" class="hint">
         Where was the {{ type }} published?
       </label>
-      <textarea id="publication"
-                rows="1"
-                required
-                autocomplete="off"
-                placeholder="Scientific journal, newspaper, etc."
-                v-model="publication"></textarea>
+      <dwd-input v-model="publication"
+                 id="publication"
+                 placeholder="Scientific journal, newspaper, etc."
+                 required />
     </template>
     <template v-if="type === 'article'">
       <label for="firstHand" class="hint">
@@ -81,9 +67,14 @@
 <script>
 import { isWebUri } from 'valid-url';
 
+import DwdInput from './DwdInput.vue';
+
 const ERROR_MSG_INVALID_URL = 'Please enter a URL.';
 
 export default {
+  components: {
+    DwdInput,
+  },
   props: {
     source: Object,
   },
@@ -98,6 +89,12 @@ export default {
   computed: {
     validUrl: function () {
       return isWebUri(this.url);
+    },
+    urlError: function () {
+      if (this.validUrl) {
+        return '';
+      }
+      return ERROR_MSG_INVALID_URL;
     },
     newSource: function () {
       let source = {
@@ -145,13 +142,6 @@ export default {
     },
     newSource: function () {
       this.$emit('update', this.newSource);
-    },
-    url: function () {
-      if (this.validUrl) {
-        this.$refs.url.setCustomValidity('');
-      } else {
-        this.$refs.url.setCustomValidity(ERROR_MSG_INVALID_URL);
-      }
     },
   },
   mounted: function () {

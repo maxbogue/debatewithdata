@@ -5,37 +5,25 @@
       <label for="title" class="hint">
         The title of this topic.
       </label>
-      <textarea id="title"
-                rows="1"
-                autocomplete="off"
-                placeholder="title"
-                v-model="title"
-                @keydown.enter.prevent
-                v-auto-resize
-                autofocus></textarea>
+      <dwd-input v-model="title"
+                 id="title"
+                 placeholder="title"
+                 autofocus />
       <template v-if="!oldId">
         <label for="id" class="hint">
           The ID shows up in the URL and cannot be changed.
         </label>
-        <textarea id="id"
-                  class="mono"
-                  rows="1"
-                  autocomplete="off"
-                  placeholder="id"
-                  v-model="id"
-                  @keydown.enter.prevent
-                  v-auto-resize></textarea>
+        <dwd-input v-model="id"
+                   id="id"
+                   class="mono"
+                   placeholder="id" />
       </template>
       <label for="text" class="hint">
         Describe this topic.
       </label>
-      <textarea id="text"
-                rows="1"
-                autocomplete="off"
-                placeholder="description"
-                v-model="text"
-                @keydown.enter.prevent
-                v-auto-resize></textarea>
+      <dwd-input v-model="text"
+                 id="text"
+                 placeholder="description" />
     </div>
     <div v-if="text" class="info">
       <span class="id mono">{{ oldId || 'new' }}</span>
@@ -47,10 +35,12 @@
 <script>
 import dashify from 'dashify';
 
+import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
 
 export default {
   components: {
+    DwdInput,
     DwdModal,
   },
   props: {
