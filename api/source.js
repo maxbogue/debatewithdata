@@ -38,6 +38,7 @@ router.put('/:id', async function (req, res) {
   let id = req.params.id;
   await Source.apiUpdate(id, req.user, req.body);
   let data = await Source.apiGet(id);
+  data.id = id;
   res.json(data);
 });
 

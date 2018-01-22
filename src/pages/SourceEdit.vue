@@ -49,8 +49,8 @@ export default {
         action = 'updateSource';
         payload.id = this.id;
       }
-      this.$store.dispatch(action, payload).then(() => {
-        this.$router.push(this.sourceUrl(this.id));
+      this.$store.dispatch(action, payload).then((id) => {
+        this.$router.push(this.sourceUrl(id));
       });
     },
     remove: function () {
