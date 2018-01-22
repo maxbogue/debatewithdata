@@ -29,7 +29,7 @@
       <delete-button noun="Claim" @delete="remove" />
     </div>
     <fixed-bottom class="center pink">
-      <button type="submit" class="dwd-btn blue-dark">Submit</button>
+      <button type="submit" class="dwd-btn pink-dark">Submit</button>
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>

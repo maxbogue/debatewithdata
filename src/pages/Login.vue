@@ -13,7 +13,7 @@
            v-model="password" />
     <router-link to="/forgot-password">Forgot password?</router-link>
     <dwd-loader ref="loader"></dwd-loader>
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="dwd-btn dwd-btn-primary">
       Submit
     </button>
   </form>

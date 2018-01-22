@@ -101,14 +101,24 @@ p a
   display: flex
 
 .dwd-btn, a.dwd-btn
-  border-bottom: 0
+  border: 0
   border-radius: 3px
-  border-right: 0
-  border-top: 0
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25)
   display: inline-block
+  margin: 4px
   padding: 8px 16px
   text-align: center
   text-decoration: none
+
+  &[disabled]
+    background-color: $grey-primary
+    cursor: not-allowed
+
+    &:hover
+      background-color: $grey-accent
+
+.dwd-btn-primary
+  @extend .blue-dark
 
 =t1($primary-color, $accent-color)
   font-size: 20px

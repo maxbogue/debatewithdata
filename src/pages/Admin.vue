@@ -8,7 +8,7 @@
              placeholder="note"
              v-model="note" />
       <button type="submit"
-              class="btn btn-primary"
+              class="dwd-btn dwd-btn-primary"
               :disabled="!note">New Invite</button>
     </form>
     <ul :class="$style.invites" class="mono">

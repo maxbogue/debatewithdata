@@ -25,7 +25,7 @@
            placeholder="email address"
            v-model="email" />
     <dwd-loader ref="loader"></dwd-loader>
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="dwd-btn dwd-btn-primary">
       Submit
     </button>
   </form>

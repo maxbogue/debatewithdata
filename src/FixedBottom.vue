@@ -15,7 +15,4 @@
   position: fixed
   width: 300px
   z-index: 1
-
-  *:not(:first-child)
-    margin-left: 8px
 </style>

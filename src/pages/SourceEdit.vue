@@ -3,9 +3,9 @@
   <form v-if="!needsData" @submit.prevent="commit">
     <source-edit-content :source="source" @update="(s) => newSource = s" />
     <div class="block no-pad center">
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="dwd-btn green-dark">Submit</button>
       <button type="button"
-              class="btn btn-default"
+              class="dwd-btn white"
               @click="cancel">Cancel</button>
     </div>
     <div v-if="id" class="block no-pad center">
