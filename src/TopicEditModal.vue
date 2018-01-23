@@ -8,7 +8,7 @@
       <dwd-input v-model="title"
                  id="title"
                  placeholder="title"
-                 autofocus />
+                 :focus="true" />
       <template v-if="!oldId">
         <label for="id" class="hint">
           The ID shows up in the URL and cannot be changed.
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import clone from 'lodash/clone';
 import dashify from 'dashify';
 
 import DwdInput from './DwdInput.vue';
@@ -51,19 +52,17 @@ export default {
     topic: {
       type: Object,
     },
+    oldId: {
+      type: String,
+    },
   },
   data: () => ({
     id: '',
     title: '',
     text: '',
+    oldTopic: undefined,
   }),
   computed: {
-    oldId: function () {
-      if (this.topic && this.topic.id) {
-        return this.topic.id;
-      }
-      return null;
-    },
     newTopic: function () {
       let topic = {
         title: this.title,
@@ -81,22 +80,24 @@ export default {
     },
     cancel: function () {
       this.close();
-      this.initialize();
-      this.update();
+      this.$emit('update:topic', this.oldTopic);
     },
     initialize: function () {
       if (this.topic) {
+        this.oldTopic = clone(this.topic);
         this.title = this.topic.title;
         this.text = this.topic.text;
       }
     },
   },
   watch: {
-    topic: function () {
-      this.initialize();
+    show: function () {
+      if (this.show) {
+        this.initialize();
+      }
     },
     newTopic: function () {
-      this.$emit('update', this.newTopic);
+      this.$emit('update:topic', this.newTopic);
     },
     title: function (newTitle, oldTitle) {
       let oldId = dashify(oldTitle);

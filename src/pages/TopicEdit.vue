@@ -5,14 +5,14 @@
       <topic-rev-content class="bubble click"
                          :prev="topic"
                          :curr="newTopicPartial"
-                         @click.native="editThisTopic" />
+                         @click.native="showModal = true" />
       <div class="info">
         <span class="id mono">{{ id || 'new' }}</span>
       </div>
     </div>
     <topic-edit-modal :show.sync="showModal"
-                      :topic="modalTopic"
-                      @update="(v) => modalCallback(v)" />
+                      :topic.sync="newTopicPartial"
+                      :oldId="id" />
     <h3>Sub-Topics</h3>
     <topic-input v-for="(subTopicId, i) in subTopicIds"
                  class="topic block"
@@ -40,8 +40,6 @@
 </template>
 
 <script>
-import assign from 'lodash/assign';
-import clone from 'lodash/clone';
 import filter from 'lodash/filter';
 import sortBy from 'lodash/sortBy';
 
@@ -74,32 +72,16 @@ export default {
   }),
   computed: {
     id: function () {
-      if (this.routeId) {
-        return this.routeId;
-      } else if (this.newTopicPartial) {
-        return this.newTopicPartial.id;
-      }
-      return null;
-    },
-    routeId: function () {
       return this.$route.params.id;
     },
     topic: function () {
-      return this.$store.state.topics[this.routeId] || undefined;
+      return this.$store.state.topics[this.id] || undefined;
     },
     needsData: function () {
-      return this.routeId && !this.topic;
+      return this.id && !this.topic;
     },
   },
   methods: {
-    editTopic: function (topic, callback) {
-      this.modalTopic = topic;
-      this.modalCallback = callback;
-      this.showModal = true;
-    },
-    editThisTopic: function () {
-      this.editTopic(this.newTopicPartial, (t) => this.newTopicPartial = t);
-    },
     updateSubTopicId: function (i, subTopicId) {
       this.$set(this.subTopicIds, i, subTopicId);
       if (i === this.subTopicIds.length - 1) {
@@ -115,10 +97,11 @@ export default {
     submit: function () {
       let action = 'addTopic';
       let payload = {
-        topic: assign(clone(this.newTopicPartial), {
+        topic: {
+          ...this.newTopicPartial,
           subTopicIds: filter(this.subTopicIds, this.lookupTopic),
           claimIds: filter(this.claimIds, this.lookupClaim),
-        }),
+        },
       };
       if (this.topic) {
         action = 'updateTopic';
@@ -152,7 +135,7 @@ export default {
         this.claimIds = sortBy(this.topic.claimIds,
             [claimStarred, claimStarCount, stableRandom]);
       } else {
-        this.editThisTopic();
+        this.showModal = true;
       }
 
       // Append an empty input for new sub-topics.
