@@ -1,7 +1,6 @@
 <template>
 <textarea rows="1"
           autocomplete="off"
-          :autofocus="autofocus"
           :value="value"
           @input="emit($event.target.value)"
           @keydown.enter.prevent></textarea>
@@ -18,7 +17,7 @@ export default {
     error: {
       type: String,
     },
-    autofocus: {
+    focus: {
       type: Boolean,
       default: false,
     },
@@ -36,6 +35,16 @@ export default {
     error: function () {
       this.$el.setCustomValidity(this.error);
     },
+    focus: function () {
+      if (this.focus) {
+        this.$el.focus();
+      }
+    },
+  },
+  mounted: function () {
+    if (this.focus) {
+      this.$el.focus();
+    }
   },
 };
 </script>

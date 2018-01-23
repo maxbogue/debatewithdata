@@ -11,7 +11,7 @@
       <dwd-input v-model="input"
                  ref="input"
                  placeholder="Text, URL, or 12-letter ID"
-                 autofocus
+                 :focus="true"
                  :class="[inputClass]"
                  :error="inputError" />
       <div v-if="loading" :class="$style.loader">
@@ -97,10 +97,10 @@ export default {
       return '';
     },
     isUrl: function () {
-      if (this.point && this.point.type === 'newSource') {
-        return isWebUri(this.point.source.url);
-      }
-      return isWebUri(this.input);
+      // Don't check the input directly here so that the first transition to
+      // source editing correctly triggers an update.
+      return this.point && this.point.type === 'newSource'
+          && isWebUri(this.point.source.url);
     },
     isSubClaim: function () {
       return this.point.type === 'subclaim' || this.point.type === 'text';
@@ -120,7 +120,10 @@ export default {
   },
   methods: {
     close: function () {
-      this.emitPoint(this.makePoint() || {});
+      // If the point is empty, only emit it on close so it can be removed.
+      if (!this.makePoint()) {
+        this.emitPoint({});
+      }
       this.$emit('update:show', false);
     },
     cancel: function () {
@@ -142,7 +145,7 @@ export default {
         return { type: 'source', sourceId: this.input };
       } else if (this.claim) {
         return { type: 'claim', claimId: this.input };
-      } else if (this.isUrl) {
+      } else if (isWebUri(this.input)) {
         return {
           type: 'newSource',
           source: {
@@ -174,6 +177,7 @@ export default {
       this.update();
     },
     updateNewSource: function (source) {
+      this.input = source.url;
       this.emitPoint({ type: 'newSource', source });
     },
     makeLoader: function (newId) {
@@ -193,18 +197,23 @@ export default {
         },
       };
     },
+    initialize: function () {
+      this.initialized = false;
+      this.oldPoint = this.point ? clone(this.point) : null;
+      this.input = pointToInput(this.point);
+      this.flag = this.point.flag || '';
+      this.$nextTick(() => {
+        // If this is done immediately, the watch functions get called.
+        this.initialized = true;
+      });
+    },
   },
   mounted: function () {
-    this.input = pointToInput(this.point);
-    this.flag = this.point.flag || '';
-    this.$nextTick(() => {
-      // If this is done immediately, the watch functions get called.
-      this.initialized = true;
-    });
+    this.initialize();
   },
   watch: {
     input: function () {
-      if (this.initialized) {
+      if (this.initialized && !this.isUrl) {
         this.update();
       }
     },
@@ -229,8 +238,8 @@ export default {
       }
     },
     show: function () {
-      if (this.show && this.point) {
-        this.oldPoint = clone(this.point);
+      if (this.show) {
+        this.initialize();
       }
     },
   },

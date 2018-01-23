@@ -4,10 +4,10 @@
     Link a source that provides data about the world.
   </label>
   <dwd-input v-model="url"
-              id="url"
-              placeholder="url"
-              autofocus
-              :error="urlError" />
+             id="url"
+             placeholder="url"
+             :focus="true"
+             :error="urlError" />
   <label for="text" class="hint">
     Describe the data the link provides.
   </label>
@@ -15,22 +15,22 @@
   <label class="hint">Classify the type of source.</label>
   <div>
     <div :class="typeClass('misc')"
-          @click="type = 'misc'">
+         @click="type = 'misc'">
       <h2>Miscellaneous</h2>
       <div>A source that does not fall under any other category.</div>
     </div>
     <div :class="typeClass('research')"
-          @click="type = 'research'">
+         @click="type = 'research'">
       <h2>Research</h2>
       <div>Scientific research published by an institution.</div>
     </div>
     <div :class="typeClass('article')"
-          @click="type = 'article'">
+         @click="type = 'article'">
       <h2>Article</h2>
       <div>A news article reporting on something that happened.</div>
     </div>
     <div :class="typeClass('authority')"
-          @click="type = 'authority'">
+         @click="type = 'authority'">
       <h2>Authority</h2>
       <div>An authoritative source for the data.</div>
     </div>
@@ -40,18 +40,18 @@
       What institution produced the data?
     </label>
     <dwd-input v-model="institution"
-                id="institution"
-                placeholder="College, government agency, etc."
-                required />
+               id="institution"
+               placeholder="College, government agency, etc."
+               required />
   </template>
   <template v-if="type === 'research' || type === 'article'">
     <label for="publication" class="hint">
       Where was the {{ type }} published?
     </label>
     <dwd-input v-model="publication"
-                id="publication"
-                placeholder="Scientific journal, newspaper, etc."
-                required />
+               id="publication"
+               placeholder="Scientific journal, newspaper, etc."
+               required />
   </template>
   <template v-if="type === 'article'">
     <label for="firstHand" class="hint">

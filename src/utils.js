@@ -47,6 +47,8 @@ export function pointToInput(point) {
   case 'subclaim':
   case 'text':
     return point.text;
+  case 'newSource':
+    return point.source.url;
   default:
     return '';
   }
