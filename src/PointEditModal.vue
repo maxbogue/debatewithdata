@@ -9,6 +9,7 @@
         Add a point {{ isFor | toSideString }} the claim.
       </label>
       <dwd-input v-model="input"
+                 autofocus
                  placeholder="Text, URL, or 12-letter ID"
                  :class="[inputClass]"
                  :error="inputError" />

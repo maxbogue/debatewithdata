@@ -72,7 +72,7 @@ function makeNewSources(store, points) {
       let point = points[si][pi];
       if (point.type === 'newSource') {
         let promise = store.dispatch('addSource', {
-          source: point.newSource,
+          source: point.source,
         }).then((sourceId) => {
           points[si][pi] = { type: 'source', sourceId };
         });
@@ -129,8 +129,8 @@ export default {
   methods: {
     updatePoint: function (si, pi, point) {
       this.$set(this.points[si], pi, point);
-      if (pi === this.points[si].length - 1) {
-        this.points[si].push(emptyPoint());
+      if (pi === 0) {
+        this.points[si].splice(0, 0, emptyPoint());
       }
     },
     updateFlag: function (flag) {
@@ -177,7 +177,7 @@ export default {
       this.points = pointMapsToLists(this.claim.points);
       this.flag = this.claim.flag;
       for (let i = 0; i < this.points.length; i++) {
-        this.points[i].push(emptyPoint());
+        this.points[i].splice(0, 0, emptyPoint());
       }
     },
     checkLoaded: function () {

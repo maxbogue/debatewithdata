@@ -95,8 +95,8 @@ export default {
     },
     updateSubPoint: function (si, pi, point) {
       this.$set(this.subpoints[si], pi, point);
-      if (pi === this.subpoints[si].length - 1) {
-        this.subpoints[si].push(emptyPoint());
+      if (pi === 0) {
+        this.subpoints[si].splice(0, 0, emptyPoint());
       }
       this.updateSubClaim();
     },
@@ -112,8 +112,8 @@ export default {
         this.subpoints.push([]);
         this.subpoints.push([]);
       }
-      this.subpoints[0].push(emptyPoint());
-      this.subpoints[1].push(emptyPoint());
+      this.subpoints[0].splice(0, 0, emptyPoint());
+      this.subpoints[1].splice(0, 0, emptyPoint());
     }
   },
 };

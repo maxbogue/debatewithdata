@@ -1,14 +1,19 @@
 <template>
 <li class="sub-point" :class="isFor | toSideString">
-  <dwd-point-input class="bubble"
-                   :point="point"
-                   :isFor="isFor"
-                   @update="updatePoint"></dwd-point-input>
+  <point-edit-modal :show.sync="showModal"
+                    :point="point"
+                    :isFor="isFor"
+                    :isSubPoint="true"
+                    @update="emitPoint" />
+  <point-content v-if="point.type"
+                 class="bubble click"
+                 :point="point"
+                 @click.native="showModal = true" />
+  <div v-else class="bubble click" @click="showModal = true">
+    <strong>Add a point {{ isFor | toSideString }} the claim.</strong>
+  </div>
   <div v-if="point.type" class="info">
     <span class="id mono">{{ point.id || 'new' }}</span>
-    <dwd-flag-dropdown v-if="point.type === 'text'"
-                       :flag="point.flag"
-                       @select="updateFlag"></dwd-flag-dropdown>
     <span v-if="canDelete"
           class="delete click glyphicon glyphicon-trash"
           aria-hidden="true"
@@ -19,13 +24,13 @@
 
 <script>
 import './style/point.sass';
-import DwdFlagDropdown from './DwdFlagDropdown.vue';
-import DwdPointInput from './DwdPointInput.vue';
+import PointContent from './PointContent.vue';
+import PointEditModal from './PointEditModal.vue';
 
 export default {
   components: {
-    DwdFlagDropdown,
-    DwdPointInput,
+    PointContent,
+    PointEditModal,
   },
   props: {
     point: {
@@ -42,49 +47,9 @@ export default {
     },
   },
   data: () => ({
-    flag: '',
+    showModal: false,
   }),
   methods: {
-    makeTextPoint: function (text) {
-      let textPoint = {
-        type: 'text',
-        text: text,
-      };
-      if (this.flag) {
-        textPoint.flag = this.flag;
-      }
-      return textPoint;
-    },
-    makePoint: function (type, input1, input2) {
-      switch (type) {
-      case 'claim':
-        return { type, claimId: input1 };
-      case 'source':
-        return { type, sourceId: input1 };
-      case 'newSource':
-        return {
-          type,
-          newSource: {
-            text: input2,
-            url: input1,
-          },
-        };
-      case 'text':
-        return this.makeTextPoint(input1);
-      default:
-        return {};
-      }
-    },
-    updatePoint: function (type, input1, input2) {
-      this.emitPoint(this.makePoint(type, input1, input2));
-    },
-    updateTextPoint: function () {
-      this.emitPoint(this.makeTextPoint(this.point.text));
-    },
-    updateFlag: function (flag) {
-      this.flag = flag;
-      this.updateTextPoint();
-    },
     emitPoint: function (p) {
       if (this.point.id) {
         p.id = this.point.id;
@@ -93,9 +58,6 @@ export default {
       }
       this.$emit('update', p);
     },
-  },
-  mounted: function () {
-    this.flag = this.point.flag || '';
   },
 };
 </script>
