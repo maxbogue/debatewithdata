@@ -51,6 +51,8 @@ export default {
 
 .dwd-modal-container
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33)
+  max-height: calc(100% - #{$block-spacing * 2})
+  overflow-y: auto
   transition: all .3s ease
   width: 80%
 
