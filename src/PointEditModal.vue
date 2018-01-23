@@ -9,8 +9,9 @@
         Add a point {{ isFor | toSideString }} the claim.
       </label>
       <dwd-input v-model="input"
-                 autofocus
+                 ref="input"
                  placeholder="Text, URL, or 12-letter ID"
+                 autofocus
                  :class="[inputClass]"
                  :error="inputError" />
       <div v-if="loading" :class="$style.loader">
@@ -119,6 +120,7 @@ export default {
   },
   methods: {
     close: function () {
+      this.emitPoint(this.makePoint() || {});
       this.$emit('update:show', false);
     },
     cancel: function () {
@@ -157,10 +159,10 @@ export default {
         }
         return subClaim;
       }
-      return {};
+      return null;
     },
     emitPoint: function (p) {
-      if (this.initialized) {
+      if (this.initialized && p) {
         this.$emit('update', p);
       }
     },

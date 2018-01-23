@@ -5,19 +5,19 @@
                     :isFor="isFor"
                     :isSubPoint="true"
                     @update="emitPoint" />
-  <point-content v-if="point.type"
-                 class="bubble click"
-                 :point="point"
-                 @click.native="showModal = true" />
+  <template v-if="point.type">
+    <point-content class="bubble click"
+                   :point="point"
+                   @click.native="showModal = true" />
+    <div class="info">
+      <span class="id mono">{{ point.id || 'new' }}</span>
+      <span class="delete click glyphicon glyphicon-trash"
+            aria-hidden="true"
+            @click="$emit('delete')"></span>
+    </div>
+  </template>
   <div v-else class="bubble click" @click="showModal = true">
-    <strong>Add a point {{ isFor | toSideString }} the claim.</strong>
-  </div>
-  <div v-if="point.type" class="info">
-    <span class="id mono">{{ point.id || 'new' }}</span>
-    <span v-if="canDelete"
-          class="delete click glyphicon glyphicon-trash"
-          aria-hidden="true"
-          @click="$emit('delete')"></span>
+    <strong>Add a sub-point {{ isFor | toSideString }} the claim.</strong>
   </div>
 </li>
 </template>
@@ -38,10 +38,6 @@ export default {
       required: true,
     },
     isFor: {
-      type: Boolean,
-      required: true,
-    },
-    canDelete: {
       type: Boolean,
       required: true,
     },

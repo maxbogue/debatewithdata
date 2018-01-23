@@ -20,7 +20,6 @@
                       :key="point.id || point.tempId"
                       :point="point"
                       :isFor="!side"
-                      :canDelete="i < points[side].length - 1"
                       @update="(p) => updatePoint(side, i, p)"
                       @delete="points[side].splice(i, 1)" />
     </template>
@@ -32,7 +31,6 @@
                         :key="point.id || point.tempId"
                         :point="point"
                         :isFor="!side"
-                        :canDelete="i < sidePoints.length - 1"
                         @update="(p) => updatePoint(side, i, p)"
                         @delete="sidePoints.splice(i, 1)" />
       </div>
@@ -128,6 +126,12 @@ export default {
   },
   methods: {
     updatePoint: function (si, pi, point) {
+      if (!point.type) {
+        if (pi > 0) {
+          this.points[si].splice(pi, 1);
+        }
+        return;
+      }
       this.$set(this.points[si], pi, point);
       if (pi === 0) {
         this.points[si].splice(0, 0, emptyPoint());
