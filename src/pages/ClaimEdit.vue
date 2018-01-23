@@ -2,19 +2,16 @@
 <div>
   <form v-if="!needsData" @submit.prevent="submit">
     <div class="claim t1">
-      <div class="bubble">
-        <label for="text" class="hint">
-          A claim should be a short, simple statement about the world.
-        </label>
-        <dwd-input v-model="text" id="text" placeholder="claim" />
-        <dwd-flag v-if="flag" :flag="flag" />
-      </div>
-      <div v-if="text" class="info">
+      <claim-rev-content class="bubble click"
+                         :prev="claim"
+                         :curr="newClaimPartial"
+                         @click.native="showModal = true" />
+      <div class="info">
         <span class="id mono">{{ id || 'new' }}</span>
-        <dwd-flag-dropdown :flag="flag"
-                            @select="updateFlag" />
       </div>
     </div>
+    <claim-edit-modal :show.sync="showModal"
+                      :claim.sync="newClaimPartial" />
     <template v-if="$store.state.singleColumn">
       <dwd-edit-point v-for="[point, side, i] in zippedPoints"
                       :key="point.id || point.tempId"
@@ -52,11 +49,10 @@
 <script>
 import filter from 'lodash/filter';
 
+import ClaimEditModal from '../ClaimEditModal.vue';
+import ClaimRevContent from '../ClaimRevContent.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdEditPoint from '../DwdEditPoint.vue';
-import DwdFlag from '../DwdFlag.vue';
-import DwdFlagDropdown from '../DwdFlagDropdown.vue';
-import DwdInput from '../DwdInput.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import {
@@ -97,25 +93,24 @@ function filterPoints(points) {
 
 export default {
   components: {
+    ClaimEditModal,
+    ClaimRevContent,
     DeleteButton,
     DwdEditPoint,
-    DwdFlag,
-    DwdFlagDropdown,
-    DwdInput,
     DwdLoader,
     FixedBottom,
   },
   data: () => ({
+    showModal: false,
+    newClaimPartial: undefined,
     points: emptyPoints(),
-    text: '',
-    flag: '',
   }),
   computed: {
     id: function () {
       return this.$route.params.id;
     },
     claim: function () {
-      return this.$store.state.claims[this.id] || null;
+      return this.$store.state.claims[this.id];
     },
     needsData: function () {
       return this.id && (!this.claim || this.claim.depth < 3);
@@ -137,9 +132,6 @@ export default {
         this.points[si].splice(0, 0, emptyPoint());
       }
     },
-    updateFlag: function (flag) {
-      this.flag = flag;
-    },
     submit: function () {
       let promises = makeNewSources(this.$store, this.points);
       Promise.all(promises).then(() => {
@@ -151,13 +143,10 @@ export default {
       let action = 'addClaim';
       let payload = {
         claim: {
-          text: this.text,
+          ...this.newClaimPartial,
           points: this.points,
         },
       };
-      if (this.flag) {
-        payload.claim.flag = this.flag;
-      }
       if (this.id) {
         action = 'updateClaim';
         payload.id = this.id;
@@ -177,11 +166,14 @@ export default {
       this.$router.push(this.id ? this.claimUrl(this.id) : '/claims');
     },
     initialize: function () {
-      this.text = this.claim.text;
-      this.points = pointMapsToLists(this.claim.points);
-      this.flag = this.claim.flag;
-      for (let i = 0; i < this.points.length; i++) {
-        this.points[i].splice(0, 0, emptyPoint());
+      if (this.claim) {
+        this.newClaimPartial = this.claim;
+        this.points = pointMapsToLists(this.claim.points);
+        for (let i = 0; i < this.points.length; i++) {
+          this.points[i].splice(0, 0, emptyPoint());
+        }
+      } else {
+        this.showModal = true;
       }
     },
     checkLoaded: function () {
@@ -192,8 +184,7 @@ export default {
         }).then(() => {
           this.initialize();
         });
-      } else if (this.id) {
-        // Adding a new claim.
+      } else {
         this.initialize();
       }
     },
