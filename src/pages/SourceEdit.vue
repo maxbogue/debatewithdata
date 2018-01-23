@@ -1,7 +1,9 @@
 <template>
 <div>
   <form v-if="!needsData" @submit.prevent="commit">
-    <source-edit-content :source="source" @update="(s) => newSource = s" />
+    <div class="source neutral">
+      <source-edit-content :source="source" @update="(s) => newSource = s" />
+    </div>
     <div class="block no-pad center">
       <button type="submit" class="dwd-btn green-dark">Submit</button>
       <button type="button"

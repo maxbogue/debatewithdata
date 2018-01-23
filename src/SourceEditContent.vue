@@ -1,66 +1,64 @@
 <template>
-<div class="source neutral">
-  <div class="bubble">
-    <label for="url" class="hint">
-      Link a source that provides data about the world.
-    </label>
-    <dwd-input v-model="url"
-               id="url"
-               placeholder="url"
-               autofocus
-               :error="urlError" />
-    <label for="text" class="hint">
-      Describe the data the link provides.
-    </label>
-    <dwd-input v-model="text" id="text" placeholder="description" />
-    <label class="hint">Classify the type of source.</label>
-    <div>
-      <div :class="typeClass('misc')"
-            @click="type = 'misc'">
-        <h2>Miscellaneous</h2>
-        <div>A source that does not fall under any other category.</div>
-      </div>
-      <div :class="typeClass('research')"
-            @click="type = 'research'">
-        <h2>Research</h2>
-        <div>Scientific research published by an institution.</div>
-      </div>
-      <div :class="typeClass('article')"
-            @click="type = 'article'">
-        <h2>Article</h2>
-        <div>A news article reporting on something that happened.</div>
-      </div>
-      <div :class="typeClass('authority')"
-            @click="type = 'authority'">
-        <h2>Authority</h2>
-        <div>An authoritative source for the data.</div>
-      </div>
+<div class="bubble">
+  <label for="url" class="hint">
+    Link a source that provides data about the world.
+  </label>
+  <dwd-input v-model="url"
+              id="url"
+              placeholder="url"
+              autofocus
+              :error="urlError" />
+  <label for="text" class="hint">
+    Describe the data the link provides.
+  </label>
+  <dwd-input v-model="text" id="text" placeholder="description" />
+  <label class="hint">Classify the type of source.</label>
+  <div>
+    <div :class="typeClass('misc')"
+          @click="type = 'misc'">
+      <h2>Miscellaneous</h2>
+      <div>A source that does not fall under any other category.</div>
     </div>
-    <template v-if="type === 'research' || type === 'authority'">
-      <label for="institution" class="hint">
-        What institution produced the data?
-      </label>
-      <dwd-input v-model="institution"
-                 id="institution"
-                 placeholder="College, government agency, etc."
-                 required />
-    </template>
-    <template v-if="type === 'research' || type === 'article'">
-      <label for="publication" class="hint">
-        Where was the {{ type }} published?
-      </label>
-      <dwd-input v-model="publication"
-                 id="publication"
-                 placeholder="Scientific journal, newspaper, etc."
-                 required />
-    </template>
-    <template v-if="type === 'article'">
-      <label for="firstHand" class="hint">
-        Is the article a first-hand account of an event?
-      </label>
-      <input type="checkbox" id="firstHand" v-model="firstHand"></input>
-    </template>
+    <div :class="typeClass('research')"
+          @click="type = 'research'">
+      <h2>Research</h2>
+      <div>Scientific research published by an institution.</div>
+    </div>
+    <div :class="typeClass('article')"
+          @click="type = 'article'">
+      <h2>Article</h2>
+      <div>A news article reporting on something that happened.</div>
+    </div>
+    <div :class="typeClass('authority')"
+          @click="type = 'authority'">
+      <h2>Authority</h2>
+      <div>An authoritative source for the data.</div>
+    </div>
   </div>
+  <template v-if="type === 'research' || type === 'authority'">
+    <label for="institution" class="hint">
+      What institution produced the data?
+    </label>
+    <dwd-input v-model="institution"
+                id="institution"
+                placeholder="College, government agency, etc."
+                required />
+  </template>
+  <template v-if="type === 'research' || type === 'article'">
+    <label for="publication" class="hint">
+      Where was the {{ type }} published?
+    </label>
+    <dwd-input v-model="publication"
+                id="publication"
+                placeholder="Scientific journal, newspaper, etc."
+                required />
+  </template>
+  <template v-if="type === 'article'">
+    <label for="firstHand" class="hint">
+      Is the article a first-hand account of an event?
+    </label>
+    <input type="checkbox" id="firstHand" v-model="firstHand"></input>
+  </template>
 </div>
 </template>
 
@@ -128,8 +126,8 @@ export default {
     initialize: function () {
       if (this.source) {
         this.url = this.source.url;
-        this.text = this.source.text;
-        this.type = this.source.type;
+        this.text = this.source.text || '';
+        this.type = this.source.type || 'misc';
         this.institution = this.source.institution;
         this.publication = this.source.publication;
         this.firstHand = this.source.firstHand;

@@ -6,6 +6,9 @@
   <source-content v-else-if="point.type === 'source'"
                   :source="source"
                   :trail="trail"></source-content>
+  <source-content v-else-if="point.type === 'newSource'"
+                  :source="point.source"
+                  :trail="trail"></source-content>
   <claim-content v-else :claim="point"></claim-content>
 </div>
 </template>
@@ -26,7 +29,7 @@ export default {
     },
     trail: {
       type: Array,
-      required: true,
+      default: () => [],
     },
   },
   computed: {

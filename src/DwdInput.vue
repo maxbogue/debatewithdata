@@ -20,7 +20,7 @@ export default {
   },
   methods: {
     emit: function (input) {
-      this.$emit('input', input);
+      this.$emit('input', String(input));
     },
   },
   watch: {

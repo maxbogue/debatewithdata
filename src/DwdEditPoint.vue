@@ -1,20 +1,24 @@
 <template>
 <div class="point" :class="isFor | toSideString">
-  <dwd-point-input class="bubble"
-                   :point="point"
-                   :isFor="isFor"
-                   @update="updatePoint"></dwd-point-input>
+  <point-edit-modal :show.sync="showModal"
+                    :point="point"
+                    :isFor="isFor"
+                    @update="emitPoint" />
+  <point-content v-if="point.type"
+                 class="bubble click"
+                 :point="point"
+                 @click.native="showModal = true" />
+  <div v-else class="bubble click" @click="showModal = true">
+    <strong>Add a point {{ isFor | toSideString }} the claim.</strong>
+  </div>
   <div v-if="point.type" class="info">
     <span class="id mono">{{ point.id || 'new' }}</span>
-    <dwd-flag-dropdown v-if="isSubclaim"
-                       :flag="flag"
-                       @select="updateFlag"></dwd-flag-dropdown>
     <span v-if="canDelete"
           class="delete click glyphicon glyphicon-trash"
           aria-hidden="true"
           @click="$emit('delete')"></span>
   </div>
-  <ul v-if="isSubclaim" class="sub-points">
+  <ul v-if="isSubClaim" class="sub-points">
     <dwd-edit-subpoint v-for="[p, side, i] in zippedSubpoints"
                        :point="p"
                        :isFor="isFor === !side"
@@ -30,16 +34,16 @@
 <script>
 import './style/point.sass';
 import DwdEditSubpoint from './DwdEditSubpoint.vue';
-import DwdFlagDropdown from './DwdFlagDropdown.vue';
-import DwdPointInput from './DwdPointInput.vue';
+import PointContent from './PointContent.vue';
+import PointEditModal from './PointEditModal.vue';
 import { emptyPoint, emptyPoints, pointMapsToLists, rotateWithIndexes }
   from './utils';
 
 export default {
   components: {
     DwdEditSubpoint,
-    DwdFlagDropdown,
-    DwdPointInput,
+    PointContent,
+    PointEditModal,
   },
   props: {
     point: {
@@ -56,11 +60,11 @@ export default {
     },
   },
   data: () => ({
+    showModal: false,
     subpoints: emptyPoints(),
-    flag: '',
   }),
   computed: {
-    isSubclaim: function () {
+    isSubClaim: function () {
       return this.point.type === 'subclaim';
     },
     zippedSubpoints: function () {
@@ -71,42 +75,23 @@ export default {
     },
   },
   methods: {
-    makeSubClaim: function (text) {
-      let subClaim = {
-        type: 'subclaim',
-        text: text,
-        points: this.subpoints,
-      };
-      if (this.flag) {
-        subClaim.flag = this.flag;
+    emitPoint: function (p) {
+      if (this.point.id) {
+        p.id = this.point.id;
+      } else {
+        p.tempId = this.point.tempId;
       }
-      return subClaim;
-    },
-    makePoint: function (type, input1, input2) {
-      switch (type) {
-      case 'claim':
-        return { type, claimId: input1 };
-      case 'source':
-        return { type, sourceId: input1 };
-      case 'newSource':
-        return {
-          type: 'newSource',
-          newSource: {
-            text: input2,
-            url: input1,
-          },
-        };
-      case 'text':
-        return this.makeSubClaim(input1);
-      default:
-        return {};
+      if (p.type === 'subclaim') {
+        p.points = this.subpoints;
       }
-    },
-    updatePoint: function (type, input1, input2) {
-      this.emitPoint(this.makePoint(type, input1, input2));
+      this.$emit('update', p);
     },
     updateSubClaim: function () {
-      this.emitPoint(this.makeSubClaim(this.point.text));
+      this.emitPoint({
+        type: 'subclaim',
+        text: this.point.text,
+        flag: this.point.flag,
+      });
     },
     updateSubPoint: function (si, pi, point) {
       this.$set(this.subpoints[si], pi, point);
@@ -119,21 +104,8 @@ export default {
       this.subpoints[si].splice(pi, 1);
       this.updateSubClaim();
     },
-    updateFlag: function (flag) {
-      this.flag = flag;
-      this.updateSubClaim();
-    },
-    emitPoint: function (p) {
-      if (this.point.id) {
-        p.id = this.point.id;
-      } else {
-        p.tempId = this.point.tempId;
-      }
-      this.$emit('update', p);
-    },
   },
   mounted: function () {
-    this.flag = this.point.flag || '';
     if (this.point.points) {
       this.subpoints = pointMapsToLists(this.point.points);
       if (this.subpoints.length === 0) {
