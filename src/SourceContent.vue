@@ -1,12 +1,13 @@
 <template>
-<div v-if="source">
+<div>
   <div>
-    <router-link v-if="trail"
+    <router-link v-if="trail && source"
                  :to="sourceUrl(source.id, trail)"
                  class="link-icon glyphicon glyphicon-link"></router-link>
-    <span>{{ source.text }}</span>
+    <span v-if="sourceHasContent">{{ source.text }}</span>
+    <em v-else class="error">[{{ source ? 'deleted' : 'not found' }}]</em>
   </div>
-  <div :class="$style.metadata">
+  <div v-if="sourceHasContent" :class="$style.metadata">
     <template v-if="source.type === 'article'">
       <div><strong>Article in:</strong> {{ source.publication }}</div>
     </template>
@@ -20,7 +21,6 @@
     <a :href="source.url" target="_blank">{{ source.url }}</a>
   </div>
 </div>
-<div v-else>Source not found.</div>
 </template>
 
 <script>
@@ -33,6 +33,11 @@ export default {
     trail: {
       type: Array,
       required: false,
+    },
+  },
+  computed: {
+    sourceHasContent: function () {
+      return this.source && !this.source.deleted;
     },
   },
 };

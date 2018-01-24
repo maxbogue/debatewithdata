@@ -4,20 +4,20 @@
   <template v-if="claim">
     <div class="claim" :class="isFor | toSideString">
       <claim-content class="bubble click"
-                      @click.native="showDrawer = !showDrawer"
-                      :claim="claim" />
+                     @click.native="showDrawer = !showDrawer"
+                     :claim="claim" />
       <drawer :show="showDrawer">
         <div class="info">
           <span class="id mono">{{ claim.id }}</span>
           <dwd-star :star="claim.star"
                     :url="'/api' + claimUrl(id)" />
           <router-link :to="claimUrl(id) + '/history'"
-                        class="glyphicon glyphicon-time click"
-                        aria-hidden="true"></router-link>
+                       class="glyphicon glyphicon-time click"
+                       aria-hidden="true"></router-link>
           <router-link v-if="$store.state.user"
-                        :to="claimUrl(id) + '/edit'"
-                        class="glyphicon glyphicon-pencil click"
-                        aria-hidden="true"></router-link>
+                       :to="claimUrl(id) + '/edit'"
+                       class="glyphicon glyphicon-pencil click"
+                       aria-hidden="true"></router-link>
           <comment-icon @click.native="showComments = !showComments"
                         :count="claim.commentCount" />
         </div>
@@ -28,10 +28,10 @@
     <template v-if="$store.state.singleColumn">
       <transition-group tag="div" :move-class="$style.pointsMove">
         <dwd-point v-for="[point, side, i] in zippedPoints"
-                    :point="point"
-                    :isFor="claimIsFor === !side"
-                    :trail="trail.concat(id)"
-                    :key="point.id" />
+                   :point="point"
+                   :isFor="claimIsFor === !side"
+                   :trail="trail.concat(id)"
+                   :key="point.id" />
       </transition-group>
     </template>
     <template v-else>
@@ -92,7 +92,7 @@ export default {
       return this.isFor !== null ? this.isFor : true;
     },
     points: function () {
-      if (!this.claim || this.claim.depth < 3) {
+      if (!this.claim || this.claim.deleted || this.claim.depth < 3) {
         return [];
       }
       return pointMapsToLists(this.claim.points);

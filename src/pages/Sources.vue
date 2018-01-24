@@ -24,6 +24,7 @@ import { mapState } from 'vuex';
 
 import DwdLoader from '../DwdLoader.vue';
 import SourceContent from '../SourceContent.vue';
+import { filterLiving } from '../utils';
 
 export default {
   components: {
@@ -36,6 +37,9 @@ export default {
       'sourcesLoaded',
       'user',
     ]),
+    sources: function () {
+      return filterLiving(this.$store.state.sources);
+    },
     addUrl: function () {
       if (this.user) {
         return '/sources/add';

@@ -9,13 +9,13 @@
   </div>
   <div class="block no-pad center" :class="$style.nav">
     <router-link v-if="prev"
-                  :to="prevUrl"
-                  class="dwd-btn grey">Prev</router-link>
+                 :to="prevUrl"
+                 class="dwd-btn grey">Prev</router-link>
     <router-link :to="url + '/history'"
-                  class="dwd-btn grey">History</router-link>
+                 class="dwd-btn grey">History</router-link>
     <router-link v-if="next"
-                  :to="nextUrl"
-                  class="dwd-btn grey">Next</router-link>
+                 :to="nextUrl"
+                 class="dwd-btn grey">Next</router-link>
   </div>
   <claim-rev-content class="claim block" :curr="curr" :prev="prev" />
   <template v-if="$store.state.singleColumn">
@@ -94,9 +94,11 @@ export default {
     },
     pointRevs: function () {
       let pointRevs = [];
+      let hasCurrPoints = this.curr && this.curr.points;
+      let hasPrevPoints = this.prev && this.prev.points;
       for (let i of [0, 1]) {
-        let currPoints = this.curr ? this.curr.points[i] : {};
-        let prevPoints = this.prev ? this.prev.points[i] : {};
+        let currPoints = hasCurrPoints ? this.curr.points[i] : {};
+        let prevPoints = hasPrevPoints ? this.prev.points[i] : {};
 
         let inPrev = (id) => prevPoints[id];
         let isModified = (id) => currPoints[id] !== prevPoints[id];
@@ -109,9 +111,10 @@ export default {
         removed.sort();
         modified.sort();
         unmodified.sort();
-        let pointIds = added.concat(removed, modified, unmodified);
 
-        pointRevs.push(pointIds.map((id) => [id, currPoints[id], prevPoints[id]]));
+        let pointIds = added.concat(removed, modified, unmodified);
+        let pointIdToRevs = (id) => [id, currPoints[id], prevPoints[id]];
+        pointRevs.push(pointIds.map(pointIdToRevs));
       }
       return pointRevs;
     },

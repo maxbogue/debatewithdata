@@ -5,7 +5,7 @@
     <dwd-flag v-if="prev.flag" :flag="prev.flag" class="del" />
     <dwd-flag v-if="curr.flag" :flag="curr.flag" class="ins" />
   </template>
-  <span v-html="diff(prev.text, curr.text)"></span>
+  <span v-html="diffHtml"></span>
 </div>
 </template>
 
@@ -15,6 +15,7 @@ import Diff from 'text-diff';
 import DwdFlag from './DwdFlag.vue';
 
 const diff = new Diff();
+const emptyClaim = () => ({ text: '' });
 
 export default {
   components: {
@@ -23,15 +24,20 @@ export default {
   props: {
     curr: {
       type: Object,
-      default: () => ({
-        text: '',
-      }),
+      required: true,
+      default: emptyClaim,
     },
     prev: {
       type: Object,
-      default: () => ({
-        text: '',
-      }),
+      required: true,
+      default: emptyClaim,
+    },
+  },
+  computed: {
+    diffHtml: function () {
+      let prevText = this.prev.text || '';
+      let currText = this.curr.text || '';
+      return this.diff(prevText, currText);
     },
   },
   methods: {

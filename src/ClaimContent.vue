@@ -1,10 +1,13 @@
 <template>
 <div>
-  <dwd-flag v-if="claim.flag" :flag="claim.flag" />
-  <router-link v-if="trail"
+  <router-link v-if="trail && claim"
                :to="claimUrl(claim.id, trail)"
                class="link-icon glyphicon glyphicon-link"></router-link>
-  <span>{{ claim.text }}</span>
+  <template v-if="claimHasContent">
+    <dwd-flag v-if="claim.flag" :flag="claim.flag" />
+    <span>{{ claim.text }}</span>
+  </template>
+  <em v-else class="error">[{{ claim ? 'deleted' : 'not found' }}]</em>
 </div>
 </template>
 
@@ -23,6 +26,11 @@ export default {
     trail: {
       type: Array,
       required: false,
+    },
+  },
+  computed: {
+    claimHasContent: function () {
+      return this.claim && !this.claim.deleted;
     },
   },
 };

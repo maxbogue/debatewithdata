@@ -159,11 +159,6 @@ export default function (sequelize, DataTypes) {
     Source.prototype.toData = async function () {
       let data = this.toCoreData();
       data.rev = this.headId;
-
-      if (this.head.deleted) {
-        return data;
-      }
-
       data.commentCount = await this.countComments();
       return data;
     };

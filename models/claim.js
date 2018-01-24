@@ -164,18 +164,11 @@ export default function (sequelize, DataTypes) {
 
       let thisData = this.toCoreData();
       thisData.rev = this.headId;
-
-      if (thisData.deleted) {
-        thisData.depth = 3;
-        data.claims[this.id] = thisData;
-        return;
-      }
-
-      thisData.depth = depth;
+      thisData.depth = thisData.deleted ? 3 : depth;
       thisData.star = await this.toStarData(user);
       thisData.commentCount = await this.countComments();
 
-      if (depth > 1) {
+      if (!thisData.deleted && depth > 1) {
         thisData.points = await models.PointRev.toDatas(
             this.head.pointRevs, data, depth - 1, user);
       }

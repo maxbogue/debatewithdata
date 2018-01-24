@@ -217,6 +217,7 @@ describe('Source', function () {
           [r1.sourceId]: {
             rev: r2.id,
             deleted: true,
+            commentCount: 0,
           },
         }
       });

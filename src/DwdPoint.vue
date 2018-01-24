@@ -83,7 +83,7 @@ export default {
         return pointMapsToLists(this.point.points);
       } else if (this.point.type === 'claim') {
         let claim = this.lookupClaim(this.point.claimId);
-        return pointMapsToLists(claim.points);
+        return claim.deleted ? [] : pointMapsToLists(claim.points);
       }
       return [];
     },

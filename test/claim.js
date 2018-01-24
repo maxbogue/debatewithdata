@@ -474,6 +474,11 @@ describe('Claim', function () {
             rev: r2.id,
             depth: 3,
             deleted: true,
+            commentCount: 0,
+            star: {
+              count: 0,
+              starred: false,
+            },
           },
         },
         sources: {},

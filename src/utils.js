@@ -1,3 +1,4 @@
+import filter from 'lodash/filter';
 import forEach from 'lodash/forEach';
 import forOwn from 'lodash/forOwn';
 import isArray from 'lodash/isArray';
@@ -58,6 +59,10 @@ export function isValidPoint(point) {
   return Boolean(pointToInput(point));
 }
 
+export function filterLiving(items) {
+  return filter(items, (item) => !item.deleted);
+}
+
 // This random string acts as a seed to keep the sort stable.
 const sortSeed = genId();
 
@@ -80,7 +85,8 @@ export function starred(item) {
 }
 
 export function sortByStars(items) {
-  return sortBy(items, [starred, starCount, stableRandom]);
+  let livingItems = filterLiving(items);
+  return sortBy(livingItems, [starred, starCount, stableRandom]);
 }
 
 function prepItem(item, id) {
