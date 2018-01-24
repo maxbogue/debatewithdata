@@ -1,38 +1,41 @@
 <template>
 <div>
-  <h2 v-html="diff(prev.title, curr.title)"></h2>
-  <p v-html="diff(prev.text, curr.text)"></p>
+  <h2 v-html="titleDiff"></h2>
+  <p v-html="textDiff"></p>
 </div>
 </template>
 
 <script>
-import Diff from 'text-diff';
+import { diff } from './utils';
 
-const diff = new Diff();
-
-let emptyTopic = () => ({
+const EMPTY_TOPIC = {
   title: '',
   text: '',
-});
+};
 
 export default {
   props: {
-    curr: {
-      type: Object,
-      default: emptyTopic,
-      required: true,
-    },
-    prev: {
-      type: Object,
-      default: emptyTopic,
-      required: true,
-    },
+    curr: Object,
+    prev: Object,
   },
-  methods: {
-    diff: function (text1, text2) {
-      let diffs = diff.main(text1, text2);
-      diff.cleanupSemantic(diffs);
-      return diff.prettyHtml(diffs);
+  computed: {
+    safeCurr: function () {
+      if (!this.curr || this.curr.deleted) {
+        return EMPTY_TOPIC;
+      }
+      return this.curr;
+    },
+    safePrev: function () {
+      if (!this.prev || this.prev.deleted) {
+        return EMPTY_TOPIC;
+      }
+      return this.prev;
+    },
+    titleDiff: function () {
+      return diff(this.safePrev.title, this.safeCurr.title);
+    },
+    textDiff: function () {
+      return diff(this.safePrev.text, this.safeCurr.text);
     },
   },
 };

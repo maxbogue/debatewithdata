@@ -3,7 +3,7 @@
   <router-link v-if="trail && claim"
                :to="claimUrl(claim.id, trail)"
                class="link-icon glyphicon glyphicon-link"></router-link>
-  <template v-if="claimHasContent">
+  <template v-if="claim && !claim.deleted">
     <dwd-flag v-if="claim.flag" :flag="claim.flag" />
     <span>{{ claim.text }}</span>
   </template>
@@ -26,11 +26,6 @@ export default {
     trail: {
       type: Array,
       required: false,
-    },
-  },
-  computed: {
-    claimHasContent: function () {
-      return this.claim && !this.claim.deleted;
     },
   },
 };

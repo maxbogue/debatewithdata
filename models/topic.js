@@ -107,14 +107,6 @@ export default function (sequelize, DataTypes) {
     };
 
     Topic.prototype.fillData = async function (data, depth, user) {
-      if (this.head.deleted) {
-        data.topics[this.id] = {
-          rev: this.headId,
-          deleted: true,
-        };
-        return;
-      }
-
       if (data.topics[this.id] && data.topics[this.id].depth >= depth) {
         // This topic has already been loaded with at least as much depth.
         return;
@@ -122,23 +114,28 @@ export default function (sequelize, DataTypes) {
 
       let thisData = {
         rev: this.headId,
-        text: this.head.blob.text,
-        title: this.head.title,
-        claimIds: map(this.head.claims, (claim) => claim.id),
-        subTopicIds: map(this.head.subTopics, (topic) => topic.id),
-        depth: depth,
+        depth: this.head.deleted ? 3 : depth,
         star: await this.toStarData(user),
         commentCount: await this.countComments(),
       };
 
-      if (depth > 1) {
-        for (let subTopic of this.head.subTopics) {
-          await subTopic.fillData(data, depth - 1, user);
-        }
-      }
+      if (this.head.deleted) {
+        thisData.deleted = true;
+      } else {
+        thisData.text = this.head.blob.text;
+        thisData.title = this.head.title;
+        thisData.subTopicIds = map(this.head.subTopics, (topic) => topic.id);
+        thisData.claimIds = map(this.head.claims, (claim) => claim.id);
 
-      for (let claim of this.head.claims) {
-        await claim.fillData(data, 1, user);
+        if (depth > 1) {
+          for (let subTopic of this.head.subTopics) {
+            await subTopic.fillData(data, depth - 1, user);
+          }
+        }
+
+        for (let claim of this.head.claims) {
+          await claim.fillData(data, 1, user);
+        }
       }
 
       data.topics[this.id] = thisData;

@@ -1,3 +1,4 @@
+import Diff from 'text-diff';
 import filter from 'lodash/filter';
 import forEach from 'lodash/forEach';
 import forOwn from 'lodash/forOwn';
@@ -7,8 +8,16 @@ import map from 'lodash/map';
 import md5 from 'md5';
 import sortBy from 'lodash/sortBy';
 
+const textDiff = new Diff();
+
 export function pipe(...fns) {
   return fns.reduce((f, g) => (...args) => g(f(...args)));
+}
+
+export function diff(text1, text2) {
+  let diffs = textDiff.main(text1, text2);
+  textDiff.cleanupSemantic(diffs);
+  return textDiff.prettyHtml(diffs);
 }
 
 export function walk(o, f) {

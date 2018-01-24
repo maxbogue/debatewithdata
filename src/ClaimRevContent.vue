@@ -5,46 +5,39 @@
     <dwd-flag v-if="prev.flag" :flag="prev.flag" class="del" />
     <dwd-flag v-if="curr.flag" :flag="curr.flag" class="ins" />
   </template>
-  <span v-html="diffHtml"></span>
+  <span v-html="textDiff"></span>
 </div>
 </template>
 
 <script>
-import Diff from 'text-diff';
-
 import DwdFlag from './DwdFlag.vue';
+import { diff } from './utils';
 
-const diff = new Diff();
-const emptyClaim = () => ({ text: '' });
+const EMPTY_CLAIM = { text: '' };
 
 export default {
   components: {
     DwdFlag,
   },
   props: {
-    curr: {
-      type: Object,
-      required: true,
-      default: emptyClaim,
-    },
-    prev: {
-      type: Object,
-      required: true,
-      default: emptyClaim,
-    },
+    curr: Object,
+    prev: Object,
   },
   computed: {
-    diffHtml: function () {
-      let prevText = this.prev.text || '';
-      let currText = this.curr.text || '';
-      return this.diff(prevText, currText);
+    safeCurr: function () {
+      if (!this.curr || this.curr.deleted) {
+        return EMPTY_CLAIM;
+      }
+      return this.curr;
     },
-  },
-  methods: {
-    diff: function (text1, text2) {
-      let diffs = diff.main(text1, text2);
-      diff.cleanupSemantic(diffs);
-      return diff.prettyHtml(diffs);
+    safePrev: function () {
+      if (!this.prev || this.prev.deleted) {
+        return EMPTY_CLAIM;
+      }
+      return this.prev;
+    },
+    textDiff: function () {
+      return diff(this.safePrev.text, this.safeCurr.text);
     },
   },
 };

@@ -18,6 +18,10 @@ function setTopicDepth(topics, id, depth) {
   if (topic.depth && topic.depth <= depth) {
     return;
   }
+  if (topic.deleted) {
+    topic.depth = 3;
+    return;
+  }
   topic.depth = depth;
   for (let subTopicId of topic.subTopicIds) {
     setTopicDepth(topics, subTopicId, depth + 1);
@@ -27,8 +31,10 @@ function setTopicDepth(topics, id, depth) {
 function setTopicDepths(topics) {
   let rootTopics = clone(topics);
   forOwn(topics, (topic) => {
-    for (let subTopicId of topic.subTopicIds) {
-      delete rootTopics[subTopicId];
+    if (!topic.deleted) {
+      for (let subTopicId of topic.subTopicIds) {
+        delete rootTopics[subTopicId];
+      }
     }
   });
   forOwn(rootTopics, (topic) => {

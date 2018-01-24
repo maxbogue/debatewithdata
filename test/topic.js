@@ -223,6 +223,8 @@ describe('Topic', function () {
           [ID]: {
             rev: r2.id,
             deleted: true,
+            depth: 3,
+            ...STARS_AND_COMMENTS,
           },
         },
         claims: {},

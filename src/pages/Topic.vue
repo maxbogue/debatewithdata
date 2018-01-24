@@ -4,8 +4,11 @@
     <div class="topic t1">
       <div class="bubble click"
            @click="showDrawer = !showDrawer">
-        <h2>{{ topic.title }}</h2>
-        <p>{{ topic.text }}</p>
+        <template v-if="!topic.deleted">
+          <h2>{{ topic.title }}</h2>
+          <p>{{ topic.text }}</p>
+        </template>
+        <em v-else class="error">[deleted]</em>
       </div>
       <drawer :show="showDrawer">
         <div class="info">
@@ -80,13 +83,13 @@ export default {
       return this.$store.state.topics[this.id] || null;
     },
     subTopics: function () {
-      if (!this.topic) {
+      if (!this.topic || this.topic.deleted) {
         return [];
       }
       return sortByStars(map(this.topic.subTopicIds, this.lookupTopic));
     },
     claims: function () {
-      if (!this.topic) {
+      if (!this.topic || this.topic.deleted) {
         return [];
       }
       return sortByStars(map(this.topic.claimIds, this.lookupClaim));

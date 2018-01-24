@@ -67,8 +67,6 @@ export default {
     subTopicIds: [],
     claimIds: [],
     showModal: false,
-    modalTopic: null,
-    modalCallback: null,
   }),
   computed: {
     id: function () {
@@ -123,7 +121,10 @@ export default {
     },
     initialize: function () {
       if (this.topic) {
-        this.newTopicPartial = this.topic;
+        this.newTopicPartial = {
+          title: this.topic.title || '',
+          text: this.topic.text || '',
+        };
 
         let topicStarred = pipe(this.lookupTopic, starred);
         let topicStarCount = pipe(this.lookupTopic, starCount);
