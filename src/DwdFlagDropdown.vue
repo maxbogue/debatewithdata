@@ -5,7 +5,7 @@
         @click="toggleDropdown"></span>
   <ul ref="flags" :class="$style.flags" class="dropdown-content">
     <li v-for="(v, k) in flags"
-        :class="{ [$style.selected]: k === flag }"
+        :class="{ [$style.selected]: k === value }"
         :key="k"
         @click="selectFlag(k)">{{ v.name }}</li>
   </ul>
@@ -17,7 +17,7 @@ import { FlagData } from '../common/flag';
 
 export default {
   props: {
-    flag: {
+    value: {
       type: String,
       required: false,
     },
@@ -32,7 +32,7 @@ export default {
       this.$refs.flags.classList.toggle('open');
     },
     selectFlag: function (flag) {
-      this.$emit('select', flag === this.flag ? '' : flag);
+      this.$emit('input', flag === this.value ? '' : flag);
     },
   },
 };

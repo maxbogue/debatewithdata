@@ -10,7 +10,7 @@
     </div>
     <div v-if="text" class="info">
       <span class="id mono">{{ id || 'new' }}</span>
-      <dwd-flag-dropdown :flag="flag" @select="(f) => flag = f" />
+      <dwd-flag-dropdown v-model="flag" />
     </div>
   </div>
 </dwd-modal>

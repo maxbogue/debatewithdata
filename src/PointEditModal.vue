@@ -24,14 +24,12 @@
       <div v-if="error" :class="$style.loader" class="error">{{ error }}</div>
       <point-content v-if="claim || source"
                     :point="point"
-                    :trail="[]"></point-content>
-      <dwd-flag v-else-if="point.flag" :flag="point.flag"></dwd-flag>
+                    :trail="[]" />
+      <dwd-flag v-else-if="point.flag" :flag="point.flag" />
     </div>
     <div v-if="point.type" class="info">
       <span class="id mono">{{ point.id || 'new' }}</span>
-      <dwd-flag-dropdown v-if="isSubClaim"
-                        :flag="flag"
-                        @select="updateFlag"></dwd-flag-dropdown>
+      <dwd-flag-dropdown v-if="isSubClaim" v-model="flag" />
     </div>
   </div>
 </dwd-modal>
@@ -172,10 +170,6 @@ export default {
     update: function () {
       this.emitPoint(this.makePoint());
     },
-    updateFlag: function (flag) {
-      this.flag = flag;
-      this.update();
-    },
     updateNewSource: function (source) {
       this.input = source.url;
       this.emitPoint({ type: 'newSource', source });
@@ -216,6 +210,9 @@ export default {
       if (this.initialized && !this.isUrl) {
         this.update();
       }
+    },
+    flag: function () {
+      this.update();
     },
     id: function (newId) {
       this.loading = false;
