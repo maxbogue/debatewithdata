@@ -44,6 +44,8 @@ app.get('/register', sendIndex);
 app.get('/reset-password', sendIndex);
 app.get('/source/:id', sendIndex);
 app.get('/source/:id/edit', sendIndex);
+app.get('/source/:id/history', sendIndex);
+app.get('/source/:id/rev/:revId', sendIndex);
 app.get('/sources', sendIndex);
 app.get('/sources/add', sendIndex);
 app.get('/status', sendIndex);

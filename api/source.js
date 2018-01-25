@@ -1,6 +1,7 @@
 import Router from 'express-promise-router';
+import map from 'lodash/map';
 
-import { Claim, Comment, Source } from '../models';
+import { Claim, Comment, Source, SourceRev } from '../models';
 import { addApiData } from '../models/utils';
 import { AuthError } from './error';
 
@@ -49,6 +50,18 @@ router.delete('/:id', async function (req, res) {
   let rev = await Source.apiDelete(req.params.id, req.user);
   let data = await Source.apiGet(rev.sourceId);
   res.json(data);
+});
+
+router.get('/:id/rev', async function (req, res) {
+  let sourceRevs = await SourceRev.findAll({
+    where: {
+      sourceId: req.params.id,
+    },
+    order: [['created_at', 'DESC']],
+    ...SourceRev.INCLUDE(true),
+  });
+  let sourceRevData = map(sourceRevs, (rev) => rev.toRevData());
+  res.json({ sourceRevs: sourceRevData });
 });
 
 router.get('/:id/comment', async function (req, res) {

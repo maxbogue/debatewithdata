@@ -22,6 +22,7 @@ import Register from './pages/Register.vue';
 import ResetPassword from './pages/ResetPassword.vue';
 import Source from './pages/Source.vue';
 import SourceEdit from './pages/SourceEdit.vue';
+import SourceHistory from './pages/SourceHistory.vue';
 import Sources from './pages/Sources.vue';
 import Status from './pages/Status.vue';
 import Topic from './pages/Topic.vue';
@@ -86,6 +87,8 @@ new Vue({
       { path: '/reset-password', component: ResetPassword },
       { path: '/source/:id', component: Source },
       { path: '/source/:id/edit', component: SourceEdit },
+      { path: '/source/:id/history', component: SourceHistory },
+      { path: '/source/:id/rev/:revId', component: SourceHistory },
       { path: '/sources', component: Sources },
       { path: '/sources/add', component: SourceEdit },
       { path: '/status', component: Status },

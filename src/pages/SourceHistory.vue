@@ -3,21 +3,21 @@
   <template v-if="data && !revId">
     <h3 class="center">
       History for
-      <router-link :to="claimUrl(claimId)"
-                   class="mono">{{ claimId }}</router-link>
+      <router-link :to="sourceUrl(sourceId)"
+                   class="mono">{{ sourceId }}</router-link>
     </h3>
     <ul class="mono" :class="$style.revs">
-      <li v-for="rev in data.claimRevs" :key="rev.id">
+      <li v-for="rev in data.sourceRevs" :key="rev.id">
         <router-link :to="revUrl(rev)">{{ rev.id }}</router-link>
         <span :class="$style.username">{{ rev.username }}</span>
         <span>{{ rev.createdAt | timestamp }}</span>
       </li>
     </ul>
   </template>
-  <claim-rev v-if="data && revId"
-             :claimId="claimId"
-             :revId="revId"
-             :data="data" />
+  <source-rev v-if="data && revId"
+              :sourceId="sourceId"
+              :revId="revId"
+              :data="data" />
   <dwd-loader ref="loader"></dwd-loader>
 </div>
 </template>
@@ -26,19 +26,19 @@
 import axios from 'axios';
 import dateFormat from 'dateformat';
 
-import ClaimRev from '../ClaimRev.vue';
+import SourceRev from '../SourceRev.vue';
 import DwdLoader from '../DwdLoader.vue';
 
 export default {
   components: {
-    ClaimRev,
+    SourceRev,
     DwdLoader,
   },
   data: () => ({
     data: null,
   }),
   computed: {
-    claimId: function () {
+    sourceId: function () {
       return this.$route.params.id;
     },
     revId: function () {
@@ -47,11 +47,11 @@ export default {
   },
   methods: {
     revUrl: function (rev) {
-      return this.claimUrl(this.claimId) + '/rev/' + rev.id;
+      return this.sourceUrl(this.sourceId) + '/rev/' + rev.id;
     },
     loadData: function () {
       this.data = null;
-      axios.get('/api/claim/' + this.claimId + '/rev', {
+      axios.get('/api/source/' + this.sourceId + '/rev', {
         loader: this.$refs.loader,
       }).then((res) => {
         this.data = res.data;
@@ -92,8 +92,8 @@ export default {
       flex: 1
 
   li:nth-child(even)
-    background-color: $blue-primary
+    background-color: $green-primary
 
   li:nth-child(odd)
-    background-color: $blue-accent
+    background-color: $green-accent
 </style>

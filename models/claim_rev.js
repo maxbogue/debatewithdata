@@ -74,25 +74,31 @@ export default function (sequelize, DataTypes) {
       return { include };
     };
 
-    ClaimRev.prototype.toRevData = function (pointRevDatas) {
-      let thisData = {
-        id: this.id,
-        username: this.user.username,
-        createdAt: this.created_at,
+    ClaimRev.prototype.toCoreData = function () {
+      if (this.deleted) {
+        return {
+          deleted: true,
+        };
+      }
+
+      let data = {
+        text: this.blob.text,
       };
 
-      if (this.deleted) {
-        thisData.deleted = true;
-        return thisData;
-      }
-
-      thisData.text = this.blob.text;
-
       if (this.flag) {
-        thisData.flag = this.flag;
+        data.flag = this.flag;
       }
 
-      if (this.pointRevs) {
+      return data;
+    };
+
+    ClaimRev.prototype.toRevData = function (pointRevDatas) {
+      let thisData = this.toCoreData();
+      thisData.id = this.id;
+      thisData.username = this.user.username;
+      thisData.createdAt = this.created_at;
+
+      if (!thisData.deleted && this.pointRevs) {
         thisData.points = models.PointRev.toRevDatas(
             this.pointRevs, pointRevDatas);
       }

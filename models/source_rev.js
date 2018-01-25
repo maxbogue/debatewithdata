@@ -66,10 +66,50 @@ export default function (sequelize, DataTypes) {
   };
 
   SourceRev.postAssociate = function (models) {
-    SourceRev.INCLUDE = function () {
-      return {
-        include: [models.Blob],
+    SourceRev.INCLUDE = function (includeUser=false) {
+      let include = [models.Blob];
+      if (includeUser) {
+        include.push(models.User);
+      }
+      return { include };
+    };
+
+    SourceRev.prototype.toCoreData = function () {
+      if (this.deleted) {
+        return {
+          deleted: true,
+        };
+      }
+
+      let data = {
+        url: this.url,
+        text: this.blob.text,
+        type: this.type,
       };
+
+      switch (this.type) {
+      case 'research':
+        data.institution = this.institution;
+        data.publication = this.publication;
+        break;
+      case 'article':
+        data.publication = this.publication;
+        data.firstHand = this.firstHand;
+        break;
+      case 'authority':
+        data.institution = this.institution;
+        break;
+      }
+
+      return data;
+    };
+
+    SourceRev.prototype.toRevData = function () {
+      let data = this.toCoreData();
+      data.id = this.id;
+      data.username = this.user.username;
+      data.createdAt = this.created_at;
+      return data;
     };
   };
 

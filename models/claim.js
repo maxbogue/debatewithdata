@@ -138,31 +138,13 @@ export default function (sequelize, DataTypes) {
       return claimRev;
     };
 
-    Claim.prototype.toCoreData = function () {
-      if (this.head.deleted) {
-        return {
-          deleted: true,
-        };
-      }
-
-      let data = {
-        text: this.head.blob.text,
-      };
-
-      if (this.head.flag) {
-        data.flag = this.head.flag;
-      }
-
-      return data;
-    };
-
     Claim.prototype.fillData = async function (data, depth, user) {
       if (data.claims[this.id] && data.claims[this.id].depth >= depth) {
         // This claim has already been loaded with at least as much depth.
         return;
       }
 
-      let thisData = this.toCoreData();
+      let thisData = this.head.toCoreData();
       thisData.rev = this.headId;
       thisData.depth = thisData.deleted ? 3 : depth;
       thisData.star = await this.toStarData(user);

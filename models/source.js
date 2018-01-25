@@ -126,38 +126,8 @@ export default function (sequelize, DataTypes) {
       return rev;
     };
 
-    Source.prototype.toCoreData = function () {
-      if (this.head.deleted) {
-        return {
-          deleted: true,
-        };
-      }
-
-      let data = {
-        url: this.head.url,
-        text: this.head.blob.text,
-        type: this.head.type,
-      };
-
-      switch (this.head.type) {
-      case 'research':
-        data.institution = this.head.institution;
-        data.publication = this.head.publication;
-        break;
-      case 'article':
-        data.publication = this.head.publication;
-        data.firstHand = this.head.firstHand;
-        break;
-      case 'authority':
-        data.institution = this.head.institution;
-        break;
-      }
-
-      return data;
-    };
-
     Source.prototype.toData = async function () {
-      let data = this.toCoreData();
+      let data = this.head.toCoreData();
       data.rev = this.headId;
       data.commentCount = await this.countComments();
       return data;

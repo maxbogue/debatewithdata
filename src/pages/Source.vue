@@ -8,7 +8,10 @@
                       :source="source" />
       <drawer :show="showDrawer">
         <div class="info">
-          <span class="id mono">{{ source.id }}</span>
+          <span class="id mono">{{ id }}</span>
+          <router-link :to="sourceUrl(id) + '/history'"
+                       class="glyphicon glyphicon-time click"
+                       aria-hidden="true"></router-link>
           <router-link v-if="$store.state.user"
                         :to="sourceUrl(id) + '/edit'"
                         class="glyphicon glyphicon-pencil click"
