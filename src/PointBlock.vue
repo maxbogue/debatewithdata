@@ -7,22 +7,22 @@
   <drawer :show="showDrawer">
     <div class="info">
       <span class="id mono">{{ point.id }}</span>
-      <dwd-star :star="point.star" :url="'/api/point/' + point.id"></dwd-star>
+      <dwd-star :star="point.star" :url="'/api/point/' + point.id" />
       <comment-icon @click.native="showComments = !showComments"
-                    :count="point.commentCount"></comment-icon>
+                    :count="point.commentCount" />
     </div>
     <dwd-comments v-if="showComments"
-                  :url="'/api/point/' + point.id"></dwd-comments>
+                  :url="'/api/point/' + point.id" />
     <transition-group tag="ul"
                       v-if="subPoints.length > 0"
                       class="sub-points"
                       :move-class="$style.subPointsMove">
-      <dwd-point v-for="[subPoint, subSide, i] in subPoints"
-                 :point="subPoint"
-                 :isFor="isFor === !subSide"
-                 :isSubPoint="true"
-                 :trail="trail.concat(point.claimId || point.id)"
-                 :key="subPoint.id"></dwd-point>
+      <point-block v-for="[subPoint, subSide, i] in subPoints"
+                   :point="subPoint"
+                   :isFor="isFor === !subSide"
+                   :isSubPoint="true"
+                   :trail="trail.concat(point.claimId || point.id)"
+                   :key="subPoint.id" />
     </transition-group>
   </drawer>
 </li>
@@ -38,7 +38,7 @@ import PointContent from './PointContent.vue';
 import { pointMapsToLists, rotateWithIndexes } from './utils';
 
 export default {
-  name: 'DwdPoint',
+  name: 'PointBlock',
   components: {
     CommentIcon,
     Drawer,

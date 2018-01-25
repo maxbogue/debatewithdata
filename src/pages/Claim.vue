@@ -27,11 +27,11 @@
     </div>
     <template v-if="$store.state.singleColumn">
       <transition-group tag="div" :move-class="$style.pointsMove">
-        <dwd-point v-for="[point, side, i] in zippedPoints"
-                   :point="point"
-                   :isFor="claimIsFor === !side"
-                   :trail="trail.concat(id)"
-                   :key="point.id" />
+        <point-block v-for="[point, side, i] in zippedPoints"
+                     :point="point"
+                     :isFor="claimIsFor === !side"
+                     :trail="trail.concat(id)"
+                     :key="point.id" />
       </transition-group>
     </template>
     <template v-else>
@@ -40,11 +40,11 @@
                         class="dwd-col"
                         :move-class="$style.pointsMove"
                         :key="'side-' + side">
-        <dwd-point v-for="(point, i) in sidePoints"
-                   :point="point"
-                   :isFor="claimIsFor === !side"
-                   :trail="trail.concat(id)"
-                   :key="point.id" />
+        <point-block v-for="(point, i) in sidePoints"
+                     :point="point"
+                     :isFor="claimIsFor === !side"
+                     :trail="trail.concat(id)"
+                     :key="point.id" />
       </transition-group>
     </template>
   </template>
@@ -59,9 +59,9 @@ import Drawer from '../Drawer.vue';
 import DwdComments from '../DwdComments.vue';
 import DwdFlag from '../DwdFlag.vue';
 import DwdLoader from '../DwdLoader.vue';
-import DwdPoint from '../DwdPoint.vue';
 import DwdStar from '../DwdStar.vue';
 import DwdTrail from '../DwdTrail.vue';
+import PointBlock from '../PointBlock.vue';
 import { pointMapsToLists, rotateWithIndexes } from '../utils';
 
 export default {
@@ -72,9 +72,9 @@ export default {
     DwdComments,
     DwdFlag,
     DwdLoader,
-    DwdPoint,
     DwdStar,
     DwdTrail,
+    PointBlock,
   },
   data: () => ({
     showComments: false,
