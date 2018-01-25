@@ -14,16 +14,17 @@
         <div class="info">
           <span class="id mono">{{ id }}</span>
           <dwd-star :star="topic.star"
-                    :url="'/api' + topicUrl(id)"></dwd-star>
+                    :url="'/api' + topicUrl(id)" />
           <router-link v-if="$store.state.user"
                        :to="topicUrl(id) + '/edit'"
                        class="glyphicon glyphicon-pencil click"
                        aria-hidden="true"></router-link>
           <comment-icon @click.native="showComments = !showComments"
-                        :count="topic.commentCount"></comment-icon>
+                        :count="topic.commentCount" />
         </div>
-        <dwd-comments v-if="showComments"
-                      :url="'/api/topic/' + id"></dwd-comments>
+        <dwd-comments :url="'/api/topic/' + id"
+                      :show="showComments"
+                      :hint="showDrawer" />
       </drawer>
     </div>
     <template v-if="subTopics.length > 0">

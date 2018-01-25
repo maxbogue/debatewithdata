@@ -11,8 +11,9 @@
       <comment-icon @click.native="showComments = !showComments"
                     :count="point.commentCount" />
     </div>
-    <dwd-comments v-if="showComments"
-                  :url="'/api/point/' + point.id" />
+    <dwd-comments :url="'/api/point/' + point.id"
+                  :show="showComments"
+                  :hint="showDrawer" />
     <transition-group tag="ul"
                       v-if="subPoints.length > 0"
                       class="sub-points"

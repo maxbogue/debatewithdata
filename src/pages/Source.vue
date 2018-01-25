@@ -19,8 +19,9 @@
           <comment-icon @click.native="showComments = !showComments"
                         :count="source.commentCount" />
         </div>
-        <dwd-comments v-if="showComments"
-                      :url="'/api/source/' + id" />
+        <dwd-comments :url="'/api/source/' + id"
+                      :show="showComments"
+                      :hint="showDrawer" />
       </drawer>
     </div>
   </template>

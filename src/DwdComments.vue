@@ -1,43 +1,55 @@
 <template>
-<div :class="$style.comments">
-  <template v-if="loaded">
-    <ul>
-      <li v-for="comment in comments" class="flex-row" :key="comment.id">
-        <div><strong>{{ comment.author }}</strong>: {{ comment.text }}</div>
-        <div :class="$style.timestamp">{{ comment.created | timestamp }}</div>
-        <div v-if="user && comment.author === user.username"
-              :class="$style.delete"
-              class="click glyphicon glyphicon-trash"
-              aria-hidden="true"
-              @click="deleteComment(comment.id)"></div>
-      </li>
-      <li v-if="comments.length === 0">No comments yet.</li>
-    </ul>
-    <dwd-input v-if="$store.state.user"
-               v-model="newComment"
-               placeholder="new comment"
-               @keyup.enter.native="submit" />
-  </template>
-  <div v-else>Loading...</div>
-</div>
+<drawer :show="show">
+  <div :class="$style.comments">
+    <template v-if="loaded">
+      <ul>
+        <li v-for="comment in comments" class="flex-row" :key="comment.id">
+          <div><strong>{{ comment.author }}</strong>: {{ comment.text }}</div>
+          <div :class="$style.timestamp">{{ comment.created | timestamp }}</div>
+          <div v-if="user && comment.author === user.username"
+                :class="$style.delete"
+                class="click glyphicon glyphicon-trash"
+                aria-hidden="true"
+                @click="deleteComment(comment.id)"></div>
+        </li>
+        <li v-if="comments.length === 0">No comments yet.</li>
+      </ul>
+      <dwd-input v-if="$store.state.user"
+                 v-model="newComment"
+                 placeholder="new comment"
+                 @keyup.enter.native="submit" />
+    </template>
+    <div v-else>Loading...</div>
+  </div>
+</drawer>
 </template>
 
 <script>
 import axios from 'axios';
 import dateFormat from 'dateformat';
 
+import Drawer from './Drawer.vue';
 import DwdInput from './DwdInput.vue';
 
 const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 
 export default {
   components: {
+    Drawer,
     DwdInput,
   },
   props: {
     url: {
       type: String,
       required: true,
+    },
+    show: {
+      type: Boolean,
+      required: true,
+    },
+    // Triggers an eager load the first time it flips to true.
+    hint: {
+      type: Boolean,
     },
   },
   computed: {
@@ -49,11 +61,22 @@ export default {
     },
   },
   data: () => ({
+    canLoad: true,
     loaded: false,
     comments: [],
     newComment: '',
   }),
   methods: {
+    load: function () {
+      if (!this.canLoad) {
+        return;
+      }
+      this.canLoad = false;
+      axios.get(this.commentsUrl).then((response) => {
+        this.loaded = true;
+        this.comments = response.data;
+      });
+    },
     submit: function () {
       if (!this.newComment) {
         return;
@@ -85,12 +108,20 @@ export default {
       return dateFormat(date, 'yyyy-mm-dd');
     },
   },
-  mounted: function () {
-    this.loaded = false;
-    axios.get(this.commentsUrl).then((response) => {
-      this.loaded = true;
-      this.comments = response.data;
-    });
+  watch: {
+    // Load the first time hint triggers or when shown after being hidden.
+    show: function () {
+      if (this.show) {
+        this.load();
+      } else {
+        this.canLoad = true;
+      }
+    },
+    hint: function () {
+      if (this.hint && !this.loaded) {
+        this.load();
+      }
+    },
   },
 };
 </script>

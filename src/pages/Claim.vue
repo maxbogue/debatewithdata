@@ -21,8 +21,9 @@
           <comment-icon @click.native="showComments = !showComments"
                         :count="claim.commentCount" />
         </div>
-        <dwd-comments v-if="showComments"
-                      :url="'/api/claim/' + id" />
+        <dwd-comments :url="'/api/claim/' + id"
+                      :show="showComments"
+                      :hint="showDrawer" />
       </drawer>
     </div>
     <template v-if="$store.state.singleColumn">
