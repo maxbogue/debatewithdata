@@ -13,23 +13,23 @@
     <claim-edit-modal :show.sync="showModal"
                       :claim.sync="newClaimPartial" />
     <template v-if="$store.state.singleColumn">
-      <dwd-edit-point v-for="[point, side, i] in zippedPoints"
-                      :key="point.id || point.tempId"
-                      :point="point"
-                      :isFor="!side"
-                      @update="(p) => updatePoint(side, i, p)"
-                      @delete="points[side].splice(i, 1)" />
+      <point-edit v-for="[point, side, i] in zippedPoints"
+                  :key="point.id || point.tempId"
+                  :point="point"
+                  :isFor="!side"
+                  @update="(p) => updatePoint(side, i, p)"
+                  @delete="points[side].splice(i, 1)" />
     </template>
     <template v-else>
       <div v-for="(sidePoints, side) in points"
            class="dwd-col"
            :key="'side-' + side">
-        <dwd-edit-point v-for="(point, i) in sidePoints"
-                        :key="point.id || point.tempId"
-                        :point="point"
-                        :isFor="!side"
-                        @update="(p) => updatePoint(side, i, p)"
-                        @delete="sidePoints.splice(i, 1)" />
+        <point-edit v-for="(point, i) in sidePoints"
+                    :key="point.id || point.tempId"
+                    :point="point"
+                    :isFor="!side"
+                    @update="(p) => updatePoint(side, i, p)"
+                    @delete="sidePoints.splice(i, 1)" />
       </div>
     </template>
     <div v-if="id" class="block center">
@@ -52,9 +52,9 @@ import filter from 'lodash/filter';
 import ClaimEditModal from '../ClaimEditModal.vue';
 import ClaimRevContent from '../ClaimRevContent.vue';
 import DeleteButton from '../DeleteButton.vue';
-import DwdEditPoint from '../DwdEditPoint.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
+import PointEdit from '../PointEdit.vue';
 import {
   emptyPoint, emptyPoints, isValidPoint, pointMapsToLists, rotateWithIndexes
 } from '../utils';
@@ -96,9 +96,9 @@ export default {
     ClaimEditModal,
     ClaimRevContent,
     DeleteButton,
-    DwdEditPoint,
     DwdLoader,
     FixedBottom,
+    PointEdit,
   },
   data: () => ({
     showModal: false,

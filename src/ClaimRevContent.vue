@@ -1,9 +1,10 @@
 <template>
 <div>
-  <dwd-flag v-if="curr.flag && curr.flag === prev.flag" :flag="curr.flag" />
+  <dwd-flag v-if="safeCurr.flag && safeCurr.flag === safePrev.flag"
+            :flag="safeCurr.flag" />
   <template v-else>
-    <dwd-flag v-if="prev.flag" :flag="prev.flag" class="del" />
-    <dwd-flag v-if="curr.flag" :flag="curr.flag" class="ins" />
+    <dwd-flag v-if="safePrev.flag" :flag="safePrev.flag" class="del" />
+    <dwd-flag v-if="safeCurr.flag" :flag="safeCurr.flag" class="ins" />
   </template>
   <span v-html="textDiff"></span>
 </div>

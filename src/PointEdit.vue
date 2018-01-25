@@ -1,8 +1,9 @@
 <template>
-<div class="point" :class="isFor | toSideString">
+  <div :class="classObject">
   <point-edit-modal :show.sync="showModal"
                     :point="point"
                     :isFor="isFor"
+                    :isSubPoint="isSubPoint"
                     @update="emitPoint" />
   <template v-if="point.type">
     <point-content class="bubble click"
@@ -16,30 +17,33 @@
     </div>
   </template>
   <div v-else class="bubble click" @click="showModal = true">
-    <strong>Add a point {{ isFor | toSideString }} the claim.</strong>
+    <strong v-if="isSubPoint">
+      Add a sub-point {{ isFor === isParentFor | toSideString }} this point.
+    </strong>
+    <strong v-else>Add a point {{ isFor | toSideString }} the claim.</strong>
   </div>
   <ul v-if="isSubClaim" class="sub-points">
-    <dwd-edit-subpoint v-for="[p, side, i] in zippedSubpoints"
-                       :point="p"
-                       :isFor="isFor === !side"
-                       :key="p.id || p.tempId"
-                       @update="(p) => updateSubPoint(side, i, p)"
-                       @delete="() => deleteSubPoint(side, i)" />
+    <point-edit v-for="[p, side, i] in zippedSubPoints"
+                :point="p"
+                :isFor="isFor === !side"
+                :isParentFor="isFor"
+                :key="p.id || p.tempId"
+                @update="(p) => updateSubPoint(side, i, p)"
+                @delete="() => deleteSubPoint(side, i)" />
   </ul>
 </div>
 </template>
 
 <script>
 import './style/point.sass';
-import DwdEditSubpoint from './DwdEditSubpoint.vue';
 import PointContent from './PointContent.vue';
 import PointEditModal from './PointEditModal.vue';
 import { emptyPoint, emptyPoints, pointMapsToLists, rotateWithIndexes }
   from './utils';
 
 export default {
+  name: 'PointEdit',
   components: {
-    DwdEditSubpoint,
     PointContent,
     PointEditModal,
   },
@@ -52,20 +56,33 @@ export default {
       type: Boolean,
       required: true,
     },
+    isParentFor: {
+      type: Boolean,
+      default: undefined,
+    },
   },
   data: () => ({
     showModal: false,
-    subpoints: emptyPoints(),
+    subPoints: emptyPoints(),
   }),
   computed: {
+    isSubPoint: function () {
+      return this.isParentFor !== undefined;
+    },
     isSubClaim: function () {
       return this.point.type === 'subclaim';
     },
-    zippedSubpoints: function () {
-      if (!this.subpoints) {
+    zippedSubPoints: function () {
+      if (!this.subPoints) {
         return [];
       }
-      return rotateWithIndexes(this.subpoints);
+      return rotateWithIndexes(this.subPoints);
+    },
+    classObject: function () {
+      return [
+        this.isSubPoint ? 'sub-point' : 'point',
+        this.$options.filters.toSideString(this.isFor),
+      ];
     },
   },
   methods: {
@@ -76,7 +93,7 @@ export default {
         p.tempId = this.point.tempId;
       }
       if (p.type === 'subclaim') {
-        p.points = this.subpoints;
+        p.points = this.subPoints;
       }
       this.$emit('update', p);
     },
@@ -90,30 +107,30 @@ export default {
     updateSubPoint: function (si, pi, point) {
       if (!point.type) {
         if (pi > 0) {
-          this.subpoints[si].splice(pi, 1);
+          this.subPoints[si].splice(pi, 1);
         }
         return;
       }
-      this.$set(this.subpoints[si], pi, point);
+      this.$set(this.subPoints[si], pi, point);
       if (pi === 0) {
-        this.subpoints[si].splice(0, 0, emptyPoint());
+        this.subPoints[si].splice(0, 0, emptyPoint());
       }
       this.updateSubClaim();
     },
     deleteSubPoint: function (si, pi) {
-      this.subpoints[si].splice(pi, 1);
+      this.subPoints[si].splice(pi, 1);
       this.updateSubClaim();
     },
   },
   mounted: function () {
     if (this.point.points) {
-      this.subpoints = pointMapsToLists(this.point.points);
-      if (this.subpoints.length === 0) {
-        this.subpoints.push([]);
-        this.subpoints.push([]);
+      this.subPoints = pointMapsToLists(this.point.points);
+      if (this.subPoints.length === 0) {
+        this.subPoints.push([]);
+        this.subPoints.push([]);
       }
-      this.subpoints[0].splice(0, 0, emptyPoint());
-      this.subpoints[1].splice(0, 0, emptyPoint());
+      this.subPoints[0].splice(0, 0, emptyPoint());
+      this.subPoints[1].splice(0, 0, emptyPoint());
     }
   },
 };
