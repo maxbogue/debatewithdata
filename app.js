@@ -51,6 +51,8 @@ app.get('/sources/add', sendIndex);
 app.get('/status', sendIndex);
 app.get('/topic/:id', sendIndex);
 app.get('/topic/:id/edit', sendIndex);
+app.get('/topic/:id/history', sendIndex);
+app.get('/topic/:id/rev/:revId', sendIndex);
 app.get('/topics', sendIndex);
 app.get('/topics/add', sendIndex);
 app.get('/verify-email', sendIndex);

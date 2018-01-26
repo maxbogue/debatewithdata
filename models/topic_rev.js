@@ -1,3 +1,5 @@
+import map from 'lodash/map';
+
 import { genRevId } from './utils';
 
 export default function (sequelize, DataTypes) {
@@ -62,12 +64,15 @@ export default function (sequelize, DataTypes) {
   };
 
   TopicRev.postAssociate = function (models) {
-    TopicRev.INCLUDE = function (n) {
+    TopicRev.INCLUDE = function (n, includeUser=false) {
       let include = [models.Blob, {
         association: TopicRev.Claims,
         ...models.Claim.INCLUDE(1),
       }];
-      if (n > 1 ) {
+      if (includeUser) {
+        include.push(models.User);
+      }
+      if (n > 1) {
         include.push({
           association: TopicRev.SubTopics,
           ...models.Topic.INCLUDE(n - 1),
@@ -102,6 +107,32 @@ export default function (sequelize, DataTypes) {
       await topic.setHead(topicRev, { transaction });
 
       return topicRev;
+    };
+
+    TopicRev.prototype.fillData = async function (data) {
+      let thisData = {};
+      thisData.id = this.id;
+      thisData.username = this.user.username;
+      thisData.createdAt = this.created_at;
+
+      if (this.deleted) {
+        thisData.deleted = true;
+      } else {
+        thisData.text = this.blob.text;
+        thisData.title = this.title;
+        thisData.subTopicIds = map(this.subTopics, (topic) => topic.id);
+        thisData.claimIds = map(this.claims, (claim) => claim.id);
+
+        for (let subTopic of this.subTopics) {
+          await subTopic.fillData(data, 1);
+        }
+
+        for (let claim of this.claims) {
+          await claim.fillData(data, 1);
+        }
+      }
+
+      data.topicRevs.push(thisData);
     };
   };
 

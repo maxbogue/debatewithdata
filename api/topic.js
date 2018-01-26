@@ -1,6 +1,6 @@
 import Router from 'express-promise-router';
 
-import { Comment, Topic } from '../models';
+import { Comment, Topic, TopicRev } from '../models';
 import { AuthError } from './error';
 
 const router = Router();
@@ -40,6 +40,25 @@ router.delete('/:id', async function (req, res) {
   }
   let rev = await Topic.apiDelete(req.params.id, req.user);
   let data = await Topic.apiGet(rev.topicId, req.user);
+  res.json(data);
+});
+
+router.get('/:id/rev', async function (req, res) {
+  let topicRevs = await TopicRev.findAll({
+    where: {
+      topicId: req.params.id,
+    },
+    order: [['created_at', 'DESC']],
+    ...TopicRev.INCLUDE(2, true),
+  });
+  let data = {
+    topicRevs: [],
+    topics: {},
+    claims: {},
+  };
+  for (let topicRev of topicRevs) {
+    await topicRev.fillData(data);
+  }
   res.json(data);
 });
 

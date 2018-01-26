@@ -1,7 +1,7 @@
 <template>
 <div>
   <h2 v-html="titleDiff"></h2>
-  <p v-html="textDiff"></p>
+  <div v-html="textDiff"></div>
 </div>
 </template>
 

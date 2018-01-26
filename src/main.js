@@ -27,6 +27,7 @@ import Sources from './pages/Sources.vue';
 import Status from './pages/Status.vue';
 import Topic from './pages/Topic.vue';
 import TopicEdit from './pages/TopicEdit.vue';
+import TopicHistory from './pages/TopicHistory.vue';
 import Topics from './pages/Topics.vue';
 import VerifyEmail from './pages/VerifyEmail.vue';
 import auth from './auth';
@@ -94,6 +95,8 @@ new Vue({
       { path: '/status', component: Status },
       { path: '/topic/:id', component: Topic },
       { path: '/topic/:id/edit', component: TopicEdit },
+      { path: '/topic/:id/history', component: TopicHistory },
+      { path: '/topic/:id/rev/:revId', component: TopicHistory },
       { path: '/topics', component: Topics },
       { path: '/topics/add', component: TopicEdit },
       { path: '/verify-email', component: VerifyEmail },

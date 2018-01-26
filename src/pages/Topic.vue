@@ -6,7 +6,7 @@
            @click="showDrawer = !showDrawer">
         <template v-if="!topic.deleted">
           <h2>{{ topic.title }}</h2>
-          <p>{{ topic.text }}</p>
+          <div>{{ topic.text }}</div>
         </template>
         <em v-else class="error">[deleted]</em>
       </div>
@@ -15,6 +15,9 @@
           <span class="id mono">{{ id }}</span>
           <dwd-star :star="topic.star"
                     :url="'/api' + topicUrl(id)" />
+          <router-link :to="topicUrl(id) + '/history'"
+                       class="glyphicon glyphicon-time click"
+                       aria-hidden="true"></router-link>
           <router-link v-if="$store.state.user"
                        :to="topicUrl(id) + '/edit'"
                        class="glyphicon glyphicon-pencil click"
