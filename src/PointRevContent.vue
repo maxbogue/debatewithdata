@@ -25,18 +25,22 @@ export default {
     claim: function () {
       if (this.rev.type !== 'claim') {
         return null;
+      } else if (this.rev.claim) {
+        let claim = clone(this.rev.claim);
+        claim.id = this.rev.claimId;
+        return claim;
       }
-      let claim = clone(this.rev.claim);
-      claim.id = this.rev.claimId;
-      return claim;
+      return this.lookupClaim(this.rev.claimId);
     },
     source: function () {
-      if (this.rev.type !== 'source') {
+      if (this.rev.type !== 'source' && this.rev.type !== 'newSource') {
         return null;
+      } else if (this.rev.source) {
+        let source = clone(this.rev.source);
+        source.id = this.rev.sourceId;
+        return source;
       }
-      let source = clone(this.rev.source);
-      source.id = this.rev.sourceId;
-      return source;
+      return this.lookupSource(this.rev.sourceId);
     },
   },
 };

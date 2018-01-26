@@ -69,6 +69,9 @@ function makeNewSources(store, points) {
           source: point.source,
         }).then((sourceId) => {
           points[si][pi] = { type: 'source', sourceId };
+          if (point.id) {
+            points[si][pi].id = point.id;
+          }
         });
         promises.push(promise);
       } else if (point.type === 'subclaim') {

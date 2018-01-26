@@ -6,9 +6,10 @@
                     :isSubPoint="isSubPoint"
                     @update="emitPoint" />
   <template v-if="point.type">
-    <point-content class="bubble click"
-                   :point="point"
-                   @click.native="showModal = true" />
+    <point-diff class="bubble click"
+                :curr="point"
+                :prev="oldPoint"
+                @click.native="showModal = true" />
     <div class="info">
       <span class="id mono">{{ point.id || 'new' }}</span>
       <span class="delete click glyphicon glyphicon-trash"
@@ -35,8 +36,10 @@
 </template>
 
 <script>
+import clone from 'lodash/clone';
+
 import './style/point.sass';
-import PointContent from './PointContent.vue';
+import PointDiff from './PointDiff.vue';
 import PointEditModal from './PointEditModal.vue';
 import { emptyPoint, emptyPoints, pointMapsToLists, rotateWithIndexes }
   from './utils';
@@ -44,7 +47,7 @@ import { emptyPoint, emptyPoints, pointMapsToLists, rotateWithIndexes }
 export default {
   name: 'PointEdit',
   components: {
-    PointContent,
+    PointDiff,
     PointEditModal,
   },
   props: {
@@ -62,6 +65,7 @@ export default {
     },
   },
   data: () => ({
+    oldPoint: null,
     showModal: false,
     subPoints: emptyPoints(),
   }),
@@ -123,6 +127,7 @@ export default {
     },
   },
   mounted: function () {
+    this.oldPoint = clone(this.point);
     if (this.point.points) {
       this.subPoints = pointMapsToLists(this.point.points);
       if (this.subPoints.length === 0) {

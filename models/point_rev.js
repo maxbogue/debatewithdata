@@ -318,11 +318,11 @@ export default function (sequelize, DataTypes) {
       switch (this.type) {
       case CLAIM:
         thisData.claimId = this.claimId;
-        thisData.claim = this.claim.toCoreData();
+        thisData.claim = this.claim.head.toCoreData();
         break;
       case SOURCE:
         thisData.sourceId = this.sourceId;
-        thisData.source = this.source.toCoreData();
+        thisData.source = this.source.head.toCoreData();
         break;
       case SUBCLAIM:
         if (this.pointRevs) {

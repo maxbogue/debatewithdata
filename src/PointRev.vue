@@ -1,14 +1,9 @@
 <template>
 <li :class="pointClasses">
-  <div class="bubble click"
-       @click="showDrawer = !showDrawer">
-    <point-rev-content v-if="currId === prevId" :rev="curr" />
-    <claim-rev-content v-else-if="isClaimLike" :curr="curr" :prev="prev" />
-    <template v-else>
-      <point-rev-content v-if="prev" :rev="prev" class="del" />
-      <point-rev-content v-if="curr" :rev="curr" class="ins" />
-    </template>
-  </div>
+  <point-diff class="bubble click"
+              :curr="curr"
+              :prev="prev"
+              @click.native="showDrawer = !showDrawer" />
   <drawer :show="showDrawer">
     <div class="info">
       <span class="id mono">{{ pointId }}</span>
@@ -31,17 +26,15 @@
 import partition from 'lodash/partition';
 
 import './style/point.sass';
-import ClaimRevContent from './ClaimRevContent.vue';
 import Drawer from './Drawer.vue';
-import PointRevContent from './PointRevContent.vue';
+import PointDiff from './PointDiff.vue';
 import { rotateWithIndexes } from './utils';
 
 export default {
   name: 'PointRev',
   components: {
-    ClaimRevContent,
     Drawer,
-    PointRevContent,
+    PointDiff,
   },
   props: {
     pointId: {
@@ -79,11 +72,6 @@ export default {
     prev: function () {
       return this.pointRevs[this.prevId] || null;
     },
-    isClaimLike: function () {
-      return this.curr && this.prev
-          && this.curr.type === this.prev.type
-          && (this.curr.type === 'text' || this.curr.type ==='subclaim');
-    },
     pointClasses: function () {
       return [
         this.isSubPoint ? 'sub-point' : 'point',
@@ -115,9 +103,10 @@ export default {
         removed.sort();
         modified.sort();
         unmodified.sort();
-        let pointIds = added.concat(removed, modified, unmodified);
 
-        pointRevs.push(pointIds.map((id) => [id, currPoints[id], prevPoints[id]]));
+        let pointIds = added.concat(removed, modified, unmodified);
+        let pointIdToRevs = (id) => [id, currPoints[id], prevPoints[id]];
+        pointRevs.push(pointIds.map(pointIdToRevs));
       }
       return rotateWithIndexes(pointRevs);
     },

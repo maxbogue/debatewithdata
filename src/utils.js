@@ -132,6 +132,12 @@ export var DwdUtilsMixin = {
     },
   },
   methods: {
+    lookupSource: function (sourceId) {
+      if (!sourceId) {
+        return null;
+      }
+      return this.$store.state.sources[sourceId] || null;
+    },
     lookupClaim: function (claimId) {
       if (!claimId) {
         return null;
