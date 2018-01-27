@@ -3,21 +3,35 @@
   <template v-if="data && !revId">
     <h3 class="center">
       History for
-      <router-link :to="topicUrl(topicId)"
-                   class="mono">{{ topicId }}</router-link>
+      <router-link :to="url"
+                   class="mono">{{ itemId }}</router-link>
     </h3>
     <ul class="mono" :class="$style.revs">
-      <li v-for="rev in data.topicRevs" :key="rev.id">
+      <li v-for="rev in revs" :class="revClass" :key="rev.id">
         <router-link :to="revUrl(rev)">{{ rev.id }}</router-link>
         <span :class="$style.username">{{ rev.username }}</span>
         <span>{{ rev.createdAt | timestamp }}</span>
       </li>
     </ul>
   </template>
-  <topic-rev v-if="data && revId"
-             :topicId="topicId"
+  <template v-if="data && revId">
+    <rev-nav :itemType="itemType"
+             :itemId="itemId"
              :revId="revId"
-             :data="data" />
+             :revs="revs" />
+    <topic-rev v-if="itemType === 'topic'"
+               :topicId="itemId"
+               :revId="revId"
+               :data="data" />
+    <claim-rev v-else-if="itemType === 'claim'"
+               :claimId="itemId"
+               :revId="revId"
+               :data="data" />
+    <source-rev v-else-if="itemType === 'source'"
+               :sourceId="itemId"
+               :revId="revId"
+               :data="data" />
+  </template>
   <dwd-loader ref="loader"></dwd-loader>
 </div>
 </template>
@@ -28,6 +42,9 @@ import dateFormat from 'dateformat';
 import forOwn from 'lodash/forOwn';
 import isPlainObject from 'lodash/isPlainObject';
 
+import ClaimRev from '../ClaimRev.vue';
+import RevNav from '../RevNav.vue';
+import SourceRev from '../SourceRev.vue';
 import TopicRev from '../TopicRev.vue';
 import DwdLoader from '../DwdLoader.vue';
 
@@ -46,6 +63,9 @@ function addIdsToData(data) {
 
 export default {
   components: {
+    ClaimRev,
+    RevNav,
+    SourceRev,
     TopicRev,
     DwdLoader,
   },
@@ -53,20 +73,51 @@ export default {
     data: null,
   }),
   computed: {
-    topicId: function () {
+    itemType: function () {
+      return this.$route.params.type;
+    },
+    itemId: function () {
       return this.$route.params.id;
     },
     revId: function () {
       return this.$route.params.revId;
     },
+    revs: function () {
+      if (!this.data) {
+        return [];
+      }
+      switch (this.itemType) {
+      case 'topic':
+        return this.data.topicRevs;
+      case 'claim':
+        return this.data.claimRevs;
+      case 'source':
+        return this.data.sourceRevs;
+      }
+      return [];
+    },
+    revClass: function () {
+      switch (this.itemType) {
+      case 'topic':
+        return this.$style.topicRev;
+      case 'claim':
+        return this.$style.claimRev;
+      case 'source':
+        return this.$style.sourceRev;
+      }
+      return '';
+    },
+    url: function () {
+      return '/' + this.itemType + '/' + this.itemId;
+    },
   },
   methods: {
     revUrl: function (rev) {
-      return this.topicUrl(this.topicId) + '/rev/' + rev.id;
+      return '/' + this.itemType + '/' + this.itemId + '/rev/' + rev.id;
     },
     loadData: function () {
       this.data = null;
-      axios.get('/api/topic/' + this.topicId + '/rev', {
+      axios.get('/api/' + this.itemType + '/' + this.itemId + '/rev', {
         loader: this.$refs.loader,
       }).then((res) => {
         addIdsToData(res.data);
@@ -108,8 +159,18 @@ export default {
       flex: 1
 
   li:nth-child(even)
-    background-color: $pink-primary
+    &.topicRev
+      background-color: $pink-primary
+    &.claimRev
+      background-color: $blue-primary
+    &.sourceRev
+      background-color: $green-primary
 
   li:nth-child(odd)
-    background-color: $pink-accent
+    &.topicRev
+      background-color: $pink-accent
+    &.claimRev
+      background-color: $blue-accent
+    &.sourceRev
+      background-color: $green-accent
 </style>

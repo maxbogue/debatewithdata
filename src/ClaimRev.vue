@@ -1,22 +1,5 @@
 <template>
 <div>
-  <div class="block no-pad center">
-    <h3 class="mono">{{ curr.id }}</h3>
-    <div>
-        <strong>by</strong> <span>{{ curr.username }}</span>
-    </div>
-    <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
-  </div>
-  <div class="block no-pad center" :class="$style.nav">
-    <router-link v-if="prev"
-                 :to="prevUrl"
-                 class="dwd-btn grey">Prev</router-link>
-    <router-link :to="url + '/history'"
-                 class="dwd-btn grey">History</router-link>
-    <router-link v-if="next"
-                 :to="nextUrl"
-                 class="dwd-btn grey">Next</router-link>
-  </div>
   <claim-rev-content class="claim block" :curr="curr" :prev="prev" />
   <template v-if="$store.state.singleColumn">
     <point-rev v-for="[[pointId, currId, prevId], side] in zippedPointRevs"
@@ -44,7 +27,6 @@
 </template>
 
 <script>
-import dateFormat from 'dateformat';
 import partition from 'lodash/partition';
 
 import ClaimRevContent from './ClaimRevContent.vue';
@@ -80,18 +62,6 @@ export default {
     prev: function () {
       return this.data.claimRevs[this.revIndex + 1];
     },
-    next: function () {
-      return this.data.claimRevs[this.revIndex - 1];
-    },
-    url: function () {
-      return this.claimUrl(this.claimId);
-    },
-    prevUrl: function () {
-      return this.url + '/rev/' + this.prev.id;
-    },
-    nextUrl: function () {
-      return this.url + '/rev/' + this.next.id;
-    },
     pointRevs: function () {
       let pointRevs = [];
       let hasCurrPoints = this.curr && this.curr.points;
@@ -122,27 +92,5 @@ export default {
       return rotateWithIndexes(this.points);
     },
   },
-  filters: {
-    timestamp: function (isoDate) {
-      let date = new Date(isoDate);
-      return dateFormat(date, 'yyyy-mm-dd HH:MM');
-    },
-  },
 };
 </script>
-
-<style lang="sass" module>
-@import "style/constants"
-
-.nav
-  align-items: center
-  display: flex
-  justify-content: center
-  padding: 8px 0 0 0
-
-  a
-    width: 7em;
-
-    &:not(:first-child)
-      margin-left: $accent-border-width
-</style>

@@ -1,22 +1,5 @@
 <template>
 <div>
-  <div class="block no-pad center">
-    <h3 class="mono">{{ curr.id }}</h3>
-    <div>
-        <strong>by</strong> <span>{{ curr.username }}</span>
-    </div>
-    <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
-  </div>
-  <div class="block no-pad center" :class="$style.nav">
-    <router-link v-if="prev"
-                 :to="prevUrl"
-                 class="dwd-btn grey">Prev</router-link>
-    <router-link :to="url + '/history'"
-                 class="dwd-btn grey">History</router-link>
-    <router-link v-if="next"
-                 :to="nextUrl"
-                 class="dwd-btn grey">Next</router-link>
-  </div>
   <topic-rev-content class="topic block" :curr="curr" :prev="prev" />
   <template v-if="subTopics.length > 0">
     <h3>Sub-Topics</h3>
@@ -41,7 +24,6 @@
 </template>
 
 <script>
-import dateFormat from 'dateformat';
 import filter from 'lodash/filter';
 import map from 'lodash/map';
 import partition from 'lodash/partition';
@@ -77,18 +59,6 @@ export default {
     },
     prev: function () {
       return this.data.topicRevs[this.revIndex + 1];
-    },
-    next: function () {
-      return this.data.topicRevs[this.revIndex - 1];
-    },
-    url: function () {
-      return this.topicUrl(this.topicId);
-    },
-    prevUrl: function () {
-      return this.url + '/rev/' + this.prev.id;
-    },
-    nextUrl: function () {
-      return this.url + '/rev/' + this.next.id;
     },
     subTopics: function () {
       let currSubTopicIds = this.curr ? this.curr.subTopicIds : [];
@@ -133,27 +103,5 @@ export default {
       return added.concat(removed, inBoth);
     },
   },
-  filters: {
-    timestamp: function (isoDate) {
-      let date = new Date(isoDate);
-      return dateFormat(date, 'yyyy-mm-dd HH:MM');
-    },
-  },
 };
 </script>
-
-<style lang="sass" module>
-@import "style/constants"
-
-.nav
-  align-items: center
-  display: flex
-  justify-content: center
-  padding: 8px 0 0 0
-
-  a
-    width: 7em;
-
-    &:not(:first-child)
-      margin-left: $accent-border-width
-</style>
