@@ -1,6 +1,6 @@
 <template>
 <div>
-  <router-link v-if="trail && claim"
+  <router-link v-if="trail && claim && claim.id"
                :to="claimUrl(claim.id, trail)"
                class="link-icon glyphicon glyphicon-link"></router-link>
   <template v-if="claim && !claim.deleted">

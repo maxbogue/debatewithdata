@@ -168,4 +168,9 @@ export var DwdUtilsMixin = {
       return url;
     },
   },
+  mounted: function () {
+    if (this.$options.mountedTriggersWatchers && this.$options.watch) {
+      forOwn(this.$options.watch, (f) => f.call(this));
+    }
+  },
 };

@@ -1,31 +1,23 @@
 <template>
 <dwd-modal :show="show" @close="close" @cancel="cancel">
   <div class="point" :class="isFor | toSideString">
-    <source-edit-content v-if="isUrl"
+    <item-link-input v-if="id"
+                     class="bubble"
+                     :id.sync="input"
+                     :allowClaim="true"
+                     :allowSource="true"
+                     @itemType="updateIdType" />
+    <source-edit-content v-else-if="isUrl"
                          :source="point.source"
                          @update="updateNewSource" />
-    <div v-else class="bubble" :class="$style.input">
+    <div v-else class="bubble">
       <label v-if="!point.type" class="hint">
         Add a point {{ isFor | toSideString }} the claim.
       </label>
       <dwd-input v-model="input"
                  ref="input"
                  placeholder="Text, URL, or 12-letter ID"
-                 :focus="true"
-                 :class="[inputClass]"
-                 :error="inputError" />
-      <div v-if="loading" :class="$style.loader">
-        <div class="ball-pulse-sync">
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </div>
-      <div v-if="error" :class="$style.loader" class="error">{{ error }}</div>
-      <point-content v-if="claim || source"
-                    :point="point"
-                    :trail="[]" />
-      <dwd-flag v-else-if="point.flag" :flag="point.flag" />
+                 :focus="true" />
     </div>
     <div v-if="point.type" class="info">
       <span class="id mono">{{ point.id || 'new' }}</span>
@@ -44,7 +36,7 @@ import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
-import PointContent from './PointContent.vue';
+import ItemLinkInput from './ItemLinkInput.vue';
 import SourceEditContent from './SourceEditContent.vue';
 import { pointToInput } from './utils';
 
@@ -56,7 +48,7 @@ export default {
     DwdFlagDropdown,
     DwdInput,
     DwdModal,
-    PointContent,
+    ItemLinkInput,
     SourceEditContent,
   },
   props: {
@@ -81,9 +73,7 @@ export default {
     oldPoint: null,
     flag: '',
     input: '',
-    inputClass: '',
-    loading: false,
-    error: '',
+    idType: '',
     // Flag to prevent overwriting original without a change.
     initialized: false,
   }),
@@ -102,18 +92,6 @@ export default {
     },
     isSubClaim: function () {
       return this.point.type === 'subclaim' || this.point.type === 'text';
-    },
-    claim: function () {
-      return this.id ? this.$store.state.claims[this.id] : null;
-    },
-    source: function () {
-      return this.id ? this.$store.state.sources[this.id] : null;
-    },
-    inputError: function () {
-      if (this.id && !this.claim && !this.source) {
-        return 'Invalid ID';
-      }
-      return '';
     },
   },
   methods: {
@@ -139,9 +117,9 @@ export default {
       return subClaim;
     },
     makePoint: function () {
-      if (this.source) {
+      if (this.idType === 'source') {
         return { type: 'source', sourceId: this.input };
-      } else if (this.claim) {
+      } else if (this.idType === 'claim') {
         return { type: 'claim', claimId: this.input };
       } else if (isWebUri(this.input)) {
         return {
@@ -174,22 +152,9 @@ export default {
       this.input = source.url;
       this.emitPoint({ type: 'newSource', source });
     },
-    makeLoader: function (newId) {
-      return {
-        setLoading: (loading) => {
-          if (this.id === newId) {
-            this.loading = loading;
-            this.error = '';
-          }
-        },
-        setError: (err) => {
-          if (this.id === newId) {
-            this.error = err;
-            this.loading = false;
-            this.inputClass = 'mono error';
-          }
-        },
-      };
+    updateIdType: function (idType) {
+      this.idType = idType;
+      this.update();
     },
     initialize: function () {
       this.initialized = false;
@@ -207,32 +172,13 @@ export default {
   },
   watch: {
     input: function () {
+      this.idType = '';
       if (this.initialized && !this.isUrl) {
         this.update();
       }
     },
     flag: function () {
       this.update();
-    },
-    id: function (newId) {
-      this.loading = false;
-      this.error = '';
-      this.inputClass = '';
-      if (this.id && !(this.claim || this.source)) {
-        this.inputClass = 'mono warning';
-        this.$store.dispatch('getItem', {
-          id: this.input,
-          loader: this.makeLoader(newId),
-        }).then(() => {
-          if (this.id === newId) {
-            this.inputClass = 'mono success';
-            this.update();
-          }
-        }).catch(() => {});
-      } else if (this.claim || this.source) {
-        this.inputClass = 'mono success';
-        this.update();
-      }
     },
     show: function () {
       if (this.show) {
@@ -242,24 +188,3 @@ export default {
   },
 };
 </script>
-
-<style lang="sass" module>
-@import "style/constants"
-
-.input > :not(:first-child)
-  margin-top: 8px
-
-.loader
-  align-items: center
-  display: flex
-  height: 30px
-  justify-content: left
-
-  > div
-    transform: scale(0.6)
-    transform-origin: left
-
-  > div > div
-    background-color: $loader-color
-    border: none
-</style>

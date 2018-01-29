@@ -1,7 +1,7 @@
 <template>
 <div>
   <div>
-    <router-link v-if="trail && source"
+    <router-link v-if="trail && source && source.id"
                  :to="sourceUrl(source.id, trail)"
                  class="link-icon glyphicon glyphicon-link"></router-link>
     <span v-if="sourceHasContent">{{ source.text }}</span>
