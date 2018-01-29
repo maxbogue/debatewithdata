@@ -2,14 +2,9 @@
 <div>
   <template v-if="topic">
     <div class="topic t1">
-      <div class="bubble click"
-           @click="showDrawer = !showDrawer">
-        <template v-if="!topic.deleted">
-          <h2>{{ topic.title }}</h2>
-          <div>{{ topic.text }}</div>
-        </template>
-        <em v-else class="error">[deleted]</em>
-      </div>
+      <topic-content class="bubble click"
+                     :topic="topic"
+                     @click.native="showDrawer = !showDrawer" />
       <drawer :show="showDrawer">
         <div class="info">
           <span class="id mono">{{ id }}</span>
@@ -62,6 +57,7 @@ import Drawer from '../Drawer.vue';
 import DwdComments from '../DwdComments.vue';
 import DwdLoader from '../DwdLoader.vue';
 import DwdStar from '../DwdStar.vue';
+import TopicContent from '../TopicContent.vue';
 import TopicInput from '../TopicInput.vue';
 import { sortByStars } from '../utils';
 
@@ -73,6 +69,7 @@ export default {
     DwdComments,
     DwdLoader,
     DwdStar,
+    TopicContent,
     TopicInput,
   },
   data: () => ({
