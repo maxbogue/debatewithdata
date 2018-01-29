@@ -117,7 +117,9 @@ export default {
       return subClaim;
     },
     makePoint: function () {
-      if (this.idType === 'source') {
+      if (this.id && !this.idType) {
+        return this.oldPoint;
+      } else if (this.idType === 'source') {
         return { type: 'source', sourceId: this.input };
       } else if (this.idType === 'claim') {
         return { type: 'claim', claimId: this.input };

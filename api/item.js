@@ -16,11 +16,7 @@ router.get('/:id', async function (req, res) {
   }
   try {
     let data = await Source.apiGet(req.params.id);
-    res.json({
-      sources: {
-        [req.params.id]: data,
-      },
-    });
+    res.json(data);
   } catch (err) {
     if (!(err instanceof NotFoundError)) {
       return Promise.reject(err);
