@@ -1,24 +1,33 @@
 <template>
 <div>
   <form v-if="!needsData" @submit.prevent="submit">
-    <div class="topic t1">
-      <topic-rev-content class="bubble click"
-                         :prev="topic"
-                         :curr="newTopicPartial"
-                         @click.native="showModal = true" />
-      <div class="info">
-        <span class="id mono">{{ id || 'new' }}</span>
-      </div>
-    </div>
+    <topic-rev-content class="topic block click"
+                       :prev="topic"
+                       :curr="newTopicPartial"
+                       @click.native="showModal = true" />
     <topic-edit-modal :show.sync="showModal"
                       :topic.sync="newTopicPartial"
                       :oldId="id" />
     <h3>Sub-Topics</h3>
-    <topic-input v-for="(subTopicId, i) in subTopicIds"
-                 class="topic block"
-                 :id="subTopicId"
-                 @update="(newId) => updateSubTopicId(i, newId)"
-                 :key="'topic-' + i" />
+    <div class="topic">
+      <div class="bubble click"
+           @click="showSubTopicModal = true">
+        <strong>Add new sub-topic.</strong>
+      </div>
+    </div>
+    <topic-link-modal :show.sync="showSubTopicModal"
+                      @update="addSubTopicId" />
+    <div v-for="(subTopic, i) in subTopics"
+         class="topic"
+         :key="subTopic.id">
+      <topic-content class="bubble" :topic="subTopic" />
+      <div class="info">
+        <span class="id mono">{{ subTopic.id }}</span>
+        <span class="delete click glyphicon glyphicon-trash"
+              aria-hidden="true"
+              @click="subTopicIds.splice(i, 1)"></span>
+      </div>
+    </div>
     <h3>Key Claims</h3>
     <claim-input v-for="(claimId, i) in claimIds"
                  class="claim block"
@@ -41,15 +50,17 @@
 
 <script>
 import filter from 'lodash/filter';
+import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 
 import ClaimInput from '../ClaimInput.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
+import TopicContent from '../TopicContent.vue';
 import TopicEditModal from '../TopicEditModal.vue';
+import TopicLinkModal from '../TopicLinkModal.vue';
 import TopicRevContent from '../TopicRevContent.vue';
-import TopicInput from '../TopicInput.vue';
 import { pipe, stableRandom, starCount, starred } from '../utils';
 
 export default {
@@ -58,32 +69,36 @@ export default {
     DeleteButton,
     DwdLoader,
     FixedBottom,
+    TopicContent,
     TopicEditModal,
+    TopicLinkModal,
     TopicRevContent,
-    TopicInput,
   },
   data: () => ({
     newTopicPartial: undefined,
     subTopicIds: [],
     claimIds: [],
     showModal: false,
+    showSubTopicModal: false,
   }),
   computed: {
     id: function () {
       return this.$route.params.id;
     },
     topic: function () {
-      return this.$store.state.topics[this.id] || undefined;
+      return this.lookupTopic(this.id);
+    },
+    subTopics: function () {
+      return map(this.subTopicIds, this.lookupTopic);
     },
     needsData: function () {
       return this.id && !this.topic;
     },
   },
   methods: {
-    updateSubTopicId: function (i, subTopicId) {
-      this.$set(this.subTopicIds, i, subTopicId);
-      if (i === this.subTopicIds.length - 1) {
-        this.subTopicIds.push('');
+    addSubTopicId: function (subTopicId) {
+      if (!this.subTopicIds.includes(subTopicId)) {
+        this.subTopicIds.splice(0, 0, subTopicId);
       }
     },
     updateClaimId: function (i, claimId) {
@@ -139,8 +154,6 @@ export default {
         this.showModal = true;
       }
 
-      // Append an empty input for new sub-topics.
-      this.subTopicIds.push('');
       // Append an empty input for new claims.
       this.claimIds.push('');
     },

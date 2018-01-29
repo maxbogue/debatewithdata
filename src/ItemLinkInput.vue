@@ -32,6 +32,8 @@ import TopicContent from './TopicContent.vue';
 
 import { DEBOUNCE_DELAY_MS } from './constants';
 
+const ERROR_MSG = 'Item not found.';
+
 export default {
   components: {
     ClaimContent,
@@ -97,9 +99,9 @@ export default {
             this.error = '';
           }
         },
-        setError: (err) => {
+        setError: () => {
           if (this.id === newId) {
-            this.error = err;
+            this.error = ERROR_MSG;
             this.loading = false;
             this.inputClass = 'error';
           }
@@ -114,12 +116,18 @@ export default {
       this.loading = false;
       this.error = '';
       this.inputClass = '';
+      const newId = this.id;
 
       if (this.id && !this.itemType) {
         this.inputClass = 'warning';
         this.$store.dispatch('getItem', {
           id: this.id,
           loader: this.makeLoader(this.id),
+        }).then(() => {
+          if (this.id === newId && !this.itemType) {
+            this.error = ERROR_MSG;
+            this.inputClass = 'error';
+          }
         }).catch(() => {});
       } else if (this.id) {
         this.inputClass = 'success';
