@@ -12,7 +12,7 @@
     <div class="topic">
       <div class="bubble click"
            @click="showSubTopicModal = true">
-        <strong>Add new sub-topic.</strong>
+        <strong>Link a sub-topic.</strong>
       </div>
     </div>
     <topic-link-modal :show.sync="showSubTopicModal"
@@ -29,11 +29,25 @@
       </div>
     </div>
     <h3>Key Claims</h3>
-    <claim-input v-for="(claimId, i) in claimIds"
-                 class="claim block"
-                 :id="claimId"
-                 @update="(newId) => updateClaimId(i, newId)"
-                 :key="'claim-' + i" />
+    <div class="claim">
+      <div class="bubble click"
+           @click="showClaimModal = true">
+        <strong>Link a claim.</strong>
+      </div>
+    </div>
+    <claim-link-modal :show.sync="showClaimModal"
+                      @update="addClaimId" />
+    <div v-for="(claim, i) in claims"
+         class="claim"
+         :key="claim.id">
+      <claim-content class="bubble" :claim="claim" />
+      <div class="info">
+        <span class="id mono">{{ claim.id }}</span>
+        <span class="delete click glyphicon glyphicon-trash"
+              aria-hidden="true"
+              @click="claimIds.splice(i, 1)"></span>
+      </div>
+    </div>
     <div v-if="topic" class="block no-pad center">
       <delete-button noun="Claim" @delete="remove" />
     </div>
@@ -53,7 +67,8 @@ import filter from 'lodash/filter';
 import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 
-import ClaimInput from '../ClaimInput.vue';
+import ClaimContent from '../ClaimContent.vue';
+import ClaimLinkModal from '../ClaimLinkModal.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
@@ -65,7 +80,8 @@ import { pipe, stableRandom, starCount, starred } from '../utils';
 
 export default {
   components: {
-    ClaimInput,
+    ClaimContent,
+    ClaimLinkModal,
     DeleteButton,
     DwdLoader,
     FixedBottom,
@@ -80,6 +96,7 @@ export default {
     claimIds: [],
     showModal: false,
     showSubTopicModal: false,
+    showClaimModal: false,
   }),
   computed: {
     id: function () {
@@ -91,6 +108,9 @@ export default {
     subTopics: function () {
       return map(this.subTopicIds, this.lookupTopic);
     },
+    claims: function () {
+      return map(this.claimIds, this.lookupClaim);
+    },
     needsData: function () {
       return this.id && !this.topic;
     },
@@ -101,10 +121,9 @@ export default {
         this.subTopicIds.splice(0, 0, subTopicId);
       }
     },
-    updateClaimId: function (i, claimId) {
-      this.$set(this.claimIds, i, claimId);
-      if (i === this.claimIds.length - 1) {
-        this.claimIds.push('');
+    addClaimId: function (claimId) {
+      if (!this.claimIds.includes(claimId)) {
+        this.claimIds.splice(0, 0, claimId);
       }
     },
     submit: function () {
@@ -153,9 +172,6 @@ export default {
       } else {
         this.showModal = true;
       }
-
-      // Append an empty input for new claims.
-      this.claimIds.push('');
     },
     checkLoaded: function () {
       if (this.needsData) {
