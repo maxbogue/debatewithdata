@@ -1,15 +1,15 @@
 <template>
-<span class="dropdown">
-  <span class="dropdown-toggle click glyphicon glyphicon-flag"
-        aria-hidden="true"
-        @click="toggleDropdown"></span>
-  <ul ref="flags" :class="$style.flags" class="dropdown-content">
+<div :class="$style.flagDropdown">
+  <ul :class="[$style.flags, { [$style.open]: showFlags }]">
     <li v-for="(v, k) in flags"
         :class="{ [$style.selected]: k === value }"
         :key="k"
         @click="selectFlag(k)">{{ v.name }}</li>
   </ul>
-</span>
+  <span class="click glyphicon glyphicon-flag"
+        aria-hidden="true"
+        @click="showFlags = !showFlags"></span>
+</div>
 </template>
 
 <script>
@@ -22,15 +22,15 @@ export default {
       required: false,
     },
   },
+  data: () => ({
+    showFlags: false,
+  }),
   computed: {
     flags: function () {
       return FlagData;
     },
   },
   methods: {
-    toggleDropdown: function () {
-      this.$refs.flags.classList.toggle('open');
-    },
     selectFlag: function (flag) {
       this.$emit('input', flag === this.value ? '' : flag);
     },
@@ -41,11 +41,28 @@ export default {
 <style lang="sass" module>
 @import "style/constants"
 
+.flagDropdown
+  display: flex
+
 .flags
   background-color: $background-light
   border: 1px solid $background-dark
+  box-shadow: 0px 8px 16px 0px $transparent-light
   color: $text-dark
+  margin-right: 8px
+  max-height: 0
+  max-width: 0
+  overflow: hidden
   padding: 0
+  transition: max-height 0.5s, max-width 0.5s, visibility 0s 0.5s
+  visibility: hidden
+  z-index: 1
+
+  &.open
+    transition: max-height 0.5s, max-width 0.5s, visibility 0s
+    visibility: visible
+    max-height: 500px
+    max-width: 160px
 
   li
     cursor: pointer

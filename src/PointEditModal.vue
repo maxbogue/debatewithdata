@@ -18,6 +18,7 @@
                  ref="input"
                  placeholder="Text, URL, or 12-letter ID"
                  :focus="true" />
+      <dwd-flag v-if="isSubClaim && point.flag" :flag="point.flag" />
     </div>
     <div v-if="point.type" class="info">
       <span class="id mono">{{ point.id || 'new' }}</span>

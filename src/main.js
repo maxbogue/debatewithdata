@@ -1,6 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import find from 'lodash/find';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
@@ -34,16 +33,6 @@ import { DwdUtilsMixin } from './utils';
 
 Vue.use(VueRouter);
 Vue.mixin(DwdUtilsMixin);
-
-Vue.directive('auto-resize', {
-  bind: function (el, binding, vnode) {
-    let model = find(vnode.data.directives, (d) => d.name === 'model');
-    vnode.context.$watch(model.expression, function () {
-      el.style.height = 'auto';
-      el.style.height = el.scrollHeight + 'px';
-    });
-  },
-});
 
 function httpErrorToString(error) {
   if (!error.response) {
@@ -111,13 +100,5 @@ new Vue({
       }
       return res;
     }, axiosError);
-    window.onclick = function(event) {
-      if (!event.target.matches('.dropdown-toggle')) {
-        var dropdowns = document.getElementsByClassName('dropdown-content');
-        for (let i = 0; i < dropdowns.length; i++) {
-          dropdowns[i].classList.remove('open');
-        }
-      }
-    };
   },
 });
