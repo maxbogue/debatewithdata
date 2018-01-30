@@ -109,7 +109,6 @@ export default {
       };
     },
   },
-  mountedTriggersWatchers: true,
   watch: {
     id: debounce(function () {
       /* eslint no-invalid-this: "off" */
@@ -137,6 +136,7 @@ export default {
       this.checkItemType();
     },
   },
+  mountedTriggersWatchers: true,
 };
 </script>
 

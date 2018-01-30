@@ -41,10 +41,6 @@ export default {
       }
     },
   },
-  mounted: function () {
-    if (this.focus) {
-      this.$el.focus();
-    }
-  },
+  mountedTriggersWatchers: true,
 };
 </script>
