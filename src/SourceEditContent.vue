@@ -128,8 +128,8 @@ export default {
         this.url = this.source.url;
         this.text = this.source.text || '';
         this.type = this.source.type || 'misc';
-        this.institution = this.source.institution;
-        this.publication = this.source.publication;
+        this.institution = this.source.institution || '';
+        this.publication = this.source.publication || '';
         this.firstHand = this.source.firstHand;
       }
     },
