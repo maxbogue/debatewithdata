@@ -1,4 +1,5 @@
 export const Flag = {
+  SOURCE_NEEDED: 'missing-source',
   AD_HOMINEM: 'ad-hominem',
   AUTHORITY: 'authority',
   BANDWAGON: 'bandwagon',
@@ -115,6 +116,15 @@ highly subjective and because natural things are not always good.`,
     desc: `Slippery slope arguments assume that if one thing happens, another
 worse thing will follow. This is a fallacy if there's no reason presented to
 justify why the worse thing will follow.`,
+  },
+  [Flag.SOURCE_NEEDED]: {
+    name: 'Source Needed',
+    links: [
+      ['Wikipedia', 'https://en.wikipedia.org/wiki/Wikipedia:Citation_needed'],
+    ],
+    tldr: 'Depends on data that it does not source.',
+    desc: `Some part of the argument depends on data that needs to be
+sourced in a point or sub-point.`,
   },
   [Flag.STRAWMAN]: {
     name: 'Strawman',
