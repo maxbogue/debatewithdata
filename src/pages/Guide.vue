@@ -77,7 +77,7 @@
     </h3>
     <p :class="$style.links">
     <span v-for="[title, url] in data.links" :key="title">
-      <a :href="url">{{ title }}</a>
+      <a :href="url" target="_blank">{{ title }}</a>
     </span>
     </p>
     <p v-html="data.desc"></p>
