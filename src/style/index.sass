@@ -28,6 +28,13 @@ textarea, input[type="text"], input[type="password"]
     box-shadow: 0 0 1px 0 $transparent-light
     outline: none
 
+  &.error
+    border-color: $red-dark-primary
+    color: $text-dark
+
+    &:focus
+      box-shadow: 0 0 1px 0 $red-dark-primary
+
 a
   color: $text-dark
   text-decoration: none

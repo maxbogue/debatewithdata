@@ -1,6 +1,7 @@
 import isEqual from 'lodash/isEqual';
 
 import { NotFoundError } from '../api/error';
+import { validateSource } from '../common/validate';
 import { genId } from './utils';
 
 export default function (sequelize, DataTypes) {
@@ -49,6 +50,8 @@ export default function (sequelize, DataTypes) {
         });
       }
 
+      validateSource(data);
+
       let source = await Source.create({}, { transaction });
       let blob = await models.Blob.fromText(data.text, transaction);
       let rev = await models.SourceRev.create({
@@ -76,6 +79,8 @@ export default function (sequelize, DataTypes) {
       if (!source) {
         throw new NotFoundError('Source not found: ' + sourceId);
       }
+
+      validateSource(data);
 
       let oldData = await source.toData();
       delete oldData.rev;

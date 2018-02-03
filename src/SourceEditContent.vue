@@ -7,11 +7,14 @@
              id="url"
              placeholder="url"
              :focus="true"
-             :error="urlError" />
+             :validate="validate.url" />
   <label for="text" class="hint">
     Describe the data the link provides.
   </label>
-  <dwd-input v-model="text" id="text" placeholder="description" />
+  <dwd-input v-model="text"
+             id="text"
+             placeholder="description"
+             :validate="validate.text" />
   <label class="hint">Classify the type of source.</label>
   <div>
     <div :class="typeClass('misc')"
@@ -42,7 +45,7 @@
     <dwd-input v-model="institution"
                id="institution"
                placeholder="College, government agency, etc."
-               required />
+               :validate="validate.institution" />
   </template>
   <template v-if="type === 'research' || type === 'article'">
     <label for="publication" class="hint">
@@ -51,23 +54,14 @@
     <dwd-input v-model="publication"
                id="publication"
                placeholder="Scientific journal, newspaper, etc."
-               required />
-  </template>
-  <template v-if="type === 'article'">
-    <label for="firstHand" class="hint">
-      Is the article a first-hand account of an event?
-    </label>
-    <input type="checkbox" id="firstHand" v-model="firstHand"></input>
+               :validate="validate.publication" />
   </template>
 </div>
 </template>
 
 <script>
-import { isWebUri } from 'valid-url';
-
 import DwdInput from './DwdInput.vue';
-
-const ERROR_MSG_INVALID_URL = 'Please enter a URL.';
+import { validateSource } from '../common/validate';
 
 export default {
   components: {
@@ -85,14 +79,8 @@ export default {
     firstHand: false,
   }),
   computed: {
-    validUrl: function () {
-      return isWebUri(this.url);
-    },
-    urlError: function () {
-      if (this.validUrl) {
-        return '';
-      }
-      return ERROR_MSG_INVALID_URL;
+    validate: function () {
+      return validateSource;
     },
     newSource: function () {
       let source = {

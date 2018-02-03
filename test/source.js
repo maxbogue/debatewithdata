@@ -1,8 +1,11 @@
 import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
 import { Source, SourceRev } from '../models';
+import { ValidationError } from '../common/validate';
 import { registerAndVerifyUser } from './utils';
 
+chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 const URL = 'https://debatewithdata.org';
@@ -65,6 +68,24 @@ describe('Source', function () {
 
       let source = await Source.findById(rev.sourceId);
       expect(source.headId).to.equal(rev.id);
+    });
+
+    it('validation', async function () {
+      await expect(Source.apiCreate(user, {
+        url: 'debatewithdata.org',
+        text: TEXT,
+        type: 'misc',
+      })).to.be.rejectedWith(ValidationError);
+      await expect(Source.apiCreate(user, {
+        url: URL,
+        text: 'short',
+        type: 'misc',
+      })).to.be.rejectedWith(ValidationError);
+      await expect(Source.apiCreate(user, {
+        url: URL,
+        text: TEXT,
+        type: 'article',
+      })).to.be.rejectedWith(ValidationError);
     });
 
     it('happy research', async function () {

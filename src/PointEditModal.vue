@@ -31,7 +31,6 @@
 <script>
 import 'loaders.css/loaders.min.css';
 import clone from 'lodash/clone';
-import { isWebUri } from 'valid-url';
 
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
@@ -40,6 +39,7 @@ import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
 import SourceEditContent from './SourceEditContent.vue';
 import { pointToInput } from './utils';
+import { validateSource } from '../common/validate';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
@@ -89,7 +89,7 @@ export default {
       // Don't check the input directly here so that the first transition to
       // source editing correctly triggers an update.
       return this.point && this.point.type === 'newSource'
-          && isWebUri(this.point.source.url);
+          && !validateSource.url(this.point.source.url);
     },
     isSubClaim: function () {
       return this.point.type === 'subclaim' || this.point.type === 'text';
@@ -124,7 +124,7 @@ export default {
         return { type: 'source', sourceId: this.input };
       } else if (this.idType === 'claim') {
         return { type: 'claim', claimId: this.input };
-      } else if (isWebUri(this.input)) {
+      } else if (!validateSource.url(this.input)) {
         return {
           type: 'newSource',
           source: {

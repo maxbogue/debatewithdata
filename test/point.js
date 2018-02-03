@@ -95,9 +95,10 @@ describe('Point', function () {
     });
 
     it('source link', async function () {
+      let sourceText = 'must be long enough';
       let sourceRev = await Source.apiCreate(user, {
         url: URL,
-        text: FOO,
+        text: sourceText,
         type: 'misc',
       });
       let pointRev = await Point.apiCreate(user, {
@@ -117,7 +118,7 @@ describe('Point', function () {
           [sourceRev.sourceId]: {
             rev: sourceRev.id,
             url: URL,
-            text: FOO,
+            text: sourceText,
             type: 'misc',
             commentCount: 0,
           },

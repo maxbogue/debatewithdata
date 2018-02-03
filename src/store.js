@@ -6,6 +6,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { walk } from './utils';
+import { validateSource } from '../common/validate';
 
 Vue.use(Vuex);
 
@@ -208,12 +209,14 @@ export default new Vuex.Store({
       });
     },
     updateSource: function ({ commit }, { id, source }) {
+      validateSource(source);
       return axios.put('/api/source/' + id, source).then((res) => {
         commit('setData', res.data);
         return res.data.id;
       });
     },
     addSource: function ({ commit }, { source }) {
+      validateSource(source);
       return axios.post('/api/source', source).then((res) => {
         commit('setData', res.data);
         return res.data.id;

@@ -1,3 +1,5 @@
+import { ValidationError } from '../common/validate';
+
 class ApiError extends Error {}
 
 export class ClientError extends ApiError {
@@ -35,6 +37,8 @@ export class NotFoundError extends ApiError {
 export function apiErrorHandler(err, req, res, next) {
   if (err instanceof ApiError) {
     res.status(err.httpStatus).json({ message: err.message });
+  } else if (err instanceof ValidationError) {
+    res.status(400).json({ message: err.message });
   } else {
     next(err);
   }

@@ -1,4 +1,5 @@
 import { genRevId } from './utils';
+import { validateSource } from '../common/validate';
 
 export default function (sequelize, DataTypes) {
   const SourceRev = sequelize.define('source_rev', {
@@ -9,16 +10,19 @@ export default function (sequelize, DataTypes) {
     },
     url: {
       type: DataTypes.TEXT,
-      validate: { isUrl: true },
+      validate: validateSource.url.forDb,
     },
     type: {
       type: DataTypes.TEXT,
+      validate: validateSource.type.forDb,
     },
     institution: {
       type: DataTypes.TEXT,
+      validate: validateSource.institution.forDb,
     },
     publication: {
       type: DataTypes.TEXT,
+      validate: validateSource.publication.forDb,
     },
     firstHand: {
       field: 'first_hand',
