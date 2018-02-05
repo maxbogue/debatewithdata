@@ -5,7 +5,11 @@
       <label for="text" class="hint">
         A claim should be a short, simple statement about the world.
       </label>
-      <dwd-input v-model="text" id="text" placeholder="claim" :focus="true" />
+      <dwd-input v-model="text"
+                 id="text"
+                 placeholder="claim"
+                 :focus="true"
+                 :validate="validate.text" />
       <dwd-flag v-if="flag" :flag="flag" />
     </div>
     <div v-if="text" class="info">
@@ -23,6 +27,7 @@ import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
+import { validateClaim } from '../common/validate';
 
 export default {
   components: {
@@ -44,6 +49,7 @@ export default {
     text: '',
     flag: '',
     oldClaim: undefined,
+    validate: validateClaim,
   }),
   computed: {
     id: function () {

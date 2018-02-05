@@ -2,15 +2,11 @@ import chai from 'chai';
 
 import { Point, PointRev, Source } from '../models';
 import { Flag } from '../common/flag';
-import { registerAndVerifyUser } from './utils';
+import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
 const URL = 'https://debatewithdata.org';
-
-const FOO = 'foo';
-const BAR = 'bar';
-const BAZ = 'baz';
 
 describe('Point', function () {
   let user;

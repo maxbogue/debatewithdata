@@ -17,7 +17,8 @@
       <dwd-input v-model="input"
                  ref="input"
                  placeholder="Text, URL, or 12-letter ID"
-                 :focus="true" />
+                 :focus="true"
+                 :validate="validate" />
       <dwd-flag v-if="isSubClaim && point.flag" :flag="point.flag" />
     </div>
     <div v-if="point.type" class="info">
@@ -39,9 +40,13 @@ import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
 import SourceEditContent from './SourceEditContent.vue';
 import { pointToInput } from './utils';
-import { validateSource } from '../common/validate';
+import { isValid, validatePoint, validateSource } from '../common/validate';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
+
+function isValidUrl(url) {
+  return isValid(validateSource.url, url);
+}
 
 export default {
   components: {
@@ -89,7 +94,7 @@ export default {
       // Don't check the input directly here so that the first transition to
       // source editing correctly triggers an update.
       return this.point && this.point.type === 'newSource'
-          && !validateSource.url(this.point.source.url);
+          && isValidUrl(this.point.source.url);
     },
     isSubClaim: function () {
       return this.point.type === 'subclaim' || this.point.type === 'text';
@@ -104,8 +109,8 @@ export default {
       this.$emit('update:show', false);
     },
     cancel: function () {
-      this.close();
       this.$emit('update', this.oldPoint);
+      this.close();
     },
     makeSubClaim: function (text) {
       let subClaim = {
@@ -124,7 +129,7 @@ export default {
         return { type: 'source', sourceId: this.input };
       } else if (this.idType === 'claim') {
         return { type: 'claim', claimId: this.input };
-      } else if (!validateSource.url(this.input)) {
+      } else if (isValidUrl(this.input)) {
         return {
           type: 'newSource',
           source: {
@@ -168,6 +173,18 @@ export default {
         // If this is done immediately, the watch functions get called.
         this.initialized = true;
       });
+    },
+    validate: function (input) {
+      switch (this.point.type) {
+      case 'claim':
+        validatePoint.claimId(input);
+        break;
+      case 'source':
+        validatePoint.sourceId(input);
+        break;
+      default:
+        validatePoint.text(input);
+      }
     },
   },
   mounted: function () {

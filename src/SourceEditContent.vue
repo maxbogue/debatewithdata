@@ -77,11 +77,9 @@ export default {
     institution: '',
     publication: '',
     firstHand: false,
+    validate: validateSource,
   }),
   computed: {
-    validate: function () {
-      return validateSource;
-    },
     newSource: function () {
       let source = {
         url: this.url,

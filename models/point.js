@@ -1,5 +1,6 @@
 import { NotFoundError } from '../api/error';
 import { genId } from './utils';
+import { validatePoint } from '../common/validate';
 
 export default function (sequelize, DataTypes) {
   const Point = sequelize.define('point', {
@@ -56,6 +57,9 @@ export default function (sequelize, DataTypes) {
           return Point.apiCreate(user, data, t);
         });
       }
+
+      validatePoint(data);
+
       const point = await Point.create({}, { transaction });
       const pointRev = await models.PointRev.apiCreate(
           user, point, data, transaction);

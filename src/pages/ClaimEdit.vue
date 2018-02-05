@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import clone from 'lodash/clone';
 import filter from 'lodash/filter';
 
 import ClaimEditModal from '../ClaimEditModal.vue';
@@ -83,15 +84,17 @@ function makeNewSources(store, points) {
 }
 
 function filterPoints(points) {
+  points = clone(points);
   for (let si = 0; si < points.length; si++) {
+    points[si] = filter(points[si], isValidPoint);
     for (let pi = 0; pi < points[si].length; pi++) {
       let point = points[si][pi];
       if (point.type === 'subclaim') {
-        filterPoints(point.points);
+        point.points = filterPoints(point.points);
       }
     }
-    points[si] = filter(points[si], isValidPoint);
   }
+  return points;
 }
 
 export default {
@@ -138,7 +141,6 @@ export default {
     submit: function () {
       let promises = makeNewSources(this.$store, this.points);
       Promise.all(promises).then(() => {
-        filterPoints(this.points);
         this.commit();
       });
     },
@@ -147,7 +149,7 @@ export default {
       let payload = {
         claim: {
           ...this.newClaimPartial,
-          points: this.points,
+          points: filterPoints(this.points),
         },
       };
       if (this.id) {

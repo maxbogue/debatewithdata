@@ -1,5 +1,9 @@
 import { Invite, User } from '../models';
 
+export const FOO = 'foo is too short';
+export const BAR = 'bar is too short';
+export const BAZ = 'baz is too short';
+
 const USERNAME = 'test';
 const PASSWORD = 'testtest';
 const EMAIL = 'test@debatewithdata.org';

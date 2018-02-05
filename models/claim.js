@@ -1,5 +1,6 @@
 import { NotFoundError } from '../api/error';
 import { genId } from './utils';
+import { validateClaim } from '../common/validate';
 
 export default function (sequelize, DataTypes) {
   const Claim = sequelize.define('claim', {
@@ -64,6 +65,8 @@ export default function (sequelize, DataTypes) {
         });
       }
 
+      validateClaim(data);
+
       const claim = await Claim.create({}, { transaction });
       const blob = await models.Blob.fromText(data.text, transaction);
       const claimRev = await models.ClaimRev.create({
@@ -88,6 +91,8 @@ export default function (sequelize, DataTypes) {
           return Claim.apiUpdate(claimId, user, data, t);
         });
       }
+
+      validateClaim(data);
 
       const claim = await Claim.findById(claimId, Claim.INCLUDE(1));
       if (!claim) {

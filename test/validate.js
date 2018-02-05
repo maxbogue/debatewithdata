@@ -10,8 +10,6 @@ const BAD_URL = 'debatewithdata.org';
 const GOOD_TEXT = 'More than 10 characters.';
 const BAD_TEXT = 'foo';
 
-const BLANK_ERR = 'Can\'t be blank.';
-
 describe('validate', function () {
   describe('source', function () {
     let expectValid = function (source) {
@@ -162,12 +160,13 @@ describe('validate', function () {
     });
 
     it('url', function () {
-      let MSG = 'Must be a valid URL.';
+      const INVALID_URL = '"url" must be a valid URL.';
+      const BLANK = '"url" can\'t be blank.';
       let v = (url, source) => () => validateSource.url(url, source);
       expect(v(GOOD_URL)).to.not.throw;
-      expect(v(BAD_URL)).to.throw(MSG);
-      expect(v('')).to.throw(MSG);
-      expect(v()).to.throw(BLANK_ERR);
+      expect(v(BAD_URL)).to.throw(INVALID_URL);
+      expect(v('')).to.throw(INVALID_URL);
+      expect(v()).to.throw(BLANK);
       expect(v(GOOD_URL, { deleted: true })).to.throw(ValidationError);
     });
   });

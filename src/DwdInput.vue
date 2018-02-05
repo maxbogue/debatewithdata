@@ -5,7 +5,7 @@
             ref="input"
             :value="value"
             :class="{ 'error': showError }"
-            @input="emit($event.target.value)"
+            @input="emit($event.target.value.trim())"
             @invalid="maskError = false"
             @keydown.enter.prevent></textarea>
   <div v-if="showError"
@@ -16,6 +16,10 @@
 
 <script>
 import { ValidationError } from '../common/validate';
+
+function uppercaseFirstLetter(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
 
 export default {
   props: {
@@ -48,7 +52,8 @@ export default {
           this.validate(this.value);
         } catch (e) {
           if (e instanceof ValidationError) {
-            return e.message;
+            let stripKey = e.message.match(/"\w*" (.*)/);
+            return uppercaseFirstLetter(stripKey ? stripKey[1] : e.message);
           }
           throw e;
         }

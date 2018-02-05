@@ -2,13 +2,9 @@ import chai from 'chai';
 
 import { Claim, ClaimRev, Point } from '../models';
 import { Flag } from '../common/flag';
-import { registerAndVerifyUser } from './utils';
+import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
-
-const FOO = 'foo';
-const BAR = 'bar';
-const BAZ = 'baz';
 
 describe('Claim', function () {
   let user;
@@ -21,6 +17,7 @@ describe('Claim', function () {
     it('text only', async function () {
       let claimRev = await Claim.apiCreate(user, {
         text: FOO,
+        points: [[], []],
       });
       await claimRev.reload(ClaimRev.INCLUDE(1));
       expect(claimRev.userId).to.equal(user.id);
@@ -37,6 +34,7 @@ describe('Claim', function () {
       let claimRev = await Claim.apiCreate(user, {
         text: FOO,
         flag: Flag.AD_HOMINEM,
+        points: [[], []],
       });
       await claimRev.reload(ClaimRev.INCLUDE(1));
       expect(claimRev.blob.text).to.equal(FOO);
@@ -87,12 +85,16 @@ describe('Claim', function () {
 
   describe('.apiUpdate()', function () {
     it('change text', async function () {
-      let r1 = await Claim.apiCreate(user, { text: FOO });
+      let r1 = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[], []],
+      });
       let claim = await Claim.findById(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
       let r2 = await Claim.apiUpdate(r1.claimId, user, {
         text: BAR,
+        points: [[], []],
       });
       await r2.reload(ClaimRev.INCLUDE(2));
       expect(r2.userId).to.equal(user.id);
@@ -106,7 +108,10 @@ describe('Claim', function () {
     });
 
     it('add point', async function () {
-      let r1 = await Claim.apiCreate(user, { text: FOO });
+      let r1 = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[], []],
+      });
       let claim = await Claim.findById(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
@@ -159,7 +164,10 @@ describe('Claim', function () {
 
   describe('.apiDelete()', function () {
     it('happy', async function () {
-      let r1 = await Claim.apiCreate(user, { text: FOO });
+      let r1 = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[], []],
+      });
       let claim = await Claim.findById(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
@@ -176,7 +184,10 @@ describe('Claim', function () {
     });
 
     it('no-op', async function () {
-      let r1 = await Claim.apiCreate(user, { text: FOO });
+      let r1 = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[], []],
+      });
       let claim = await Claim.findById(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
@@ -195,6 +206,7 @@ describe('Claim', function () {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
         flag: Flag.AD_HOMINEM,
+        points: [[], []],
       });
       let claimData = await Claim.apiGet(rev.claimId, user);
       expect(claimData).to.deep.equal({
@@ -217,7 +229,10 @@ describe('Claim', function () {
     });
 
     it('starred', async function () {
-      let rev = await Claim.apiCreate(user, { text: FOO });
+      let rev = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[], []],
+      });
       await Claim.apiToggleStar(rev.claimId, user);
       let claimData = await Claim.apiGet(rev.claimId, user);
       expect(claimData).to.deep.equal({
@@ -465,7 +480,10 @@ describe('Claim', function () {
     });
 
     it('deleted', async function () {
-      let r1 = await Claim.apiCreate(user, { text: FOO });
+      let r1 = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[], []],
+      });
       let r2 = await Claim.apiDelete(r1.claimId, user);
       let claimData = await Claim.apiGet(r1.claimId);
       expect(claimData).to.deep.equal({
@@ -488,8 +506,14 @@ describe('Claim', function () {
 
   describe('.apiGetAll()', function () {
     it('two claims', async function () {
-      let c1r = await Claim.apiCreate(user, { text: FOO });
-      let c2r = await Claim.apiCreate(user, { text: BAR });
+      let c1r = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[], []],
+      });
+      let c2r = await Claim.apiCreate(user, {
+        text: BAR,
+        points: [[], []],
+      });
       await Claim.apiToggleStar(c2r.claimId, user);
       let claimsData = await Claim.apiGetAll(user);
       expect(claimsData).to.deep.equal({
@@ -520,8 +544,14 @@ describe('Claim', function () {
     });
 
     it('excludes deleted', async function () {
-      let c1r = await Claim.apiCreate(user, { text: FOO });
-      let c2r = await Claim.apiCreate(user, { text: BAR });
+      let c1r = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[], []],
+      });
+      let c2r = await Claim.apiCreate(user, {
+        text: BAR,
+        points: [[], []],
+      });
       await Claim.apiDelete(c2r.claimId, user);
       let claimsData = await Claim.apiGetAll(user);
       expect(claimsData).to.deep.equal({
@@ -544,7 +574,10 @@ describe('Claim', function () {
 
   describe('.apiToggleStar()', function () {
     it('happy', async function () {
-      let rev = await Claim.apiCreate(user, { text: FOO });
+      let rev = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[], []],
+      });
       let star = await Claim.apiToggleStar(rev.claimId, user);
       expect(star).to.deep.equal({
         count: 1,

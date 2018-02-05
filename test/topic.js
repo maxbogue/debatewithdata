@@ -2,7 +2,7 @@ import chai from 'chai';
 
 import { Claim, Topic, TopicRev } from '../models';
 import { NotFoundError } from '../api/error';
-import { registerAndVerifyUser } from './utils';
+import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
@@ -11,10 +11,6 @@ const ID2 = 'topicId2';
 
 const TITLE = 'title';
 const TITLE2 = 'title2';
-
-const FOO = 'foo';
-const BAR = 'bar';
-const BAZ = 'baz';
 
 const STARS_AND_COMMENTS = {
   star: {
@@ -33,7 +29,10 @@ describe('Topic', function () {
 
   describe('.apiCreate()', function () {
     it('happy', async function () {
-      let claimRev = await Claim.apiCreate(user, { text: BAR });
+      let claimRev = await Claim.apiCreate(user, {
+        text: BAR,
+        points: [[], []],
+      });
       let topicRev = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -95,7 +94,10 @@ describe('Topic', function () {
 
   describe('.apiUpdate()', function () {
     it('normal update', async function () {
-      let c1r = await Claim.apiCreate(user, { text: BAZ });
+      let c1r = await Claim.apiCreate(user, {
+        text: BAZ,
+        points: [[], []],
+      });
       let r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -104,7 +106,10 @@ describe('Topic', function () {
         subTopicIds: [],
       });
 
-      let c2r = await Claim.apiCreate(user, { text: BAZ });
+      let c2r = await Claim.apiCreate(user, {
+        text: BAZ,
+        points: [[], []],
+      });
       let r2 = await Topic.apiUpdate(ID, user, {
         title: TITLE2,
         text: BAR,
@@ -172,7 +177,10 @@ describe('Topic', function () {
 
   describe('.apiGet()', function () {
     it('happy', async function () {
-      let c1r = await Claim.apiCreate(user, { text: BAZ });
+      let c1r = await Claim.apiCreate(user, {
+        text: BAZ,
+        points: [[], []],
+      });
       let r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,

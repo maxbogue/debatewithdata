@@ -6,7 +6,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { walk } from './utils';
-import { validateSource } from '../common/validate';
+import { validateClaim, validateSource } from '../common/validate';
 
 Vue.use(Vuex);
 
@@ -174,12 +174,14 @@ export default new Vuex.Store({
       });
     },
     updateClaim: function ({ commit }, { id, claim }) {
+      validateClaim(claim);
       return axios.put('/api/claim/' + id, copyClaim(claim)).then((res) => {
         commit('setData', res.data);
         return id;
       });
     },
     addClaim: function ({ commit }, { claim }) {
+      validateClaim(claim);
       return axios.post('/api/claim', copyClaim(claim)).then((res) => {
         commit('setData', res.data);
         return res.data.id;
