@@ -11,13 +11,15 @@ import validate from 'validate.js';
 import { FlagData } from './flag';
 import { PointType, SourceType, POINT_TYPES, SOURCE_TYPES } from './constants';
 
+validate.validators.format.message = 'has invalid format: "%{value}"';
 validate.validators.length.tooShort =
     'too short (minimum is %{count} characters).';
 validate.validators.presence.options = { message: 'can\'t be blank.' };
 validate.validators.url.options = { message: 'must be a valid URL.' };
 
-const ID_REGEX = /^[0-9a-f]{12}$/;
-const CUSTOM_VALIDATORS = ['presenceIff', 'validIfDeleted', 'custom'];
+const ID_REGEX = /[0-9a-f]{12}/;
+const CUSTOM_VALIDATORS =
+    ['presenceIff', 'validIfDeleted', 'custom', 'arrayOf'];
 
 export class ValidationError extends Error {}
 
@@ -62,6 +64,16 @@ function constraintToValidator(constraint, key) {
     }
     if (value && constraint.custom) {
       constraint.custom(value, item);
+    }
+    if (value && constraint.arrayOf) {
+      if (!validate.isArray(value)) {
+        throw new ValidationError(`"${key}" must be an array.`);
+      }
+      forEach(value, (e, i) => {
+        let elementValidator = constraintToValidator(
+            constraint.arrayOf, `${key}[${i}]`);
+        elementValidator(e, item);
+      });
     }
     let errors = validate.single(value, omit(constraint, CUSTOM_VALIDATORS));
     if (errors) {
@@ -161,3 +173,37 @@ export function validateClaim(claim) {
   forOwn(claimValidators, (f, k) => f(claim[k], claim));
 }
 validate.extend(validateClaim, claimValidators);
+
+////////////
+// Topics //
+////////////
+
+const TOPIC_ID_FORMAT = {
+  pattern: /^[a-z0-9-]+$/,
+  message: 'must be lowercase letters, numbers, or dashes.',
+};
+
+const topicConstraints = {
+  id: { format: TOPIC_ID_FORMAT },
+  title: { presence: { allowEmpty: false } },
+  text: { presence: true },
+  subTopicIds: {
+    presence: true,
+    arrayOf: {
+      format: TOPIC_ID_FORMAT,
+    },
+  },
+  claimIds: {
+    presence: true,
+    arrayOf: {
+      format: ID_REGEX,
+    },
+  },
+};
+
+const topicValidators = mapValues(topicConstraints, constraintToValidator);
+
+export function validateTopic(topic) {
+  forOwn(topicValidators, (f, k) => f(topic[k], topic));
+}
+validate.extend(validateTopic, topicValidators);

@@ -1,6 +1,7 @@
 import map from 'lodash/map';
 
 import { genRevId } from './utils';
+import { validateTopic } from '../common/validate';
 
 export default function (sequelize, DataTypes) {
   const TopicRev = sequelize.define('topic_rev', {
@@ -11,6 +12,7 @@ export default function (sequelize, DataTypes) {
     },
     title: {
       type: DataTypes.TEXT,
+      validate: validateTopic.title.forDb,
     },
     deleted: {
       type: DataTypes.BOOLEAN,

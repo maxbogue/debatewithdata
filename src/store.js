@@ -6,7 +6,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { walk } from './utils';
-import { validateClaim, validateSource } from '../common/validate';
+import { validateClaim, validateSource,
+  validateTopic } from '../common/validate';
 
 Vue.use(Vuex);
 
@@ -139,12 +140,14 @@ export default new Vuex.Store({
       });
     },
     updateTopic: function ({ commit }, { id, topic }) {
+      validateTopic(topic);
       return axios.put('/api/topic/' + id, topic).then((res) => {
         commit('setData', res.data);
         return id;
       });
     },
     addTopic: function ({ commit }, { topic }) {
+      validateTopic(topic);
       return axios.post('/api/topic', topic).then((res) => {
         commit('setData', res.data);
         return res.data.id;

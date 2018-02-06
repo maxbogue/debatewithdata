@@ -8,6 +8,7 @@
       <dwd-input v-model="title"
                  id="title"
                  placeholder="title"
+                 :validate="validate.title"
                  :focus="true" />
       <template v-if="!oldId">
         <label for="id" class="hint">
@@ -16,14 +17,16 @@
         <dwd-input v-model="id"
                    id="id"
                    class="mono"
-                   placeholder="id" />
+                   placeholder="id"
+                   :validate="validate.id" />
       </template>
       <label for="text" class="hint">
         Describe this topic.
       </label>
       <dwd-input v-model="text"
                  id="text"
-                 placeholder="description" />
+                 placeholder="description"
+                 :validate="validate.text" />
     </div>
     <div v-if="text" class="info">
       <span class="id mono">{{ oldId || 'new' }}</span>
@@ -38,6 +41,7 @@ import dashify from 'dashify';
 
 import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
+import { validateTopic } from '../common/validate';
 
 export default {
   components: {
@@ -61,6 +65,7 @@ export default {
     title: '',
     text: '',
     oldTopic: undefined,
+    validate: validateTopic,
   }),
   computed: {
     newTopic: function () {

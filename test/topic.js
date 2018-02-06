@@ -6,8 +6,8 @@ import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
-const ID = 'topicId';
-const ID2 = 'topicId2';
+const ID = 'topic-id';
+const ID2 = 'topic-id2';
 
 const TITLE = 'title';
 const TITLE2 = 'title2';
@@ -292,6 +292,7 @@ describe('Topic', function () {
       });
       await Topic.apiCreate(user, {
         id: ID2,
+        title: TITLE,
         text: BAR,
         claimIds: [],
         subTopicIds: [],
@@ -319,6 +320,7 @@ describe('Topic', function () {
     it('happy', async function () {
       await Topic.apiCreate(user, {
         id: ID,
+        title: TITLE,
         text: FOO,
         claimIds: [],
         subTopicIds: [],

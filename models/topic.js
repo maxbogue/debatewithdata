@@ -1,12 +1,14 @@
 import map from 'lodash/map';
 
 import { NotFoundError } from '../api/error';
+import { ValidationError, validateTopic } from '../common/validate';
 
 export default function (sequelize, DataTypes) {
   const Topic = sequelize.define('topic', {
     id: {
       type: DataTypes.TEXT,
       primaryKey: true,
+      validate: validateTopic.id.forDb,
     },
   });
 
@@ -61,8 +63,17 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      const topic = await Topic.create({ id: data.id }, { transaction });
-      return models.TopicRev.createForApi(topic, user, data, transaction);
+      validateTopic(data);
+
+      try {
+        const topic = await Topic.create({ id: data.id }, { transaction });
+        return models.TopicRev.createForApi(topic, user, data, transaction);
+      } catch (e) {
+        if (e instanceof sequelize.UniqueConstraintError) {
+          throw new ValidationError(`"${e.errors[0].path}" must be unique.`);
+        }
+        throw e;
+      }
     };
 
     Topic.apiUpdate = async function (id, user, data, transaction) {
@@ -71,6 +82,8 @@ export default function (sequelize, DataTypes) {
           return Topic.apiUpdate(id, user, data, t);
         });
       }
+
+      validateTopic(data);
 
       const topic = await Topic.findById(id, Topic.INCLUDE(3));
       if (!topic) {
