@@ -3,8 +3,8 @@
   <point-rev-content v-if="noChange" :rev="curr" />
   <claim-rev-content v-else-if="bothNotLinks" :curr="curr" :prev="prev" />
   <template v-else>
-    <point-rev-content v-if="prev" :rev="prev" class="del" />
-    <point-rev-content v-if="curr" :rev="curr" class="ins" />
+    <point-rev-content v-if="prev && prev.type" :rev="prev" class="del" />
+    <point-rev-content v-if="curr && curr.type" :rev="curr" class="ins" />
   </template>
 </div>
 </template>

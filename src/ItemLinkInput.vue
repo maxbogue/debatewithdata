@@ -3,10 +3,10 @@
   <dwd-input :value="id"
              @input="(val) => $emit('update:id', val)"
              placeholder="Item ID"
-             class="mono"
-             :class="[inputClass]"
+             :error="inputError"
+             :state="inputState"
              :focus="true"
-             :error="inputError" />
+             :mono="true" />
   <div v-if="loading" :class="$style.loader">
     <div class="ball-pulse-sync">
       <div></div>
@@ -14,7 +14,6 @@
       <div></div>
     </div>
   </div>
-  <div v-if="error" :class="$style.loader" class="error">{{ error }}</div>
   <topic-content v-if="topic" :topic="topic" />
   <claim-content v-if="claim" :claim="claim" />
   <source-content v-if="source" :source="source" />
@@ -51,9 +50,9 @@ export default {
     allowSource: Boolean,
   },
   data: () => ({
-    inputClass: '',
     loading: false,
-    error: '',
+    inputError: '',
+    inputState: DwdInput.NORMAL,
     // Flag to prevent overwriting original without a change.
     initialized: false,
   }),
@@ -77,17 +76,11 @@ export default {
       }
       return '';
     },
-    inputError: function () {
-      if (this.id && !this.itemType) {
-        return 'Invalid ID';
-      }
-      return '';
-    },
   },
   methods: {
     checkItemType: function () {
       if (this.itemType) {
-        this.inputClass = 'success';
+        this.inputState = DwdInput.SUCCESS;
       }
       this.$emit('itemType', this.itemType);
     },
@@ -96,14 +89,14 @@ export default {
         setLoading: (loading) => {
           if (this.id === newId) {
             this.loading = loading;
-            this.error = '';
+            this.inputError = loading ? 'Loading...' : '';
           }
         },
         setError: () => {
           if (this.id === newId) {
-            this.error = ERROR_MSG;
             this.loading = false;
-            this.inputClass = 'error';
+            this.inputError = ERROR_MSG;
+            this.inputState = DwdInput.ERROR;
           }
         },
       };
@@ -113,23 +106,23 @@ export default {
     id: debounce(function () {
       /* eslint no-invalid-this: "off" */
       this.loading = false;
-      this.error = '';
-      this.inputClass = '';
+      this.inputError = '';
+      this.inputState = DwdInput.NORMAL;
       const newId = this.id;
 
       if (this.id && !this.itemType) {
-        this.inputClass = 'warning';
+        this.inputState = DwdInput.WARNING;
         this.$store.dispatch('getItem', {
           id: this.id,
           loader: this.makeLoader(this.id),
         }).then(() => {
           if (this.id === newId && !this.itemType) {
-            this.error = ERROR_MSG;
-            this.inputClass = 'error';
+            this.inputError = ERROR_MSG;
+            this.inputState = DwdInput.ERROR;
           }
         }).catch(() => {});
       } else if (this.id) {
-        this.inputClass = 'success';
+        this.inputState = DwdInput.SUCCESS;
       }
     }, DEBOUNCE_DELAY_MS),
     itemType: function () {

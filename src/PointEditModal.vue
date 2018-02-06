@@ -123,7 +123,7 @@ export default {
       return subClaim;
     },
     makePoint: function () {
-      if (this.id && !this.idType) {
+      if (this.id && !this.idType && this.oldPoint.type) {
         return this.oldPoint;
       } else if (this.idType === 'source') {
         return { type: 'source', sourceId: this.input };

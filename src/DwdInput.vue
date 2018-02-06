@@ -4,7 +4,7 @@
             autocomplete="off"
             ref="input"
             :value="value"
-            :class="{ 'error': showError }"
+            :class="inputClasses"
             @input="emit($event.target.value.trim())"
             @invalid="maskError = false"
             @keydown.enter.prevent></textarea>
@@ -21,23 +21,31 @@ function uppercaseFirstLetter(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+const NORMAL = 'normal';
+const ERROR = 'error';
+const WARNING = 'warning';
+const SUCCESS = 'success';
+
 export default {
+  NORMAL, ERROR, WARNING, SUCCESS,
   props: {
     value: {
       type: String,
       required: true,
       default: '',
     },
-    error: {
-      type: String,
-    },
-    validate: {
-      type: Function,
-    },
-    focus: {
-      type: Boolean,
-      default: false,
-    },
+    // Error message to show for the input.
+    error: String,
+    // Alternative to |error|; performs input validation.
+    validate: Function,
+    // Allows overriding the state of the input. If set, an error will only be
+    // shown if state is ERROR. WARNING and SUCCESS will pass styling on to the
+    // input.
+    state: String,
+    // Focuses the input event whenever set to true.
+    focus: Boolean,
+    // Makes the input text a monospaced font.
+    mono: Boolean,
   },
   data: function () {
     return { maskError: !this.value };
@@ -52,7 +60,7 @@ export default {
           this.validate(this.value);
         } catch (e) {
           if (e instanceof ValidationError) {
-            let stripKey = e.message.match(/"\w*" (.*)/);
+            let stripKey = e.message.match(/^"\w*" (.*)$/);
             return uppercaseFirstLetter(stripKey ? stripKey[1] : e.message);
           }
           throw e;
@@ -61,7 +69,26 @@ export default {
       return '';
     },
     showError: function () {
+      if (this.state) {
+        return this.state === ERROR && this.innerError;
+      }
       return this.innerError && !this.maskError;
+    },
+    inputClasses: function () {
+      let classes = [];
+      if (this.mono) {
+        classes.push('mono');
+      }
+      if (this.state) {
+        if ([ERROR, WARNING, SUCCESS].includes(this.state)) {
+          classes.push(this.state);
+        }
+      } else {
+        if (this.showError) {
+          classes.push('error');
+        }
+      }
+      return classes;
     },
   },
   methods: {
