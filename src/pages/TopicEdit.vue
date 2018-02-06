@@ -1,10 +1,15 @@
 <template>
 <div>
   <form v-if="!needsData" @submit.prevent="submit">
-    <topic-rev-content class="topic block click"
-                       :prev="topic"
-                       :curr="newTopicPartial"
-                       @click.native="showModal = true" />
+    <div class="topic">
+      <topic-rev-content class="bubble click"
+                         :prev="topic"
+                         :curr="newTopicPartial"
+                         @click.native="showModal = true" />
+      <div class="info">
+        <span class="id mono">{{ id || newId || 'new' }}</span>
+      </div>
+    </div>
     <topic-edit-modal :show.sync="showModal"
                       :topic.sync="newTopicPartial"
                       :oldId="id" />
@@ -101,6 +106,9 @@ export default {
   computed: {
     id: function () {
       return this.$route.params.id;
+    },
+    newId: function () {
+      return this.newTopicPartial && this.newTopicPartial.id;
     },
     topic: function () {
       return this.lookupTopic(this.id);
