@@ -36,8 +36,8 @@
 
 .info
   align-items: center
-  color: $transparent-light
   display: flex
+  justify-content: center
   line-height: 1
   padding: 0.5em
 
@@ -45,8 +45,22 @@
     margin-left: 0.8em
 
   .id
+    color: $transparent-light
     flex: 1
     font-size: 0.8em
+
+  .dwd-btn
+    font-size: 0.8em
+    margin: 0 4px
+    padding: 4px 8px
+
+  .controls
+    display: flex
+    flex: 1
+    justify-content: flex-end
+
+    > :not(:first-child)
+      margin-left: 0.8em
 
   a, .click
     color: $transparent-light

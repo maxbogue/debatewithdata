@@ -1,9 +1,18 @@
 <template>
 <dwd-modal :show="show" @close="close" @cancel="cancel">
-  <item-link-input class="topic block"
-                   :id.sync="id"
-                   :allowTopic="true"
-                   @itemType="updateIsValid" />
+  <div class="topic">
+    <item-link-input class="bubble"
+                     :id.sync="id"
+                     :allowTopic="true"
+                     @itemType="updateIsValid" />
+    <div class="info">
+      <button type="submit"
+              class="dwd-btn dwd-btn-primary">Close</button>
+      <button type="button"
+              class="dwd-btn"
+              @click="cancel">Cancel</button>
+    </div>
+  </div>
 </dwd-modal>
 </template>
 

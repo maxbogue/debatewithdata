@@ -1,6 +1,6 @@
 <template>
 <dwd-modal :show="show" @close="close" @cancel="cancel">
-  <div class="topic t1">
+  <div class="topic">
     <div class="bubble">
       <label for="title" class="hint">
         The title of this topic.
@@ -29,7 +29,13 @@
                  :validate="validate.text" />
     </div>
     <div v-if="text" class="info">
-      <span class="id mono">{{ oldId || 'new' }}</span>
+      <div class="id mono">{{ oldId || 'new' }}</div>
+      <button type="submit"
+              class="dwd-btn pink-dark">Close</button>
+      <button type="button"
+              class="dwd-btn"
+              @click="cancel">Cancel</button>
+      <div class="controls"></div>
     </div>
   </div>
 </dwd-modal>
