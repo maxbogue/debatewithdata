@@ -1,6 +1,6 @@
 <template>
 <div>
-  <form v-if="!needsData" @submit.prevent="submit">
+  <template v-if="!needsData">
     <div class="claim t1">
       <claim-rev-content class="bubble click"
                          :prev="claim"
@@ -36,12 +36,14 @@
       <delete-button noun="Claim" @delete="remove" />
     </div>
     <fixed-bottom class="center blue">
-      <button type="submit" class="dwd-btn blue-dark">Submit</button>
+      <button type="button"
+              class="dwd-btn blue-dark"
+              @click="submit">Submit</button>
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
     </fixed-bottom>
-  </form>
+  </template>
   <dwd-loader ref="loader" />
 </div>
 </template>

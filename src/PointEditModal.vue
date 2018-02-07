@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import 'loaders.css/loaders.min.css';
 import clone from 'lodash/clone';
 
 import DwdFlag from './DwdFlag.vue';

@@ -1,9 +1,12 @@
 <template>
 <transition v-if="show" name="dwd-modal">
   <div class="dwd-modal-mask" @click="close">
-    <div class="dwd-modal-container" @click.stop>
+    <form ref="form"
+          class="dwd-modal-container"
+          @submit.prevent.stop="close"
+          @click.stop>
       <slot></slot>
-    </div>
+    </form>
   </div>
 </transition>
 </template>
@@ -15,7 +18,11 @@ export default {
   },
   methods: {
     close: function () {
-      this.$emit('close');
+      if (this.$refs.form.checkValidity()) {
+        this.$emit('close');
+      } else {
+        this.$refs.form.reportValidity();
+      }
     },
     cancel: function () {
       this.$emit('cancel');

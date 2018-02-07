@@ -1,6 +1,6 @@
 <template>
 <div>
-  <form v-if="!needsData" @submit.prevent="commit">
+  <template v-if="!needsData">
     <div class="source neutral">
       <source-edit-content :source="source" @update="(s) => newSource = s" />
     </div>
@@ -13,7 +13,7 @@
     <div v-if="id" class="block no-pad center">
       <delete-button noun="Source" @delete="remove" />
     </div>
-  </form>
+  </template>
   <dwd-loader ref="loader" />
 </div>
 </template>
