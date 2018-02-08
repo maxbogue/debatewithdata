@@ -4,6 +4,7 @@
             autocomplete="off"
             ref="input"
             :value="value"
+            :placeholder="placeholder"
             :class="inputClasses"
             @input="emit($event.target.value.trim())"
             @invalid="maskError = false"
@@ -34,6 +35,7 @@ export default {
       required: true,
       default: '',
     },
+    placeholder: String,
     // Error message to show for the input.
     error: String,
     // Alternative to |error|; performs input validation.
@@ -102,7 +104,9 @@ export default {
         this.maskError = false;
       }
       this.$refs.input.style.height = 'auto';
-      this.$refs.input.style.height = this.$refs.input.scrollHeight + 'px';
+      if (this.$refs.input.scrollHeight > 0) {
+        this.$refs.input.style.height = this.$refs.input.scrollHeight + 'px';
+      }
     },
     innerError: function () {
       this.$refs.input.setCustomValidity(this.innerError);
