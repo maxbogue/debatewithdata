@@ -1,6 +1,9 @@
 <template>
 <transition v-if="show" name="dwd-modal">
-  <div class="dwd-modal-mask" @click="close">
+  <div class="dwd-modal-mask"
+       @click="close"
+       @keydown.enter="close"
+       @keydown.esc="cancel">
     <form ref="form"
           class="dwd-modal-container"
           @submit.prevent.stop="close"
@@ -27,15 +30,6 @@ export default {
     cancel: function () {
       this.$emit('cancel');
     },
-  },
-  mounted: function () {
-    document.addEventListener('keydown', (e) => {
-      if (this.show && e.keyCode === 13) {
-        this.close();
-      } else if (this.show && e.keyCode === 27) {
-        this.cancel();
-      }
-    });
   },
 };
 </script>

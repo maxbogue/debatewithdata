@@ -1,29 +1,31 @@
 <template>
-  <div :class="classObject">
+<div :class="classObject">
   <point-edit-modal :show.sync="showModal"
                     :point="point"
                     :isFor="isFor"
                     :isSubPoint="isSubPoint"
                     @update="emitPoint" />
-  <template v-if="point.type">
-    <point-diff class="bubble click"
-                :curr="point"
-                :prev="oldPoint"
-                @click.native="showModal = true" />
-    <div class="info">
-      <span class="id mono">{{ point.id || 'new' }}</span>
-      <span class="delete click glyphicon glyphicon-trash"
-            aria-hidden="true"
-            @click="$emit('delete')"></span>
-    </div>
-  </template>
-  <div v-else class="bubble click" @click="showModal = true">
-    <strong v-if="isSubPoint">
-      Add a sub-point {{ isFor === isParentFor | toSideString }} this point.
-    </strong>
-    <strong v-else>Add a point {{ isFor | toSideString }} the claim.</strong>
+  <point-diff class="bubble click"
+              :curr="point"
+              :prev="oldPoint"
+              @click.native="showModal = true" />
+  <div class="info">
+    <span class="id mono">{{ point.id || 'new' }}</span>
+    <span class="delete click glyphicon glyphicon-trash"
+          aria-hidden="true"
+          @click="$emit('delete')"></span>
   </div>
   <ul v-if="isSubClaim" class="sub-points">
+    <div class="sub-point block click"
+         :class="isFor | toSideString"
+         @click="addSubPoint(0)">
+      <strong>Add a sub-point for this point.</strong>
+    </div>
+    <div class="sub-point block click"
+         :class="!isFor | toSideString"
+         @click="addSubPoint(1)">
+      <strong>Add a sub-point against this point.</strong>
+    </div>
     <point-edit v-for="[p, side, i] in zippedSubPoints"
                 :point="p"
                 :isFor="isFor === !side"
@@ -41,7 +43,7 @@ import clone from 'lodash/clone';
 import './style/point.sass';
 import PointDiff from './PointDiff.vue';
 import PointEditModal from './PointEditModal.vue';
-import { emptyPoint, emptyPoints, pointMapsToLists, rotateWithIndexes }
+import { emptyPoint, pointMapsToLists, rotateWithIndexes }
   from './utils';
 
 export default {
@@ -67,7 +69,7 @@ export default {
   data: () => ({
     oldPoint: null,
     showModal: false,
-    subPoints: emptyPoints(),
+    subPoints: [[], []],
   }),
   computed: {
     isSubPoint: function () {
@@ -108,17 +110,15 @@ export default {
         flag: this.point.flag,
       });
     },
+    addSubPoint: function (si) {
+      this.subPoints[si].splice(0, 0, emptyPoint());
+    },
     updateSubPoint: function (si, pi, point) {
       if (!point.type) {
-        if (pi > 0) {
-          this.subPoints[si].splice(pi, 1);
-        }
+        this.subPoints[si].splice(pi, 1);
         return;
       }
       this.$set(this.subPoints[si], pi, point);
-      if (pi === 0) {
-        this.subPoints[si].splice(0, 0, emptyPoint());
-      }
       this.updateSubClaim();
     },
     deleteSubPoint: function (si, pi) {
@@ -130,12 +130,9 @@ export default {
     this.oldPoint = clone(this.point);
     if (this.point.points) {
       this.subPoints = pointMapsToLists(this.point.points);
-      if (this.subPoints.length === 0) {
-        this.subPoints.push([]);
-        this.subPoints.push([]);
-      }
-      this.subPoints[0].splice(0, 0, emptyPoint());
-      this.subPoints[1].splice(0, 0, emptyPoint());
+    }
+    if (!this.point.type) {
+      this.showModal = true;
     }
   },
 };

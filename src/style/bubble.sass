@@ -17,20 +17,20 @@
 .for
   border-left: $accent-border-width solid $purple-accent
 
-  > .info, > .bubble
+  &.block, > .info, > .bubble
     background-color: $purple-primary
 
-  > .bubble.click:hover
+  &.block.click:hover, > .bubble.click:hover
     background-color: $purple-accent
     color: $text-dark
 
 .against
   border-left: $accent-border-width solid $amber-accent
 
-  > .info, > .bubble
+  &.block, > .info, > .bubble
     background-color: $amber-primary
 
-  > .bubble.click:hover
+  &.block.click:hover, > .bubble.click:hover
     background-color: $amber-accent
     color: $text-dark
 

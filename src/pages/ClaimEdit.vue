@@ -13,6 +13,13 @@
     <claim-edit-modal :show.sync="showModal"
                       :claim.sync="newClaimPartial" />
     <template v-if="$store.state.singleColumn">
+      <div class="point block for click"
+           @click="addPoint(0)">
+        <strong>Add a point for this claim.</strong>
+      </div>
+      <div class="point block against click" @click="addPoint(1)">
+        <strong>Add a point against this claim.</strong>
+      </div>
       <point-edit v-for="[point, side, i] in zippedPoints"
                   :key="point.id || point.tempId"
                   :point="point"
@@ -24,6 +31,11 @@
       <div v-for="(sidePoints, side) in points"
            class="dwd-col"
            :key="'side-' + side">
+        <div class="point block click"
+             :class="!side | toSideString"
+             @click="addPoint(side)">
+          <strong>Add a point {{ !side | toSideString }} this claim.</strong>
+        </div>
         <point-edit v-for="(point, i) in sidePoints"
                     :key="point.id || point.tempId"
                     :point="point"
@@ -59,7 +71,7 @@ import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import PointEdit from '../PointEdit.vue';
 import {
-  emptyPoint, emptyPoints, isValidPoint, pointMapsToLists, rotateWithIndexes
+  emptyPoint, isValidPoint, pointMapsToLists, rotateWithIndexes
 } from '../utils';
 
 function makeNewSources(store, points) {
@@ -111,7 +123,7 @@ export default {
   data: () => ({
     showModal: false,
     newClaimPartial: undefined,
-    points: emptyPoints(),
+    points: [[], []],
   }),
   computed: {
     id: function () {
@@ -128,17 +140,15 @@ export default {
     },
   },
   methods: {
+    addPoint: function (si) {
+      this.points[si].splice(0, 0, emptyPoint());
+    },
     updatePoint: function (si, pi, point) {
       if (!point.type) {
-        if (pi > 0) {
-          this.points[si].splice(pi, 1);
-        }
+        this.points[si].splice(pi, 1);
         return;
       }
       this.$set(this.points[si], pi, point);
-      if (pi === 0) {
-        this.points[si].splice(0, 0, emptyPoint());
-      }
     },
     submit: function () {
       let promises = makeNewSources(this.$store, this.points);
@@ -176,9 +186,6 @@ export default {
       if (this.claim) {
         this.newClaimPartial = this.claim;
         this.points = pointMapsToLists(this.claim.points);
-        for (let i = 0; i < this.points.length; i++) {
-          this.points[i].splice(0, 0, emptyPoint());
-        }
       } else {
         this.showModal = true;
       }
