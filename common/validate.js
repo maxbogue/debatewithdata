@@ -62,10 +62,10 @@ function constraintToValidator(constraint, key) {
         validatePresenceIff(key, value, item, constraint.presenceIff);
       }
     }
-    if (value && constraint.custom) {
+    if (validate.isDefined(value) && constraint.custom) {
       constraint.custom(value, item);
     }
-    if (value && constraint.arrayOf) {
+    if (validate.isDefined(value) && constraint.arrayOf) {
       if (!validate.isArray(value)) {
         throw new ValidationError(`"${key}" must be an array.`);
       }
@@ -92,9 +92,29 @@ function constraintToValidator(constraint, key) {
 // Sources //
 /////////////
 
+const DATE_REGEX = /^(\d{4})(?:-(\d\d)(?:-(\d\d))?)?$/;
+
+function validateDate(s) {
+  let match = s.match(DATE_REGEX);
+  if (!match) {
+    throw new ValidationError('must be formatted like YYYY[-MM[-DD]].');
+  }
+  // Uses the lexicographical ordering of ISO strings.
+  if (s > new Date().toISOString().slice(0, 10)) {
+    throw new ValidationError('must be in the past.');
+  }
+  if (match[2]) {
+    let d = new Date(s);
+    if (!d || d.getUTCMonth() + 1 !== Number(match[2])) {
+      throw new ValidationError('must be a valid date.');
+    }
+  }
+}
+
 const sourceConstraints = {
   url: { presence: true, url: true },
   text: { presence: true, length: { minimum: 10 } },
+  date: { custom: validateDate },
   type: { presence: true, inclusion: SOURCE_TYPES },
   institution: {
     presenceIff: {

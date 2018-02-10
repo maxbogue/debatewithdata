@@ -13,7 +13,7 @@ const BAD_TEXT = 'foo';
 describe('validate', function () {
   describe('source', function () {
     let expectValid = function (source) {
-      expect(() => validateSource(source)).to.not.throw;
+      expect(() => validateSource(source)).to.not.throw();
     };
     let expectInvalid = function (source) {
       expect(() => validateSource(source)).to.throw(ValidationError);
@@ -163,11 +163,33 @@ describe('validate', function () {
       const INVALID_URL = '"url" must be a valid URL.';
       const BLANK = '"url" can\'t be blank.';
       let v = (url, source) => () => validateSource.url(url, source);
-      expect(v(GOOD_URL)).to.not.throw;
+      expect(v(GOOD_URL)).to.not.throw();
       expect(v(BAD_URL)).to.throw(INVALID_URL);
       expect(v('')).to.throw(INVALID_URL);
       expect(v()).to.throw(BLANK);
       expect(v(GOOD_URL, { deleted: true })).to.throw(ValidationError);
+    });
+
+    it('date', function () {
+      let ev = function (d, m) {
+        expect(() => validateSource.date(d), m).to.not.throw();
+      };
+      let ei = function (d, m) {
+        expect(() => validateSource.date(d), m).to.throw(ValidationError);
+      };
+
+      ev('2017', 'Year only.');
+      ev('2017-05', 'Year and month.');
+      ev('2017-05-01', 'Full date.');
+      ev('2016-02-29', 'Leap day.');
+      ev('1918-11-11', '1900s.');
+
+      ei('3000', 'No future dates.');
+      ei('2017-02-29', '2017 is not a leap year.');
+      ei('2017-11-31', 'November only has 30 days.');
+      ei('', 'Empty.');
+      ei('abc2017cba', 'Surrounded by letters.');
+      ei('not a date', 'Words.');
     });
   });
 });

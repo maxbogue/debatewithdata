@@ -1,11 +1,12 @@
 <template>
 <div>
-  <template v-if="!needsData">
+  <form v-if="!needsData" @submit.prevent="commit">
     <div class="source neutral">
       <source-edit-content :source="source" @update="(s) => newSource = s" />
     </div>
     <div class="block no-pad center">
-      <button type="submit" class="dwd-btn green-dark">Submit</button>
+      <button type="submit"
+              class="dwd-btn green-dark">Submit</button>
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
@@ -13,7 +14,7 @@
     <div v-if="id" class="block no-pad center">
       <delete-button noun="Source" @delete="remove" />
     </div>
-  </template>
+  </form>
   <dwd-loader ref="loader" />
 </div>
 </template>

@@ -12,6 +12,7 @@ const URL = 'https://debatewithdata.org';
 const URL2 = 'https://dev.debatewithdata.org';
 const TEXT = 'description 1';
 const TEXT2 = 'description 2';
+const DATE = '2017-05-01';
 const INSTITUTION = 'institution';
 const PUBLICATION = 'publication';
 const MISC = {
@@ -22,6 +23,7 @@ const MISC = {
 const MISC2 = {
   url: URL2,
   text: TEXT2,
+  date: DATE,
   type: 'misc',
 };
 const RESEARCH = {
@@ -60,6 +62,7 @@ describe('Source', function () {
       expect(rev.userId).to.equal(user.id);
       expect(rev.blob.text).to.equal(TEXT);
       expect(rev.url).to.equal(URL);
+      expect(rev.date).to.be.null;
       expect(rev.type).to.equal('misc');
       expect(rev.institution).to.be.null;
       expect(rev.publication).to.be.null;
@@ -152,6 +155,7 @@ describe('Source', function () {
       expect(rev2.userId).to.equal(user.id);
       expect(rev2.blob.text).to.equal(TEXT2);
       expect(rev2.url).to.equal(URL2);
+      expect(rev2.date).to.equal(DATE);
       expect(rev2.type).to.equal('misc');
 
       expect(rev2.parentId).to.equal(rev1.id);

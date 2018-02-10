@@ -12,6 +12,10 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.TEXT,
       validate: validateSource.url.forDb,
     },
+    date: {
+      type: DataTypes.TEXT,
+      validate: validateSource.date.forDb,
+    },
     type: {
       type: DataTypes.TEXT,
       validate: validateSource.type.forDb,
@@ -90,6 +94,10 @@ export default function (sequelize, DataTypes) {
         text: this.blob.text,
         type: this.type,
       };
+
+      if (this.date) {
+        data.date = this.date;
+      }
 
       switch (this.type) {
       case 'research':

@@ -8,6 +8,7 @@
     <em v-else class="error">[{{ source ? 'deleted' : 'not found' }}]</em>
   </div>
   <div v-if="sourceHasContent" :class="$style.metadata">
+    <div v-if="source.date">{{ source.date }}</div>
     <template v-if="source.type === 'article'">
       <div><strong>Article in:</strong> {{ source.publication }}</div>
     </template>

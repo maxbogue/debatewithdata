@@ -2,6 +2,7 @@
 <div>
   <div v-html="textDiff"></div>
   <div :class="$style.metadata">
+    <div v-if="dateDiff" v-html="dateDiff"></div>
     <div v-if="safePrev.type === 'article' && safeCurr.type === 'article'">
       <strong>Article in:</strong> <span v-html="publicationDiff"></span>
     </div>
@@ -59,6 +60,7 @@ import { diff } from './utils';
 const EMPTY_SOURCE = {
   url: '',
   text: '',
+  date: '',
   type: 'misc',
 };
 
@@ -85,6 +87,9 @@ export default {
     },
     urlDiff: function () {
       return diff(this.safePrev.url, this.safeCurr.url);
+    },
+    dateDiff: function () {
+      return diff(this.safePrev.date || '', this.safeCurr.date || '');
     },
     publicationDiff: function () {
       return diff(this.safePrev.publication || '',

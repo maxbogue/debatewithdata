@@ -15,6 +15,14 @@
              id="text"
              placeholder="description"
              :validate="validate.text" />
+  <label for="date" class="hint">
+    Date the source.
+  </label>
+  <dwd-input v-model="date"
+             id="date"
+             placeholder="YYYY-MM-DD"
+             mono
+             :validate="validate.date" />
   <label class="hint">Classify the type of source.</label>
   <div>
     <div :class="typeClass('misc')"
@@ -73,6 +81,7 @@ export default {
   data: () => ({
     text: '',
     url: '',
+    date: '',
     type: 'misc',
     institution: '',
     publication: '',
@@ -86,6 +95,9 @@ export default {
         text: this.text,
         type: this.type,
       };
+      if (this.date) {
+        source.date = this.date;
+      }
       switch (this.type) {
       case 'research':
         source.institution = this.institution;
@@ -113,6 +125,7 @@ export default {
       if (this.source) {
         this.url = this.source.url;
         this.text = this.source.text || '';
+        this.date = this.source.date || '';
         this.type = this.source.type || 'misc';
         this.institution = this.source.institution || '';
         this.publication = this.source.publication || '';
