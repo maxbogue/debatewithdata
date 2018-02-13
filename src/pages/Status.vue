@@ -19,50 +19,24 @@
     <h2>Recent Changes</h2>
     <ul>
       <li>
-        <strong>2017-12-08:</strong> Add history view for claims.
+        <strong>2018-02-10:</strong> Added an optional date field for sources
+        that supports YYYY, YYYY-MM, or YYYY-MM-DD formats.
       </li>
       <li>
-        <strong>2017-12-01:</strong> Add sub-topics so they can be organized
-        more effectively.
+        <strong>2018-02-08:</strong> Field validation during editing is now
+        much more robust and gives clearer errors.
       </li>
       <li>
-        <strong>2017-11-23:</strong> Introduce Topics, a better way to browse
-        for claims of interest.
+        <strong>2018-01-31:</strong> Added a source needed flag.
       </li>
       <li>
-        <strong>2017-11-20:</strong> Added comment counts to the UI.
+        <strong>2018-01-29:</strong> All editing now uses pop-up modals to
+        support more powerful features and a clear diff showing what's changed
+        when the modal is closed.
       </li>
       <li>
-        <strong>2017-11-16:</strong> Big UI/UX change to move the controls and
-        sub-points inside a slide-down drawer to keep the UI cleaner and allow
-        more information along with the controls in the near future.
-      </li>
-      <li>
-        <strong>2017-11-15:</strong> Added a rudimentary activity view to see
-        what's going on until a proper notification system is in place.
-      </li>
-      <li>
-        <strong>2017-11-14:</strong> Flag warnings are now more descriptive
-        and link to a guide section containing more explanation.
-      </li>
-      <li>
-        <strong>2017-11-10:</strong> Submit and cancel buttons now always
-        visible when editing a claim.
-      </li>
-      <li>
-        <strong>2017-11-09:</strong> Fixed bug where first action in a point
-        input box didn't update the state.
-      </li>
-      <li>
-        <strong>2017-11-09:</strong> Sub-points can now be flagged.
-      </li>
-      <li>
-        <strong>2017-11-08:</strong> This status page is added to make things
-        clearer for alpha users.
-      </li>
-      <li>
-        <strong>2017-11-07:</strong> Major visual redesign that allows side
-        colors for sub-points.
+        <strong>2018-01-27:</strong> There are now history and revision views
+        for all three data types.
       </li>
     </ul>
   </div>
