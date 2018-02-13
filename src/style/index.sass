@@ -88,25 +88,6 @@ p a
     & + .dwd-col
       padding: 0 0 0 ($block-spacing / 2)
 
-.block
-  clear: both
-  display: block
-  margin-top: $block-spacing
-  padding: $block-padding
-  text-align: left
-
-  &.no-pad
-    padding: 0
-
-  > h2:first-child,
-  > h3:first-child
-    font-weight: 500
-    margin: 0 0 8px
-
-  ul
-    margin: 0
-    padding-left: 16px
-
 .center
   text-align: center
 
@@ -116,10 +97,6 @@ p a
 .click:hover
   cursor: pointer
   text-decoration: none
-
-.flex-row
-  align-items: flex-start
-  display: flex
 
 .dwd-btn, a.dwd-btn
   border: 0
@@ -140,38 +117,6 @@ p a
 
 .dwd-btn-primary
   @extend .blue-dark
-
-=t1($primary-color, $accent-color)
-  font-size: 20px
-  margin-top: $block-spacing
-
-  &.block
-    background-color: $primary-color
-    border-left: $accent-border-width solid $accent-color
-    padding: 20px
-
-    @at-root a#{&}:hover, &.click:hover
-      background-color: $accent-color
-      text-decoration: none
-
-  &:not(.for):not(.against)
-    border-left: $accent-border-width solid $accent-color
-
-    .info, .bubble
-      background-color: $primary-color
-
-    .bubble.click:hover
-      background-color: $accent-color
-      color: $text-dark
-
-.topic
-  +t1($pink-primary, $pink-accent)
-
-.claim
-  +t1($blue-primary, $blue-accent)
-
-.source
-  +t1($green-primary, $green-accent)
 
 .tag
   background-color: $transparent-light

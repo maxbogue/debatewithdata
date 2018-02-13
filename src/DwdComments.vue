@@ -138,6 +138,7 @@ export default {
     padding: 0
 
   li
+    display: flex
     list-style: none
 
     &:not(:first-child)

@@ -1,18 +1,64 @@
 @import "constants"
 
-.bubble
+.bubble, .block
+  clear: both
+  display: block
   overflow-wrap: break-word
-  padding: 20px
+  padding: $block-padding
+  text-align: left
 
   > :not(:first-child)
     margin-top: 8px
 
-  h2:first-child
+  > h2:first-child,
+  > h3:first-child
     font-weight: 500
     margin: 0 0 8px
 
+  ul
+    margin: 0
+    padding-left: 16px
+
   p
     margin: 8px 0 0
+
+.block
+  margin-top: $block-spacing
+
+  &.no-pad
+    padding: 0
+
+=t1($primary-color, $accent-color)
+  font-size: 20px
+  margin-top: $block-spacing
+
+  &.block
+    background-color: $primary-color
+    border-left: $accent-border-width solid $accent-color
+    padding: 20px
+
+    @at-root a#{&}:hover, &.click:hover
+      background-color: $accent-color
+      text-decoration: none
+
+  &:not(.for):not(.against)
+    border-left: $accent-border-width solid $accent-color
+
+    .info, .bubble
+      background-color: $primary-color
+
+    .bubble.click:hover
+      background-color: $accent-color
+      color: $text-dark
+
+.topic
+  +t1($pink-primary, $pink-accent)
+
+.claim
+  +t1($blue-primary, $blue-accent)
+
+.source
+  +t1($green-primary, $green-accent)
 
 .for
   border-left: $accent-border-width solid $purple-accent
