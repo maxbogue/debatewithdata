@@ -237,6 +237,15 @@ export default function (sequelize, DataTypes) {
       return pointRev.pointPoint.isFor;
     }
 
+    PointRev.toCoreDatas = function (pointRevs, recurse=false) {
+      let points = [{}, {}];
+      for (let pointRev of pointRevs) {
+        let i = isFor(pointRev) ? 0 : 1;
+        points[i][pointRev.pointId] = pointRev.toCoreData(recurse);
+      }
+      return points;
+    };
+
     /**
      * Returns the API data format for multiple point revisions.
      */
@@ -264,34 +273,20 @@ export default function (sequelize, DataTypes) {
       return points;
     };
 
-    /**
-     * Returns the API data format for this point.
-     *
-     * @param data - Linked claims and sources are added to this object as a
-     *               side effect.
-     * @param depth - The depth to load this point and linked claims to.
-     * @param [user] - Used to check whether items are starred.
-     */
-    PointRev.prototype.toData = async function (data, depth, user) {
+    PointRev.prototype.toCoreData = function (recurse=false) {
       let thisData = {
-        rev: this.id,
         type: this.type,
-        star: await this.point.toStarData(user),
-        commentCount: await this.point.countComments(),
       };
       switch (this.type) {
       case CLAIM:
         thisData.claimId = this.claimId;
-        await this.claim.fillData(data, depth, user);
         break;
       case SOURCE:
         thisData.sourceId = this.sourceId;
-        data.sources[this.sourceId] = await this.source.toData();
         break;
       case SUBCLAIM:
-        if (depth > 1) {
-          thisData.points = await PointRev.toDatas(
-              this.pointRevs, data, depth - 1, user);
+        if (recurse) {
+          thisData.points = PointRev.toCoreDatas(this.pointRevs);
         }
         /* eslint no-fallthrough: "off" */
       case TEXT:
@@ -308,35 +303,56 @@ export default function (sequelize, DataTypes) {
 
     /**
      * Returns the API data format for this point.
+     *
+     * @param data - Linked claims and sources are added to this object as a
+     *               side effect.
+     * @param depth - The depth to load this point and linked claims to.
+     * @param [user] - Used to check whether items are starred.
      */
-    PointRev.prototype.toRevData = function (pointRevDatas) {
-      let thisData = {
-        type: this.type,
-        username: this.user.username,
-        createdAt: this.created_at,
-      };
+    PointRev.prototype.toData = async function (data, depth, user) {
+      let thisData = this.toCoreData();
+      thisData.rev = this.id;
+      thisData.star = await this.point.toStarData(user);
+      thisData.commentCount = await this.point.countComments();
+
       switch (this.type) {
       case CLAIM:
-        thisData.claimId = this.claimId;
+        await this.claim.fillData(data, depth, user);
+        break;
+      case SOURCE:
+        data.sources[this.sourceId] = await this.source.toData();
+        break;
+      case SUBCLAIM:
+        if (depth > 1) {
+          thisData.points = await PointRev.toDatas(
+              this.pointRevs, data, depth - 1, user);
+        }
+        break;
+      }
+
+      return thisData;
+    };
+
+    /**
+     * Returns the API data format for this point.
+     */
+    PointRev.prototype.toRevData = function (pointRevDatas) {
+      let thisData = this.toCoreData();
+      thisData.username = this.user.username;
+      thisData.createdAt = this.created_at;
+
+      switch (this.type) {
+      case CLAIM:
         thisData.claim = this.claim.head.toCoreData();
         break;
       case SOURCE:
-        thisData.sourceId = this.sourceId;
         thisData.source = this.source.head.toCoreData();
         break;
       case SUBCLAIM:
         if (this.pointRevs) {
           thisData.points = PointRev.toRevDatas(this.pointRevs, pointRevDatas);
         }
-        /* eslint no-fallthrough: "off" */
-      case TEXT:
-        thisData.text = this.blob.text;
-        if (this.flag) {
-          thisData.flag = this.flag;
-        }
         break;
-      default:
-        throw new ClientError('Invalid point type: ' + this.type);
       }
       pointRevDatas[this.id] = thisData;
       return this.id;

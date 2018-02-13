@@ -83,10 +83,7 @@ export default function (sequelize, DataTypes) {
 
       validateSource(data);
 
-      let oldData = await source.toData();
-      delete oldData.rev;
-      delete oldData.commentCount;
-      if (isEqual(data, oldData)) {
+      if (isEqual(data, source.head.toCoreData())) {
         return source.head;
       }
 

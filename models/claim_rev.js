@@ -74,7 +74,7 @@ export default function (sequelize, DataTypes) {
       return { include };
     };
 
-    ClaimRev.prototype.toCoreData = function () {
+    ClaimRev.prototype.toCoreData = function (recurse=false) {
       if (this.deleted) {
         return {
           deleted: true,
@@ -87,6 +87,10 @@ export default function (sequelize, DataTypes) {
 
       if (this.flag) {
         data.flag = this.flag;
+      }
+
+      if (recurse) {
+        data.points = models.PointRev.toCoreDatas(this.pointRevs, true);
       }
 
       return data;
