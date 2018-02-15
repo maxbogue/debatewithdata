@@ -7,8 +7,8 @@
   <drawer :show="showDrawer">
     <div class="info">
       <span class="id mono">{{ point.id }}</span>
-      <dwd-star :star="point.star" :url="'/api/point/' + point.id" />
-      <comment-icon @click.native="showComments = !showComments"
+      <icon-star :star="point.star" :url="'/api/point/' + point.id" />
+      <icon-comment @click.native="showComments = !showComments"
                     :count="point.commentCount" />
     </div>
     <dwd-comments :url="'/api/point/' + point.id"
@@ -31,20 +31,20 @@
 
 <script>
 import './style/point.sass';
-import CommentIcon from './CommentIcon.vue';
 import Drawer from './Drawer.vue';
 import DwdComments from './DwdComments.vue';
-import DwdStar from './DwdStar.vue';
+import IconComment from './IconComment.vue';
+import IconStar from './IconStar.vue';
 import PointContent from './PointContent.vue';
 import { pointMapsToLists, rotateWithIndexes } from './utils';
 
 export default {
   name: 'PointBlock',
   components: {
-    CommentIcon,
     Drawer,
     DwdComments,
-    DwdStar,
+    IconComment,
+    IconStar,
     PointContent,
   },
   props: {

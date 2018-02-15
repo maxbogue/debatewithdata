@@ -9,16 +9,10 @@
       <drawer :show="showDrawer">
         <div class="info">
           <span class="id mono">{{ claim.id }}</span>
-          <dwd-star :star="claim.star"
-                    :url="'/api' + claimUrl(id)" />
-          <router-link :to="claimUrl(id) + '/history'"
-                       class="glyphicon glyphicon-time click"
-                       aria-hidden="true"></router-link>
-          <router-link v-if="$store.state.user"
-                       :to="claimUrl(id) + '/edit'"
-                       class="glyphicon glyphicon-pencil click"
-                       aria-hidden="true"></router-link>
-          <comment-icon @click.native="showComments = !showComments"
+          <icon-star :star="claim.star" :url="'/api' + claimUrl(id)" />
+          <icon-history :url="claimUrl(id)" />
+          <icon-edit v-if="$store.state.user" :url="claimUrl(id)" />
+          <icon-comment @click.native="showComments = !showComments"
                         :count="claim.commentCount" />
         </div>
         <dwd-comments :url="'/api/claim/' + id"
@@ -30,7 +24,7 @@
       <transition-group tag="div" :move-class="$style.pointsMove">
         <point-block v-for="[point, side, i] in zippedPoints"
                      :point="point"
-                     :isFor="claimIsFor === !side"
+                     :is-for="claimIsFor === !side"
                      :trail="trail.concat(id)"
                      :key="point.id" />
       </transition-group>
@@ -43,7 +37,7 @@
                         :key="'side-' + side">
         <point-block v-for="(point, i) in sidePoints"
                      :point="point"
-                     :isFor="claimIsFor === !side"
+                     :is-for="claimIsFor === !side"
                      :trail="trail.concat(id)"
                      :key="point.id" />
       </transition-group>
@@ -55,26 +49,30 @@
 
 <script>
 import ClaimContent from '../ClaimContent.vue';
-import CommentIcon from '../CommentIcon.vue';
 import Drawer from '../Drawer.vue';
 import DwdComments from '../DwdComments.vue';
 import DwdFlag from '../DwdFlag.vue';
 import DwdLoader from '../DwdLoader.vue';
-import DwdStar from '../DwdStar.vue';
 import DwdTrail from '../DwdTrail.vue';
+import IconComment from '../IconComment.vue';
+import IconEdit from '../IconEdit.vue';
+import IconHistory from '../IconHistory.vue';
+import IconStar from '../IconStar.vue';
 import PointBlock from '../PointBlock.vue';
 import { pointMapsToLists, rotateWithIndexes } from '../utils';
 
 export default {
   components: {
     ClaimContent,
-    CommentIcon,
     Drawer,
     DwdComments,
     DwdFlag,
     DwdLoader,
-    DwdStar,
     DwdTrail,
+    IconComment,
+    IconEdit,
+    IconHistory,
+    IconStar,
     PointBlock,
   },
   data: () => ({

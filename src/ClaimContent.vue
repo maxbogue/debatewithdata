@@ -2,7 +2,7 @@
 <div>
   <router-link v-if="trail && claim && claim.id"
                :to="claimUrl(claim.id, trail)"
-               class="link-icon glyphicon glyphicon-link"></router-link>
+               class="link-icon fas fa-link"></router-link>
   <template v-if="claim && !claim.deleted">
     <dwd-flag v-if="claim.flag" :flag="claim.flag" />
     <span>{{ claim.text }}</span>

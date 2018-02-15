@@ -9,14 +9,9 @@
       <drawer :show="showDrawer">
         <div class="info">
           <span class="id mono">{{ id }}</span>
-          <router-link :to="sourceUrl(id) + '/history'"
-                       class="glyphicon glyphicon-time click"
-                       aria-hidden="true"></router-link>
-          <router-link v-if="$store.state.user"
-                        :to="sourceUrl(id) + '/edit'"
-                        class="glyphicon glyphicon-pencil click"
-                        aria-hidden="true"></router-link>
-          <comment-icon @click.native="showComments = !showComments"
+          <icon-history :url="sourceUrl(id)" />
+          <icon-edit v-if="$store.state.user" :url="sourceUrl(id)" />
+          <icon-comment @click.native="showComments = !showComments"
                         :count="source.commentCount" />
         </div>
         <dwd-comments :url="'/api/source/' + id"
@@ -30,20 +25,24 @@
 </template>
 
 <script>
-import CommentIcon from '../CommentIcon.vue';
 import Drawer from '../Drawer.vue';
 import DwdComments from '../DwdComments.vue';
 import DwdLoader from '../DwdLoader.vue';
 import DwdTrail from '../DwdTrail.vue';
+import IconComment from '../IconComment.vue';
+import IconEdit from '../IconEdit.vue';
+import IconHistory from '../IconHistory.vue';
 import SourceContent from '../SourceContent.vue';
 
 export default {
   components: {
-    CommentIcon,
     Drawer,
     DwdComments,
     DwdLoader,
     DwdTrail,
+    IconComment,
+    IconEdit,
+    IconHistory,
     SourceContent,
   },
   data: () => ({

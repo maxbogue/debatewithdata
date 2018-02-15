@@ -6,8 +6,7 @@
         :key="k"
         @click="selectFlag(k)">{{ v.name }}</li>
   </ul>
-  <span class="click glyphicon glyphicon-flag"
-        aria-hidden="true"
+  <span class="click fas fa-flag"
         @click="showFlags = !showFlags"></span>
 </div>
 </template>

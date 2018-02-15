@@ -72,7 +72,7 @@
         <span>{{ data.name }}</span>
         <a :href="'#' + flag"
            :class="$style.anchor"
-           class="glyphicon glyphicon-link"></a>
+           class="fas fa-link"></a>
       </div>
     </h3>
     <p :class="$style.links">

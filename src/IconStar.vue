@@ -1,10 +1,9 @@
 <template>
 <span :class="$style.star">
-  <span class="glyphicon"
+  <span class="fa-star"
         :class="classes"
         :title="star.count + ' stars'"
-        @click="toggle"
-        aria-hidden="true"></span>
+        @click="toggle" />
   <span class="mono"
         :class="$style.count">{{ star.count }}</span>
 </span>
@@ -30,7 +29,7 @@ export default {
     },
     classes: function () {
       return [
-        this.star.starred ? 'glyphicon-star' : 'glyphicon-star-empty',
+        this.star.starred ? 'fas' : 'far',
         this.user ? 'click' : '',
       ];
     },

@@ -28,8 +28,7 @@
       <topic-content class="bubble" :topic="subTopic" />
       <div class="info">
         <span class="id mono">{{ subTopic.id }}</span>
-        <span class="delete click glyphicon glyphicon-trash"
-              aria-hidden="true"
+        <span class="delete click fas fa-trash-alt"
               @click="subTopicIds.splice(i, 1)"></span>
       </div>
     </div>
@@ -48,8 +47,7 @@
       <claim-content class="bubble" :claim="claim" />
       <div class="info">
         <span class="id mono">{{ claim.id }}</span>
-        <span class="delete click glyphicon glyphicon-trash"
-              aria-hidden="true"
+        <span class="delete click fas fa-trash-alt"
               @click="claimIds.splice(i, 1)"></span>
       </div>
     </div>

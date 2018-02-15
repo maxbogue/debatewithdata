@@ -43,7 +43,7 @@
             <li>
               <router-link to="/account"
                            title="Account">
-                <span class="glyphicon glyphicon-user" aria-hidden="true" />
+                <span class="fas fa-user" />
                 <span> {{ user.username }}</span>
               </router-link>
             </li>

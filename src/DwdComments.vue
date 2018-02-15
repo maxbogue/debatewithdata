@@ -7,10 +7,9 @@
           <div><strong>{{ comment.author }}</strong>: {{ comment.text }}</div>
           <div :class="$style.timestamp">{{ comment.created | timestamp }}</div>
           <div v-if="user && comment.author === user.username"
-                :class="$style.delete"
-                class="click glyphicon glyphicon-trash"
-                aria-hidden="true"
-                @click="deleteComment(comment.id)"></div>
+               :class="$style.delete"
+               class="click fas fa-trash"
+               @click="deleteComment(comment.id)"></div>
         </li>
         <li v-if="comments.length === 0">No comments yet.</li>
       </ul>

@@ -1,9 +1,7 @@
 <template>
-<span :class="$style.star">
-  <span class="glyphicon glyphicon-comment click"
-        aria-hidden="true"></span>
-  <span class="mono"
-        :class="$style.count">{{ count }}</span>
+<span class="click">
+  <span class="fas fa-comment" />
+  <span class="mono" :class="$style.count">{{ count }}</span>
 </span>
 </template>
 
