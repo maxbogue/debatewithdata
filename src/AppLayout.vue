@@ -1,8 +1,8 @@
 <template>
-<div>
-  <dwd-header></dwd-header>
-  <router-view class="dwd-container"></router-view>
-</div>
+  <div>
+    <dwd-header />
+    <router-view class="dwd-container" />
+  </div>
 </template>
 
 <script>

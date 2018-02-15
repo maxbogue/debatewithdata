@@ -1,48 +1,80 @@
 <template>
-<navbar placement="static" type="inverse" style="margin-bottom: 0">
-  <router-link slot="brand"
-               to="/"
-               title="Home"
-               class="navbar-brand">DebateWithData</router-link>
-  <li><router-link to="/topics" title="Topics">Topics</router-link></li>
-  <li><router-link to="/claims" title="Claims">Claims</router-link></li>
-  <li><router-link to="/sources" title="Sources">Sources</router-link></li>
-  <li><router-link to="/guide" title="Guide">Guide</router-link></li>
-  <li><router-link to="/status" title="Status">Status</router-link></li>
-  <li><router-link to="/activity" title="Activity">Activity</router-link></li>
-  <template v-if="user">
-    <li slot="right" v-if="user.admin">
-      <router-link to="/admin" title="Admin">Admin</router-link>
-    </li>
-    <li slot="right">
-      <router-link to="/account" title="Account">
-        <span class="glyphicon glyphicon-user"aria-hidden="true"></span>
-        <span> {{ user.username }}</span>
-      </router-link>
-    </li>
-    <li slot="right">
-      <router-link to="/logout" title="Logout">Logout</router-link>
-    </li>
-  </template>
-  <template v-else>
-    <li slot="right">
-      <router-link :to="loginUrl" title="Login">Login</router-link>
-    </li>
-    <li slot="right">
-      <router-link to="/register" title="Register">Register</router-link>
-    </li>
-  </template>
-</navbar>
+  <nav :class="$style.navbar" v-on-clickaway="collapse">
+    <div class="dwd-container">
+      <router-link to="/"
+                   title="Home"
+                   :class="$style.navbarBrand"
+                   exact>DebateWithData</router-link>
+      <button :class="$style.navbarToggler"
+              type="button"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+              @click="collapsed = !collapsed">
+        <span :class="$style.iconBar" />
+        <span :class="$style.iconBar" />
+        <span :class="$style.iconBar" />
+      </button>
+      <div :class="[$style.navbarCollapse, {[$style.collapse]:collapsed}]">
+        <ul :class="$style.navbarNav">
+          <li>
+            <router-link to="/topics" title="Topics">Topics</router-link>
+          </li>
+          <li>
+            <router-link to="/claims" title="Claims">Claims</router-link>
+          </li>
+          <li>
+            <router-link to="/sources" title="Sources">Sources</router-link>
+          </li>
+          <li>
+            <router-link to="/guide" title="Guide">Guide</router-link>
+          </li>
+          <li>
+            <router-link to="/status" title="Status">Status</router-link>
+          </li>
+          <li>
+            <router-link to="/activity" title="Activity">Activity</router-link>
+          </li>
+        </ul>
+        <ul :class="$style.navbarNavRight">
+          <template v-if="user">
+            <li v-if="user.admin">
+              <router-link to="/admin" title="Admin">Admin</router-link>
+            </li>
+            <li>
+              <router-link to="/account"
+                           title="Account">
+                <span class="glyphicon glyphicon-user" aria-hidden="true" />
+                <span> {{ user.username }}</span>
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/logout" title="Logout">Logout</router-link>
+            </li>
+          </template>
+          <template v-else>
+            <li>
+              <router-link :to="loginUrl" title="Login">Login</router-link>
+            </li>
+            <li>
+              <router-link to="/register"
+                           title="Register">Register</router-link>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </div>
+  </nav>
 </template>
 
 <script>
-import Navbar from 'vue-strap/src/Navbar.vue';
+import { mixin as clickaway } from 'vue-clickaway';
 import { mapState } from 'vuex';
 
 export default {
-  components: {
-    Navbar,
-  },
+  mixins: [clickaway],
+  data: () => ({
+    collapsed: true,
+  }),
   computed: {
     ...mapState([
       'user',
@@ -55,5 +87,122 @@ export default {
       return '/login?next=' + path;
     },
   },
+  watch: {
+    $route: function () {
+      this.collapse();
+    },
+  },
+  methods: {
+    collapse: function () {
+      this.collapsed = true;
+    },
+  },
 };
 </script>
+
+<style lang="sass" module>
+@import "style/constants"
+
+$navbar-bg-color: #333
+$navbar-btn-accent: #666
+$navbar-spacing: $block-spacing
+$navbar-text-color: #aaa
+$navbar-text-highlight: #FFF
+$navbar-brand-font-size: 20px
+
+.navbar
+  background-color: $navbar-bg-color
+  color: $navbar-text-color
+  position: relative
+
+  \:global(.dwd-container)
+    margin-bottom: 0
+    padding: 0
+    display: flex
+    align-items: center
+    justify-content: space-between
+
+  a
+    color: $navbar-text-color
+    padding: $navbar-spacing
+
+    &:hover, &:focus, &:global(.router-link-active)
+      color: $navbar-text-highlight
+      text-decoration: none
+
+  ul
+    margin: 0
+
+  @media (max-width: $screen-sm-min - 0.02px)
+    \:global(.dwd-container)
+      flex-wrap: wrap  // Creates line break for collapsed content.
+
+    .navbarCollapse.collapse
+      display: none
+
+  @media (min-width: $screen-sm-min)
+    .navbarNav
+      flex-direction: row
+
+    .navbarCollapse
+      display: flex
+
+    .navbarToggler
+      display: none
+
+.navbarBrand
+  display: inline-block
+  font-size: 20px
+  white-space: nowrap
+
+.navbarToggler
+  background: none;
+  border-radius: 4px;
+  border: 1px solid $navbar-btn-accent
+  float: right;
+  margin-bottom: 8px;
+  margin-right: 15px;
+  margin-top: 8px;
+  padding: 9px 10px;
+  position: relative;
+
+  &:hover, &:focus
+    background-color: $navbar-btn-accent
+    outline: none
+    text-decoration: none
+
+    .iconBar
+      background-color: $navbar-text-highlight;
+
+  &:not(:disabled):not(.disabled)
+    cursor: pointer
+
+  .iconBar
+    background-color: $navbar-text-color;
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+
+    + .iconBar
+      margin-top: 4px;
+
+.navbarCollapse
+  flex-basis: 100%
+  flex-grow: 1
+  flex-wrap: wrap
+  align-items: center
+
+.navbarNav
+  display: flex
+  flex-direction: column
+  list-style: none
+  padding-left: 0
+
+  a, li
+    display: block
+
+.navbarNavRight
+  @extend .navbarNav
+  margin-left: auto !important
+</style>

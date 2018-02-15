@@ -32,6 +32,7 @@
     "bcrypt": "^1.0.3",
     "blake2": "^1.4.0",
     "body-parser": "^1.18.2",
+    "bootstrap": "^3.3.7",
     "config": "^1.28.1",
     "css-loader": "^0.28.7",
     "dashify": "^1.0.0",
@@ -59,9 +60,9 @@
     "url-search-params": "^0.10.0",
     "validate.js": "^0.12.0",
     "vue": "^2.5.8",
+    "vue-clickaway": "^2.1.0",
     "vue-loader": "^14.1.1",
     "vue-router": "^3.0.1",
-    "vue-strap": "github:wffranco/vue-strap",
     "vue-template-compiler": "^2.5.8",
     "vuex": "^3.0.1",
     "webpack": "^3.11.0"
