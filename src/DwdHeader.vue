@@ -109,6 +109,7 @@ $navbar-spacing: $block-spacing
 $navbar-text-color: #aaa
 $navbar-text-highlight: #FFF
 $navbar-brand-font-size: 20px
+$navbar-link-font-size: 14px
 
 .navbar
   background-color: $navbar-bg-color
@@ -119,12 +120,11 @@ $navbar-brand-font-size: 20px
     margin-bottom: 0
     padding: 0
     display: flex
-    align-items: center
     justify-content: space-between
 
   a
     color: $navbar-text-color
-    padding: $navbar-spacing
+    line-height: $navbar-brand-font-size
 
     &:hover, &:focus, &:global(.router-link-active)
       color: $navbar-text-highlight
@@ -140,9 +140,16 @@ $navbar-brand-font-size: 20px
     .navbarCollapse.collapse
       display: none
 
+    .navbarNav a
+      font-size: ($navbar-link-font-size * 1.2)
+      padding: ($block-spacing / 1.5) $block-spacing
+
   @media (min-width: $screen-sm-min)
     .navbarNav
       flex-direction: row
+
+      a
+        padding: $block-spacing ($block-spacing / 2)
 
     .navbarCollapse
       display: flex
@@ -152,7 +159,8 @@ $navbar-brand-font-size: 20px
 
 .navbarBrand
   display: inline-block
-  font-size: 20px
+  font-size: $navbar-brand-font-size
+  padding: $navbar-spacing
   white-space: nowrap
 
 .navbarToggler
@@ -201,6 +209,7 @@ $navbar-brand-font-size: 20px
 
   a, li
     display: block
+    font-size: $navbar-link-font-size
 
 .navbarNavRight
   @extend .navbarNav
