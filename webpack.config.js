@@ -6,7 +6,7 @@ module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: 'client.dev.js'
+    filename: 'index.js'
   },
   module: {
     rules: [
@@ -45,5 +45,5 @@ module.exports = {
   performance: {
     hints: false
   },
-  devtool: 'cheap-source-map',
+  devtool: 'source-map',
 };

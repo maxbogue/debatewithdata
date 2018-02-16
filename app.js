@@ -5,10 +5,9 @@ import path from 'path';
 import { Point } from './models';
 import api from './api';
 
-const IS_PROD = process.env.NODE_ENV === 'production';
 const DIRNAME = path.resolve(__dirname, '..');
 const INDEX_PATH = path.resolve(DIRNAME, 'index.html');
-const JS_FILE = IS_PROD ? 'client.prod.js' : 'client.dev.js';
+const JS_FILE = 'index.js';
 const JS_PATH = path.resolve(DIRNAME, 'build', JS_FILE);
 const JS_MAP_PATH = JS_PATH + '.map';
 
