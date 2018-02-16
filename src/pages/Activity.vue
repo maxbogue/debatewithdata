@@ -3,7 +3,7 @@
   <h1>Activity</h1>
   <dwd-loader ref="loader"></dwd-loader>
   <table v-if="activity" :class="$style.activity" class="mono">
-    <tr v-for="item in activity" :key="item.id">
+    <tr v-for="item in activity" :key="item.timestamp + item.id">
       <td :class="$style.timestamp">{{ item.timestamp | timestamp }}</td>
       <td :class="$style.username">{{ item.username }}</td>
       <td>{{ item.action }}</td>
