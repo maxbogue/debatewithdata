@@ -24,9 +24,9 @@
     <div v-if="point.type" class="info">
       <div class="id mono">{{ point.id || 'new' }}</div>
       <button type="submit"
-              class="dwd-btn dwd-btn-primary">Close</button>
+              class="dwd-btn dwd-btn-primary">Apply</button>
       <button type="button"
-              class="dwd-btn"
+              class="dwd-btn white"
               @click="cancel">Cancel</button>
       <div class="controls">
         <dwd-flag-dropdown v-if="isSubClaim" v-model="flag" />

@@ -7,9 +7,9 @@
                      @itemType="updateIsValid" />
     <div class="info">
       <button type="submit"
-              class="dwd-btn dwd-btn-primary">Close</button>
+              class="dwd-btn dwd-btn-primary">Link</button>
       <button type="button"
-              class="dwd-btn"
+              class="dwd-btn white"
               @click="cancel">Cancel</button>
     </div>
   </div>

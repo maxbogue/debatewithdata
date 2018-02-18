@@ -31,9 +31,9 @@
     <div v-if="text" class="info">
       <div class="id mono">{{ oldId || 'new' }}</div>
       <button type="submit"
-              class="dwd-btn pink-dark">Close</button>
+              class="dwd-btn pink-dark">Apply</button>
       <button type="button"
-              class="dwd-btn"
+              class="dwd-btn white"
               @click="cancel">Cancel</button>
       <div class="controls"></div>
     </div>
