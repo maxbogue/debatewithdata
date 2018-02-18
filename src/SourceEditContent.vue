@@ -22,7 +22,7 @@
              id="date"
              placeholder="YYYY-MM-DD"
              mono
-             :validate="validate.date" />
+             :validate="validate.date.emptyAsNull" />
   <label class="hint">Classify the type of source.</label>
   <div>
     <div :class="typeClass('misc')"

@@ -85,6 +85,7 @@ function constraintToValidator(constraint, key) {
       validator(val, this);
     },
   };
+  validator.emptyAsNull = (val) => validator(val === '' ? null : val);
   return validator;
 }
 
