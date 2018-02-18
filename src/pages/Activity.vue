@@ -62,5 +62,5 @@ export default {
   color: $text-dark-accent
 
 .username, .link
-  font-weight: bold
+  font-weight: $font-weight-bold
 </style>

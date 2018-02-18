@@ -1,8 +1,8 @@
 <template>
 <div :class="$style.account" class="center">
-  <div><span>user</span><span>{{ user.username }}</span></div>
-  <div><span>created</span><span>{{ created }}</span></div>
-  <div><span>email</span><span>{{ user.email }}</span></div>
+  <div><strong>user</strong><span>{{ user.username }}</span></div>
+  <div><strong>created</strong><span>{{ created }}</span></div>
+  <div><strong>email</strong><span>{{ user.email }}</span></div>
 </div>
 </template>
 
@@ -21,19 +21,21 @@ export default {
 </script>
 
 <style lang="sass" module>
+@import "../style/constants"
+
 .account
   margin-top: 50px
 
-  span
+  span, strong
     display: inline-block
     font-size: 1.5em
-    font-weight: 100
     padding: 4px
-    text-align: left
+
+  span
+    font-weight: $font-weight-light
     width: 60%
 
-  span:first-child
-    font-weight: 500
+  strong
     text-align: right
     width: 40%
 </style>
