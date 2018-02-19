@@ -2,8 +2,16 @@
 <div>
   <form v-if="!needsData" @submit.prevent="commit">
     <div class="source neutral">
-      <source-edit-content :source="source" @update="(s) => newSource = s" />
+      <source-rev-content class="bubble click"
+                          :prev="source"
+                          :curr="newSource"
+                          @click.native="showModal = true" />
+      <div class="info">
+        <span class="id mono">{{ id || 'new' }}</span>
+      </div>
     </div>
+    <source-edit-modal :show.sync="showModal"
+                       :source.sync="newSource" />
     <div class="block no-pad center">
       <button type="submit"
               class="dwd-btn green-dark">Submit</button>
@@ -22,15 +30,18 @@
 <script>
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
-import SourceEditContent from '../SourceEditContent.vue';
+import SourceEditModal from '../SourceEditModal.vue';
+import SourceRevContent from '../SourceRevContent.vue';
 
 export default {
   components: {
     DeleteButton,
     DwdLoader,
-    SourceEditContent,
+    SourceEditModal,
+    SourceRevContent,
   },
   data: () => ({
+    showModal: false,
     newSource: null,
   }),
   computed: {
@@ -66,12 +77,22 @@ export default {
     cancel: function () {
       this.$router.push(this.id ? this.sourceUrl(this.id) : '/sources');
     },
+    initialize: function () {
+      if (this.source) {
+        this.newSource = this.source;
+      }
+      this.showModal = true;
+    },
     checkLoaded: function () {
       if (this.needsData) {
         this.$store.dispatch('getSource', {
           id: this.id,
           loader: this.$refs.loader,
+        }).then(() => {
+          this.initialize();
         });
+      } else {
+        this.initialize();
       }
     },
   },
