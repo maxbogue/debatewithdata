@@ -60,7 +60,6 @@
         "quotes": ["error", "single"],
         "semi": ["error", "always"],
 
-        "vue/attribute-hyphenation": ["off"],
         "vue/html-indent": ["off"],
         "vue/html-self-closing": ["off"],
         "vue/max-attributes-per-line": ["error", {
@@ -70,7 +69,6 @@
               "allowFirstLine": true
             }
         }],
-        "vue/no-unused-vars": ["off"],
         "vue/order-in-components": ["off"],
         "vue/require-default-prop": ["off"]
     }

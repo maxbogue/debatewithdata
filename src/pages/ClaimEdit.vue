@@ -23,7 +23,7 @@
       <point-edit v-for="[point, side, i] in zippedPoints"
                   :key="point.id || point.tempId"
                   :point="point"
-                  :isFor="!side"
+                  :is-for="!side"
                   @update="(p) => updatePoint(side, i, p)"
                   @delete="points[side].splice(i, 1)" />
     </template>
@@ -39,7 +39,7 @@
         <point-edit v-for="(point, i) in sidePoints"
                     :key="point.id || point.tempId"
                     :point="point"
-                    :isFor="!side"
+                    :is-for="!side"
                     @update="(p) => updatePoint(side, i, p)"
                     @delete="sidePoints.splice(i, 1)" />
       </div>

@@ -4,8 +4,8 @@
     <item-link-input v-if="id"
                      class="bubble"
                      :id.sync="input"
-                     :allowClaim="true"
-                     :allowSource="true"
+                     :allow-claim="true"
+                     :allow-source="true"
                      @itemType="updateIdType" />
     <source-edit-content v-else-if="isUrl"
                          :source="point.source"

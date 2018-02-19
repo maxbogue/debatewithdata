@@ -3,7 +3,7 @@
   <div class="topic">
     <item-link-input class="bubble"
                      :id.sync="id"
-                     :allowTopic="true"
+                     :allow-topic="true"
                      @itemType="updateIsValid" />
     <div class="info">
       <button type="submit"

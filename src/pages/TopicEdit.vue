@@ -12,7 +12,7 @@
     </div>
     <topic-edit-modal :show.sync="showModal"
                       :topic.sync="newTopicPartial"
-                      :oldId="id" />
+                      :old-id="id" />
     <h3>Sub-Topics</h3>
     <div class="topic">
       <div class="bubble click"

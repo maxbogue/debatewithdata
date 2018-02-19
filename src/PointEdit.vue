@@ -2,8 +2,8 @@
 <div :class="classObject">
   <point-edit-modal :show.sync="showModal"
                     :point="point"
-                    :isFor="isFor"
-                    :isSubPoint="isSubPoint"
+                    :is-for="isFor"
+                    :is-sub-point="isSubPoint"
                     @update="emitPoint" />
   <point-diff class="bubble click"
               :curr="point"
@@ -26,8 +26,8 @@
     </div>
     <point-edit v-for="[p, side, i] in zippedSubPoints"
                 :point="p"
-                :isFor="isFor === !side"
-                :isParentFor="isFor"
+                :is-for="isFor === !side"
+                :is-parent-for="isFor"
                 :key="p.id || p.tempId"
                 @update="(p) => updateSubPoint(side, i, p)"
                 @delete="() => deleteSubPoint(side, i)" />

@@ -3,7 +3,7 @@
   <div class="claim">
     <item-link-input class="bubble"
                      :id.sync="id"
-                     :allowClaim="true"
+                     :allow-claim="true"
                      @itemType="updateIsValid" />
     <div class="info">
       <button type="submit"

@@ -22,7 +22,7 @@
     </div>
     <template v-if="$store.state.singleColumn">
       <transition-group tag="div" :move-class="$style.pointsMove">
-        <point-block v-for="[point, side, i] in zippedPoints"
+        <point-block v-for="[point, side] in zippedPoints"
                      :point="point"
                      :is-for="claimIsFor === !side"
                      :trail="trail.concat(id)"
@@ -35,7 +35,7 @@
                         class="dwd-col"
                         :move-class="$style.pointsMove"
                         :key="'side-' + side">
-        <point-block v-for="(point, i) in sidePoints"
+        <point-block v-for="point in sidePoints"
                      :point="point"
                      :is-for="claimIsFor === !side"
                      :trail="trail.concat(id)"

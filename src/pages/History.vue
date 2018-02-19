@@ -15,21 +15,21 @@
     </ul>
   </template>
   <template v-if="data && revId">
-    <rev-nav :itemType="itemType"
-             :itemId="itemId"
-             :revId="revId"
+    <rev-nav :item-type="itemType"
+             :item-id="itemId"
+             :rev-id="revId"
              :revs="revs" />
     <topic-rev v-if="itemType === 'topic'"
-               :topicId="itemId"
-               :revId="revId"
+               :topic-id="itemId"
+               :rev-id="revId"
                :data="data" />
     <claim-rev v-else-if="itemType === 'claim'"
-               :claimId="itemId"
-               :revId="revId"
+               :claim-id="itemId"
+               :rev-id="revId"
                :data="data" />
     <source-rev v-else-if="itemType === 'source'"
-               :sourceId="itemId"
-               :revId="revId"
+               :source-id="itemId"
+               :rev-id="revId"
                :data="data" />
   </template>
   <dwd-loader ref="loader"></dwd-loader>

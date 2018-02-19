@@ -10,12 +10,12 @@
     </div>
     <ul v-if="subPointRevs.length > 0" class="sub-points">
       <point-rev v-for="[[pId, subCurrId, subPrevId], subSide] in subPointRevs"
-                 :pointId="pId"
-                 :currId="subCurrId"
-                 :prevId="subPrevId"
-                 :pointRevs="pointRevs"
-                 :isFor="isFor === !subSide"
-                 :isSubPoint="true"
+                 :point-id="pId"
+                 :curr-id="subCurrId"
+                 :prev-id="subPrevId"
+                 :point-revs="pointRevs"
+                 :is-for="isFor === !subSide"
+                 :is-sub-point="true"
                  :key="subCurrId" />
     </ul>
   </drawer>

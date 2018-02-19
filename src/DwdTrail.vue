@@ -16,9 +16,6 @@
 const ID_REGEX = /^[0-9a-f]{12}$/;
 
 export default {
-  data: () => ({
-    lastIsFor: null,
-  }),
   computed: {
     ids: function () {
       if (!this.$route.query.trail) {
@@ -35,7 +32,6 @@ export default {
       return ids;
     },
     items: function () {
-      this.lastIsFor = null;
       if (this.ids.length < 2) {
         return [];
       }
@@ -59,8 +55,27 @@ export default {
         isFor = isFor === null ? nextIsFor : isFor === nextIsFor;
         itemUrl = nextUrl;
       }
-      this.lastIsFor = isFor;
       return items;
+    },
+    lastIsFor: function () {
+      if (this.ids.length < 2) {
+        return null;
+      }
+      let item = this.$store.state.claims[this.ids[0]];
+      let isFor = null;
+      for (let i = 1; i < this.ids.length; i++) {
+        if (!item) {
+          return null;
+        }
+        let nextId = this.ids[i];
+        let [wasFound, nextIsFor, next] = this.findInside(item.points, nextId);
+        if (!wasFound) {
+          return null;
+        }
+        item = next;
+        isFor = isFor === null ? nextIsFor : isFor === nextIsFor;
+      }
+      return isFor;
     },
   },
   methods: {

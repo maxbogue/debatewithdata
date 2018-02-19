@@ -18,10 +18,10 @@
                       v-if="subPoints.length > 0"
                       class="sub-points"
                       :move-class="$style.subPointsMove">
-      <point-block v-for="[subPoint, subSide, i] in subPoints"
+      <point-block v-for="[subPoint, subSide] in subPoints"
                    :point="subPoint"
-                   :isFor="isFor === !subSide"
-                   :isSubPoint="true"
+                   :is-for="isFor === !subSide"
+                   :is-sub-point="true"
                    :trail="trail.concat(point.claimId || point.id)"
                    :key="subPoint.id" />
     </transition-group>
