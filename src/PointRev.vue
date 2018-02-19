@@ -4,7 +4,7 @@
               :curr="curr"
               :prev="prev"
               @click.native="showDrawer = !showDrawer" />
-  <drawer :show="showDrawer">
+  <dwd-drawer :show="showDrawer">
     <div class="info">
       <span class="id mono">{{ pointId }}</span>
     </div>
@@ -18,7 +18,7 @@
                  :is-sub-point="true"
                  :key="subCurrId" />
     </ul>
-  </drawer>
+  </dwd-drawer>
 </li>
 </template>
 
@@ -26,14 +26,14 @@
 import partition from 'lodash/partition';
 
 import './style/point.sass';
-import Drawer from './Drawer.vue';
+import DwdDrawer from './DwdDrawer.vue';
 import PointDiff from './PointDiff.vue';
 import { rotateWithIndexes } from './utils';
 
 export default {
   name: 'PointRev',
   components: {
-    Drawer,
+    DwdDrawer,
     PointDiff,
   },
   props: {

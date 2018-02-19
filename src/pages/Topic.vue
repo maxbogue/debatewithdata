@@ -5,7 +5,7 @@
       <topic-content class="bubble click"
                      :topic="topic"
                      @click.native="showDrawer = !showDrawer" />
-      <drawer :show="showDrawer">
+      <dwd-drawer :show="showDrawer">
         <div class="info">
           <span class="id mono">{{ id }}</span>
           <icon-star :star="topic.star" :url="'/api' + topicUrl(id)" />
@@ -17,7 +17,7 @@
         <dwd-comments :url="'/api/topic/' + id"
                       :show="showComments"
                       :hint="showDrawer" />
-      </drawer>
+      </dwd-drawer>
     </div>
     <template v-if="subTopics.length > 0">
       <h3>Sub-Topics</h3>
@@ -46,8 +46,8 @@
 import map from 'lodash/map';
 
 import ClaimContent from '../ClaimContent.vue';
-import Drawer from '../Drawer.vue';
 import DwdComments from '../DwdComments.vue';
+import DwdDrawer from '../DwdDrawer.vue';
 import DwdLoader from '../DwdLoader.vue';
 import IconComment from '../IconComment.vue';
 import IconEdit from '../IconEdit.vue';
@@ -60,8 +60,8 @@ import { sortByStars } from '../utils';
 export default {
   components: {
     ClaimContent,
-    Drawer,
     DwdComments,
+    DwdDrawer,
     DwdLoader,
     IconComment,
     IconEdit,

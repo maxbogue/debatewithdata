@@ -1,5 +1,5 @@
 <template>
-<drawer :show="show">
+<dwd-drawer :show="show">
   <div :class="$style.comments">
     <template v-if="loaded">
       <ul>
@@ -20,21 +20,21 @@
     </template>
     <div v-else>Loading...</div>
   </div>
-</drawer>
+</dwd-drawer>
 </template>
 
 <script>
 import axios from 'axios';
 import dateFormat from 'dateformat';
 
-import Drawer from './Drawer.vue';
+import DwdDrawer from './DwdDrawer.vue';
 import DwdInput from './DwdInput.vue';
 
 const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 
 export default {
   components: {
-    Drawer,
+    DwdDrawer,
     DwdInput,
   },
   props: {

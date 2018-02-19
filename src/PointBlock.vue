@@ -4,7 +4,7 @@
                  @click.native="showDrawer = !showDrawer"
                  :point="point"
                  :trail="trail"></point-content>
-  <drawer :show="showDrawer">
+  <dwd-drawer :show="showDrawer">
     <div class="info">
       <span class="id mono">{{ point.id }}</span>
       <icon-star :star="point.star" :url="'/api/point/' + point.id" />
@@ -25,14 +25,14 @@
                    :trail="trail.concat(point.claimId || point.id)"
                    :key="subPoint.id" />
     </transition-group>
-  </drawer>
+  </dwd-drawer>
 </li>
 </template>
 
 <script>
 import './style/point.sass';
-import Drawer from './Drawer.vue';
 import DwdComments from './DwdComments.vue';
+import DwdDrawer from './DwdDrawer.vue';
 import IconComment from './IconComment.vue';
 import IconStar from './IconStar.vue';
 import PointContent from './PointContent.vue';
@@ -41,8 +41,8 @@ import { pointMapsToLists, rotateWithIndexes } from './utils';
 export default {
   name: 'PointBlock',
   components: {
-    Drawer,
     DwdComments,
+    DwdDrawer,
     IconComment,
     IconStar,
     PointContent,

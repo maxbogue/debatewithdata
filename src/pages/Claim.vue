@@ -6,7 +6,7 @@
       <claim-content class="bubble click"
                      @click.native="showDrawer = !showDrawer"
                      :claim="claim" />
-      <drawer :show="showDrawer">
+      <dwd-drawer :show="showDrawer">
         <div class="info">
           <span class="id mono">{{ claim.id }}</span>
           <icon-star :star="claim.star" :url="'/api' + claimUrl(id)" />
@@ -18,7 +18,7 @@
         <dwd-comments :url="'/api/claim/' + id"
                       :show="showComments"
                       :hint="showDrawer" />
-      </drawer>
+      </dwd-drawer>
     </div>
     <template v-if="$store.state.singleColumn">
       <transition-group tag="div" :move-class="$style.pointsMove">
@@ -49,8 +49,8 @@
 
 <script>
 import ClaimContent from '../ClaimContent.vue';
-import Drawer from '../Drawer.vue';
 import DwdComments from '../DwdComments.vue';
+import DwdDrawer from '../DwdDrawer.vue';
 import DwdFlag from '../DwdFlag.vue';
 import DwdLoader from '../DwdLoader.vue';
 import DwdTrail from '../DwdTrail.vue';
@@ -64,8 +64,8 @@ import { pointMapsToLists, rotateWithIndexes } from '../utils';
 export default {
   components: {
     ClaimContent,
-    Drawer,
     DwdComments,
+    DwdDrawer,
     DwdFlag,
     DwdLoader,
     DwdTrail,

@@ -6,7 +6,7 @@
       <source-content class="bubble click"
                       @click.native="showDrawer = !showDrawer"
                       :source="source" />
-      <drawer :show="showDrawer">
+      <dwd-drawer :show="showDrawer">
         <div class="info">
           <span class="id mono">{{ id }}</span>
           <icon-history :url="sourceUrl(id)" />
@@ -17,7 +17,7 @@
         <dwd-comments :url="'/api/source/' + id"
                       :show="showComments"
                       :hint="showDrawer" />
-      </drawer>
+      </dwd-drawer>
     </div>
   </template>
   <dwd-loader ref="loader" />
@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import Drawer from '../Drawer.vue';
 import DwdComments from '../DwdComments.vue';
+import DwdDrawer from '../DwdDrawer.vue';
 import DwdLoader from '../DwdLoader.vue';
 import DwdTrail from '../DwdTrail.vue';
 import IconComment from '../IconComment.vue';
@@ -36,8 +36,8 @@ import SourceContent from '../SourceContent.vue';
 
 export default {
   components: {
-    Drawer,
     DwdComments,
+    DwdDrawer,
     DwdLoader,
     DwdTrail,
     IconComment,
