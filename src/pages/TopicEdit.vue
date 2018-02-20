@@ -25,7 +25,7 @@
     <div v-for="(subTopic, i) in subTopics"
          class="topic"
          :key="subTopic.id">
-      <topic-content class="bubble" :topic="subTopic" />
+      <div class="bubble">{{ subTopic.title }}</div>
       <div class="info">
         <span class="id mono">{{ subTopic.id }}</span>
         <span class="delete click fas fa-trash-alt"
@@ -77,7 +77,6 @@ import ClaimLinkModal from '../ClaimLinkModal.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
-import TopicContent from '../TopicContent.vue';
 import TopicEditModal from '../TopicEditModal.vue';
 import TopicLinkModal from '../TopicLinkModal.vue';
 import TopicRevContent from '../TopicRevContent.vue';
@@ -90,7 +89,6 @@ export default {
     DeleteButton,
     DwdLoader,
     FixedBottom,
-    TopicContent,
     TopicEditModal,
     TopicLinkModal,
     TopicRevContent,
@@ -195,7 +193,7 @@ export default {
     },
   },
   watch: {
-    topic: function () {
+    id: function () {
       this.checkLoaded();
     },
   },

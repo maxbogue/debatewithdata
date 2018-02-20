@@ -6,7 +6,7 @@
                @keydown.up.native.prevent="highlight(highlighted - 1)"
                @keydown.down.native.prevent="highlight(highlighted + 1)"
                @keydown.enter.native="onEnter"
-               placeholder="Search text or item ID"
+               placeholder="Text or ID"
                :error="inputError"
                :state="inputState"
                :focus="true"
