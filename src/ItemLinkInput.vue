@@ -6,21 +6,23 @@
                @keydown.up.native.prevent="highlight(highlighted - 1)"
                @keydown.down.native.prevent="highlight(highlighted + 1)"
                @keydown.enter.native="onEnter"
-               placeholder="Text or ID"
+               :placeholder="placeholder"
+               :validate="validate"
                :error="inputError"
                :state="inputState"
                :focus="true"
-               :mono="true" />
+               :mono="!!itemType" />
     <ul v-if="!itemType" :class="$style.results">
       <li v-for="(result, i) in results"
           :class="resultClass(result, i)"
           :key="result.data.id"
           @click="select(i)"
           @mousemove="highlight(i)"
+          @mouseleave="highlighted = -1"
           >{{ result.data.title || result.data.text }}</li>
     </ul>
   </div>
-  <div v-if="loading && !itemType" :class="$style.loader">
+  <div v-if="loading && !itemType && linkOnly" :class="$style.loader">
     <div class="ball-pulse-sync">
       <div></div>
       <div></div>
@@ -46,7 +48,8 @@ import TopicContent from './TopicContent.vue';
 
 import { DEBOUNCE_DELAY_MS } from './constants';
 
-const ERROR_MSG = 'Item not found.';
+// All IDs only use lowercase letters, numbers, and dashes.
+const ANY_ID_REGEX = /^[0-9a-z-]+$/;
 
 export default {
   components: {
@@ -56,17 +59,17 @@ export default {
     TopicContent,
   },
   props: {
-    value: {
-      type: String,
-      required: true,
-    },
-    allowTopic: Boolean,
-    allowClaim: Boolean,
-    allowSource: Boolean,
+    value: { type: String, required: true },
+    allowTopic: { type: Boolean, default: false },
+    allowClaim: { type: Boolean, default: false },
+    allowSource: { type: Boolean, default: false },
+    linkOnly: { type: Boolean, default: true },
+    // DwdInput passthrough options.
+    placeholder: { type: String, default: 'Text or ID' },
+    validate: { type: Function, default: null },
   },
   data: () => ({
     loading: false,
-    inputError: '',
     highlighted: 0,
     items: [],
     index: null,
@@ -103,14 +106,25 @@ export default {
     hasResults: function () {
       return this.results.length > 0;
     },
+    inputError: function () {
+      if (this.value && !this.itemType) {
+        if (this.loading) {
+          return 'Loading...';
+        } else if (this.linkOnly) {
+          return 'Item not found.';
+        }
+      }
+      return '';
+    },
     inputState: function () {
       if (this.value && !this.hasResults) {
         if (this.itemType) {
           return DwdInput.SUCCESS;
         } else if (this.loading) {
           return DwdInput.WARNING;
+        } else if (this.linkOnly) {
+          return DwdInput.ERROR;
         }
-        return DwdInput.ERROR;
       }
       return DwdInput.NORMAL;
     },
@@ -130,22 +144,18 @@ export default {
     onEnter: function (e) {
       if (!this.itemType && this.hasResults) {
         this.select(this.highlighted);
-        e.stopPropagation();
+        if (this.linkOnly) {
+          e.stopPropagation();
+        }
       }
     },
-    makeLoader: function (newValue) {
+    makeLoader: function () {
       return {
         setLoading: (loading) => {
-          if (this.value === newValue) {
-            this.loading = loading;
-            this.inputError = loading ? 'Loading...' : '';
-          }
+          this.loading = loading;
         },
         setError: () => {
-          if (this.value === newValue) {
-            this.loading = false;
-            this.inputError = ERROR_MSG;
-          }
+          this.loading = false;
         },
       };
     },
@@ -189,19 +199,18 @@ export default {
   watch: {
     value: debounce(function () {
       /* eslint no-invalid-this: "off" */
-      this.highlighted = 0;
+      this.highlighted = this.linkOnly ? 0 : -1;
       this.loading = false;
-      this.inputError = '';
-      const newValue = this.value;
+
+      if (!ANY_ID_REGEX.test(this.value)) {
+        // Don't bother going to the server if it can't be an ID.
+        return;
+      }
 
       if (this.value && !this.itemType) {
         this.$store.dispatch('getItem', {
           id: this.value,
-          loader: this.makeLoader(this.value),
-        }).then(() => {
-          if (this.value === newValue && !this.itemType) {
-            this.inputError = ERROR_MSG;
-          }
+          loader: this.makeLoader(),
         }).catch(() => {});
       }
     }, DEBOUNCE_DELAY_MS),

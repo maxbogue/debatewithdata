@@ -1,24 +1,20 @@
 <template>
 <dwd-modal :show="show" @close="close" @cancel="cancel">
   <div class="point" :class="isFor | toSideString">
-    <item-link-input v-if="id"
-                     class="bubble"
-                     v-model="input"
-                     allow-claim
-                     allow-source
-                     @itemType="updateIdType" />
-    <source-edit-content v-else-if="isUrl"
+    <source-edit-content v-if="isUrl"
                          :source="point.source"
                          @update="updateNewSource" />
     <div v-else class="bubble">
       <label v-if="!point.type" class="hint">
         Add a point {{ isFor | toSideString }} the claim.
       </label>
-      <dwd-input v-model="input"
-                 ref="input"
-                 placeholder="Text, URL, or 12-letter ID"
-                 :focus="true"
-                 :validate="validate" />
+      <item-link-input v-model="input"
+                       allow-claim
+                       allow-source
+                       placeholder="Text, URL, or ID"
+                       :validate="validate"
+                       :link-only="false"
+                       @itemType="updateIdType" />
       <dwd-flag v-if="isSubClaim && point.flag" :flag="point.flag" />
     </div>
     <div v-if="point.type" class="info">
@@ -64,22 +60,10 @@ export default {
     SourceEditContent,
   },
   props: {
-    show: {
-      type: Boolean,
-      required: true,
-    },
-    point: {
-      type: Object,
-      required: true,
-    },
-    isFor: {
-      type: Boolean,
-      required: true,
-    },
-    isSubPoint: {
-      type: Boolean,
-      default: false,
-    },
+    show: { type: Boolean, required: true },
+    point: { type: Object, required: true },
+    isFor: { type: Boolean, required: true },
+    isSubPoint: { type: Boolean, default: false },
   },
   data: () => ({
     oldPoint: null,

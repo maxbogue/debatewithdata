@@ -3,10 +3,9 @@
   <textarea rows="1"
             autocomplete="off"
             ref="input"
-            :value="value"
+            v-model="displayValue"
             :placeholder="placeholder"
             :class="inputClasses"
-            @input="emit($event.target.value.trim())"
             @invalid="maskError = false"
             @keydown.enter.prevent></textarea>
   <div v-if="showError"
@@ -30,29 +29,34 @@ const SUCCESS = 'success';
 export default {
   NORMAL, ERROR, WARNING, SUCCESS,
   props: {
-    value: {
-      type: String,
-      required: true,
-      default: '',
-    },
-    placeholder: String,
+    value: { type: String, required: true },
+    placeholder: { type: String, default: '' },
     // Error message to show for the input.
-    error: String,
+    error: { type: String, default: '' },
     // Alternative to |error|; performs input validation.
-    validate: Function,
+    validate: { type: Function, default: null },
     // Allows overriding the state of the input. If set, an error will only be
     // shown if state is ERROR. WARNING and SUCCESS will pass styling on to the
     // input.
-    state: String,
-    // Focuses the input event whenever set to true.
-    focus: Boolean,
+    state: { type: String, default: '' },
+    // Focuses the input box whenever set to true.
+    focus: { type: Boolean, default: false },
     // Makes the input text a monospaced font.
-    mono: Boolean,
+    mono: { type: Boolean, default: false },
   },
   data: function () {
-    return { maskError: !this.value };
+    return {
+      // Used to make sure whitespace isn't stripped while the user is typing,
+      // since we don't want to update value itself with anything untrimmed.
+      displayValue: this.value,
+      // Used to hide errors for an initial empty value.
+      maskError: !this.value,
+    };
   },
   computed: {
+    trimmedValue: function () {
+      return this.displayValue.trim();
+    },
     innerError: function () {
       if (this.error) {
         return this.error;
@@ -93,19 +97,22 @@ export default {
       return classes;
     },
   },
-  methods: {
-    emit: function (input) {
-      this.$emit('input', String(input));
-    },
-  },
   watch: {
     value: function () {
+      if (this.value !== this.trimmedValue) {
+        this.displayValue = this.value;
+      }
       if (this.value) {
         this.maskError = false;
       }
       this.$refs.input.style.height = 'auto';
       if (this.$refs.input.scrollHeight > 0) {
         this.$refs.input.style.height = this.$refs.input.scrollHeight + 'px';
+      }
+    },
+    trimmedValue: function () {
+      if (this.trimmedValue !== this.value) {
+        this.$emit('input', this.trimmedValue);
       }
     },
     innerError: function () {
