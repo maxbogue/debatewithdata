@@ -2,8 +2,8 @@
 <dwd-modal :show="show" @close="close" @cancel="cancel">
   <div class="claim">
     <item-link-input class="bubble"
-                     :id.sync="id"
-                     :allow-claim="true"
+                     v-model="id"
+                     allow-claim
                      @itemType="updateIsValid" />
     <div class="info">
       <button type="submit"

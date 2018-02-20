@@ -2,8 +2,8 @@
 <dwd-modal :show="show" @close="close" @cancel="cancel">
   <div class="topic">
     <item-link-input class="bubble"
-                     :id.sync="id"
-                     :allow-topic="true"
+                     v-model="id"
+                     allow-topic
                      @itemType="updateIsValid" />
     <div class="info">
       <button type="submit"

@@ -3,9 +3,9 @@
   <div class="point" :class="isFor | toSideString">
     <item-link-input v-if="id"
                      class="bubble"
-                     :id.sync="input"
-                     :allow-claim="true"
-                     :allow-source="true"
+                     v-model="input"
+                     allow-claim
+                     allow-source
                      @itemType="updateIdType" />
     <source-edit-content v-else-if="isUrl"
                          :source="point.source"

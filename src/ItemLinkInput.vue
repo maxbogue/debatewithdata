@@ -1,13 +1,26 @@
 <template>
 <div :class="$style.input">
-  <dwd-input :value="id"
-             @input="(val) => $emit('update:id', val)"
-             placeholder="Item ID"
-             :error="inputError"
-             :state="inputState"
-             :focus="true"
-             :mono="true" />
-  <div v-if="loading" :class="$style.loader">
+  <div>
+    <dwd-input :value="value"
+               @input="(val) => $emit('input', val)"
+               @keydown.up.native.prevent="highlight(highlighted - 1)"
+               @keydown.down.native.prevent="highlight(highlighted + 1)"
+               @keydown.enter.native="onEnter"
+               placeholder="Search text or item ID"
+               :error="inputError"
+               :state="inputState"
+               :focus="true"
+               :mono="true" />
+    <ul v-if="!itemType" :class="$style.results">
+      <li v-for="(result, i) in results"
+          :class="resultClass(result, i)"
+          :key="result.data.id"
+          @click="select(i)"
+          @mousemove="highlight(i)"
+          >{{ result.data.title || result.data.text }}</li>
+    </ul>
+  </div>
+  <div v-if="loading && !itemType" :class="$style.loader">
     <div class="ball-pulse-sync">
       <div></div>
       <div></div>
@@ -22,7 +35,9 @@
 
 <script>
 import 'loaders.css/loaders.min.css';
+import elasticlunr from 'elasticlunr';
 import debounce from 'lodash/debounce';
+import forEach from 'lodash/forEach';
 
 import ClaimContent from './ClaimContent.vue';
 import DwdInput from './DwdInput.vue';
@@ -41,7 +56,7 @@ export default {
     TopicContent,
   },
   props: {
-    id: {
+    value: {
       type: String,
       required: true,
     },
@@ -52,19 +67,19 @@ export default {
   data: () => ({
     loading: false,
     inputError: '',
-    inputState: DwdInput.NORMAL,
-    // Flag to prevent overwriting original without a change.
-    initialized: false,
+    highlighted: 0,
+    items: [],
+    index: null,
   }),
   computed: {
     topic: function () {
-      return this.allowTopic ? this.lookupTopic(this.id) : null;
+      return this.allowTopic ? this.lookupTopic(this.value) : null;
     },
     claim: function () {
-      return this.allowClaim ? this.lookupClaim(this.id) : null;
+      return this.allowClaim ? this.lookupClaim(this.value) : null;
     },
     source: function () {
-      return this.allowSource ? this.lookupSource(this.id) : null;
+      return this.allowSource ? this.lookupSource(this.value) : null;
     },
     itemType: function () {
       if (this.topic) {
@@ -76,60 +91,147 @@ export default {
       }
       return '';
     },
+    results: function () {
+      if (!this.index || this.itemType) {
+        return [];
+      }
+      return this.index.search(this.value, {
+        bool: 'AND',
+        expand: true,
+      }).slice(0, 5).map(this.resultToItem);
+    },
+    hasResults: function () {
+      return this.results.length > 0;
+    },
+    inputState: function () {
+      if (this.value && !this.hasResults) {
+        if (this.itemType) {
+          return DwdInput.SUCCESS;
+        } else if (this.loading) {
+          return DwdInput.WARNING;
+        }
+        return DwdInput.ERROR;
+      }
+      return DwdInput.NORMAL;
+    },
   },
   methods: {
-    checkItemType: function () {
-      if (this.itemType) {
-        this.inputState = DwdInput.SUCCESS;
+    highlight: function (i) {
+      if (this.hasResults) {
+        this.highlighted = (i + this.results.length) % this.results.length;
       }
-      this.$emit('itemType', this.itemType);
     },
-    makeLoader: function (newId) {
+    select: function (i) {
+      let result = this.results[i];
+      if (result) {
+        this.$emit('input', result.data.id);
+      }
+    },
+    onEnter: function (e) {
+      if (!this.itemType && this.hasResults) {
+        this.select(this.highlighted);
+        e.stopPropagation();
+      }
+    },
+    makeLoader: function (newValue) {
       return {
         setLoading: (loading) => {
-          if (this.id === newId) {
+          if (this.value === newValue) {
             this.loading = loading;
             this.inputError = loading ? 'Loading...' : '';
           }
         },
         setError: () => {
-          if (this.id === newId) {
+          if (this.value === newValue) {
             this.loading = false;
             this.inputError = ERROR_MSG;
-            this.inputState = DwdInput.ERROR;
           }
         },
       };
     },
+    updateIndex: function (items) {
+      forEach(items, (item) => {
+        this.index.updateDoc(item);
+      });
+    },
+    resultToItem: function (result) {
+      let claim = this.lookupClaim(result.ref);
+      if (claim) {
+        return {
+          type: 'claim',
+          data: claim,
+        };
+      }
+      let source = this.lookupSource(result.ref);
+      if (source) {
+        return {
+          type: 'source',
+          data: source,
+        };
+      }
+      let topic = this.lookupTopic(result.ref);
+      if (topic) {
+        return {
+          type: 'topic',
+          data: topic,
+        };
+      }
+      console.warn('Broken item ref in index: ' + result.ref);
+      return null;
+    },
+    resultClass: function (result, i) {
+      return [
+        this.$style[result.type],
+        { [this.$style.highlighted]: i === this.highlighted },
+      ];
+    },
   },
   watch: {
-    id: debounce(function () {
+    value: debounce(function () {
       /* eslint no-invalid-this: "off" */
+      this.highlighted = 0;
       this.loading = false;
       this.inputError = '';
-      this.inputState = DwdInput.NORMAL;
-      const newId = this.id;
+      const newValue = this.value;
 
-      if (this.id && !this.itemType) {
-        this.inputState = DwdInput.WARNING;
+      if (this.value && !this.itemType) {
         this.$store.dispatch('getItem', {
-          id: this.id,
-          loader: this.makeLoader(this.id),
+          id: this.value,
+          loader: this.makeLoader(this.value),
         }).then(() => {
-          if (this.id === newId && !this.itemType) {
+          if (this.value === newValue && !this.itemType) {
             this.inputError = ERROR_MSG;
-            this.inputState = DwdInput.ERROR;
           }
         }).catch(() => {});
-      } else if (this.id) {
-        this.inputState = DwdInput.SUCCESS;
       }
     }, DEBOUNCE_DELAY_MS),
     itemType: function () {
-      this.checkItemType();
+      this.$emit('itemType', this.itemType);
     },
   },
   mountedTriggersWatchers: true,
+  mounted: function () {
+    this.index = elasticlunr(function () {
+      /* eslint no-invalid-this: "off" */
+      this.addField('title');
+      this.addField('text');
+    });
+    if (this.allowClaim) {
+      this.$store.dispatch('getClaims', {}).then(() => {
+        this.updateIndex(this.$store.state.claims);
+      });
+    }
+    if (this.allowSource) {
+      this.$store.dispatch('getSources', {}).then(() => {
+        this.updateIndex(this.$store.state.sources);
+      });
+    }
+    if (this.allowTopic) {
+      this.$store.dispatch('getTopics', {}).then(() => {
+        this.updateIndex(this.$store.state.topics);
+      });
+    }
+  },
 };
 </script>
 
@@ -152,4 +254,38 @@ export default {
   > div > div
     background-color: $loader-color
     border: none
+
+ul.results
+  list-style: none
+  margin-top: 0
+  padding: 0
+
+  li
+    background-color: white;
+    border-style: solid
+    border-width: 0 1px 1px 1px
+    cursor: default
+    font-size: 14px;
+    padding: 8px;
+
+    &:not(:first-child)
+      border-top: none
+
+    &.claim
+      border-color: $blue-accent
+
+      &.highlighted
+        background-color: $blue-accent
+
+    &.source
+      border-color: $green-accent
+
+      &.highlighted
+        background-color: $green-accent
+
+    &.topic
+      border-color: $pink-accent
+
+      &.highlighted
+        background-color: $pink-accent
 </style>
