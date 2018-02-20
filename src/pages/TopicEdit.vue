@@ -94,7 +94,7 @@ export default {
     TopicRevContent,
   },
   data: () => ({
-    newTopicPartial: undefined,
+    newTopicPartial: null,
     subTopicIds: [],
     claimIds: [],
     showModal: false,
@@ -120,6 +120,14 @@ export default {
     needsData: function () {
       return this.id && !this.topic;
     },
+  },
+  watch: {
+    id: function () {
+      this.checkLoaded();
+    },
+  },
+  mounted: function () {
+    this.checkLoaded();
   },
   methods: {
     addSubTopicId: function (subTopicId) {
@@ -191,14 +199,6 @@ export default {
         this.initialize();
       }
     },
-  },
-  watch: {
-    id: function () {
-      this.checkLoaded();
-    },
-  },
-  mounted: function () {
-    this.checkLoaded();
   },
 };
 </script>

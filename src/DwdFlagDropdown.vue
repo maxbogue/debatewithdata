@@ -16,10 +16,7 @@ import { FlagData } from '../common/flag';
 
 export default {
   props: {
-    value: {
-      type: String,
-      required: false,
-    },
+    value: { type: String, required: true },
   },
   data: () => ({
     showFlags: false,

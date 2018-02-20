@@ -23,14 +23,8 @@ export default {
     SourceContent,
   },
   props: {
-    point: {
-      type: Object,
-      required: true,
-    },
-    trail: {
-      type: Array,
-      default: () => [],
-    },
+    point: { type: Object, required: true },
+    trail: { type: Array, default: null },
   },
   computed: {
     claim: function () {

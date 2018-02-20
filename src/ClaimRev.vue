@@ -39,18 +39,9 @@ export default {
     PointRev,
   },
   props: {
-    claimId: {
-      type: String,
-      required: true,
-    },
-    revId: {
-      type: String,
-      required: true,
-    },
-    data: {
-      type: Object,
-      required: true,
-    },
+    claimId: { type: String, required: true },
+    revId: { type: String, required: true },
+    data: { type: Object, required: true },
   },
   computed: {
     revIndex: function () {

@@ -48,22 +48,10 @@ export default {
     PointContent,
   },
   props: {
-    point: {
-      type: Object,
-      required: true,
-    },
-    isFor: {
-      type: Boolean,
-      required: true,
-    },
-    trail: {
-      type: Array,
-      required: false,
-    },
-    isSubPoint: {
-      type: Boolean,
-      default: false,
-    },
+    point: { type: Object, required: true },
+    isFor: { type: Boolean, required: true },
+    trail: { type: Array, default: null },
+    isSubPoint: { type: Boolean, default: false },
   },
   data: () => ({
     showComments: false,

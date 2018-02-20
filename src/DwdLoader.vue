@@ -19,10 +19,7 @@ import 'loaders.css/loaders.min.css';
 
 export default {
   props: {
-    fill: {
-      type: Boolean,
-      default: false,
-    },
+    fill: { type: Boolean, default: false },
   },
   data: () => ({
     loading: false,

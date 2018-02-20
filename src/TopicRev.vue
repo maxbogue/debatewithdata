@@ -37,18 +37,9 @@ export default {
     TopicRevContent,
   },
   props: {
-    topicId: {
-      type: String,
-      required: true,
-    },
-    revId: {
-      type: String,
-      required: true,
-    },
-    data: {
-      type: Object,
-      required: true,
-    },
+    topicId: { type: String, required: true },
+    revId: { type: String, required: true },
+    data: { type: Object, required: true },
   },
   computed: {
     revIndex: function () {

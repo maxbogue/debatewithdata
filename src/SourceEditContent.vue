@@ -76,7 +76,7 @@ export default {
     DwdInput,
   },
   props: {
-    source: Object,
+    source: { type: Object, default: null },
   },
   data: () => ({
     text: '',
@@ -114,6 +114,17 @@ export default {
       return source;
     },
   },
+  watch: {
+    source: function () {
+      this.initialize();
+    },
+    newSource: function () {
+      this.$emit('update', this.newSource);
+    },
+  },
+  mounted: function () {
+    this.initialize();
+  },
   methods: {
     typeClass: function (type) {
       return {
@@ -132,17 +143,6 @@ export default {
         this.firstHand = this.source.firstHand;
       }
     },
-  },
-  watch: {
-    source: function () {
-      this.initialize();
-    },
-    newSource: function () {
-      this.$emit('update', this.newSource);
-    },
-  },
-  mounted: function () {
-    this.initialize();
   },
 };
 </script>

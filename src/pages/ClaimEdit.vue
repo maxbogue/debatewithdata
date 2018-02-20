@@ -122,7 +122,7 @@ export default {
   },
   data: () => ({
     showModal: false,
-    newClaimPartial: undefined,
+    newClaimPartial: null,
     points: [[], []],
   }),
   computed: {
@@ -138,6 +138,14 @@ export default {
     zippedPoints: function () {
       return rotateWithIndexes(this.points);
     },
+  },
+  watch: {
+    id: function () {
+      this.checkLoaded();
+    },
+  },
+  mounted: function () {
+    this.checkLoaded();
   },
   methods: {
     addPoint: function (si) {
@@ -202,14 +210,6 @@ export default {
         this.initialize();
       }
     },
-  },
-  watch: {
-    id: function () {
-      this.checkLoaded();
-    },
-  },
-  mounted: function () {
-    this.checkLoaded();
   },
 };
 </script>

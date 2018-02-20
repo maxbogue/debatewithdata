@@ -129,6 +129,51 @@ export default {
       return DwdInput.NORMAL;
     },
   },
+  watch: {
+    value: debounce(function () {
+      /* eslint no-invalid-this: "off" */
+      this.highlighted = this.linkOnly ? 0 : -1;
+      this.loading = false;
+
+      if (!ANY_ID_REGEX.test(this.value)) {
+        // Don't bother going to the server if it can't be an ID.
+        return;
+      }
+
+      if (this.value && !this.itemType) {
+        this.$store.dispatch('getItem', {
+          id: this.value,
+          loader: this.makeLoader(),
+        }).catch(() => {});
+      }
+    }, DEBOUNCE_DELAY_MS),
+    itemType: function () {
+      this.$emit('itemType', this.itemType);
+    },
+  },
+  mountedTriggersWatchers: true,
+  mounted: function () {
+    this.index = elasticlunr(function () {
+      /* eslint no-invalid-this: "off" */
+      this.addField('title');
+      this.addField('text');
+    });
+    if (this.allowClaim) {
+      this.$store.dispatch('getClaims', {}).then(() => {
+        this.updateIndex(this.$store.state.claims);
+      });
+    }
+    if (this.allowSource) {
+      this.$store.dispatch('getSources', {}).then(() => {
+        this.updateIndex(this.$store.state.sources);
+      });
+    }
+    if (this.allowTopic) {
+      this.$store.dispatch('getTopics', {}).then(() => {
+        this.updateIndex(this.$store.state.topics);
+      });
+    }
+  },
   methods: {
     highlight: function (i) {
       if (this.hasResults) {
@@ -195,51 +240,6 @@ export default {
         { [this.$style.highlighted]: i === this.highlighted },
       ];
     },
-  },
-  watch: {
-    value: debounce(function () {
-      /* eslint no-invalid-this: "off" */
-      this.highlighted = this.linkOnly ? 0 : -1;
-      this.loading = false;
-
-      if (!ANY_ID_REGEX.test(this.value)) {
-        // Don't bother going to the server if it can't be an ID.
-        return;
-      }
-
-      if (this.value && !this.itemType) {
-        this.$store.dispatch('getItem', {
-          id: this.value,
-          loader: this.makeLoader(),
-        }).catch(() => {});
-      }
-    }, DEBOUNCE_DELAY_MS),
-    itemType: function () {
-      this.$emit('itemType', this.itemType);
-    },
-  },
-  mountedTriggersWatchers: true,
-  mounted: function () {
-    this.index = elasticlunr(function () {
-      /* eslint no-invalid-this: "off" */
-      this.addField('title');
-      this.addField('text');
-    });
-    if (this.allowClaim) {
-      this.$store.dispatch('getClaims', {}).then(() => {
-        this.updateIndex(this.$store.state.claims);
-      });
-    }
-    if (this.allowSource) {
-      this.$store.dispatch('getSources', {}).then(() => {
-        this.updateIndex(this.$store.state.sources);
-      });
-    }
-    if (this.allowTopic) {
-      this.$store.dispatch('getTopics', {}).then(() => {
-        this.updateIndex(this.$store.state.topics);
-      });
-    }
   },
 };
 </script>

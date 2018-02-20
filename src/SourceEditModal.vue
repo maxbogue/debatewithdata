@@ -27,16 +27,11 @@ export default {
     SourceEditContent,
   },
   props: {
-    show: {
-      type: Boolean,
-      required: true,
-    },
-    source: {
-      type: Object,
-    },
+    show: { type: Boolean, required: true },
+    source: { type: Object, default: null },
   },
   data: () => ({
-    oldSource: undefined,
+    oldSource: null,
   }),
   computed: {
     id: function () {
@@ -45,6 +40,16 @@ export default {
       }
       return null;
     },
+  },
+  watch: {
+    show: function () {
+      if (this.show) {
+        this.initialize();
+      }
+    },
+  },
+  mounted: function () {
+    this.initialize();
   },
   methods: {
     update: function (newSource) {
@@ -62,16 +67,6 @@ export default {
         this.oldSource = clone(this.source);
       }
     },
-  },
-  watch: {
-    show: function () {
-      if (this.show) {
-        this.initialize();
-      }
-    },
-  },
-  mounted: function () {
-    this.initialize();
   },
 };
 </script>

@@ -68,8 +68,6 @@
               "max": 1,
               "allowFirstLine": true
             }
-        }],
-        "vue/order-in-components": ["off"],
-        "vue/require-default-prop": ["off"]
+        }]
     }
 }

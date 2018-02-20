@@ -90,6 +90,25 @@ export default {
       return this.point.type === 'subclaim' || this.point.type === 'text';
     },
   },
+  watch: {
+    input: function () {
+      this.idType = '';
+      if (this.initialized && !this.isUrl) {
+        this.update();
+      }
+    },
+    flag: function () {
+      this.update();
+    },
+    show: function () {
+      if (this.show) {
+        this.initialize();
+      }
+    },
+  },
+  mounted: function () {
+    this.initialize();
+  },
   methods: {
     close: function () {
       // If the point is empty, only emit it on close so it can be removed.
@@ -174,25 +193,6 @@ export default {
         break;
       default:
         validatePoint.text(input);
-      }
-    },
-  },
-  mounted: function () {
-    this.initialize();
-  },
-  watch: {
-    input: function () {
-      this.idType = '';
-      if (this.initialized && !this.isUrl) {
-        this.update();
-      }
-    },
-    flag: function () {
-      this.update();
-    },
-    show: function () {
-      if (this.show) {
-        this.initialize();
       }
     },
   },

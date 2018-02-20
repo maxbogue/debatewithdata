@@ -10,10 +10,7 @@ import { FlagData } from '../common/flag';
 
 export default {
   props: {
-    flag: {
-      type: String,
-      required: true,
-    },
+    flag: { type: String, required: true },
   },
   computed: {
     data: function () {

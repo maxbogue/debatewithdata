@@ -44,18 +44,13 @@ export default {
     DwdModal,
   },
   props: {
-    show: {
-      type: Boolean,
-      required: true,
-    },
-    claim: {
-      type: Object,
-    },
+    show: { type: Boolean, required: true },
+    claim: { type: Object, default: null },
   },
   data: () => ({
     text: '',
     flag: '',
-    oldClaim: undefined,
+    oldClaim: null,
     validate: validateClaim,
   }),
   computed: {
@@ -76,6 +71,19 @@ export default {
       return claim;
     },
   },
+  watch: {
+    show: function () {
+      if (this.show) {
+        this.initialize();
+      }
+    },
+    newClaim: function () {
+      this.$emit('update:claim', this.newClaim);
+    },
+  },
+  mounted: function () {
+    this.initialize();
+  },
   methods: {
     close: function () {
       this.$emit('update:show', false);
@@ -91,19 +99,6 @@ export default {
         this.flag = this.claim.flag || '';
       }
     },
-  },
-  watch: {
-    show: function () {
-      if (this.show) {
-        this.initialize();
-      }
-    },
-    newClaim: function () {
-      this.$emit('update:claim', this.newClaim);
-    },
-  },
-  mounted: function () {
-    this.initialize();
   },
 };
 </script>

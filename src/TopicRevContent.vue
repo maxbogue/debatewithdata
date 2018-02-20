@@ -15,8 +15,8 @@ const EMPTY_TOPIC = {
 
 export default {
   props: {
-    curr: Object,
-    prev: Object,
+    curr: { type: Object, default: null },
+    prev: { type: Object, default: null },
   },
   computed: {
     safeCurr: function () {

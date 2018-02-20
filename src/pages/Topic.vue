@@ -94,6 +94,14 @@ export default {
       return sortByStars(map(this.topic.claimIds, this.lookupClaim));
     },
   },
+  watch: {
+    id: function () {
+      this.checkLoaded();
+    },
+  },
+  mounted: function () {
+    this.checkLoaded();
+  },
   methods: {
     checkLoaded: function () {
       if (!this.topic) {
@@ -103,14 +111,6 @@ export default {
         });
       }
     },
-  },
-  watch: {
-    id: function () {
-      this.checkLoaded();
-    },
-  },
-  mounted: function () {
-    this.checkLoaded();
   },
 };
 </script>

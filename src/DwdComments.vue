@@ -37,20 +37,27 @@ export default {
     DwdDrawer,
     DwdInput,
   },
-  props: {
-    url: {
-      type: String,
-      required: true,
-    },
-    show: {
-      type: Boolean,
-      required: true,
-    },
-    // Triggers an eager load the first time it flips to true.
-    hint: {
-      type: Boolean,
+  filters: {
+    timestamp: function (seconds) {
+      let date = new Date(seconds * 1000);
+      if (Date.now() - date < ONE_DAY_MS) {
+        return dateFormat(date, 'h:MMtt');
+      }
+      return dateFormat(date, 'yyyy-mm-dd');
     },
   },
+  props: {
+    url: { type: String, required: true },
+    show: { type: Boolean, required: true },
+    // Triggers an eager load the first time it flips to true.
+    hint: { type: Boolean, default: false },
+  },
+  data: () => ({
+    canLoad: true,
+    loaded: false,
+    comments: [],
+    newComment: '',
+  }),
   computed: {
     commentsUrl: function () {
       return this.url + '/comment';
@@ -59,12 +66,21 @@ export default {
       return this.$store.state.user;
     },
   },
-  data: () => ({
-    canLoad: true,
-    loaded: false,
-    comments: [],
-    newComment: '',
-  }),
+  watch: {
+    // Load the first time hint triggers or when shown after being hidden.
+    show: function () {
+      if (this.show) {
+        this.load();
+      } else {
+        this.canLoad = true;
+      }
+    },
+    hint: function () {
+      if (this.hint && !this.loaded) {
+        this.load();
+      }
+    },
+  },
   methods: {
     load: function () {
       if (!this.canLoad) {
@@ -96,30 +112,6 @@ export default {
           this.comments.splice(i, 1);
         }
       });
-    },
-  },
-  filters: {
-    timestamp: function (seconds) {
-      let date = new Date(seconds * 1000);
-      if (Date.now() - date < ONE_DAY_MS) {
-        return dateFormat(date, 'h:MMtt');
-      }
-      return dateFormat(date, 'yyyy-mm-dd');
-    },
-  },
-  watch: {
-    // Load the first time hint triggers or when shown after being hidden.
-    show: function () {
-      if (this.show) {
-        this.load();
-      } else {
-        this.canLoad = true;
-      }
-    },
-    hint: function () {
-      if (this.hint && !this.loaded) {
-        this.load();
-      }
     },
   },
 };

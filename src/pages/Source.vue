@@ -64,6 +64,14 @@ export default {
       return this.$route.query.trail.split(',');
     },
   },
+  watch: {
+    id: function () {
+      this.checkLoaded();
+    },
+  },
+  mounted: function () {
+    this.checkLoaded();
+  },
   methods: {
     checkLoaded: function () {
       if (!this.source) {
@@ -74,14 +82,6 @@ export default {
         });
       }
     },
-  },
-  watch: {
-    id: function () {
-      this.checkLoaded();
-    },
-  },
-  mounted: function () {
-    this.checkLoaded();
   },
 };
 </script>

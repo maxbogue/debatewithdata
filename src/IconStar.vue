@@ -14,14 +14,8 @@ import axios from 'axios';
 
 export default {
   props: {
-    star: {
-      type: Object,
-      required: true,
-    },
-    url: {
-      type: String,
-      required: true,
-    },
+    star: { type: Object, required: true },
+    url: { type: String, required: true },
   },
   computed: {
     user: function () {

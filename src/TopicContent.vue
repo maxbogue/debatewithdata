@@ -11,10 +11,7 @@
 <script>
 export default {
   props: {
-    topic: {
-      type: Object,
-      required: true,
-    },
+    topic: { type: Object, required: true },
   },
 };
 </script>

@@ -26,10 +26,7 @@ export default {
     ItemLinkInput,
   },
   props: {
-    show: {
-      type: Boolean,
-      required: true,
-    },
+    show: { type: Boolean, required: true },
   },
   data: () => ({
     id: '',

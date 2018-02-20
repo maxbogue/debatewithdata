@@ -24,23 +24,17 @@
 import dateFormat from 'dateformat';
 
 export default {
+  filters: {
+    timestamp: function (isoDate) {
+      let date = new Date(isoDate);
+      return dateFormat(date, 'yyyy-mm-dd HH:MM');
+    },
+  },
   props: {
-    itemType: {
-      type: String,
-      required: true,
-    },
-    itemId: {
-      type: String,
-      required: true,
-    },
-    revId: {
-      type: String,
-      required: true,
-    },
-    revs: {
-      type: Array,
-      required: true,
-    },
+    itemType: { type: String, required: true },
+    itemId: { type: String, required: true },
+    revId: { type: String, required: true },
+    revs: { type: Array, required: true },
   },
   computed: {
     revIndex: function () {
@@ -63,12 +57,6 @@ export default {
     },
     nextUrl: function () {
       return this.url + '/rev/' + this.next.id;
-    },
-  },
-  filters: {
-    timestamp: function (isoDate) {
-      let date = new Date(isoDate);
-      return dateFormat(date, 'yyyy-mm-dd HH:MM');
     },
   },
 };

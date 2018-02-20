@@ -55,6 +55,14 @@ export default {
       return this.id && !this.source;
     },
   },
+  watch: {
+    id: function () {
+      this.checkLoaded();
+    },
+  },
+  mounted: function () {
+    this.checkLoaded();
+  },
   methods: {
     commit: function () {
       let action = 'addSource';
@@ -95,14 +103,6 @@ export default {
         this.initialize();
       }
     },
-  },
-  watch: {
-    id: function () {
-      this.checkLoaded();
-    },
-  },
-  mounted: function () {
-    this.checkLoaded();
   },
 };
 </script>

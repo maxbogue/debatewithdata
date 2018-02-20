@@ -55,22 +55,15 @@ export default {
     DwdModal,
   },
   props: {
-    show: {
-      type: Boolean,
-      required: true,
-    },
-    topic: {
-      type: Object,
-    },
-    oldId: {
-      type: String,
-    },
+    show: { type: Boolean, required: true },
+    topic: { type: Object, default: null },
+    oldId: { type: String, default: '' },
   },
   data: () => ({
     id: '',
     title: '',
     text: '',
-    oldTopic: undefined,
+    oldTopic: null,
     validate: validateTopic,
   }),
   computed: {
@@ -83,22 +76,6 @@ export default {
         topic.id = this.id;
       }
       return topic;
-    },
-  },
-  methods: {
-    close: function () {
-      this.$emit('update:show', false);
-    },
-    cancel: function () {
-      this.close();
-      this.$emit('update:topic', this.oldTopic);
-    },
-    initialize: function () {
-      if (this.topic) {
-        this.oldTopic = clone(this.topic);
-        this.title = this.topic.title;
-        this.text = this.topic.text;
-      }
     },
   },
   watch: {
@@ -120,6 +97,22 @@ export default {
   },
   mounted: function () {
     this.initialize();
+  },
+  methods: {
+    close: function () {
+      this.$emit('update:show', false);
+    },
+    cancel: function () {
+      this.close();
+      this.$emit('update:topic', this.oldTopic);
+    },
+    initialize: function () {
+      if (this.topic) {
+        this.oldTopic = clone(this.topic);
+        this.title = this.topic.title;
+        this.text = this.topic.text;
+      }
+    },
   },
 };
 </script>

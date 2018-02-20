@@ -19,10 +19,7 @@ const MAX_HEIGHT = 300;
 
 export default {
   props: {
-    show: {
-      type: Boolean,
-      required: true,
-    },
+    show: { type: Boolean, required: true },
   },
   data: function () {
     return {
@@ -37,6 +34,15 @@ export default {
     },
     transform: function () {
       return 'translateY(' + this.translateY + ')';
+    },
+  },
+  watch: {
+    show: function (show) {
+      if (show) {
+        this.open();
+      } else {
+        this.close();
+      }
     },
   },
   methods: {
@@ -67,15 +73,6 @@ export default {
     },
     afterEnter: function () {
       this.height = MAX_HEIGHT;
-    },
-  },
-  watch: {
-    show: function (show) {
-      if (show) {
-        this.open();
-      } else {
-        this.close();
-      }
     },
   },
 };

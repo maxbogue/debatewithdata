@@ -48,17 +48,17 @@ export default {
     password: '',
     email: '',
   }),
+  mounted: function () {
+    if (this.$route.query.invite) {
+      this.invite = this.$route.query.invite;
+    }
+  },
   methods: {
     submit: function () {
       auth.register(this.invite, this.username, this.password, this.email,
           this.$refs.loader).then(() => {
         this.success = true;
       });
-    }
-  },
-  mounted: function () {
-    if (this.$route.query.invite) {
-      this.invite = this.$route.query.invite;
     }
   },
 };

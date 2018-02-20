@@ -30,10 +30,7 @@ export default {
     DwdInput,
   },
   props: {
-    id: {
-      type: String,
-      required: true,
-    },
+    id: { type: String, required: true },
   },
   data: () => ({
     input1: '',
@@ -53,35 +50,6 @@ export default {
       }
       return '';
     },
-  },
-  methods: {
-    makeLoader: function (newId) {
-      return {
-        setLoading: (loading) => {
-          if (this.id === newId) {
-            this.loading = loading;
-            this.error = '';
-          }
-        },
-        setError: (err) => {
-          if (this.id === newId) {
-            this.error = err;
-            this.loading = false;
-            this.inputClass = 'error';
-          }
-        },
-      };
-    },
-  },
-  mounted: function () {
-    this.input1 = this.id || '';
-    if (this.topic) {
-      this.inputClass = 'success';
-    }
-    this.$nextTick(() => {
-      // If this is done immediately, the watch functions get called.
-      this.initialized = true;
-    });
   },
   watch: {
     input1: function () {
@@ -109,6 +77,35 @@ export default {
         this.inputClass = 'success';
       }
     }, DEBOUNCE_DELAY_MS),
+  },
+  mounted: function () {
+    this.input1 = this.id || '';
+    if (this.topic) {
+      this.inputClass = 'success';
+    }
+    this.$nextTick(() => {
+      // If this is done immediately, the watch functions get called.
+      this.initialized = true;
+    });
+  },
+  methods: {
+    makeLoader: function (newId) {
+      return {
+        setLoading: (loading) => {
+          if (this.id === newId) {
+            this.loading = loading;
+            this.error = '';
+          }
+        },
+        setError: (err) => {
+          if (this.id === newId) {
+            this.error = err;
+            this.loading = false;
+            this.inputClass = 'error';
+          }
+        },
+      };
+    },
   },
 };
 </script>

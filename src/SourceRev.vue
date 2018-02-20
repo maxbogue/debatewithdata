@@ -12,18 +12,9 @@ export default {
     SourceRevContent,
   },
   props: {
-    sourceId: {
-      type: String,
-      required: true,
-    },
-    revId: {
-      type: String,
-      required: true,
-    },
-    data: {
-      type: Object,
-      required: true,
-    },
+    sourceId: { type: String, required: true },
+    revId: { type: String, required: true },
+    data: { type: Object, required: true },
   },
   computed: {
     revIndex: function () {

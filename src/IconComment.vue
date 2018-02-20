@@ -8,10 +8,7 @@
 <script>
 export default {
   props: {
-    count: {
-      type: Number,
-      required: true,
-    },
+    count: { type: Number, required: true },
   },
 };
 </script>

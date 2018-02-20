@@ -37,30 +37,12 @@ export default {
     PointDiff,
   },
   props: {
-    pointId: {
-      type: String,
-      required: true,
-    },
-    currId: {
-      type: String,
-      default: '',
-    },
-    prevId: {
-      type: String,
-      default: '',
-    },
-    pointRevs: {
-      type: Object,
-      required: true,
-    },
-    isFor: {
-      type: Boolean,
-      required: true,
-    },
-    isSubPoint: {
-      type: Boolean,
-      default: false,
-    },
+    pointId: { type: String, required: true, },
+    currId: { type: String, default: '' },
+    prevId: { type: String, default: '' },
+    pointRevs: { type: Object, required: true },
+    isFor: { type: Boolean, required: true },
+    isSubPoint: { type: Boolean, default: false },
   },
   data: () => ({
     showDrawer: false,

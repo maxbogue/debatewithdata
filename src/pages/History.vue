@@ -69,6 +69,12 @@ export default {
     TopicRev,
     DwdLoader,
   },
+  filters: {
+    timestamp: function (isoDate) {
+      let date = new Date(isoDate);
+      return dateFormat(date, 'yyyy-mm-dd HH:MM');
+    },
+  },
   data: () => ({
     data: null,
   }),
@@ -111,6 +117,14 @@ export default {
       return '/' + this.itemType + '/' + this.itemId;
     },
   },
+  watch: {
+    id: function () {
+      this.loadData();
+    },
+  },
+  mounted: function () {
+    this.loadData();
+  },
   methods: {
     revUrl: function (rev) {
       return '/' + this.itemType + '/' + this.itemId + '/rev/' + rev.id;
@@ -124,20 +138,6 @@ export default {
         this.data = res.data;
       });
     },
-  },
-  filters: {
-    timestamp: function (isoDate) {
-      let date = new Date(isoDate);
-      return dateFormat(date, 'yyyy-mm-dd HH:MM');
-    },
-  },
-  watch: {
-    id: function () {
-      this.loadData();
-    },
-  },
-  mounted: function () {
-    this.loadData();
   },
 };
 </script>

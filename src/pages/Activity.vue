@@ -26,15 +26,15 @@ export default {
   components: {
     DwdLoader,
   },
-  data: () => ({
-    activity: null,
-  }),
   filters: {
     timestamp: function (seconds) {
       let date = new Date(seconds * 1000);
       return dateFormat(date, 'yyyy-mm-dd HH:MM');
     },
   },
+  data: () => ({
+    activity: null,
+  }),
   mounted: function () {
     if (!this.activity) {
       let loader = this.$refs.loader;

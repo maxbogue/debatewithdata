@@ -27,14 +27,8 @@
 <script>
 export default {
   props: {
-    source: {
-      type: Object,
-      required: true,
-    },
-    trail: {
-      type: Array,
-      required: false,
-    },
+    source: { type: Object, required: true },
+    trail: { type: Array, default: null },
   },
   computed: {
     sourceHasContent: function () {

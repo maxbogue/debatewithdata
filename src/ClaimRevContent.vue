@@ -21,8 +21,8 @@ export default {
     DwdFlag,
   },
   props: {
-    curr: Object,
-    prev: Object,
+    curr: { type: Object, default: null },
+    prev: { type: Object, default: null },
   },
   computed: {
     safeCurr: function () {

@@ -19,14 +19,8 @@ export default {
     DwdFlag,
   },
   props: {
-    claim: {
-      type: Object,
-      required: true,
-    },
-    trail: {
-      type: Array,
-      required: false,
-    },
+    claim: { type: Object, required: true },
+    trail: { type: Array, default: null },
   },
 };
 </script>

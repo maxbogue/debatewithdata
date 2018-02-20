@@ -51,18 +51,9 @@ export default {
     PointEditModal,
   },
   props: {
-    point: {
-      type: Object,
-      required: true,
-    },
-    isFor: {
-      type: Boolean,
-      required: true,
-    },
-    isParentFor: {
-      type: Boolean,
-      default: undefined,
-    },
+    point: { type: Object, required: true },
+    isFor: { type: Boolean, required: true },
+    isParentFor: { type: Boolean, default: null },
   },
   data: () => ({
     oldPoint: null,
@@ -71,7 +62,7 @@ export default {
   }),
   computed: {
     isSubPoint: function () {
-      return this.isParentFor !== undefined;
+      return this.isParentFor !== null;
     },
     isSubClaim: function () {
       return this.point.type === 'subclaim';
@@ -88,6 +79,15 @@ export default {
         this.$options.filters.toSideString(this.isFor),
       ];
     },
+  },
+  mounted: function () {
+    this.oldPoint = clone(this.point);
+    if (this.point.points) {
+      this.subPoints = pointMapsToLists(this.point.points);
+    }
+    if (!this.point.type) {
+      this.showModal = true;
+    }
   },
   methods: {
     emitPoint: function (p) {
@@ -123,15 +123,6 @@ export default {
       this.subPoints[si].splice(pi, 1);
       this.updateSubClaim();
     },
-  },
-  mounted: function () {
-    this.oldPoint = clone(this.point);
-    if (this.point.points) {
-      this.subPoints = pointMapsToLists(this.point.points);
-    }
-    if (!this.point.type) {
-      this.showModal = true;
-    }
   },
 };
 </script>

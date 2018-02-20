@@ -20,12 +20,8 @@ export default {
     PointRevContent,
   },
   props: {
-    curr: {
-      type: Object,
-    },
-    prev: {
-      type: Object,
-    },
+    curr: { type: Object, default: null },
+    prev: { type: Object, default: null },
   },
   computed: {
     noChange: function () {

@@ -78,6 +78,11 @@ export default {
       return isFor;
     },
   },
+  watch: {
+    lastIsFor: function () {
+      this.$emit('lastIsFor', this.lastIsFor);
+    },
+  },
   methods: {
     findInside: function (points, id) {
       if (!points) {
@@ -107,11 +112,6 @@ export default {
     itemClass: function (isFor) {
       let color = isFor === null ? 'blue' : isFor ? 'purple' : 'amber';
       return ['bubble', color];
-    },
-  },
-  watch: {
-    lastIsFor: function () {
-      this.$emit('lastIsFor', this.lastIsFor);
     },
   },
 };

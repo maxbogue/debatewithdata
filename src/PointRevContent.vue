@@ -16,10 +16,7 @@ export default {
     SourceContent,
   },
   props: {
-    rev: {
-      type: Object,
-      required: true,
-    },
+    rev: { type: Object, required: true },
   },
   computed: {
     claim: function () {

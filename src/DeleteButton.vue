@@ -1,16 +1,13 @@
 <template>
-  <button type="button"
-          class="dwd-btn red-dark"
-          @click="click">{{ text }}</button>
+<button type="button"
+        class="dwd-btn red-dark"
+        @click="click">{{ text }}</button>
 </template>
 
 <script>
 export default {
   props: {
-    noun: {
-      type: String,
-      required: true,
-    },
+    noun: { type: String, required: true },
   },
   data: () => ({
     awaitingConfirmation: false,

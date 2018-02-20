@@ -5,10 +5,7 @@
 <script>
 export default {
   props: {
-    url: {
-      type: String,
-      required: true,
-    },
+    url: { type: String, required: true },
   },
 };
 </script>

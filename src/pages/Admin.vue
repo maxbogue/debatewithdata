@@ -48,18 +48,18 @@ export default {
       return sortBy(this.invites, (i) => -i.created);
     },
   },
+  mounted: function () {
+    let loader = this.$refs.loader;
+    axios.get('/api/admin/invite', { loader }).then((res) => {
+      this.invites = res.data;
+    });
+  },
   methods: {
     submit: function () {
       axios.post('/api/admin/invite', { note: this.note }).then((res) => {
         this.invites.push(res.data);
       });
     },
-  },
-  mounted: function () {
-    let loader = this.$refs.loader;
-    axios.get('/api/admin/invite', { loader }).then((res) => {
-      this.invites = res.data;
-    });
   },
 };
 </script>
