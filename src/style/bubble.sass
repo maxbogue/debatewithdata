@@ -7,20 +7,20 @@
   padding: $block-padding
   text-align: left
 
+  *:first-child
+    margin-top: 0
+
   > :not(:first-child)
     margin-top: 8px
 
   > h2:first-child,
   > h3:first-child
     font-weight: 500
-    margin: 0 0 8px
 
   ul
     margin: 0
-    padding-left: 16px
-
-  p
-    margin: 8px 0 0
+    // Add a little to keep the bullet out of the padding.
+    padding-left: ($block-padding + 2px)
 
 .block
   margin-top: $block-spacing
@@ -29,17 +29,19 @@
     padding: 0
 
 =t1($primary-color, $accent-color)
-  font-size: 20px
+  font-size: 1.25em
   margin-top: $block-spacing
 
   &.block
     background-color: $primary-color
     border-left: $accent-border-width solid $accent-color
-    padding: 20px
 
     @at-root a#{&}:hover, &.click:hover
       background-color: $accent-color
       text-decoration: none
+
+  &.block, > .bubble
+    padding: 1em
 
   &:not(.for):not(.against)
     border-left: $accent-border-width solid $accent-color

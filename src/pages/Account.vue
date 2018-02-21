@@ -33,6 +33,7 @@ export default {
 
   span
     font-weight: $font-weight-light
+    text-align: left
     width: 60%
 
   strong

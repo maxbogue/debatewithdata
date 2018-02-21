@@ -130,8 +130,7 @@ export default {
     },
   },
   watch: {
-    value: debounce(function () {
-      /* eslint no-invalid-this: "off" */
+    value: function () {
       this.highlighted = this.linkOnly ? 0 : -1;
       this.loading = false;
 
@@ -140,13 +139,8 @@ export default {
         return;
       }
 
-      if (this.value && !this.itemType) {
-        this.$store.dispatch('getItem', {
-          id: this.value,
-          loader: this.makeLoader(),
-        }).catch(() => {});
-      }
-    }, DEBOUNCE_DELAY_MS),
+      this.getItem();
+    },
     itemType: function () {
       this.$emit('itemType', this.itemType);
     },
@@ -194,6 +188,15 @@ export default {
         }
       }
     },
+    getItem: debounce(function () {
+      /* eslint no-invalid-this: "off" */
+      if (this.value && !this.itemType) {
+        this.$store.dispatch('getItem', {
+          id: this.value,
+          loader: this.makeLoader(),
+        }).catch(() => {});
+      }
+    }, DEBOUNCE_DELAY_MS),
     makeLoader: function () {
       return {
         setLoading: (loading) => {

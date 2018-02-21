@@ -68,17 +68,16 @@
 
   <div v-for="[flag, data] in flags" :key="flag">
     <h3 :id="flag">
-      <div>
-        <span>{{ data.name }}</span>
-        <a :href="'#' + flag"
-           :class="$style.anchor"
-           class="fas fa-link"></a>
-      </div>
+      <span>{{ data.name }}</span>
+      <a :href="'#' + flag"
+         :class="$style.anchor"
+         class="fas fa-link"></a>
     </h3>
     <p :class="$style.links">
-    <span v-for="[title, url] in data.links" :key="title">
-      <a :href="url" target="_blank">{{ title }}</a>
-    </span>
+      <a v-for="[title, url] in data.links"
+         :key="title"
+         :href="url"
+         target="_blank">{{ title }}</a>
     </p>
     <p v-html="data.desc"></p>
   </div>
@@ -117,9 +116,9 @@ h3:hover .anchor
   visibility: visible
 
 .links
-  font-size: 12px
+  font-size: 0.75em
   font-weight: 400
-  margin-top: -10px
+  margin: 0
 
   > :not(:first-child)::before
     content: ' | '
