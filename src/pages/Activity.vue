@@ -1,18 +1,16 @@
 <template>
-<div class="narrow">
+<div>
   <h1>Activity</h1>
   <dwd-loader ref="loader"></dwd-loader>
-  <table v-if="activity" :class="$style.activity" class="mono">
-    <tr v-for="item in activity" :key="item.timestamp + item.id">
-      <td :class="$style.timestamp">{{ item.timestamp | timestamp }}</td>
-      <td :class="$style.username">{{ item.username }}</td>
-      <td>{{ item.action }}</td>
-      <td>
-        <a :href="'/' + item.type + '/' + item.id"
-           :class="$style.link">{{ item.type }} {{ item.id }}</a>
-      </td>
-    </tr>
-  </table>
+  <ul v-if="activity" :class="$style.activity" class="mono">
+    <li v-for="item in activity" :key="item.timestamp + item.id">
+      <span>{{ item.timestamp | timestamp }}</span>
+      <strong>{{ item.username }}</strong>
+      <span>{{ item.action }}</span>
+      <strong><a :href="'/' + item.type + '/' + item.id"
+                 >{{ item.type }} {{ item.id }}</a></strong>
+    </li>
+  </ul>
 </div>
 </template>
 
@@ -50,17 +48,11 @@ export default {
 @import "../style/constants"
 
 .activity
+  font-size: 0.75em
+  list-style: none
+  padding: 0
   width: 100%
 
-  td
-    padding: 0 10px
-
-    &:first-child
-      padding-left: 0
-
-.timestamp
-  color: $text-dark-accent
-
-.username, .link
-  font-weight: $font-weight-bold
+  a:hover
+    text-decoration: underline
 </style>
