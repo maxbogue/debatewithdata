@@ -22,6 +22,13 @@
     </div>
     <template v-if="$store.state.singleColumn">
       <transition-group tag="div" :move-class="$style.pointsMove">
+        <div class="block no-pad"
+             :class="$style.pointHeader"
+             key="side-text">
+          <span :class="$style.for">For</span>
+          <span> // </span>
+          <span :class="$style.against">Against</span>
+        </div>
         <point-block v-for="[point, side] in zippedPoints"
                      :point="point"
                      :is-for="claimIsFor === !side"
@@ -35,6 +42,12 @@
                         class="dwd-col"
                         :move-class="$style.pointsMove"
                         :key="'side-' + side">
+        <div class="block no-pad"
+             :class="$style.pointHeader"
+             :key="'side-text-' + side">
+          <span :class="!side ? $style.for : $style.against"
+                >{{ !side ? 'For' : 'Against' }}</span>
+        </div>
         <point-block v-for="point in sidePoints"
                      :point="point"
                      :is-for="claimIsFor === !side"
@@ -129,6 +142,24 @@ export default {
 </script>
 
 <style lang="sass" module>
+@import "../style/constants"
+
 .pointsMove
   transition: transform 1s
+
+.pointHeader
+  display: flex
+  font-size: 1.25em
+  text-align: center
+
+  &:global(.block) > span
+    margin-top: 0
+
+  .for
+    color: $purple-dark-primary
+    flex: 1
+
+  .against
+    color: $amber-dark-primary
+    flex: 1
 </style>
