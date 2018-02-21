@@ -60,6 +60,7 @@
         "quotes": ["error", "single"],
         "semi": ["error", "always"],
 
+        "vue/html-closing-bracket-spacing": ["error"],
         "vue/html-indent": ["off"],
         "vue/html-self-closing": ["off"],
         "vue/max-attributes-per-line": ["error", {
