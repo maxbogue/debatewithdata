@@ -7,15 +7,18 @@
   padding: $block-padding
   text-align: left
 
-  *:first-child
-    margin-top: 0
+  h1, h2, h3
+    line-height: 1.2
+    margin-bottom: 1rem
+
+    &:first-child
+      margin-top: 0
+
+    &:not(:first-child)
+      margin-top: 1em
 
   > :not(:first-child)
     margin-top: 8px
-
-  > h2:first-child,
-  > h3:first-child
-    font-weight: 500
 
   ul
     margin: 0

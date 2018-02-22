@@ -1,20 +1,16 @@
 <template>
-<div>
-  <div class="block no-pad center">
-    <h3 class="mono">{{ curr.id }}</h3>
-    <div>
-        <strong>by</strong> <span>{{ curr.username }}</span>
-    </div>
-    <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
-  </div>
-  <div class="block no-pad center" :class="$style.nav">
-    <router-link v-if="prev"
-                 :to="prevUrl"
+<div class="block no-pad center">
+  <h3 class="mono">{{ curr.id }}</h3>
+  <div><strong>by</strong> {{ curr.username }}</div>
+  <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
+  <div :class="$style.nav">
+    <router-link :to="prevUrl"
+                 :class="{ [$style.hidden]: !prevUrl }"
                  class="dwd-btn grey">Prev</router-link>
     <router-link :to="url + '/history'"
                  class="dwd-btn grey">History</router-link>
-    <router-link v-if="next"
-                 :to="nextUrl"
+    <router-link :to="nextUrl"
+                 :class="{ [$style.hidden]: !nextUrl }"
                  class="dwd-btn grey">Next</router-link>
   </div>
 </div>
@@ -53,10 +49,10 @@ export default {
       return '/' + this.itemType + '/' + this.itemId;
     },
     prevUrl: function () {
-      return this.url + '/rev/' + this.prev.id;
+      return this.prev ? this.url + '/rev/' + this.prev.id : '';
     },
     nextUrl: function () {
-      return this.url + '/rev/' + this.next.id;
+      return this.next ? this.url + '/rev/' + this.next.id : '';
     },
   },
 };
@@ -65,15 +61,14 @@ export default {
 <style lang="sass" module>
 @import "style/constants"
 
+.hidden
+  visibility: hidden
+
 .nav
   align-items: center
   display: flex
   justify-content: center
-  padding: 8px 0 0 0
 
   a
     width: 7em;
-
-    &:not(:first-child)
-      margin-left: $accent-border-width
 </style>
