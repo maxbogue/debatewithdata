@@ -23,12 +23,10 @@
 </template>
 
 <script>
-import partition from 'lodash/partition';
-
 import './style/point.sass';
 import DwdDrawer from './DwdDrawer.vue';
 import PointDiff from './PointDiff.vue';
-import { rotateWithIndexes } from './utils';
+import { diffPointRevs, rotateWithIndexes } from './utils';
 
 export default {
   name: 'PointRev',
@@ -64,33 +62,7 @@ export default {
       if (this.isSubPoint) {
         return [];
       }
-
-      let currHasPoints = this.curr && this.curr.points;
-      let prevHasPoints = this.prev && this.prev.points;
-      let pointRevs = [];
-
-      for (let i of [0, 1]) {
-        let currPoints = currHasPoints ? this.curr.points[i] : {};
-        let prevPoints = prevHasPoints ? this.prev.points[i] : {};
-
-        let inPrev = (id) => prevPoints[id];
-        let notInCurr = (id) => !currPoints[id];
-        let isModified = (id) => currPoints[id] === prevPoints[id];
-
-        let [inBoth, added] = partition(Object.keys(currPoints), inPrev);
-        let removed = Object.keys(prevPoints).filter(notInCurr);
-        let [modified, unmodified] = partition(inBoth, isModified);
-
-        added.sort();
-        removed.sort();
-        modified.sort();
-        unmodified.sort();
-
-        let pointIds = added.concat(removed, modified, unmodified);
-        let pointIdToRevs = (id) => [id, currPoints[id], prevPoints[id]];
-        pointRevs.push(pointIds.map(pointIdToRevs));
-      }
-      return rotateWithIndexes(pointRevs);
+      return rotateWithIndexes(diffPointRevs(this.curr, this.prev));
     },
     hasChangedSubPoints: function () {
       let isChanged = (val) => val[0][1] !== val[0][2];

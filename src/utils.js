@@ -6,6 +6,7 @@ import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import map from 'lodash/map';
 import md5 from 'md5';
+import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
 
 const textDiff = new Diff();
@@ -123,6 +124,61 @@ export function rotateWithIndexes(lists) {
     }
   }
   return retList;
+}
+
+// Takes two lists of IDs and an { id: item } map and computes the diff.
+// Returns [[item, diffClass]] where |diffClass| is '', 'ins', or 'del'.
+export function diffIdLists(newIds, oldIds, data) {
+  let inOld = (id) => oldIds.includes(id);
+  let notInNew = (id) => !newIds.includes(id);
+
+  let [inBoth, added] = partition(newIds, inOld);
+  let removed = filter(oldIds, notInNew);
+
+  added.sort();
+  removed.sort();
+  inBoth.sort();
+
+  let zipWith = (ids, v) => map(ids, (id) => [data[id], v]);
+  added = zipWith(added, 'ins');
+  removed = zipWith(removed, 'del');
+  inBoth = zipWith(inBoth, '');
+
+  return added.concat(removed, inBoth);
+}
+
+// Diffs two { id: rev } maps into [id, newRev, oldRev] sorted by added,
+// removed, modified, and unmodified.
+function diffRevs(newRevs, oldRevs) {
+  let inOld = (id) => oldRevs[id];
+  let notInNew = (id) => !newRevs[id];
+  let isModified = (id) => newRevs[id] === oldRevs[id];
+
+  let [inBoth, added] = partition(Object.keys(newRevs), inOld);
+  let removed = Object.keys(oldRevs).filter(notInNew);
+  let [modified, unmodified] = partition(inBoth, isModified);
+
+  added.sort();
+  removed.sort();
+  modified.sort();
+  unmodified.sort();
+
+  let ids = added.concat(removed, modified, unmodified);
+  return map(ids, (id) => [id, newRevs[id], oldRevs[id]]);
+}
+
+export function diffPointRevs(newItem, oldItem) {
+  let newHasPoints = newItem && newItem.points;
+  let oldHasPoints = oldItem && oldItem.points;
+  let pointRevs = [];
+
+  for (let i of [0, 1]) {
+    let newPoints = newHasPoints ? newItem.points[i] : {};
+    let oldPoints = oldHasPoints ? oldItem.points[i] : {};
+    pointRevs.push(diffRevs(newPoints, oldPoints));
+  }
+
+  return pointRevs;
 }
 
 export var DwdUtilsMixin = {

@@ -24,12 +24,9 @@
 </template>
 
 <script>
-import filter from 'lodash/filter';
-import map from 'lodash/map';
-import partition from 'lodash/partition';
-
 import ClaimContent from './ClaimContent.vue';
 import TopicRevContent from './TopicRevContent.vue';
+import { diffIdLists } from './utils';
 
 export default {
   components: {
@@ -54,44 +51,12 @@ export default {
     subTopics: function () {
       let currSubTopicIds = this.curr ? this.curr.subTopicIds : [];
       let prevSubTopicIds = this.prev ? this.prev.subTopicIds : [];
-
-      let inPrev = (id) => prevSubTopicIds.includes(id);
-      let notInCurr = (id) => !currSubTopicIds.includes(id);
-
-      let [inBoth, added] = partition(currSubTopicIds, inPrev);
-      let removed = filter(prevSubTopicIds, notInCurr);
-
-      added.sort();
-      removed.sort();
-      inBoth.sort();
-
-      let zipWith = (ids, v) => map(ids, (id) => [this.data.topics[id], v]);
-      added = zipWith(added, 'ins');
-      removed = zipWith(removed, 'del');
-      inBoth = zipWith(inBoth, '');
-
-      return added.concat(removed, inBoth);
+      return diffIdLists(currSubTopicIds, prevSubTopicIds, this.data.topics);
     },
     claims: function () {
       let currClaimIds = this.curr ? this.curr.claimIds : [];
       let prevClaimIds = this.prev ? this.prev.claimIds : [];
-
-      let inPrev = (id) => prevClaimIds.includes(id);
-      let notInCurr = (id) => !currClaimIds.includes(id);
-
-      let [inBoth, added] = partition(currClaimIds, inPrev);
-      let removed = filter(prevClaimIds, notInCurr);
-
-      added.sort();
-      removed.sort();
-      inBoth.sort();
-
-      let zipWith = (ids, v) => map(ids, (id) => [this.data.claims[id], v]);
-      added = zipWith(added, 'ins');
-      removed = zipWith(removed, 'del');
-      inBoth = zipWith(inBoth, '');
-
-      return added.concat(removed, inBoth);
+      return diffIdLists(currClaimIds, prevClaimIds, this.data.claims);
     },
   },
 };
