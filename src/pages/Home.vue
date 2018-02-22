@@ -1,7 +1,8 @@
 <template>
-<div :class="$style.home" class="center">
+<div class="center">
   <h1>DebateWithData</h1>
-  <h2>A crowdsourced reference for the world's discussions.</h2>
+  <h2 :class="$style.subTitle"
+      >A crowdsourced reference for the world's discussions.</h2>
   <hr />
   <h3>Have informed debates without writing your own research paper!</h3>
   <div class="block blue">
@@ -37,11 +38,7 @@
 </template>
 
 <style lang="sass" module>
-.home
-  h1
-    margin: 20px 0 8px
-
-  h2
-    font-weight: 400
-    margin: 8px 0
+.subTitle
+  font-weight: 300
+  margin: 0
 </style>
