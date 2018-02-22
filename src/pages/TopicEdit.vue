@@ -115,11 +115,13 @@ export default {
       return this.lookupTopic(this.id);
     },
     subTopics: function () {
-      return diffIdLists(this.subTopicIds, this.topic.subTopicIds,
+      let oldSubTopicIds = this.topic ? this.topic.subTopicIds : [];
+      return diffIdLists(this.subTopicIds, oldSubTopicIds,
           this.$store.state.topics);
     },
     claims: function () {
-      return diffIdLists(this.claimIds, this.topic.claimIds,
+      let oldClaimIds = this.topic ? this.topic.claimIds : [];
+      return diffIdLists(this.claimIds, oldClaimIds,
           this.$store.state.claims);
     },
     needsData: function () {

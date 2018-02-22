@@ -1,5 +1,5 @@
 <template>
-<div class="bubble">
+<div>
   <label for="url" class="hint">
     Link a source that provides data about the world.
   </label>

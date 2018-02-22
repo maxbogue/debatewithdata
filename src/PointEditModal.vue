@@ -2,6 +2,7 @@
 <dwd-modal :show="show" @close="close" @cancel="cancel">
   <div class="point" :class="isFor | toSideString">
     <source-edit-content v-if="isUrl"
+                         class="bubble"
                          :source="point.source"
                          @update="updateNewSource" />
     <div v-else class="bubble">

@@ -1,7 +1,9 @@
 <template>
 <dwd-modal :show="show" @close="close" @cancel="cancel">
   <div class="source">
-    <source-edit-content :source="source" @update="update" />
+    <source-edit-content class="bubble"
+                         :source="source"
+                         @update="update" />
     <div class="info">
       <div class="id mono">{{ id || 'new' }}</div>
       <button type="submit"

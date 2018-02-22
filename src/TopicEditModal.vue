@@ -1,34 +1,11 @@
 <template>
 <dwd-modal :show="show" @close="close" @cancel="cancel">
   <div class="topic">
-    <div class="bubble">
-      <label for="title" class="hint">
-        The title of this topic.
-      </label>
-      <dwd-input v-model="title"
-                 id="title"
-                 placeholder="title"
-                 :validate="validate.title"
-                 :focus="true" />
-      <template v-if="!oldId">
-        <label for="id" class="hint">
-          The ID shows up in the URL and cannot be changed.
-        </label>
-        <dwd-input v-model="id"
-                   id="id"
-                   class="mono"
-                   placeholder="id"
-                   :validate="validate.id" />
-      </template>
-      <label for="text" class="hint">
-        Describe this topic.
-      </label>
-      <dwd-input v-model="text"
-                 id="text"
-                 placeholder="description"
-                 :validate="validate.text" />
-    </div>
-    <div v-if="text" class="info">
+    <topic-edit-content class="bubble"
+                        :topic="topic"
+                        :old-id="oldId"
+                        @update="update" />
+    <div class="info">
       <div class="id mono">{{ oldId || 'new' }}</div>
       <button type="submit"
               class="dwd-btn pink-dark">Apply</button>
@@ -43,16 +20,14 @@
 
 <script>
 import clone from 'lodash/clone';
-import dashify from 'dashify';
 
-import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
-import { validateTopic } from '../common/validate';
+import TopicEditContent from './TopicEditContent.vue';
 
 export default {
   components: {
-    DwdInput,
     DwdModal,
+    TopicEditContent,
   },
   props: {
     show: { type: Boolean, required: true },
@@ -60,38 +35,12 @@ export default {
     oldId: { type: String, default: '' },
   },
   data: () => ({
-    id: '',
-    title: '',
-    text: '',
     oldTopic: null,
-    validate: validateTopic,
   }),
-  computed: {
-    newTopic: function () {
-      let topic = {
-        title: this.title,
-        text: this.text,
-      };
-      if (!this.oldId) {
-        topic.id = this.id;
-      }
-      return topic;
-    },
-  },
   watch: {
     show: function () {
       if (this.show) {
         this.initialize();
-      }
-    },
-    newTopic: function () {
-      this.$emit('update:topic', this.newTopic);
-    },
-    title: function (newTitle, oldTitle) {
-      let oldId = dashify(oldTitle);
-      let newId = dashify(newTitle);
-      if (!this.id || this.id === oldId) {
-        this.id = newId;
       }
     },
   },
@@ -99,6 +48,9 @@ export default {
     this.initialize();
   },
   methods: {
+    update: function (newTopic) {
+      this.$emit('update:topic', newTopic);
+    },
     close: function () {
       this.$emit('update:show', false);
     },
@@ -109,8 +61,6 @@ export default {
     initialize: function () {
       if (this.topic) {
         this.oldTopic = clone(this.topic);
-        this.title = this.topic.title;
-        this.text = this.topic.text;
       }
     },
   },
