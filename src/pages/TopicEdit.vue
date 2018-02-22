@@ -22,14 +22,16 @@
     </div>
     <topic-link-modal :show.sync="showSubTopicModal"
                       @update="addSubTopicId" />
-    <div v-for="(subTopic, i) in subTopics"
+    <div v-for="[subTopic, diffClass] in subTopics"
          class="topic"
          :key="subTopic.id">
-      <div class="bubble">{{ subTopic.title }}</div>
+      <div class="bubble">
+        <div :class="diffClass">{{ subTopic.title }}</div>
+      </div>
       <div class="info">
         <span class="id mono">{{ subTopic.id }}</span>
         <span class="delete click fas fa-trash-alt"
-              @click="subTopicIds.splice(i, 1)"></span>
+              @click="toggleDeleted(subTopicIds, subTopic.id)"></span>
       </div>
     </div>
     <h3>Key Claims</h3>
@@ -41,14 +43,16 @@
     </div>
     <claim-link-modal :show.sync="showClaimModal"
                       @update="addClaimId" />
-    <div v-for="(claim, i) in claims"
+    <div v-for="[claim, diffClass] in claims"
          class="claim"
          :key="claim.id">
-      <claim-content class="bubble" :claim="claim" />
+      <div class="bubble">
+        <claim-content :class="diffClass" :claim="claim" />
+      </div>
       <div class="info">
         <span class="id mono">{{ claim.id }}</span>
         <span class="delete click fas fa-trash-alt"
-              @click="claimIds.splice(i, 1)"></span>
+              @click="toggleDeleted(claimIds, claim.id)"></span>
       </div>
     </div>
     <div v-if="topic" class="block no-pad center">
@@ -69,7 +73,6 @@
 
 <script>
 import filter from 'lodash/filter';
-import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 
 import ClaimContent from '../ClaimContent.vue';
@@ -80,7 +83,7 @@ import FixedBottom from '../FixedBottom.vue';
 import TopicEditModal from '../TopicEditModal.vue';
 import TopicLinkModal from '../TopicLinkModal.vue';
 import TopicRevContent from '../TopicRevContent.vue';
-import { pipe, stableRandom, starCount, starred } from '../utils';
+import { diffIdLists, pipe, stableRandom, starCount, starred } from '../utils';
 
 export default {
   components: {
@@ -112,10 +115,12 @@ export default {
       return this.lookupTopic(this.id);
     },
     subTopics: function () {
-      return map(this.subTopicIds, this.lookupTopic);
+      return diffIdLists(this.subTopicIds, this.topic.subTopicIds,
+          this.$store.state.topics);
     },
     claims: function () {
-      return map(this.claimIds, this.lookupClaim);
+      return diffIdLists(this.claimIds, this.topic.claimIds,
+          this.$store.state.claims);
     },
     needsData: function () {
       return this.id && !this.topic;
@@ -138,6 +143,14 @@ export default {
     addClaimId: function (claimId) {
       if (!this.claimIds.includes(claimId)) {
         this.claimIds.splice(0, 0, claimId);
+      }
+    },
+    toggleDeleted: function (ids, id) {
+      let i = ids.indexOf(id);
+      if (i < 0) {
+        ids.push(id);
+      } else {
+        ids.splice(i, 1);
       }
     },
     submit: function () {
