@@ -5,19 +5,22 @@
 
   <div class="block blue">
     <h2>Alpha Users</h2>
-    <p>Alpha users can currently contribute the most to the project by:</p>
-    <ul>
-      <li>
-        Creating a new claim based on a topic important to them and filling it
-        out until they are satisfied with the representation of their argument,
-        and reporting any issues they have in doing so.
-      </li>
-    </ul>
+    <p>The biggest contribution anyone can make right now is adding content to
+    the site and giving feedback. DWD simply needs more content to see whether
+    it can be a useful tool for the world.</p>
   </div>
 
   <div class="block green">
     <h2>Recent Changes</h2>
     <ul>
+      <li>
+        <strong>2018-02-23:</strong> New sub-topics or claims can now be
+        created directly from the topic edit page.
+      </li>
+      <li>
+        <strong>2018-02-19:</strong> Linking items while editing topics or
+        points will now autocomplete existing items.
+      </li>
       <li>
         <strong>2018-02-10:</strong> Added an optional date field for sources
         that supports YYYY, YYYY-MM, or YYYY-MM-DD formats.
@@ -41,30 +44,8 @@
     </ul>
   </div>
 
-  <div class="block red">
-    <h2>Known Bugs</h2>
-    <ul>
-      <li>
-        None at the moment.
-      </li>
-    </ul>
-  </div>
-
   <div class="block purple">
     <h2>Coming Improvements</h2>
-
-    <h3>History</h3>
-    <p>
-      Claims and sources currently store revision history as they are changed,
-      but there is no way to view it. There will be:
-    </p>
-    <ul>
-      <li>A history view that shows all the changes that have been made.</li>
-      <li>
-        A revision view that shows the differences between that revision and the
-        previous one.
-      </li>
-    </ul>
 
     <h3>Notifications</h3>
     <p>
@@ -79,18 +60,7 @@
         A search feature that matches the text of sources, claims, and maybe
         points needs to be added.
       </li>
-      <li>
-        An autocomplete feature to suggest items to link while editing points
-        instead of requiring users to copy/paste IDs.
-      </li>
     </ul>
-
-    <h3>Encouraging Sources</h3>
-    <p>
-      Whether or not a claim needs more sources is unclear right now. There
-      should either be a visual indication of how well-sourced a claim is, or a
-      way to flag it as needing better sources, or both.
-    </p>
 
     <h3>Raw Data</h3>
     <p>
