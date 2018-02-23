@@ -17,12 +17,25 @@
     <div class="topic">
       <div class="bubble click"
            @click="showSubTopicModal = true">
-        <strong>Link a sub-topic.</strong>
+        <strong>Add or link a sub-topic.</strong>
       </div>
     </div>
     <topic-link-modal :show.sync="showSubTopicModal"
-                      @update="addSubTopicId" />
-    <div v-for="[subTopic, diffClass] in subTopics"
+                      @link="addSubTopicId"
+                      @add="addNewSubTopic" />
+    <div v-for="(subTopic, i) in newSubTopics"
+         class="topic"
+         :key="subTopic.id">
+      <div class="bubble">
+        <div class="ins">{{ subTopic.title }}</div>
+      </div>
+      <div class="info">
+        <span class="id mono">{{ subTopic.id }}</span>
+        <span class="delete click fas fa-trash-alt"
+              @click="newSubTopics.splice(i, 1)"></span>
+      </div>
+    </div>
+    <div v-for="[subTopic, diffClass] in linkedSubTopics"
          class="topic"
          :key="subTopic.id">
       <div class="bubble">
@@ -99,6 +112,7 @@ export default {
   data: () => ({
     newTopicPartial: null,
     subTopicIds: [],
+    newSubTopics: [],
     claimIds: [],
     showModal: false,
     showSubTopicModal: false,
@@ -114,7 +128,7 @@ export default {
     topic: function () {
       return this.lookupTopic(this.id);
     },
-    subTopics: function () {
+    linkedSubTopics: function () {
       let oldSubTopicIds = this.topic ? this.topic.subTopicIds : [];
       return diffIdLists(this.subTopicIds, oldSubTopicIds,
           this.$store.state.topics);
@@ -142,6 +156,9 @@ export default {
         this.subTopicIds.splice(0, 0, subTopicId);
       }
     },
+    addNewSubTopic: function (newSubTopic) {
+      this.newSubTopics.splice(0, 0, newSubTopic);
+    },
     addClaimId: function (claimId) {
       if (!this.claimIds.includes(claimId)) {
         this.claimIds.splice(0, 0, claimId);
@@ -160,6 +177,7 @@ export default {
       let payload = {
         topic: {
           ...this.newTopicPartial,
+          newSubTopics: this.newSubTopics,
           subTopicIds: filter(this.subTopicIds, this.lookupTopic),
           claimIds: filter(this.claimIds, this.lookupClaim),
         },

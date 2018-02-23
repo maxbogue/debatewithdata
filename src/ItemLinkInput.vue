@@ -181,11 +181,9 @@ export default {
       }
     },
     onEnter: function (e) {
-      if (!this.itemType && this.hasResults) {
+      if (!this.itemType && this.hasResults && this.highlighted >= 0) {
         this.select(this.highlighted);
-        if (this.linkOnly) {
-          e.stopPropagation();
-        }
+        e.stopPropagation();
       }
     },
     getItem: debounce(function () {

@@ -96,12 +96,10 @@ export default function (sequelize, DataTypes) {
       let subTopicIds = data.subTopicIds;
 
       if (data.newSubTopics) {
-        let newSubTopicIds = Object.keys(data.newSubTopics);
-        for (let subTopicId of newSubTopicIds) {
-          let subTopicData = data.newSubTopics[subTopicId];
+        for (let subTopicData of data.newSubTopics) {
           await models.Topic.apiCreate(user, subTopicData, transaction);
+          subTopicIds.push(subTopicData.id);
         }
-        subTopicIds = subTopicIds.concat(newSubTopicIds);
       }
 
       await topicRev.addClaims(data.claimIds, { transaction });
