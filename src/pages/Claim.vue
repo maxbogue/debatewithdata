@@ -22,7 +22,8 @@
     </div>
     <template v-if="$store.state.singleColumn">
       <transition-group tag="div" :move-class="$style.pointsMove">
-        <div class="block no-pad"
+        <div v-if="zippedPoints.length > 0"
+             class="block no-pad"
              :class="$style.pointHeader"
              key="side-text">
           <span :class="$style.for">For</span>
@@ -42,7 +43,8 @@
                         class="dwd-col"
                         :move-class="$style.pointsMove"
                         :key="'side-' + side">
-        <div class="block no-pad"
+        <div v-if="sidePoints.length > 0"
+             class="block no-pad"
              :class="$style.pointHeader"
              :key="'side-text-' + side">
           <span :class="!side ? $style.for : $style.against"
