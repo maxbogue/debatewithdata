@@ -93,7 +93,8 @@ export default function (sequelize, DataTypes) {
         blobHash: blob.hash,
       }, { transaction });
 
-      let subTopicIds = data.subTopicIds;
+      let subTopicIds = [...data.subTopicIds];
+      let claimIds = [...data.claimIds];
 
       if (data.newSubTopics) {
         for (let subTopicData of data.newSubTopics) {
@@ -102,7 +103,14 @@ export default function (sequelize, DataTypes) {
         }
       }
 
-      await topicRev.addClaims(data.claimIds, { transaction });
+      if (data.newClaims) {
+        for (let claimData of data.newClaims) {
+          let rev = await models.Claim.apiCreate(user, claimData, transaction);
+          claimIds.push(rev.claimId);
+        }
+      }
+
+      await topicRev.addClaims(claimIds, { transaction });
       await topicRev.addSubTopics(subTopicIds, { transaction });
       await topic.setHead(topicRev, { transaction });
 

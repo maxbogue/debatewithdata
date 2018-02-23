@@ -8,8 +8,9 @@
       <item-link-input v-model="title"
                        id="title"
                        allow-topic
-                       :link-only="false"
                        placeholder="title or link"
+                       :link-only="false"
+                       :validate="validate.title"
                        @itemType="updateIsLink" />
       <template v-if="title && !isLink">
         <label for="id" class="hint">

@@ -1,27 +1,48 @@
 <template>
 <dwd-modal :show="show" @close="close" @cancel="cancel">
   <div class="claim">
-    <item-link-input class="bubble"
-                     v-model="id"
-                     allow-claim
-                     @itemType="updateIsValid" />
+    <div class="bubble">
+      <label for="text" class="hint">
+        A claim should be a short, simple statement about the world.
+      </label>
+      <item-link-input v-model="text"
+                       id="text"
+                       allow-claim
+                       placeholder="claim"
+                       :link-only="false"
+                       :validate="validate.text"
+                       @itemType="updateIsLink" />
+      <dwd-flag v-if="text && flag && !isLink" :flag="flag" />
+    </div>
     <div class="info">
+      <div v-if="!isLink" class="id mono">new</div>
       <button type="submit"
-              class="dwd-btn dwd-btn-primary">Link</button>
+              class="dwd-btn dwd-btn-primary"
+              >{{ isLink ? 'Link' : 'Add' }}</button>
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
+      <div v-if="!isLink" class="controls">
+        <dwd-flag-dropdown v-model="flag" />
+      </div>
     </div>
   </div>
 </dwd-modal>
 </template>
 
 <script>
+import DwdFlag from './DwdFlag.vue';
+import DwdFlagDropdown from './DwdFlagDropdown.vue';
+import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
+import { validateClaim } from '../common/validate';
 
 export default {
   components: {
+    DwdFlag,
+    DwdFlagDropdown,
+    DwdInput,
     DwdModal,
     ItemLinkInput,
   },
@@ -29,23 +50,51 @@ export default {
     show: { type: Boolean, required: true },
   },
   data: () => ({
-    id: '',
-    isValid: false,
+    text: '',
+    flag: '',
+    isLink: false,
+    validate: validateClaim,
   }),
+  computed: {
+    newClaim: function () {
+      if (this.isLink) {
+        return null;
+      }
+
+      let claim = {
+        text: this.text,
+        points: [[], []],
+      };
+
+      if (this.flag) {
+        claim.flag = this.flag;
+      }
+
+      return claim;
+    },
+  },
+  watch: {
+    show: function () {
+      if (this.show) {
+        this.text = '';
+        this.flag = '';
+      }
+    },
+  },
   methods: {
     close: function () {
-      if (this.isValid) {
-        this.$emit('update', this.id);
+      if (this.isLink) {
+        this.$emit('link', this.text);
+      } else {
+        this.$emit('add', this.newClaim);
       }
       this.$emit('update:show', false);
-      this.id = '';
     },
     cancel: function () {
-      this.isValid = false;
-      this.close();
+      this.$emit('update:show', false);
     },
-    updateIsValid: function (itemType) {
-      this.isValid = itemType === 'claim';
+    updateIsLink: function (itemType) {
+      this.isLink = itemType === 'claim';
     },
   },
 };

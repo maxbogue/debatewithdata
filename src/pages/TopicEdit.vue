@@ -55,8 +55,21 @@
       </div>
     </div>
     <claim-link-modal :show.sync="showClaimModal"
-                      @update="addClaimId" />
-    <div v-for="[claim, diffClass] in claims"
+                      @link="addClaimId"
+                      @add="addNewClaim" />
+    <div v-for="(claim, i) in newClaims"
+         class="claim"
+         :key="claim.id">
+      <div class="bubble">
+        <claim-content class="ins" :claim="claim" />
+      </div>
+      <div class="info">
+        <span class="id mono">new</span>
+        <span class="delete click fas fa-trash-alt"
+              @click="newClaims.splice(i, 1)"></span>
+      </div>
+    </div>
+    <div v-for="[claim, diffClass] in linkedClaims"
          class="claim"
          :key="claim.id">
       <div class="bubble">
@@ -114,6 +127,7 @@ export default {
     subTopicIds: [],
     newSubTopics: [],
     claimIds: [],
+    newClaims: [],
     showModal: false,
     showSubTopicModal: false,
     showClaimModal: false,
@@ -133,7 +147,7 @@ export default {
       return diffIdLists(this.subTopicIds, oldSubTopicIds,
           this.$store.state.topics);
     },
-    claims: function () {
+    linkedClaims: function () {
       let oldClaimIds = this.topic ? this.topic.claimIds : [];
       return diffIdLists(this.claimIds, oldClaimIds,
           this.$store.state.claims);
@@ -164,6 +178,9 @@ export default {
         this.claimIds.splice(0, 0, claimId);
       }
     },
+    addNewClaim: function (newClaim) {
+      this.newClaims.splice(0, 0, newClaim);
+    },
     toggleDeleted: function (ids, id) {
       let i = ids.indexOf(id);
       if (i < 0) {
@@ -177,9 +194,10 @@ export default {
       let payload = {
         topic: {
           ...this.newTopicPartial,
-          newSubTopics: this.newSubTopics,
           subTopicIds: filter(this.subTopicIds, this.lookupTopic),
           claimIds: filter(this.claimIds, this.lookupClaim),
+          newSubTopics: this.newSubTopics,
+          newClaims: this.newClaims,
         },
       };
       if (this.topic) {

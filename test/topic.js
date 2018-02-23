@@ -125,6 +125,35 @@ describe('Topic', function () {
       let topic = await Topic.findById(topicRev.topicId);
       expect(topic.headId).to.equal(topicRev.id);
     });
+
+    it('new claim', async function () {
+      let topicRev = await Topic.apiCreate(user, {
+        id: ID,
+        title: TITLE,
+        text: FOO,
+        claimIds: [],
+        subTopicIds: [],
+        newClaims: [{
+          text: BAR,
+          points: [[], []],
+        }],
+      });
+      await topicRev.reload(TopicRev.INCLUDE(3));
+      expect(topicRev.topicId).to.equal(ID);
+      expect(topicRev.parentId).to.be.null;
+      expect(topicRev.userId).to.equal(user.id);
+      expect(topicRev.deleted).to.be.false;
+      expect(topicRev.title).to.equal(TITLE);
+      expect(topicRev.blob.text).to.equal(FOO);
+      expect(topicRev.claims).to.have.lengthOf(1);
+      expect(topicRev.subTopics).to.have.lengthOf(0);
+
+      let claim = topicRev.claims[0];
+      expect(claim.head.blob.text).to.equal(BAR);
+
+      let topic = await Topic.findById(topicRev.topicId);
+      expect(topic.headId).to.equal(topicRev.id);
+    });
   });
 
   describe('.apiUpdate()', function () {
@@ -202,6 +231,41 @@ describe('Topic', function () {
       expect(subTopic.id).to.equal(ID2);
       expect(subTopic.head.title).to.equal(TITLE2);
       expect(subTopic.head.blob.text).to.equal(BAR);
+
+      let topic = await Topic.findById(r2.topicId);
+      expect(topic.headId).to.equal(r2.id);
+    });
+
+    it('new claim', async function () {
+      let r1 = await Topic.apiCreate(user, {
+        id: ID,
+        title: TITLE,
+        text: FOO,
+        claimIds: [],
+        subTopicIds: [],
+      });
+      let r2 = await Topic.apiUpdate(ID, user, {
+        title: TITLE,
+        text: FOO,
+        claimIds: [],
+        subTopicIds: [],
+        newClaims: [{
+          text: BAR,
+          points: [[], []],
+        }],
+      });
+      await r2.reload(TopicRev.INCLUDE(3));
+      expect(r2.topicId).to.equal(ID);
+      expect(r2.parentId).to.equal(r1.id);
+      expect(r2.userId).to.equal(user.id);
+      expect(r2.deleted).to.be.false;
+      expect(r2.title).to.equal(TITLE);
+      expect(r2.blob.text).to.equal(FOO);
+      expect(r2.claims).to.have.lengthOf(1);
+      expect(r2.subTopics).to.have.lengthOf(0);
+
+      let claim = r2.claims[0];
+      expect(claim.head.blob.text).to.equal(BAR);
 
       let topic = await Topic.findById(r2.topicId);
       expect(topic.headId).to.equal(r2.id);
