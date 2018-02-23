@@ -7,6 +7,7 @@
 <style lang="sass" module>
 .fixedBottom
   bottom: 0
+  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.25)
   display: flex
   justify-content: center
   left: 50%
