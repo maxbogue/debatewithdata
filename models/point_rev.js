@@ -164,12 +164,8 @@ export default function (sequelize, DataTypes) {
             }
           } else if (rev.parentId && pointData.id) {
             // This is an update operation updating an existing point.
-            let point = await models.Point.findById(pointData.id);
-            if (!point) {
-              throw new ClientError('Invalid point ID: ' + pointData.id);
-            }
-            pointRev = await PointRev.apiCreate(
-                user, point, pointData, transaction);
+            pointRev = await models.Point.apiUpdate(
+                pointData.id, user, pointData, transaction);
           } else {
             // New point.
             pointRev = await models.Point.apiCreate(

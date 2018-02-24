@@ -67,17 +67,23 @@ export default function (sequelize, DataTypes) {
       return pointRev;
     };
 
-    Point.apiUpdate = async function (pointId, user, data) {
+    Point.apiUpdate = async function (pointId, user, data, transaction) {
+      if (!transaction) {
+        return await sequelize.transaction(function(t) {
+          return Point.apiUpdate(pointId, user, data, t);
+        });
+      }
+
+      validatePoint(data);
+
       const point = await Point.findById(pointId);
       if (!point) {
         throw new NotFoundError('Point not found: ' + pointId);
       }
-      let pointRev = await sequelize.transaction(async function(transaction) {
-        let rev = await models.PointRev.apiCreate(
-            user, point, data, transaction);
-        await point.setHead(rev, { transaction });
-        return rev;
-      });
+
+      let pointRev = await models.PointRev.apiCreate(
+          user, point, data, transaction);
+      await point.setHead(pointRev, { transaction });
       return pointRev;
     };
 

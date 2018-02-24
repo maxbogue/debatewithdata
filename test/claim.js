@@ -60,6 +60,9 @@ describe('Claim', function () {
       expect(pointRev.userId).to.equal(user.id);
       expect(pointRev.blob.text).to.equal(BAR);
       expect(pointRev.claimPoint.isFor).to.be.true;
+
+      let point = await Point.findById(pointRev.pointId);
+      expect(point.headId).to.equal(pointRev.id);
     });
 
     it('with point against', async function () {
@@ -159,6 +162,9 @@ describe('Claim', function () {
       let r2a = r2.pointRevs[0];
       expect(r2a.blob.text).to.equal(BAZ);
       expect(r2a.parentId).to.equal(r1a.id);
+
+      let point = await Point.findById(r2a.pointId);
+      expect(point.headId).to.equal(r2a.id);
     });
   });
 

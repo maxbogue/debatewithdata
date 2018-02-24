@@ -174,6 +174,8 @@ describe('Point', function () {
         points: [[{
           id: r2a.pointId,
           rev: r2a.id,
+          type: Point.TEXT,
+          text: FOO,
         }], []],
       });
       await r3.reload(PointRev.INCLUDE(2));
