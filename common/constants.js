@@ -14,6 +14,8 @@ export const PointType = {
   SOURCE: 'source',
   TEXT: 'text',
   SUBCLAIM: 'subclaim',
+  NEW_CLAIM: 'newClaim',
+  NEW_SOURCE: 'newSource',
 };
 
 export const POINT_TYPES = values(PointType);

@@ -61,9 +61,6 @@
 </template>
 
 <script>
-import clone from 'lodash/clone';
-import filter from 'lodash/filter';
-
 import ClaimEditModal from '../ClaimEditModal.vue';
 import ClaimRevContent from '../ClaimRevContent.vue';
 import DeleteButton from '../DeleteButton.vue';
@@ -71,45 +68,8 @@ import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import PointEdit from '../PointEdit.vue';
 import {
-  emptyPoint, isValidPoint, pointMapsToLists, rotateWithIndexes
+  emptyPoint, pointMapsToLists, rotateWithIndexes
 } from '../utils';
-
-function makeNewSources(store, points) {
-  let promises = [];
-  for (let si = 0; si < points.length; si++) {
-    for (let pi = 0; pi < points[si].length; pi++) {
-      let point = points[si][pi];
-      if (point.type === 'newSource') {
-        let promise = store.dispatch('addSource', {
-          source: point.source,
-        }).then((sourceId) => {
-          points[si][pi] = { type: 'source', sourceId };
-          if (point.id) {
-            points[si][pi].id = point.id;
-          }
-        });
-        promises.push(promise);
-      } else if (point.type === 'subclaim') {
-        promises.push(...makeNewSources(store, point.points));
-      }
-    }
-  }
-  return promises;
-}
-
-function filterPoints(points) {
-  points = clone(points);
-  for (let si = 0; si < points.length; si++) {
-    points[si] = filter(points[si], isValidPoint);
-    for (let pi = 0; pi < points[si].length; pi++) {
-      let point = points[si][pi];
-      if (point.type === 'subclaim') {
-        point.points = filterPoints(point.points);
-      }
-    }
-  }
-  return points;
-}
 
 export default {
   components: {
@@ -159,17 +119,11 @@ export default {
       this.$set(this.points[si], pi, point);
     },
     submit: function () {
-      let promises = makeNewSources(this.$store, this.points);
-      Promise.all(promises).then(() => {
-        this.commit();
-      });
-    },
-    commit: function () {
       let action = 'addClaim';
       let payload = {
         claim: {
           ...this.newClaimPartial,
-          points: filterPoints(this.points),
+          points: this.points,
         },
       };
       if (this.id) {

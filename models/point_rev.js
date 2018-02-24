@@ -5,6 +5,8 @@ const CLAIM = 'claim';
 const SOURCE = 'source';
 const SUBCLAIM = 'subclaim';
 const TEXT = 'text';
+const NEW_CLAIM = 'newClaim';
+const NEW_SOURCE = 'newSource';
 
 const VALID_POINT_TYPES = [
   CLAIM,
@@ -210,8 +212,20 @@ export default function (sequelize, DataTypes) {
       }, { transaction });
     }
 
+    async function createNewClaimRev(user, point, { claim }, transaction) {
+      let claimRev = await models.Claim.apiCreate(user, claim, transaction);
+      let claimId = claimRev.claimId;
+      return createClaimRev(user, point, { claimId }, transaction);
+    }
+
+    async function createNewSourceRev(user, point, { source }, transaction) {
+      let sourceRev = await models.Source.apiCreate(user, source, transaction);
+      let sourceId = sourceRev.sourceId;
+      return createSourceRev(user, point, { sourceId }, transaction);
+    }
+
     // Dispatches point creation based on type.
-    PointRev.apiCreate = function (user, point, data, transaction) {
+    PointRev.apiCreate = async function (user, point, data, transaction) {
       switch (data.type) {
       case CLAIM:
         return createClaimRev(user, point, data, transaction);
@@ -221,6 +235,10 @@ export default function (sequelize, DataTypes) {
         return createSubclaimRev(user, point, data, transaction);
       case TEXT:
         return createTextRev(user, point, data, transaction);
+      case NEW_CLAIM:
+        return createNewClaimRev(user, point, data, transaction);
+      case NEW_SOURCE:
+        return createNewSourceRev(user, point, data, transaction);
       default:
         throw new ClientError('Invalid point type: ' + data.type);
       }

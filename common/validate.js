@@ -157,9 +157,17 @@ const pointConstraints = {
     length: { minimum: 10 },
   },
   flag: { inclusion: { within: FlagData } },
+  claim: {
+    presenceIff: { type: PointType.NEW_CLAIM },
+    custom: validateClaim,
+  },
   claimId: {
     presenceIff: { type: PointType.CLAIM },
     format: ID_REGEX,
+  },
+  source: {
+    presenceIff: { type: PointType.NEW_SOURCE },
+    custom: validateSource,
   },
   sourceId: {
     presenceIff: { type: PointType.SOURCE },

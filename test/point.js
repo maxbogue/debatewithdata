@@ -1,6 +1,6 @@
 import chai from 'chai';
 
-import { Point, PointRev, Source } from '../models';
+import { Claim, Point, PointRev, Source } from '../models';
 import { Flag } from '../common/flag';
 import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
 
@@ -122,8 +122,134 @@ describe('Point', function () {
       });
       expect(pointData).to.deep.equal({
         rev: pointRev.id,
-        type: 'source',
+        type: Point.SOURCE,
         sourceId: sourceRev.sourceId,
+        star: {
+          count: 0,
+          starred: false,
+        },
+        commentCount: 0,
+      });
+    });
+
+    it('claim link', async function () {
+      let text = 'must be long enough';
+      let claimRev = await Claim.apiCreate(user, { text, points: [[], []] });
+      let pointRev = await Point.apiCreate(user, {
+        type: Point.CLAIM,
+        claimId: claimRev.claimId,
+      });
+      await pointRev.reload(PointRev.INCLUDE(1));
+      expect(pointRev.userId).to.equal(user.id);
+      expect(pointRev.parentId).to.be.null;
+      expect(pointRev.type).to.equal(Point.CLAIM);
+      expect(pointRev.claimId).to.equal(claimRev.claimId);
+
+      let data = { claims: {} };
+      let pointData = await pointRev.toData(data, 1, null);
+      expect(data).to.deep.equal({
+        claims: {
+          [claimRev.claimId]: {
+            rev: claimRev.id,
+            text: text,
+            depth: 1,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            commentCount: 0,
+          },
+        },
+      });
+      expect(pointData).to.deep.equal({
+        rev: pointRev.id,
+        type: Point.CLAIM,
+        claimId: claimRev.claimId,
+        star: {
+          count: 0,
+          starred: false,
+        },
+        commentCount: 0,
+      });
+    });
+
+    it('new source', async function () {
+      let sourceText = 'must be long enough';
+      let pointRev = await Point.apiCreate(user, {
+        type: 'newSource',
+        source: {
+          url: URL,
+          text: sourceText,
+          type: 'misc',
+        },
+      });
+      await pointRev.reload(PointRev.INCLUDE(1));
+      expect(pointRev.userId).to.equal(user.id);
+      expect(pointRev.parentId).to.be.null;
+      expect(pointRev.type).to.equal(Point.SOURCE);
+      expect(pointRev.sourceId).to.have.lengthOf(12);
+
+      let source = await Source.findById(pointRev.sourceId);
+
+      let data = { sources: {} };
+      let pointData = await pointRev.toData(data, 1, null);
+      expect(data).to.deep.equal({
+        sources: {
+          [source.id]: {
+            rev: source.headId,
+            url: URL,
+            text: sourceText,
+            type: 'misc',
+            commentCount: 0,
+          },
+        },
+      });
+      expect(pointData).to.deep.equal({
+        rev: pointRev.id,
+        type: Point.SOURCE,
+        sourceId: source.id,
+        star: {
+          count: 0,
+          starred: false,
+        },
+        commentCount: 0,
+      });
+    });
+
+    it('new claim', async function () {
+      let text = 'must be long enough';
+      let pointRev = await Point.apiCreate(user, {
+        type: 'newClaim',
+        claim: { text, points: [[], []] },
+      });
+      await pointRev.reload(PointRev.INCLUDE(1));
+      expect(pointRev.userId).to.equal(user.id);
+      expect(pointRev.parentId).to.be.null;
+      expect(pointRev.type).to.equal(Point.CLAIM);
+      expect(pointRev.claimId).to.have.lengthOf(12);
+
+      let claim = await Claim.findById(pointRev.claimId);
+
+      let data = { claims: {} };
+      let pointData = await pointRev.toData(data, 1, null);
+      expect(data).to.deep.equal({
+        claims: {
+          [claim.id]: {
+            rev: claim.headId,
+            text: text,
+            depth: 1,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            commentCount: 0,
+          },
+        },
+      });
+      expect(pointData).to.deep.equal({
+        rev: pointRev.id,
+        type: Point.CLAIM,
+        claimId: claim.id,
         star: {
           count: 0,
           starred: false,
