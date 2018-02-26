@@ -42,7 +42,7 @@ export function addApiData(data, otherData) {
       data.claims = {};
     }
     forOwn(otherData.claims, (claim, id) => {
-      if (!data.claims[id] || data.claims[id].depth < claim.depth) {
+      if (!data.claims[id] || data.claims[id].depth <= claim.depth) {
         data.claims[id] = claim;
       }
     });

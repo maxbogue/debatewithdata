@@ -27,7 +27,8 @@ router.get('/:id', async function (req, res) {
   if (req.query.trail) {
     let claimIds = req.query.trail.split(',');
     let trailData = await Claim.apiGetAll(req.user, claimIds);
-    addApiData(data, trailData);
+    addApiData(trailData, data);
+    data = trailData;
   }
   res.json(data);
 });

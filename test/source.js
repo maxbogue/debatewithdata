@@ -1,7 +1,8 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { Source, SourceRev } from '../models';
+import { Claim, Source, SourceRev } from '../models';
+import { PointType } from '../common/constants';
 import { ValidationError } from '../common/validate';
 import { registerAndVerifyUser } from './utils';
 
@@ -223,9 +224,11 @@ describe('Source', function () {
           [rev.sourceId]: {
             rev: rev.id,
             commentCount: 0,
+            claimIds: [],
             ...MISC,
           },
         },
+        claims: {},
       });
     });
 
@@ -242,9 +245,84 @@ describe('Source', function () {
           [r1.sourceId]: {
             rev: r2.id,
             deleted: true,
+            claimIds: [],
             commentCount: 0,
           },
-        }
+        },
+        claims: {},
+      });
+    });
+
+    it('with claim', async function () {
+      let sourceRev = await Source.apiCreate(user, MISC);
+      let sourceId = sourceRev.sourceId;
+      let claimRev = await Claim.apiCreate(user, {
+        text: TEXT2,
+        points: [[{ type: PointType.SOURCE, sourceId }], []],
+      });
+
+      let sourceData = await Source.apiGet(sourceId);
+      expect(sourceData).to.deep.equal({
+        sources: {
+          [sourceId]: {
+            rev: sourceRev.id,
+            claimIds: [claimRev.claimId],
+            commentCount: 0,
+            ...MISC,
+          },
+        },
+        claims: {
+          [claimRev.claimId]: {
+            rev: claimRev.id,
+            text: TEXT2,
+            depth: 1,
+            star: {
+              starred: false,
+              count: 0,
+            },
+            commentCount: 0,
+          },
+        },
+      });
+    });
+
+    it('with claim via subpoint', async function () {
+      let sourceRev = await Source.apiCreate(user, MISC);
+      let sourceId = sourceRev.sourceId;
+      let claimRev = await Claim.apiCreate(user, {
+        text: TEXT2,
+        points: [[{
+          type: PointType.SUBCLAIM,
+          text: 'something long enough',
+          points: [[{
+            type: PointType.SOURCE,
+            sourceId,
+          }], []],
+        }], []],
+      });
+
+      let sourceData = await Source.apiGet(sourceId);
+      expect(sourceData).to.deep.equal({
+        sources: {
+          [sourceId]: {
+            rev: sourceRev.id,
+            claimIds: [claimRev.claimId],
+            commentCount: 0,
+            ...MISC,
+          },
+        },
+        claims: {
+          [claimRev.claimId]: {
+            rev: claimRev.id,
+            text: TEXT2,
+            depth: 1,
+            star: {
+              starred: false,
+              count: 0,
+            },
+            commentCount: 0,
+          },
+        },
       });
     });
   });

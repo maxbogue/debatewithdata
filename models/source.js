@@ -1,4 +1,5 @@
 import isEqual from 'lodash/isEqual';
+import map from 'lodash/map';
 
 import { NotFoundError } from '../api/error';
 import { validateSource } from '../common/validate';
@@ -142,12 +143,55 @@ export default function (sequelize, DataTypes) {
       if (!source) {
         throw new NotFoundError('Source not found: ' + sourceId);
       }
+
+      // Referenced by points.
+      let claims1 = await models.Claim.findAll({
+        include: [{
+          association: models.Claim.Head,
+          required: true,
+          include: [models.Blob, {
+            model: models.PointRev,
+            as: 'pointRevs',
+            where: { sourceId },
+          }],
+        }],
+      });
+
+      // Referenced by sub-points.
+      let claims2 = await models.Claim.findAll({
+        include: [{
+          association: models.Claim.Head,
+          required: true,
+          include: [models.Blob, {
+            model: models.PointRev,
+            required: true,
+            as: 'pointRevs',
+            include: [{
+              model: models.PointRev,
+              as: 'pointRevs',
+              where: { sourceId },
+            }],
+          }],
+        }],
+      });
+
+      let claims = claims1.concat(claims2);
+
       let sourceData = await source.toData();
-      return {
+      sourceData.claimIds = map(claims, (c) => c.id);
+
+      let data = {
         sources: {
           [sourceId]: sourceData,
         },
+        claims: {},
       };
+
+      for (let claim of claims) {
+        await claim.fillData(data, 1);
+      }
+
+      return data;
     };
 
     Source.apiGetAll = async function () {
