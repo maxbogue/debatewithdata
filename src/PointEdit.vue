@@ -43,6 +43,7 @@ import PointDiff from './PointDiff.vue';
 import PointEditModal from './PointEditModal.vue';
 import { emptyPoint, pointMapsToLists, rotateWithIndexes }
   from './utils';
+import { PointType } from '../common/constants';
 
 export default {
   name: 'PointEdit',
@@ -65,7 +66,8 @@ export default {
       return this.isParentFor !== null;
     },
     isSubClaim: function () {
-      return this.point.type === 'subclaim';
+      return this.point.type === PointType.SUBCLAIM
+          || this.point.type === PointType.NEW_CLAIM && !this.isSubPoint;
     },
     zippedSubPoints: function () {
       if (!this.subPoints) {
@@ -96,17 +98,19 @@ export default {
       } else {
         p.tempId = this.point.tempId;
       }
-      if (p.type === 'subclaim') {
+      if (p.type === PointType.SUBCLAIM || p.type === PointType.NEW_CLAIM) {
         p.points = this.subPoints;
       }
       this.$emit('update', p);
     },
     updateSubClaim: function () {
-      this.emitPoint({
-        type: 'subclaim',
-        text: this.point.text,
-        flag: this.point.flag,
-      });
+      if ([PointType.SUBCLAIM, PointType.NEW_CLAIM].includes(this.point.type)) {
+        this.emitPoint({
+          type: this.point.type,
+          text: this.point.text,
+          flag: this.point.flag,
+        });
+      }
     },
     addSubPoint: function (si) {
       this.subPoints[si].splice(0, 0, emptyPoint());

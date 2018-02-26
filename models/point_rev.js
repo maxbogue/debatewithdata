@@ -212,8 +212,8 @@ export default function (sequelize, DataTypes) {
       }, { transaction });
     }
 
-    async function createNewClaimRev(user, point, { claim }, transaction) {
-      let claimRev = await models.Claim.apiCreate(user, claim, transaction);
+    async function createNewClaimRev(user, point, data, transaction) {
+      let claimRev = await models.Claim.apiCreate(user, data, transaction);
       let claimId = claimRev.claimId;
       return createClaimRev(user, point, { claimId }, transaction);
     }

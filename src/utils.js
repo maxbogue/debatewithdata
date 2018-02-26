@@ -46,29 +46,6 @@ export function emptyPoints() {
   return [[emptyPoint()], [emptyPoint()]];
 }
 
-export function pointToInput(point) {
-  if (!point) {
-    return '';
-  }
-  switch (point.type) {
-  case 'claim':
-    return point.claimId;
-  case 'source':
-    return point.sourceId;
-  case 'subclaim':
-  case 'text':
-    return point.text;
-  case 'newSource':
-    return point.source.url;
-  default:
-    return '';
-  }
-}
-
-export function isValidPoint(point) {
-  return Boolean(pointToInput(point));
-}
-
 export function filterLiving(items) {
   return filter(items, (item) => !item.deleted);
 }

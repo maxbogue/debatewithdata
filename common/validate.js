@@ -19,7 +19,7 @@ validate.validators.url.options = { message: 'must be a valid URL.' };
 
 const ID_REGEX = /[0-9a-f]{12}/;
 const CUSTOM_VALIDATORS =
-    ['presenceIff', 'validIfDeleted', 'custom', 'arrayOf'];
+    ['presenceIff', 'presenceOnlyIf', 'validIfDeleted', 'custom', 'arrayOf'];
 
 export class ValidationError extends Error {}
 
@@ -35,11 +35,13 @@ export function isValid(f, ...args) {
   return true;
 }
 
-function validatePresenceIff(key, value, item, conds) {
+// Validates that a key is only present under certain conditions. Check is only
+// if by default, if and only if when |iff| is true.
+function validatePresenceIf(key, value, item, conds, iff) {
   forOwn(conds, (v, k) => {
     let exists = !validate.isEmpty(value);
     let p = validate.isArray(v) ? v.includes(item[k]) : v === item[k];
-    if (p && !exists) {
+    if (iff && p && !exists) {
       throw new ValidationError(`"${key}" required for "${k}" = "${item[k]}".`);
     } else if (!p && exists) {
       throw new ValidationError(
@@ -59,7 +61,10 @@ function constraintToValidator(constraint, key) {
         }
       }
       if (constraint.presenceIff) {
-        validatePresenceIff(key, value, item, constraint.presenceIff);
+        validatePresenceIf(key, value, item, constraint.presenceIff, true);
+      }
+      if (constraint.presenceOnlyIf) {
+        validatePresenceIf(key, value, item, constraint.presenceOnlyIf, false);
       }
     }
     if (validate.isDefined(value) && constraint.custom) {
@@ -150,16 +155,17 @@ function validatePoints(points) {
   forEach(points[1], validatePoint);
 }
 
+const CLAIM_LIKE = [PointType.TEXT, PointType.SUBCLAIM, PointType.NEW_CLAIM];
+
 const pointConstraints = {
   type: { presence: true, inclusion: POINT_TYPES },
   text: {
-    presenceIff: { type: [PointType.TEXT, PointType.SUBCLAIM] },
+    presenceIff: { type: CLAIM_LIKE },
     length: { minimum: 10 },
   },
-  flag: { inclusion: { within: FlagData } },
-  claim: {
-    presenceIff: { type: PointType.NEW_CLAIM },
-    custom: validateClaim,
+  flag: {
+    presenceOnlyIf: { type: CLAIM_LIKE },
+    inclusion: { within: FlagData },
   },
   claimId: {
     presenceIff: { type: PointType.CLAIM },
@@ -174,7 +180,7 @@ const pointConstraints = {
     format: ID_REGEX,
   },
   points: {
-    presenceIff: { type: PointType.SUBCLAIM },
+    presenceIff: { type: [PointType.SUBCLAIM, PointType.NEW_CLAIM] },
     custom: validatePoints,
   },
 };

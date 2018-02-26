@@ -6,6 +6,8 @@
                          :source="point.source"
                          @update="updateNewSource" />
     <div v-else class="bubble">
+      <div v-if="isClaimLike && promoteClaim"
+           class="hint">This point will be promoted to its own claim.</div>
       <label v-if="!point.type" class="hint">
         Add a point {{ isFor | toSideString }} the claim.
       </label>
@@ -16,7 +18,7 @@
                        :validate="validate"
                        :link-only="false"
                        @itemType="updateIdType" />
-      <dwd-flag v-if="isSubClaim && point.flag" :flag="point.flag" />
+      <dwd-flag v-if="isClaimLike && point.flag" :flag="point.flag" />
     </div>
     <div v-if="point.type" class="info">
       <div class="id mono">{{ point.id || 'new' }}</div>
@@ -26,7 +28,15 @@
               class="dwd-btn white"
               @click="cancel">Cancel</button>
       <div class="controls">
-        <dwd-flag-dropdown v-if="isSubClaim" v-model="flag" />
+        <dwd-flag-dropdown v-if="isClaimLike" v-model="flag" />
+        <span v-if="isClaimLike && !promoteClaim"
+              title="Promote to claim."
+              class="click fas fa-arrow-circle-up"
+              @click="promoteClaim = true" />
+        <span v-else-if="isClaimLike && promoteClaim"
+              title="Don't promote to claim."
+              class="click fas fa-arrow-circle-down"
+              @click="promoteClaim = false" />
       </div>
     </div>
   </div>
@@ -42,10 +52,11 @@ import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
 import SourceEditContent from './SourceEditContent.vue';
-import { pointToInput } from './utils';
 import { isValid, validatePoint, validateSource } from '../common/validate';
+import { PointType } from '../common/constants';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
+const CLAIM_LIKE = [PointType.SUBCLAIM, PointType.TEXT, PointType.NEW_CLAIM];
 
 function isValidUrl(url) {
   return isValid(validateSource.url, url);
@@ -71,6 +82,8 @@ export default {
     flag: '',
     input: '',
     idType: '',
+    // Whether a subclaim should be promoted to a new claim.
+    promoteClaim: false,
     // Flag to prevent overwriting original without a change.
     initialized: false,
   }),
@@ -87,8 +100,8 @@ export default {
       return this.point && this.point.type === 'newSource'
           && isValidUrl(this.point.source.url);
     },
-    isSubClaim: function () {
-      return this.point.type === 'subclaim' || this.point.type === 'text';
+    isClaimLike: function () {
+      return CLAIM_LIKE.includes(this.point.type);
     },
   },
   watch: {
@@ -99,6 +112,9 @@ export default {
       }
     },
     flag: function () {
+      this.update();
+    },
+    promoteClaim: function () {
       this.update();
     },
     show: function () {
@@ -122,37 +138,33 @@ export default {
       this.$emit('update', this.oldPoint);
       this.close();
     },
-    makeSubClaim: function (text) {
-      let subClaim = {
-        type: this.isSubPoint ? 'text' : 'subclaim',
-        text: text,
-      };
-      if (this.flag) {
-        subClaim.flag = this.flag;
-      }
-      return subClaim;
-    },
     makePoint: function () {
       if (this.id && !this.idType && this.oldPoint.type) {
         return this.oldPoint;
-      } else if (this.idType === 'source') {
-        return { type: 'source', sourceId: this.input };
-      } else if (this.idType === 'claim') {
-        return { type: 'claim', claimId: this.input };
+      } else if (this.idType === PointType.SOURCE) {
+        return { type: PointType.SOURCE, sourceId: this.input };
+      } else if (this.idType === PointType.CLAIM) {
+        return { type: PointType.CLAIM, claimId: this.input };
       } else if (isValidUrl(this.input)) {
         return {
-          type: 'newSource',
+          type: PointType.NEW_SOURCE,
           source: {
             url: this.input,
           },
         };
       } else if (!this.id && this.input) {
         let subClaim = {
-          type: this.isSubPoint ? 'text' : 'subclaim',
           text: this.input,
         };
         if (this.flag) {
           subClaim.flag = this.flag;
+        }
+        if (this.promoteClaim) {
+          subClaim.type = PointType.NEW_CLAIM;
+        } else if (this.isSubPoint) {
+          subClaim.type = PointType.TEXT;
+        } else {
+          subClaim.type = PointType.SUBCLAIM;
         }
         return subClaim;
       }
@@ -168,7 +180,7 @@ export default {
     },
     updateNewSource: function (source) {
       this.input = source.url;
-      this.emitPoint({ type: 'newSource', source });
+      this.emitPoint({ type: PointType.NEW_SOURCE, source });
     },
     updateIdType: function (idType) {
       this.idType = idType;
@@ -177,8 +189,26 @@ export default {
     initialize: function () {
       this.initialized = false;
       this.oldPoint = this.point ? clone(this.point) : null;
-      this.input = pointToInput(this.point);
-      this.flag = this.point.flag || '';
+      this.input = '';
+      if (this.point) {
+        switch (this.point.type) {
+        case PointType.CLAIM:
+          this.input = this.point.claimId;
+          break;
+        case PointType.SOURCE:
+          this.input = this.point.sourceId;
+          break;
+        case PointType.SUBCLAIM:
+        case PointType.TEXT:
+        case PointType.NEW_CLAIM:
+          this.input = this.point.text;
+          this.flag = this.point.flag || '';
+          break;
+        case PointType.NEW_SOURCE:
+          this.input = this.point.source.url;
+          break;
+        }
+      }
       this.$nextTick(() => {
         // If this is done immediately, the watch functions get called.
         this.initialized = true;

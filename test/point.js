@@ -2,6 +2,7 @@ import chai from 'chai';
 
 import { Claim, Point, PointRev, Source } from '../models';
 import { Flag } from '../common/flag';
+import { PointType } from '../common/constants';
 import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
@@ -176,7 +177,7 @@ describe('Point', function () {
     it('new source', async function () {
       let sourceText = 'must be long enough';
       let pointRev = await Point.apiCreate(user, {
-        type: 'newSource',
+        type: PointType.NEW_SOURCE,
         source: {
           url: URL,
           text: sourceText,
@@ -219,8 +220,9 @@ describe('Point', function () {
     it('new claim', async function () {
       let text = 'must be long enough';
       let pointRev = await Point.apiCreate(user, {
-        type: 'newClaim',
-        claim: { text, points: [[], []] },
+        type: PointType.NEW_CLAIM,
+        text,
+        points: [[], []],
       });
       await pointRev.reload(PointRev.INCLUDE(1));
       expect(pointRev.userId).to.equal(user.id);
