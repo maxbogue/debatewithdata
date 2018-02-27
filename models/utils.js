@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import forOwn from 'lodash/forOwn';
 
 import { FlagData } from '../common/flag';
+import { Claim, Topic } from '../models';
 
 export function randomHexString(n) {
   if (n % 2 !== 0) {
@@ -55,4 +56,18 @@ export function addApiData(data, otherData) {
       data.sources[id] = source;
     });
   }
+}
+
+export async function getTrailData(trail, user, bonusId) {
+  let ids = trail ? trail.split(',') : [];
+  if (bonusId) {
+    ids.push(bonusId);
+  }
+  if (ids.length === 0) {
+    return {};
+  }
+  let data = await Topic.apiGetAll(user, ids);
+  let claimsData = await Claim.apiGetAll(user, ids);
+  addApiData(data, claimsData);
+  return data;
 }

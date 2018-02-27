@@ -1,6 +1,6 @@
 <template>
 <div>
-  <dwd-trail @lastIsFor="(v) => isFor = v" />
+  <dwd-trail :ids="trail" @lastIsFor="(v) => isFor = v" />
   <template v-if="claim">
     <div class="claim" :class="isFor | toSideString">
       <claim-content class="bubble click"
@@ -33,7 +33,7 @@
         <point-block v-for="[point, side] in zippedPoints"
                      :point="point"
                      :is-for="claimIsFor === !side"
-                     :trail="trail.concat(id)"
+                     :trail="trail"
                      :key="point.id" />
       </transition-group>
     </template>
@@ -53,7 +53,7 @@
         <point-block v-for="point in sidePoints"
                      :point="point"
                      :is-for="claimIsFor === !side"
-                     :trail="trail.concat(id)"
+                     :trail="trail"
                      :key="point.id" />
       </transition-group>
     </template>
@@ -115,10 +115,7 @@ export default {
       return rotateWithIndexes(this.points);
     },
     trail: function () {
-      if (!this.$route.query.trail) {
-        return [];
-      }
-      return this.$route.query.trail.split(',');
+      return this.parseTrail(this.$route.query.trail).concat(this.id);
     },
   },
   watch: {
@@ -134,7 +131,7 @@ export default {
       if (!this.claim || this.claim.depth < 3) {
         this.$store.dispatch('getClaim', {
           id: this.id,
-          trail: this.trail,
+          trail: this.parseTrail(this.$route.query.trail),
           loader: this.$refs.loader,
         });
       }

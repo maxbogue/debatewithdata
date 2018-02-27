@@ -1,6 +1,6 @@
 <template>
 <div>
-  <dwd-trail @lastIsFor="(v) => isFor = v" />
+  <dwd-trail :ids="trail.concat(id)" @lastIsFor="(v) => isFor = v" />
   <template v-if="source">
     <div class="source" :class="isFor | toSideString">
       <source-content class="bubble click"
@@ -69,10 +69,7 @@ export default {
       return this.$store.state.sources[this.id] || null;
     },
     trail: function () {
-      if (!this.$route.query.trail) {
-        return [];
-      }
-      return this.$route.query.trail.split(',');
+      return this.parseTrail(this.$route.query.trail);
     },
     claims: function () {
       if (!this.source || !this.source.claimIds) {

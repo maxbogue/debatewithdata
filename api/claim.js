@@ -1,8 +1,9 @@
 import Router from 'express-promise-router';
 import map from 'lodash/map';
 
-import { Claim, ClaimRev, Comment } from '../models';
 import { AuthError } from './error';
+import { Claim, ClaimRev, Comment } from '../models';
+import { getTrailData } from '../models/utils';
 
 const router = Router();
 
@@ -22,13 +23,7 @@ router.post('/', async function (req, res) {
 });
 
 router.get('/:id', async function (req, res) {
-  let data;
-  if (req.query.trail) {
-    let claimIds = [req.params.id].concat(req.query.trail.split(','));
-    data = await Claim.apiGetAll(req.user, claimIds);
-  } else {
-    data = await Claim.apiGet(req.params.id, req.user);
-  }
+  let data = await getTrailData(req.query.trail, req.user, req.params.id);
   res.json(data);
 });
 

@@ -66,6 +66,17 @@ function copyClaim(claim) {
   return copy;
 }
 
+function addTrailToUrl(url, trail, state) {
+  if (!trail) {
+    return url;
+  }
+  trail = trail.filter((id) => !hasFullClaim(state, id) && !state.topics[id]);
+  if (trail.length > 0) {
+    url += '?trail=' + trail.join(',');
+  }
+  return url;
+}
+
 function windowIsSingleColumn() {
   return window.innerWidth < 768;
 }
@@ -128,8 +139,9 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    getTopic: function ({ commit }, { id, loader }) {
-      return axios.get('/api/topic/' + id, { loader }).then((res) => {
+    getTopic: function ({ commit, state }, { id, trail, loader }) {
+      let url = addTrailToUrl('/api/topic/' + id, trail, state);
+      return axios.get(url, { loader }).then((res) => {
         commit('setData', res.data);
       });
     },
@@ -159,13 +171,7 @@ export default new Vuex.Store({
       });
     },
     getClaim: function ({ commit, state }, { id, trail, loader }) {
-      let url = '/api/claim/' + id;
-      if (trail) {
-        trail = trail.filter((itemId) => !hasFullClaim(state, itemId));
-        if (trail.length > 0) {
-          url += '?trail=' + trail.join(',');
-        }
-      }
+      let url = addTrailToUrl('/api/claim/' + id, trail, state);
       return axios.get(url, { loader }).then((res) => {
         commit('setData', res.data);
       });
@@ -196,13 +202,7 @@ export default new Vuex.Store({
       });
     },
     getSource: function ({ commit, state }, { id, trail, loader }) {
-      let url = '/api/source/' + id;
-      if (trail) {
-        trail = trail.filter((itemId) => !hasFullClaim(state, itemId));
-        if (trail.length > 0) {
-          url += '?trail=' + trail.join(',');
-        }
-      }
+      let url = addTrailToUrl('/api/source/' + id, trail, state);
       return axios.get(url, { loader }).then((res) => {
         commit('setData', res.data);
       });

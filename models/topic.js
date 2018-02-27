@@ -164,8 +164,15 @@ export default function (sequelize, DataTypes) {
       return data;
     };
 
-    Topic.apiGetAll = async function (user) {
-      let topics = await Topic.findAll(Topic.INCLUDE(2));
+    Topic.apiGetAll = async function (user, topicIds) {
+      let query = {};
+      if (topicIds) {
+        query.where = { id: topicIds };
+      }
+      let topics = await Topic.findAll({
+        ...query,
+        ...Topic.INCLUDE(2),
+      });
       let data = { topics: {}, claims: {} };
       for (let topic of topics) {
         if (!topic.head.deleted) {

@@ -1,5 +1,6 @@
 <template>
 <div>
+  <dwd-trail :ids="trail" />
   <template v-if="topic">
     <div class="topic t1">
       <topic-content class="bubble click"
@@ -23,7 +24,7 @@
       <h3>Sub-Topics</h3>
       <router-link v-for="subTopic in subTopics"
                    class="topic block"
-                   :to="topicUrl(subTopic.id)"
+                   :to="topicUrl(subTopic.id, trail.concat(id))"
                    :key="subTopic.id">
         {{ subTopic.title }}
       </router-link>
@@ -32,7 +33,7 @@
       <h3>Key Claims</h3>
       <router-link v-for="claim in claims"
                    class="claim block"
-                   :to="claimUrl(claim.id)"
+                   :to="claimUrl(claim.id, trail.concat(id))"
                    :key="claim.id">
           <claim-content :claim="claim" />
       </router-link>
@@ -49,6 +50,7 @@ import ClaimContent from '../ClaimContent.vue';
 import DwdComments from '../DwdComments.vue';
 import DwdDrawer from '../DwdDrawer.vue';
 import DwdLoader from '../DwdLoader.vue';
+import DwdTrail from '../DwdTrail.vue';
 import IconComment from '../IconComment.vue';
 import IconEdit from '../IconEdit.vue';
 import IconHistory from '../IconHistory.vue';
@@ -63,6 +65,7 @@ export default {
     DwdComments,
     DwdDrawer,
     DwdLoader,
+    DwdTrail,
     IconComment,
     IconEdit,
     IconHistory,
@@ -93,6 +96,9 @@ export default {
       }
       return sortByStars(map(this.topic.claimIds, this.lookupClaim));
     },
+    trail: function () {
+      return this.parseTrail(this.$route.query.trail);
+    },
   },
   watch: {
     id: function () {
@@ -107,6 +113,7 @@ export default {
       if (!this.topic) {
         this.$store.dispatch('getTopic', {
           id: this.id,
+          trail: this.trail,
           loader: this.$refs.loader,
         });
       }

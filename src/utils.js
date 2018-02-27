@@ -183,8 +183,15 @@ export var DwdUtilsMixin = {
       }
       return this.$store.state.topics[topicId] || null;
     },
-    topicUrl: function (topicId) {
-      return '/topic/' + topicId;
+    parseTrail: function (queryTrail) {
+      return queryTrail ? queryTrail.split(',') : [];
+    },
+    topicUrl: function (topicId, trail) {
+      let url = '/topic/' + topicId;
+      if (trail && trail.length > 0) {
+        url += '?trail=' + trail.join(',');
+      }
+      return url;
     },
     claimUrl: function (claimId, trail) {
       let url = '/claim/' + claimId;

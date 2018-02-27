@@ -1,7 +1,8 @@
 import Router from 'express-promise-router';
 
-import { Comment, Topic, TopicRev } from '../models';
 import { AuthError } from './error';
+import { Comment, Topic, TopicRev } from '../models';
+import { getTrailData } from '../models/utils';
 
 const router = Router();
 
@@ -21,7 +22,7 @@ router.post('/', async function (req, res) {
 });
 
 router.get('/:id', async function (req, res) {
-  let data = await Topic.apiGet(req.params.id, req.user);
+  let data = await getTrailData(req.query.trail, req.user, req.params.id);
   res.json(data);
 });
 

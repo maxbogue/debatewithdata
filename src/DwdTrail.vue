@@ -1,56 +1,56 @@
 <template>
-<div v-if="items.length > 0" :class="$style.trail">
-  <template v-for="[item, isFor, url] in items">
+<div v-if="topics.length + items.length > 0" :class="$style.trail">
+  <router-link v-for="(topic, i) in topics"
+               class="block topic"
+               :to="topicUrl(topic.id, ids.slice(0, i))"
+               :key="topic.id">{{ topic.title }}</router-link>
+  <template v-for="[item, url, isFor] in items">
     <router-link v-if="url"
                  :class="itemClass(isFor)"
                  :to="url"
-                 :key="item.id">
-      {{ item.text }}
-    </router-link>
-    <div v-else :class="itemClass(isFor)" :key="item.id">{{ item.text }}</div>
+                 :key="item.id">{{ item.text }}</router-link>
+    <div v-else
+         :class="itemClass(isFor)"
+         :key="item.id">{{ item.text }}</div>
   </template>
 </div>
 </template>
 
 <script>
-const ID_REGEX = /^[0-9a-f]{12}$/;
+import map from 'lodash/map';
+import takeWhile from 'lodash/takeWhile';
 
 export default {
+  props: {
+    ids: { type: Array, required: true },
+  },
   computed: {
-    ids: function () {
-      if (!this.$route.query.trail) {
-        return [];
-      }
-      let ids = this.$route.query.trail.split(',');
-      for (let i = 0; i < ids.length; i++) {
-        if (!ID_REGEX.test(ids[i])) {
-          console.warn('Malformed ID detected in trail: ' + ids[i]);
-          return [];
-        }
-      }
-      ids.push(this.$route.params.id);
-      return ids;
+    topics: function () {
+      return takeWhile(map(this.ids, this.lookupTopic), Boolean);
+    },
+    itemIds: function () {
+      return this.ids.slice(this.topics.length);
     },
     items: function () {
-      if (this.ids.length < 2) {
+      if (this.itemIds.length < 2) {
         return [];
       }
       let items = [];
-      let item = this.$store.state.claims[this.ids[0]];
+      let item = this.lookupClaim(this.itemIds[0]);
       let isFor = null;
-      let itemUrl = this.claimUrl(this.ids[0]);
-      for (let i = 1; i < this.ids.length; i++) {
+      let itemUrl = this.claimUrl(this.itemIds[0]);
+      for (let i = 1; i < this.itemIds.length; i++) {
         if (!item) {
           return [];
         }
-        let nextId = this.ids[i];
+        let nextId = this.itemIds[i];
         let [wasFound, nextIsFor, next, nextUrl] =
             this.findInside(item.points, nextId);
         if (!wasFound) {
           console.warn('Broken link found in trail: ' + nextId);
           return [];
         }
-        items.push([item, isFor, itemUrl]);
+        items.push([item, itemUrl, isFor]);
         item = next;
         isFor = isFor === null ? nextIsFor : isFor === nextIsFor;
         itemUrl = nextUrl;
@@ -58,16 +58,16 @@ export default {
       return items;
     },
     lastIsFor: function () {
-      if (this.ids.length < 2) {
+      if (this.itemIds.length < 2) {
         return null;
       }
-      let item = this.$store.state.claims[this.ids[0]];
+      let item = this.lookupClaim(this.itemIds[0]);
       let isFor = null;
-      for (let i = 1; i < this.ids.length; i++) {
+      for (let i = 1; i < this.itemIds.length; i++) {
         if (!item) {
           return null;
         }
-        let nextId = this.ids[i];
+        let nextId = this.itemIds[i];
         let [wasFound, nextIsFor, next] = this.findInside(item.points, nextId);
         if (!wasFound) {
           return null;
@@ -83,6 +83,7 @@ export default {
       this.$emit('lastIsFor', this.lastIsFor);
     },
   },
+  mountedTriggersWatchers: true,
   methods: {
     findInside: function (points, id) {
       if (!points) {
@@ -111,7 +112,7 @@ export default {
     },
     itemClass: function (isFor) {
       let color = isFor === null ? 'blue' : isFor ? 'purple' : 'amber';
-      return ['bubble', color];
+      return ['block', color];
     },
   },
 };
@@ -121,10 +122,11 @@ export default {
 .trail
   margin-bottom: -8px
 
-  \:global(.bubble)
+  \:global(.block)
     display: block
+    font-size: 0.8em
     margin: 8px auto 0
-    padding: 8px
+    padding: 0.8em 1em
     text-decoration: none
     width: 50%
 </style>

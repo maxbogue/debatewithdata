@@ -1,9 +1,9 @@
 import Router from 'express-promise-router';
 import map from 'lodash/map';
 
-import { Claim, Comment, Source, SourceRev } from '../models';
-import { addApiData } from '../models/utils';
 import { AuthError } from './error';
+import { Comment, Source, SourceRev } from '../models';
+import { addApiData, getTrailData } from '../models/utils';
 
 const router = Router();
 
@@ -23,13 +23,9 @@ router.post('/', async function (req, res) {
 });
 
 router.get('/:id', async function (req, res) {
-  let data = await Source.apiGet(req.params.id);
-  if (req.query.trail) {
-    let claimIds = req.query.trail.split(',');
-    let trailData = await Claim.apiGetAll(req.user, claimIds);
-    addApiData(trailData, data);
-    data = trailData;
-  }
+  let data = await getTrailData(req.query.trail, req.user);
+  let sourceData = await Source.apiGet(req.params.id);
+  addApiData(data, sourceData);
   res.json(data);
 });
 
