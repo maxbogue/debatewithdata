@@ -2,14 +2,14 @@
 <div>
   <claim-content v-if="point.type === 'claim'"
                  :claim="claim"
-                 :trail="trail"></claim-content>
+                 :trail="trail" />
   <source-content v-else-if="point.type === 'source'"
                   :source="source"
-                  :trail="trail"></source-content>
+                  :trail="trail" />
   <source-content v-else-if="point.type === 'newSource'"
                   :source="point.source"
-                  :trail="trail"></source-content>
-  <claim-content v-else :claim="point"></claim-content>
+                  :trail="trail" />
+  <claim-content v-else :claim="point" />
 </div>
 </template>
 

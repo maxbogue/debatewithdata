@@ -11,7 +11,7 @@
               @click.native="showModal = true" />
   <div class="info">
     <span class="id mono">{{ point.id || 'new' }}</span>
-    <span class="delete click fas fa-trash" @click="$emit('delete')" />
+    <span class="delete click fas fa-trash" @click="$emit('delete')"></span>
   </div>
   <ul v-if="isSubClaim" class="sub-points">
     <div class="sub-point block click"

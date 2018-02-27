@@ -4,7 +4,7 @@
                :to="claimUrl(claim.id, trail)"
                class="link-icon fas fa-link" />
   <span v-if="trail && claim && !claim.id"
-        class="link-icon fas fa-arrow-circle-up" />
+        class="link-icon fas fa-arrow-circle-up"></span>
   <template v-if="claim && !claim.deleted">
     <dwd-flag v-if="claim.flag" :flag="claim.flag" />
     <span>{{ claim.text }}</span>

@@ -9,8 +9,7 @@
 <div v-else-if="error" :class="[$style.loader, $style.error]">
   {{ error }}
 </div>
-<div v-else-if="fill" :class="$style.loader">
-</div>
+<div v-else-if="fill" :class="$style.loader"></div>
 <div v-else></div>
 </template>
 

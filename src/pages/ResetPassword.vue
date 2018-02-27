@@ -5,8 +5,8 @@
   <form class="auth" @submit.prevent="submit">
     <input type="password"
            placeholder="password"
-           v-model="password" />
-    <dwd-loader ref="loader"></dwd-loader>
+           v-model="password">
+    <dwd-loader ref="loader" />
     <button type="submit" class="dwd-btn dwd-btn-primary">
       Submit
     </button>

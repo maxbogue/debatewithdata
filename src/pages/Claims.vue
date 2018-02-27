@@ -6,13 +6,13 @@
   <div class="block no-pad center">
     <router-link :to="addUrl" class="dwd-btn blue-dark">New Claim</router-link>
   </div>
-  <dwd-loader ref="loader"></dwd-loader>
+  <dwd-loader ref="loader" />
   <template v-if="claimsLoaded">
     <router-link v-for="claim in claims"
                  class="claim block"
                  :to="claimUrl(claim.id)"
                  :key="claim.id">
-        <claim-content :claim="claim"></claim-content>
+        <claim-content :claim="claim" />
     </router-link>
   </template>
 </div>

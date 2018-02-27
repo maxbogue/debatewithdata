@@ -4,7 +4,7 @@
   <div class="block no-pad center">
     <router-link :to="addUrl" class="dwd-btn pink-dark">New Topic</router-link>
   </div>
-  <dwd-loader ref="loader"></dwd-loader>
+  <dwd-loader ref="loader" />
   <template v-if="topicsLoaded">
     <router-link v-for="topic in rootTopics"
                  class="topic block"

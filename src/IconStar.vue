@@ -3,7 +3,7 @@
   <span class="fa-star"
         :class="classes"
         :title="star.count + ' stars'"
-        @click="toggle" />
+        @click="toggle"></span>
   <span class="mono"
         :class="$style.count">{{ star.count }}</span>
 </span>

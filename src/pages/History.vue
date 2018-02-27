@@ -32,7 +32,7 @@
                :rev-id="revId"
                :data="data" />
   </template>
-  <dwd-loader ref="loader"></dwd-loader>
+  <dwd-loader ref="loader" />
 </div>
 </template>
 

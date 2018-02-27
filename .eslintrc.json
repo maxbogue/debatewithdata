@@ -62,12 +62,16 @@
 
         "vue/html-closing-bracket-spacing": ["error"],
         "vue/html-indent": ["off"],
-        "vue/html-self-closing": ["off"],
+        "vue/html-self-closing": ["error", {
+            "html": {
+                "normal": "never"
+            }
+        }],
         "vue/max-attributes-per-line": ["error", {
             "singleline": 99,
             "multiline": {
-              "max": 1,
-              "allowFirstLine": true
+                "max": 1,
+                "allowFirstLine": true
             }
         }]
     }

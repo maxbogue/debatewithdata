@@ -1,12 +1,12 @@
 <template>
 <div class="center">
-  <dwd-loader ref="loader"></dwd-loader>
+  <dwd-loader ref="loader" />
   <template v-if="invites">
     <h2>Invite Codes</h2>
     <form class="auth" @submit.prevent="submit">
       <input type="text"
              placeholder="note"
-             v-model="note" />
+             v-model="note">
       <button type="submit"
               class="dwd-btn dwd-btn-primary"
               :disabled="!note">New Invite</button>

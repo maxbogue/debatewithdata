@@ -3,7 +3,7 @@
   <point-content class="bubble click"
                  @click.native="showDrawer = !showDrawer"
                  :point="point"
-                 :trail="trail"></point-content>
+                 :trail="trail" />
   <dwd-drawer :show="showDrawer">
     <div class="info">
       <span class="id mono">{{ point.id }}</span>

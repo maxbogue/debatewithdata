@@ -1,6 +1,6 @@
 <template>
 <span class="click">
-  <span class="fas fa-comment" />
+  <span class="fas fa-comment"></span>
   <span class="mono" :class="$style.count">{{ count }}</span>
 </span>
 </template>

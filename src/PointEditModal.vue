@@ -32,11 +32,11 @@
         <span v-if="isClaimLike && !promoteClaim"
               title="Promote to claim."
               class="click fas fa-arrow-circle-up"
-              @click="promoteClaim = true" />
+              @click="promoteClaim = true"></span>
         <span v-else-if="isClaimLike && promoteClaim"
               title="Don't promote to claim."
               class="click fas fa-arrow-circle-down"
-              @click="promoteClaim = false" />
+              @click="promoteClaim = false"></span>
       </div>
     </div>
   </div>

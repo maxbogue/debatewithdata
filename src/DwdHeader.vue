@@ -10,9 +10,9 @@
               aria-expanded="false"
               aria-label="Toggle navigation"
               @click="collapsed = !collapsed">
-        <span :class="$style.iconBar" />
-        <span :class="$style.iconBar" />
-        <span :class="$style.iconBar" />
+        <span :class="$style.iconBar"></span>
+        <span :class="$style.iconBar"></span>
+        <span :class="$style.iconBar"></span>
       </button>
       <div :class="[$style.navbarCollapse, {[$style.collapse]:collapsed}]">
         <ul :class="$style.navbarNav">
@@ -43,7 +43,7 @@
             <li>
               <router-link to="/account"
                            title="Account">
-                <span class="fas fa-user" />
+                <span class="fas fa-user"></span>
                 <span> {{ user.username }}</span>
               </router-link>
             </li>

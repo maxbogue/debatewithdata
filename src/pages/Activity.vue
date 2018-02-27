@@ -1,7 +1,7 @@
 <template>
 <div>
   <h1>Activity</h1>
-  <dwd-loader ref="loader"></dwd-loader>
+  <dwd-loader ref="loader" />
   <ul v-if="activity" :class="$style.activity" class="mono">
     <li v-for="item in activity" :key="item.timestamp + item.id">
       <span>{{ item.timestamp | timestamp }}</span>

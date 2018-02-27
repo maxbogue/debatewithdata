@@ -11,20 +11,20 @@
            autocomplete="off"
            placeholder="invite code"
            v-model="invite"
-           :disabled="$route.query.invite" />
+           :disabled="$route.query.invite">
     <input type="text"
            label="User name"
            autocomplete="off"
            placeholder="username"
            autofocus
-           v-model="username" />
+           v-model="username">
     <input type="password"
            placeholder="password"
-           v-model="password" />
+           v-model="password">
     <input type="text"
            placeholder="email address"
-           v-model="email" />
-    <dwd-loader ref="loader"></dwd-loader>
+           v-model="email">
+    <dwd-loader ref="loader" />
     <button type="submit" class="dwd-btn dwd-btn-primary">
       Submit
     </button>

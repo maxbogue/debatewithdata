@@ -3,7 +3,7 @@
   <h1>DebateWithData</h1>
   <h2 :class="$style.subTitle"
       >A crowdsourced reference for the world's discussions.</h2>
-  <hr />
+  <hr>
   <h3>Have informed debates without writing your own research paper!</h3>
   <div class="block blue">
     <h3>Learn</h3>

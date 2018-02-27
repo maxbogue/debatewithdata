@@ -7,13 +7,13 @@
     <router-link :to="addUrl"
                  class="dwd-btn green-dark">New Source</router-link>
   </div>
-  <dwd-loader ref="loader"></dwd-loader>
+  <dwd-loader ref="loader" />
   <template v-if="sourcesLoaded">
     <router-link v-for="source in sources"
                  class="source block"
                  :to="sourceUrl(source.id)"
                  :key="source.id">
-      <source-content :source="source"></source-content>
+      <source-content :source="source" />
     </router-link>
   </template>
 </div>

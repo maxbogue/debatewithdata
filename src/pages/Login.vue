@@ -7,12 +7,12 @@
            autocomplete="off"
            placeholder="username"
            autofocus
-           v-model="username" />
+           v-model="username">
     <input type="password"
            placeholder="password"
-           v-model="password" />
+           v-model="password">
     <router-link to="/forgot-password">Forgot password?</router-link>
-    <dwd-loader ref="loader"></dwd-loader>
+    <dwd-loader ref="loader" />
     <button type="submit" class="dwd-btn dwd-btn-primary">
       Submit
     </button>

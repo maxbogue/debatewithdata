@@ -3,7 +3,7 @@
   <div>
     <router-link v-if="trail && source && source.id"
                  :to="sourceUrl(source.id, trail)"
-                 class="link-icon fas fa-link"></router-link>
+                 class="link-icon fas fa-link" />
     <span v-if="sourceHasContent">{{ source.text }}</span>
     <em v-else class="error">[{{ source ? 'deleted' : 'not found' }}]</em>
   </div>

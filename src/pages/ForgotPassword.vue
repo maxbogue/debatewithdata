@@ -9,8 +9,8 @@
   <form v-else class="auth" @submit.prevent="submit">
     <input type="text"
            placeholder="email"
-           v-model="email" />
-    <dwd-loader ref="loader"></dwd-loader>
+           v-model="email">
+    <dwd-loader ref="loader" />
     <button type="submit" class="dwd-btn dwd-btn-primary">
       Submit
     </button>

@@ -1,7 +1,7 @@
 <template>
 <div>
   <h1 class="center">{{ text }}</h1>
-  <dwd-loader ref="loader"></dwd-loader>
+  <dwd-loader ref="loader" />
 </div>
 </template>
 
