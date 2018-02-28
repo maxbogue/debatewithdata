@@ -82,7 +82,7 @@
       </div>
     </div>
     <div v-if="topic" class="block no-pad center">
-      <delete-button noun="Claim" @delete="remove" />
+      <delete-button noun="Topic" @delete="remove" />
     </div>
     <fixed-bottom class="center pink">
       <button type="button"
