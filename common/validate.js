@@ -17,11 +17,23 @@ validate.validators.length.tooShort =
 validate.validators.presence.options = { message: 'can\'t be blank.' };
 validate.validators.url.options = { message: 'must be a valid URL.' };
 
-const ID_REGEX = /[0-9a-f]{12}/;
+const ID_FORMAT = {
+  pattern: /[0-9a-f]{12}/,
+  message: 'must be 12 hex characters.',
+};
 const CUSTOM_VALIDATORS =
     ['presenceIff', 'presenceOnlyIf', 'validIfDeleted', 'custom', 'arrayOf'];
 
-export class ValidationError extends Error {}
+export class ValidationError extends Error {
+  constructor(key, message) {
+    if (!message) {
+      message = key;
+      key = undefined;
+    }
+    super(key ? `"${key}" ${message}` : message);
+    this.key = key;
+  }
+}
 
 export function isValid(f, ...args) {
   try {
@@ -42,10 +54,9 @@ function validatePresenceIf(key, value, item, conds, iff) {
     let exists = !validate.isEmpty(value);
     let p = validate.isArray(v) ? v.includes(item[k]) : v === item[k];
     if (iff && p && !exists) {
-      throw new ValidationError(`"${key}" required for "${k}" = "${item[k]}".`);
+      throw new ValidationError(key, `required for "${k}" = "${item[k]}".`);
     } else if (!p && exists) {
-      throw new ValidationError(
-          `"${key}" forbidden for "${k}" = "${item[k]}".`);
+      throw new ValidationError(key, `forbidden for "${k}" = "${item[k]}".`);
     }
   });
 }
@@ -55,7 +66,7 @@ function constraintToValidator(constraint, key) {
     if (item) {
       if (item.deleted && !constraint.validIfDeleted) {
         if (validate.isDefined(value)) {
-          throw new ValidationError(`"${key}" must be null for deleted item.`);
+          throw new ValidationError(key, 'must be null for deleted item.');
         } else {
           return;
         }
@@ -68,11 +79,11 @@ function constraintToValidator(constraint, key) {
       }
     }
     if (validate.isDefined(value) && constraint.custom) {
-      constraint.custom(value, item);
+      constraint.custom(value, key, item);
     }
     if (validate.isDefined(value) && constraint.arrayOf) {
       if (!validate.isArray(value)) {
-        throw new ValidationError(`"${key}" must be an array.`);
+        throw new ValidationError(key, 'must be an array.');
       }
       forEach(value, (e, i) => {
         let elementValidator = constraintToValidator(
@@ -82,7 +93,7 @@ function constraintToValidator(constraint, key) {
     }
     let errors = validate.single(value, omit(constraint, CUSTOM_VALIDATORS));
     if (errors) {
-      throw new ValidationError(`"${key}" ${errors[0]}`);
+      throw new ValidationError(key, errors[0]);
     }
   };
   validator.forDb = {
@@ -100,19 +111,19 @@ function constraintToValidator(constraint, key) {
 
 const DATE_REGEX = /^(\d{4})(?:-(\d\d)(?:-(\d\d))?)?$/;
 
-function validateDate(s) {
+function validateDate(s, key) {
   let match = s.match(DATE_REGEX);
   if (!match) {
-    throw new ValidationError('must be formatted like YYYY[-MM[-DD]].');
+    throw new ValidationError(key, 'must be formatted like YYYY[-MM[-DD]].');
   }
   // Uses the lexicographical ordering of ISO strings.
   if (s > new Date().toISOString().slice(0, 10)) {
-    throw new ValidationError('must be in the past.');
+    throw new ValidationError(key, 'must be in the past.');
   }
   if (match[2]) {
     let d = new Date(s);
     if (!d || d.getUTCMonth() + 1 !== Number(match[2])) {
-      throw new ValidationError('must be a valid date.');
+      throw new ValidationError(key, 'must be a valid date.');
     }
   }
 }
@@ -147,9 +158,9 @@ validate.extend(validateSource, sourceValidators);
 // Points //
 ////////////
 
-function validatePoints(points) {
+function validatePoints(points, key) {
   if (points.length !== 2) {
-    throw new ValidationError('"points" must be an array of 2.');
+    throw new ValidationError(key, 'must be an array of 2.');
   }
   forEach(points[0], validatePoint);
   forEach(points[1], validatePoint);
@@ -169,7 +180,7 @@ const pointConstraints = {
   },
   claimId: {
     presenceIff: { type: PointType.CLAIM },
-    format: ID_REGEX,
+    format: ID_FORMAT,
   },
   source: {
     presenceIff: { type: PointType.NEW_SOURCE },
@@ -177,7 +188,7 @@ const pointConstraints = {
   },
   sourceId: {
     presenceIff: { type: PointType.SOURCE },
-    format: ID_REGEX,
+    format: ID_FORMAT,
   },
   points: {
     presenceIff: { type: [PointType.SUBCLAIM, PointType.NEW_CLAIM] },
@@ -231,7 +242,7 @@ const topicConstraints = {
   claimIds: {
     presence: true,
     arrayOf: {
-      format: ID_REGEX,
+      format: ID_FORMAT,
     },
   },
 };
