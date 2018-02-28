@@ -129,6 +129,11 @@ function validateDate(s, key) {
 }
 
 const sourceConstraints = {
+  deleteMessage: {
+    validIfDeleted: true,
+    presenceIff: { deleted: true },
+    length: { minimum: 10 },
+  },
   url: { presence: true, url: true },
   text: { presence: true, length: { minimum: 10 } },
   date: { custom: validateDate },
@@ -208,6 +213,11 @@ validate.extend(validatePoint, pointValidators);
 ////////////
 
 const claimConstraints = {
+  deleteMessage: {
+    validIfDeleted: true,
+    presenceIff: { deleted: true },
+    length: { minimum: 10 },
+  },
   text: { presence: true, length: { minimum: 10 } },
   flag: { inclusion: { within: FlagData } },
   points: { presence: true, custom: validatePoints },
@@ -230,6 +240,11 @@ const TOPIC_ID_FORMAT = {
 };
 
 const topicConstraints = {
+  deleteMessage: {
+    validIfDeleted: true,
+    presenceIff: { deleted: true },
+    length: { minimum: 10 },
+  },
   id: { format: TOPIC_ID_FORMAT },
   title: { presence: { allowEmpty: false } },
   text: { presence: true },

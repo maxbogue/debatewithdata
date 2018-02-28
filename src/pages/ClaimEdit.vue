@@ -134,9 +134,10 @@ export default {
         this.$router.push(this.claimUrl(id));
       });
     },
-    remove: function () {
+    remove: function (message) {
       this.$store.dispatch('removeClaim', {
         id: this.id,
+        message,
       }).then(() => {
         this.$router.push('/claims');
       });

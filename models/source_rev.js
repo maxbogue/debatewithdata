@@ -37,6 +37,11 @@ export default function (sequelize, DataTypes) {
       allowNull: false,
       defaultValue: false,
     },
+    deleteMessage: {
+      field: 'delete_message',
+      type: DataTypes.TEXT,
+      validate: validateSource.deleteMessage.forDb,
+    },
   });
 
   SourceRev.associate = function (models) {
@@ -86,6 +91,7 @@ export default function (sequelize, DataTypes) {
       if (this.deleted) {
         return {
           deleted: true,
+          deleteMessage: this.deleteMessage,
         };
       }
 

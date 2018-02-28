@@ -3,7 +3,7 @@ import map from 'lodash/map';
 
 import { AuthError } from './error';
 import { Claim, ClaimRev, Comment } from '../models';
-import { getTrailData } from '../models/utils';
+import { addApiData, getTrailData } from '../models/utils';
 
 const router = Router();
 
@@ -23,7 +23,9 @@ router.post('/', async function (req, res) {
 });
 
 router.get('/:id', async function (req, res) {
-  let data = await getTrailData(req.query.trail, req.user, req.params.id);
+  let data = await getTrailData(req.query.trail, req.user);
+  let claimData = await Claim.apiGet(req.params.id, req.user);
+  addApiData(data, claimData);
   res.json(data);
 });
 
@@ -40,7 +42,7 @@ router.delete('/:id', async function (req, res) {
   if (!req.user) {
     throw new AuthError();
   }
-  let rev = await Claim.apiDelete(req.params.id, req.user);
+  let rev = await Claim.apiDelete(req.params.id, req.user, req.query.message);
   let data = await Claim.apiGet(rev.claimId, req.user);
   res.json(data);
 });

@@ -48,6 +48,8 @@ const AUTHORITY = {
   institution: INSTITUTION,
 };
 
+const DELETE_MSG = 'Violates guidelines.';
+
 describe('Source', function () {
   let user;
 
@@ -182,7 +184,7 @@ describe('Source', function () {
       let source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
-      let rev2 = await Source.apiDelete(source.id, user);
+      let rev2 = await Source.apiDelete(source.id, user, DELETE_MSG);
       expect(rev2.deleted).to.be.true;
       expect(rev2.userId).to.equal(user.id);
       expect(rev2.blobHash).to.be.null;
@@ -202,13 +204,13 @@ describe('Source', function () {
       let source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
-      let rev2 = await Source.apiDelete(source.id, user);
+      let rev2 = await Source.apiDelete(source.id, user, DELETE_MSG);
       expect(rev2.deleted).to.be.true;
       expect(rev2.parentId).to.equal(rev1.id);
       await source.reload();
       expect(source.headId).to.equal(rev2.id);
 
-      let rev3 = await Source.apiDelete(source.id, user);
+      let rev3 = await Source.apiDelete(source.id, user, DELETE_MSG);
       expect(rev3.id).to.equal(rev2.id);
       expect(rev3.parentId).to.equal(rev1.id);
     });
@@ -238,13 +240,14 @@ describe('Source', function () {
 
     it('source deleted', async function () {
       let r1 = await Source.apiCreate(user, MISC);
-      let r2 = await Source.apiDelete(r1.sourceId, user);
+      let r2 = await Source.apiDelete(r1.sourceId, user, DELETE_MSG);
       let sourceData = await Source.apiGet(r1.sourceId);
       expect(sourceData).to.deep.equal({
         sources: {
           [r1.sourceId]: {
             rev: r2.id,
             deleted: true,
+            deleteMessage: DELETE_MSG,
             claimIds: [],
             commentCount: 0,
           },
@@ -349,7 +352,7 @@ describe('Source', function () {
     it('excludes deleted', async function () {
       let s1r = await Source.apiCreate(user, RESEARCH);
       let s2r = await Source.apiCreate(user, ARTICLE);
-      await Source.apiDelete(s2r.sourceId, user);
+      await Source.apiDelete(s2r.sourceId, user, DELETE_MSG);
       let sourcesData = await Source.apiGetAll();
       expect(sourcesData).to.deep.equal({
         [s1r.sourceId]: {

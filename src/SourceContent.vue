@@ -5,7 +5,7 @@
                  :to="sourceUrl(source.id, trail)"
                  class="link-icon fas fa-link" />
     <span v-if="sourceHasContent">{{ source.text }}</span>
-    <em v-else class="error">[{{ source ? 'deleted' : 'not found' }}]</em>
+    <em v-else class="error">{{ errorMessage }}</em>
   </div>
   <div v-if="sourceHasContent" :class="$style.metadata">
     <div v-if="source.date">{{ source.date }}</div>
@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import { itemErrorMessage } from './utils';
+
 export default {
   props: {
     source: { type: Object, required: true },
@@ -33,6 +35,9 @@ export default {
   computed: {
     sourceHasContent: function () {
       return this.source && !this.source.deleted;
+    },
+    errorMessage: function () {
+      return itemErrorMessage(this.source);
     },
   },
 };

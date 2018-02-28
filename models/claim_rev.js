@@ -1,4 +1,5 @@
-import { genRevId, isValidFlag } from './utils';
+import { genRevId } from './utils';
+import { validateClaim } from '../common/validate';
 
 export default function (sequelize, DataTypes) {
   const ClaimRev = sequelize.define('claim_rev', {
@@ -9,12 +10,17 @@ export default function (sequelize, DataTypes) {
     },
     flag: {
       type: DataTypes.TEXT,
-      validate: { isValidFlag },
+      validate: validateClaim.flag.forDb,
     },
     deleted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+    },
+    deleteMessage: {
+      field: 'delete_message',
+      type: DataTypes.TEXT,
+      validate: validateClaim.deleteMessage.forDb,
     },
   });
 
@@ -78,6 +84,7 @@ export default function (sequelize, DataTypes) {
       if (this.deleted) {
         return {
           deleted: true,
+          deleteMessage: this.deleteMessage,
         };
       }
 

@@ -12,6 +12,8 @@ const ID2 = 'topic-id2';
 const TITLE = 'title';
 const TITLE2 = 'title2';
 
+const DELETE_MSG = 'Violates guidelines.';
+
 const STARS_AND_COMMENTS = {
   star: {
     count: 0,
@@ -282,13 +284,14 @@ describe('Topic', function () {
         subTopicIds: [],
       });
 
-      let r2 = await Topic.apiDelete(ID, user);
+      let r2 = await Topic.apiDelete(ID, user, DELETE_MSG);
 
       await r2.reload(TopicRev.INCLUDE(3));
       expect(r2.topicId).to.equal(ID);
       expect(r2.parentId).to.equal(r1.id);
       expect(r2.userId).to.equal(user.id);
       expect(r2.deleted).to.be.true;
+      expect(r2.deleteMessage).to.equal(DELETE_MSG);
       expect(r2.blobHash).to.be.null;
       expect(r2.claims).to.have.lengthOf(0);
       expect(r2.subTopics).to.have.lengthOf(0);
@@ -306,8 +309,8 @@ describe('Topic', function () {
         subTopicIds: [],
       });
 
-      let r2 = await Topic.apiDelete(ID, user);
-      let r3 = await Topic.apiDelete(ID, user);
+      let r2 = await Topic.apiDelete(ID, user, DELETE_MSG);
+      let r3 = await Topic.apiDelete(ID, user, DELETE_MSG);
 
       expect(r3.id).to.equal(r2.id);
       expect(r3.parentId).to.equal(r1.id);
@@ -363,13 +366,14 @@ describe('Topic', function () {
         claimIds: [],
         subTopicIds: [],
       });
-      let r2 = await Topic.apiDelete(ID, user);
+      let r2 = await Topic.apiDelete(ID, user, DELETE_MSG);
       let data = await Topic.apiGet(ID);
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
             rev: r2.id,
             deleted: true,
+            deleteMessage: DELETE_MSG,
             depth: 3,
             ...STARS_AND_COMMENTS,
           },
@@ -436,7 +440,7 @@ describe('Topic', function () {
         claimIds: [],
         subTopicIds: [],
       });
-      await Topic.apiDelete(ID2, user);
+      await Topic.apiDelete(ID2, user, DELETE_MSG);
       let data = await Topic.apiGetAll();
       expect(data).to.deep.equal({
         topics: {

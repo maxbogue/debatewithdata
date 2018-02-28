@@ -19,6 +19,11 @@ export default function (sequelize, DataTypes) {
       allowNull: false,
       defaultValue: false,
     },
+    deleteMessage: {
+      field: 'delete_message',
+      type: DataTypes.TEXT,
+      validate: validateTopic.deleteMessage.forDb,
+    },
   });
 
   TopicRev.associate = function (models) {
@@ -117,20 +122,29 @@ export default function (sequelize, DataTypes) {
       return topicRev;
     };
 
+    TopicRev.prototype.toCoreData = function () {
+      if (this.deleted) {
+        return {
+          deleted: true,
+          deleteMessage: this.deleteMessage,
+        };
+      }
+
+      return {
+        text: this.blob.text,
+        title: this.title,
+        subTopicIds: map(this.subTopics, (topic) => topic.id),
+        claimIds: map(this.claims, (claim) => claim.id),
+      };
+    };
+
     TopicRev.prototype.fillData = async function (data) {
-      let thisData = {};
+      let thisData = this.toCoreData();
       thisData.id = this.id;
       thisData.username = this.user.username;
       thisData.createdAt = this.created_at;
 
-      if (this.deleted) {
-        thisData.deleted = true;
-      } else {
-        thisData.text = this.blob.text;
-        thisData.title = this.title;
-        thisData.subTopicIds = map(this.subTopics, (topic) => topic.id);
-        thisData.claimIds = map(this.claims, (claim) => claim.id);
-
+      if (!this.deleted) {
         for (let subTopic of this.subTopics) {
           await subTopic.fillData(data, 1);
         }

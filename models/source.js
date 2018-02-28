@@ -2,7 +2,7 @@ import isEqual from 'lodash/isEqual';
 import map from 'lodash/map';
 
 import { NotFoundError } from '../api/error';
-import { validateSource } from '../common/validate';
+import { ValidationError, validateSource } from '../common/validate';
 import { genId } from './utils';
 
 export default function (sequelize, DataTypes) {
@@ -105,16 +105,20 @@ export default function (sequelize, DataTypes) {
       return rev;
     };
 
-    Source.apiDelete = async function (sourceId, user, transaction) {
+    Source.apiDelete = async function (sourceId, user, msg, transaction) {
       if (!transaction) {
         return await sequelize.transaction(function(t) {
-          return Source.apiDelete(sourceId, user, t);
+          return Source.apiDelete(sourceId, user, msg, t);
         });
       }
 
       let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
         throw new NotFoundError('Source not found: ' + sourceId);
+      }
+
+      if (!msg) {
+        throw new ValidationError('deleteMessage', 'must exist.');
       }
 
       if (source.head.deleted) {
@@ -126,6 +130,7 @@ export default function (sequelize, DataTypes) {
         sourceId: source.id,
         parentId: source.headId,
         deleted: true,
+        deleteMessage: msg,
       }, { transaction });
       await source.setHead(rev, { transaction });
       return rev;

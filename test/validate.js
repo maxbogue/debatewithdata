@@ -139,21 +139,30 @@ describe('validate', function () {
     });
 
     it('deleted', function () {
+      const DELETE_MSG = 'Violates guidelines.';
       expectValid({
         deleted: true,
+        deleteMessage: DELETE_MSG,
       });
       expectInvalid({
         deleted: true,
+        // Missing message.
+      });
+      expectInvalid({
+        deleted: true,
+        deleteMessage: DELETE_MSG,
         // Type not allowed.
         type: SourceType.MISC,
       });
       expectInvalid({
         deleted: true,
+        deleteMessage: DELETE_MSG,
         // URL not allowed.
         url: GOOD_URL,
       });
       expectInvalid({
         deleted: true,
+        deleteMessage: DELETE_MSG,
         // Text not allowed.
         text: GOOD_TEXT,
       });

@@ -1,6 +1,6 @@
 import { NotFoundError } from '../api/error';
+import { ValidationError, validateClaim } from '../common/validate';
 import { genId } from './utils';
-import { validateClaim } from '../common/validate';
 
 export default function (sequelize, DataTypes) {
   const Claim = sequelize.define('claim', {
@@ -117,16 +117,20 @@ export default function (sequelize, DataTypes) {
       return claimRev;
     };
 
-    Claim.apiDelete = async function (claimId, user, transaction) {
+    Claim.apiDelete = async function (claimId, user, msg, transaction) {
       if (!transaction) {
         return await sequelize.transaction(function(t) {
-          return Claim.apiDelete(claimId, user, t);
+          return Claim.apiDelete(claimId, user, msg, t);
         });
       }
 
       let claim = await Claim.findById(claimId, Claim.INCLUDE(1));
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
+      }
+
+      if (!msg) {
+        throw new ValidationError('deleteMessage', 'must exist.');
       }
 
       if (claim.head.deleted) {
@@ -138,6 +142,7 @@ export default function (sequelize, DataTypes) {
         claimId: claim.id,
         parentId: claim.headId,
         deleted: true,
+        deleteMessage: msg,
       });
       await claim.setHead(claimRev);
       return claimRev;

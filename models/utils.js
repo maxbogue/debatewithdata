@@ -58,11 +58,8 @@ export function addApiData(data, otherData) {
   }
 }
 
-export async function getTrailData(trail, user, bonusId) {
+export async function getTrailData(trail, user) {
   let ids = trail ? trail.split(',') : [];
-  if (bonusId) {
-    ids.push(bonusId);
-  }
   if (ids.length === 0) {
     return {};
   }

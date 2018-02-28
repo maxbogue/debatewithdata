@@ -1,38 +1,65 @@
 <template>
-<button type="button"
-        class="dwd-btn red-dark"
-        @click="click">{{ text }}</button>
+<div>
+  <button type="button"
+          class="dwd-btn red-dark"
+          @click="show = true">{{ text }}</button>
+  <dwd-modal :show="show" @close="close" @cancel="cancel">
+    <div :class="$style.block">
+      <div class="bubble">
+        <dwd-input v-model="message"
+                   :validate="validate"
+                   focus
+                   placeholder="delete reason" />
+      </div>
+      <div class="info">
+        <button type="submit"
+                class="dwd-btn red-dark">Confirm</button>
+        <button type="button"
+                class="dwd-btn white"
+                @click="cancel">Cancel</button>
+      </div>
+    </div>
+  </dwd-modal>
+</div>
 </template>
 
 <script>
+import DwdInput from './DwdInput.vue';
+import DwdModal from './DwdModal.vue';
+import { validateClaim } from '../common/validate';
+
 export default {
+  components: {
+    DwdInput,
+    DwdModal,
+  },
   props: {
     noun: { type: String, required: true },
   },
   data: () => ({
-    awaitingConfirmation: false,
+    show: false,
+    message: '',
+    validate: validateClaim.deleteMessage,
   }),
   computed: {
     text: function () {
-      if (this.awaitingConfirmation) {
-        return 'Really Delete?';
-      }
       return 'Delete ' + this.noun;
     },
   },
   methods: {
-    click: function () {
-      if (this.awaitingConfirmation) {
-        this.$emit('delete');
-        return;
-      }
-      setTimeout(() => {
-        this.awaitingConfirmation = true;
-        setTimeout(() => {
-          this.awaitingConfirmation = false;
-        }, 2000);
-      }, 200);
+    close: function () {
+      this.$emit('delete', this.message);
+      this.cancel();
+    },
+    cancel: function () {
+      this.show = false;
+      this.message = '';
     },
   },
 };
 </script>
+
+<style lang="sass" module>
+.block
+  background-color: #fff
+</style>

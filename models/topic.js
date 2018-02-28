@@ -1,5 +1,3 @@
-import map from 'lodash/map';
-
 import { NotFoundError } from '../api/error';
 import { ValidationError, validateTopic } from '../common/validate';
 
@@ -93,16 +91,20 @@ export default function (sequelize, DataTypes) {
       return models.TopicRev.createForApi(topic, user, data, transaction);
     };
 
-    Topic.apiDelete = async function (id, user, transaction) {
+    Topic.apiDelete = async function (id, user, msg, transaction) {
       if (!transaction) {
         return await sequelize.transaction(function(t) {
-          return Topic.apiDelete(id, user, t);
+          return Topic.apiDelete(id, user, msg, t);
         });
       }
 
       let topic = await Topic.findById(id, Topic.INCLUDE(3));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
+      }
+
+      if (!msg) {
+        throw new ValidationError('deleteMessage', 'must exist.');
       }
 
       if (topic.head.deleted) {
@@ -114,6 +116,7 @@ export default function (sequelize, DataTypes) {
         topicId: topic.id,
         parentId: topic.headId,
         deleted: true,
+        deleteMessage: msg,
       });
       await topic.setHead(topicRev);
       return topicRev;
@@ -125,21 +128,13 @@ export default function (sequelize, DataTypes) {
         return;
       }
 
-      let thisData = {
-        rev: this.headId,
-        depth: this.head.deleted ? 3 : depth,
-        star: await this.toStarData(user),
-        commentCount: await this.countComments(),
-      };
+      let thisData = this.head.toCoreData();
+      thisData.rev = this.headId;
+      thisData.depth = this.head.deleted ? 3 : depth;
+      thisData.star = await this.toStarData(user);
+      thisData.commentCount = await this.countComments();
 
-      if (this.head.deleted) {
-        thisData.deleted = true;
-      } else {
-        thisData.text = this.head.blob.text;
-        thisData.title = this.head.title;
-        thisData.subTopicIds = map(this.head.subTopics, (topic) => topic.id);
-        thisData.claimIds = map(this.head.claims, (claim) => claim.id);
-
+      if (!this.head.deleted) {
         if (depth > 1) {
           for (let subTopic of this.head.subTopics) {
             await subTopic.fillData(data, depth - 1, user);

@@ -158,6 +158,18 @@ export function diffPointRevs(newItem, oldItem) {
   return pointRevs;
 }
 
+export function itemErrorMessage(item) {
+  if (!item) {
+    return '[Not Found]';
+  } else if (item.deleted) {
+    if (item.deleteMessage) {
+      return '[Deleted: ' + item.deleteMessage + ']';
+    }
+    return '[Deleted]';
+  }
+  return '';
+}
+
 export var DwdUtilsMixin = {
   filters: {
     toSideString: function (isFor) {

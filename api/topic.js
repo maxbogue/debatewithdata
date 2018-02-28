@@ -2,7 +2,7 @@ import Router from 'express-promise-router';
 
 import { AuthError } from './error';
 import { Comment, Topic, TopicRev } from '../models';
-import { getTrailData } from '../models/utils';
+import { addApiData, getTrailData } from '../models/utils';
 
 const router = Router();
 
@@ -22,7 +22,9 @@ router.post('/', async function (req, res) {
 });
 
 router.get('/:id', async function (req, res) {
-  let data = await getTrailData(req.query.trail, req.user, req.params.id);
+  let data = await getTrailData(req.query.trail, req.user);
+  let topicData = await Topic.apiGet(req.params.id, req.user);
+  addApiData(data, topicData);
   res.json(data);
 });
 
@@ -39,7 +41,7 @@ router.delete('/:id', async function (req, res) {
   if (!req.user) {
     throw new AuthError();
   }
-  let rev = await Topic.apiDelete(req.params.id, req.user);
+  let rev = await Topic.apiDelete(req.params.id, req.user, req.query.message);
   let data = await Topic.apiGet(rev.topicId, req.user);
   res.json(data);
 });

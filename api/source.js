@@ -44,7 +44,7 @@ router.delete('/:id', async function (req, res) {
   if (!req.user) {
     throw new AuthError();
   }
-  let rev = await Source.apiDelete(req.params.id, req.user);
+  let rev = await Source.apiDelete(req.params.id, req.user, req.query.message);
   let data = await Source.apiGet(rev.sourceId);
   res.json(data);
 });

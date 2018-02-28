@@ -6,6 +6,8 @@ import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
+const DELETE_MSG = 'Violates guidelines.';
+
 describe('Claim', function () {
   let user;
 
@@ -177,9 +179,10 @@ describe('Claim', function () {
       let claim = await Claim.findById(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
-      let r2 = await Claim.apiDelete(claim.id, user);
+      let r2 = await Claim.apiDelete(claim.id, user, DELETE_MSG);
       await r2.reload(ClaimRev.INCLUDE(2));
       expect(r2.deleted).to.be.true;
+      expect(r2.deleteMessage).to.equal(DELETE_MSG);
       expect(r2.userId).to.equal(user.id);
       expect(r2.parentId).to.equal(r1.id);
       expect(r2.blobHash).to.be.null;
@@ -197,11 +200,11 @@ describe('Claim', function () {
       let claim = await Claim.findById(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
-      let r2 = await Claim.apiDelete(claim.id, user);
+      let r2 = await Claim.apiDelete(claim.id, user, DELETE_MSG);
       await claim.reload();
       expect(claim.headId).to.equal(r2.id);
 
-      let r3 = await Claim.apiDelete(claim.id, user);
+      let r3 = await Claim.apiDelete(claim.id, user, DELETE_MSG);
       expect(r3.id).to.equal(r2.id);
       expect(r3.parentId).to.equal(r1.id);
     });
@@ -490,7 +493,7 @@ describe('Claim', function () {
         text: FOO,
         points: [[], []],
       });
-      let r2 = await Claim.apiDelete(r1.claimId, user);
+      let r2 = await Claim.apiDelete(r1.claimId, user, DELETE_MSG);
       let claimData = await Claim.apiGet(r1.claimId);
       expect(claimData).to.deep.equal({
         claims: {
@@ -498,6 +501,7 @@ describe('Claim', function () {
             rev: r2.id,
             depth: 3,
             deleted: true,
+            deleteMessage: DELETE_MSG,
             commentCount: 0,
             star: {
               count: 0,
@@ -558,7 +562,7 @@ describe('Claim', function () {
         text: BAR,
         points: [[], []],
       });
-      await Claim.apiDelete(c2r.claimId, user);
+      await Claim.apiDelete(c2r.claimId, user, DELETE_MSG);
       let claimsData = await Claim.apiGetAll(user);
       expect(claimsData).to.deep.equal({
         claims: {
