@@ -22,8 +22,6 @@
           >{{ result.data.title || result.data.text }}</li>
     </ul>
   </div>
-  <loading-animation v-if="loading && !itemType && linkOnly"
-                     :class="$style.loader" />
   <topic-content v-if="topic" :topic="topic" />
   <claim-content v-if="claim" :claim="claim" />
   <source-content v-if="source" :source="source" />
@@ -37,7 +35,6 @@ import forEach from 'lodash/forEach';
 
 import ClaimContent from './ClaimContent.vue';
 import DwdInput from './DwdInput.vue';
-import LoadingAnimation from './LoadingAnimation.vue';
 import SourceContent from './SourceContent.vue';
 import TopicContent from './TopicContent.vue';
 
@@ -50,7 +47,6 @@ export default {
   components: {
     ClaimContent,
     DwdInput,
-    LoadingAnimation,
     SourceContent,
     TopicContent,
   },
@@ -59,7 +55,6 @@ export default {
     allowTopic: { type: Boolean, default: false },
     allowClaim: { type: Boolean, default: false },
     allowSource: { type: Boolean, default: false },
-    linkOnly: { type: Boolean, default: true },
     // DwdInput passthrough options.
     placeholder: { type: String, default: 'Text or ID' },
     validate: { type: Function, default: null },
@@ -106,8 +101,6 @@ export default {
       if (this.value && !this.itemType) {
         if (this.loading) {
           return 'Loading...';
-        } else if (this.linkOnly) {
-          return 'Item not found.';
         }
       }
       return '';
@@ -117,9 +110,7 @@ export default {
         if (this.itemType) {
           return DwdInput.SUCCESS;
         } else if (this.loading) {
-          return DwdInput.WARNING;
-        } else if (this.linkOnly) {
-          return DwdInput.ERROR;
+          return DwdInput.LOADING;
         }
       }
       return DwdInput.NORMAL;
@@ -127,7 +118,7 @@ export default {
   },
   watch: {
     value: function () {
-      this.highlighted = this.linkOnly ? 0 : -1;
+      this.highlighted = -1;
       this.loading = false;
 
       if (!ANY_ID_REGEX.test(this.value)) {

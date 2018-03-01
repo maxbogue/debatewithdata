@@ -9,7 +9,6 @@
                        id="text"
                        allow-claim
                        placeholder="claim"
-                       :link-only="false"
                        :validate="validate.text"
                        @itemType="updateIsLink" />
       <dwd-flag v-if="text && flag && !isLink" :flag="flag" />

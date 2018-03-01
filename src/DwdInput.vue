@@ -22,12 +22,11 @@ function uppercaseFirstLetter(s) {
 }
 
 const NORMAL = 'normal';
-const ERROR = 'error';
-const WARNING = 'warning';
+const LOADING = 'loading';
 const SUCCESS = 'success';
 
 export default {
-  NORMAL, ERROR, WARNING, SUCCESS,
+  NORMAL, LOADING, SUCCESS,
   props: {
     value: { type: String, required: true },
     placeholder: { type: String, default: '' },
@@ -36,8 +35,6 @@ export default {
     // Alternative to |error|; performs input validation.
     validate: { type: Function, default: null },
     // Allows overriding the state of the input. If set, an error will only be
-    // shown if state is ERROR. WARNING and SUCCESS will pass styling on to the
-    // input.
     state: { type: String, default: '' },
     // Focuses the input box whenever set to true.
     focus: { type: Boolean, default: false },
@@ -75,10 +72,7 @@ export default {
       return '';
     },
     showError: function () {
-      if (this.state) {
-        return this.state === ERROR && this.innerError;
-      }
-      return this.innerError && !this.maskError;
+      return !this.state && this.innerError && !this.maskError;
     },
     inputClasses: function () {
       let classes = [];
@@ -86,8 +80,10 @@ export default {
         classes.push('mono');
       }
       if (this.state) {
-        if ([ERROR, WARNING, SUCCESS].includes(this.state)) {
+        if (this.state === SUCCESS) {
           classes.push(this.state);
+        } else if (this.state === LOADING) {
+          classes.push(this.$style.loading);
         }
       } else {
         if (this.showError) {
@@ -129,6 +125,25 @@ export default {
 </script>
 
 <style lang="sass" module>
+@import "style/constants"
+
 .error
   font-size: 12px
+
+@keyframes dwd-border
+  0%
+    border-color: $amber-dark-primary
+  20%
+    border-color: $purple-dark-primary
+  40%
+    border-color: $green-dark-primary
+  60%
+    border-color: $blue-dark-primary
+  80%
+    border-color: $pink-dark-primary
+  100%
+    border-color: $amber-dark-primary
+
+.loading
+  animation: dwd-border 3s infinite ease
 </style>

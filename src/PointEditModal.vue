@@ -16,8 +16,7 @@
                        allow-source
                        placeholder="Text, URL, or ID"
                        :validate="validate"
-                       :link-only="false"
-                       @itemType="updateIdType" />
+                       @itemType="updateLinkType" />
       <dwd-flag v-if="isClaimLike && point.flag" :flag="point.flag" />
     </div>
     <div v-if="point.type" class="info">
@@ -81,7 +80,7 @@ export default {
     oldPoint: null,
     flag: '',
     input: '',
-    idType: '',
+    linkType: '',
     // Whether a subclaim should be promoted to a new claim.
     promoteClaim: false,
     // Flag to prevent overwriting original without a change.
@@ -106,7 +105,7 @@ export default {
   },
   watch: {
     input: function () {
-      this.idType = '';
+      this.linkType = '';
       if (this.initialized && !this.isUrl) {
         this.update();
       }
@@ -139,11 +138,11 @@ export default {
       this.close();
     },
     makePoint: function () {
-      if (this.id && !this.idType && this.oldPoint.type) {
+      if (this.id && !this.linkType && this.oldPoint.type) {
         return this.oldPoint;
-      } else if (this.idType === PointType.SOURCE) {
+      } else if (this.linkType === PointType.SOURCE) {
         return { type: PointType.SOURCE, sourceId: this.input };
-      } else if (this.idType === PointType.CLAIM) {
+      } else if (this.linkType === PointType.CLAIM) {
         return { type: PointType.CLAIM, claimId: this.input };
       } else if (isValidUrl(this.input)) {
         return {
@@ -182,8 +181,8 @@ export default {
       this.input = source.url;
       this.emitPoint({ type: PointType.NEW_SOURCE, source });
     },
-    updateIdType: function (idType) {
-      this.idType = idType;
+    updateLinkType: function (linkType) {
+      this.linkType = linkType;
       this.update();
     },
     initialize: function () {

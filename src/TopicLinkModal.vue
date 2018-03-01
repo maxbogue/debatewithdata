@@ -9,7 +9,6 @@
                        id="title"
                        allow-topic
                        placeholder="title or link"
-                       :link-only="false"
                        :validate="validate.title"
                        @itemType="updateIsLink" />
       <template v-if="title && !isLink">
