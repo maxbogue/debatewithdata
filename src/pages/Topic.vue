@@ -56,7 +56,6 @@ import IconEdit from '../IconEdit.vue';
 import IconHistory from '../IconHistory.vue';
 import IconStar from '../IconStar.vue';
 import TopicContent from '../TopicContent.vue';
-import TopicInput from '../TopicInput.vue';
 import { sortByStars } from '../utils';
 
 export default {
@@ -71,7 +70,6 @@ export default {
     IconHistory,
     IconStar,
     TopicContent,
-    TopicInput,
   },
   data: () => ({
     showComments: false,

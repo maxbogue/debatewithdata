@@ -22,13 +22,8 @@
           >{{ result.data.title || result.data.text }}</li>
     </ul>
   </div>
-  <div v-if="loading && !itemType && linkOnly" :class="$style.loader">
-    <div class="ball-pulse-sync">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-  </div>
+  <loading-animation v-if="loading && !itemType && linkOnly"
+                     :class="$style.loader" />
   <topic-content v-if="topic" :topic="topic" />
   <claim-content v-if="claim" :claim="claim" />
   <source-content v-if="source" :source="source" />
@@ -36,13 +31,13 @@
 </template>
 
 <script>
-import 'loaders.css/loaders.min.css';
 import elasticlunr from 'elasticlunr';
 import debounce from 'lodash/debounce';
 import forEach from 'lodash/forEach';
 
 import ClaimContent from './ClaimContent.vue';
 import DwdInput from './DwdInput.vue';
+import LoadingAnimation from './LoadingAnimation.vue';
 import SourceContent from './SourceContent.vue';
 import TopicContent from './TopicContent.vue';
 
@@ -55,6 +50,7 @@ export default {
   components: {
     ClaimContent,
     DwdInput,
+    LoadingAnimation,
     SourceContent,
     TopicContent,
   },
@@ -252,18 +248,11 @@ export default {
   margin-top: 8px
 
 .loader
-  align-items: center
-  display: flex
-  height: 30px
   justify-content: left
 
   > div
     transform: scale(0.6)
     transform-origin: left
-
-  > div > div
-    background-color: $loader-color
-    border: none
 
 ul.results
   list-style: none

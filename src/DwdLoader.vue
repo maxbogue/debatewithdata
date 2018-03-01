@@ -1,10 +1,6 @@
 <template>
 <div v-if="loading" :class="$style.loader">
-  <div class="ball-pulse-sync">
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
+  <loading-animation />
 </div>
 <div v-else-if="error" :class="[$style.loader, $style.error]">
   {{ error }}
@@ -14,9 +10,12 @@
 </template>
 
 <script>
-import 'loaders.css/loaders.min.css';
+import LoadingAnimation from './LoadingAnimation.vue';
 
 export default {
+  components: {
+    LoadingAnimation,
+  },
   props: {
     fill: { type: Boolean, default: false },
   },
@@ -46,10 +45,6 @@ export default {
   height: 40px
   margin: 25px 0
   justify-content: center
-
-  > div > div
-    background-color: $loader-color
-    border: none
 
   &.error
     color: $red-dark-primary
