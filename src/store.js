@@ -52,7 +52,7 @@ function setTopicDepths(topics) {
 function shouldWriteClaim(claimId, s1, s2) {
   let c1 = s1.claims[claimId];
   let c2 = s2.claims[claimId];
-  return !c2 || c1.rev !== c2.rev || c1.depth > c2.depth;
+  return !c2 || c1.revId !== c2.revId || c1.depth > c2.depth;
 }
 
 function hasFullClaim(state, id) {
@@ -102,7 +102,6 @@ export default new Vuex.Store({
     setData: function (state, data) {
       if (data.topics) {
         forOwn(data.topics, (topic, id) => {
-          topic.id = id;
           Vue.set(state.topics, id, topic);
         });
         setTopicDepths(state.topics);
@@ -110,14 +109,12 @@ export default new Vuex.Store({
       if (data.claims) {
         forOwn(data.claims, (claim, id) => {
           if (shouldWriteClaim(id, data, state)) {
-            claim.id = id;
             Vue.set(state.claims, id, claim);
           }
         });
       }
       if (data.sources) {
         forOwn(data.sources, (source, id) => {
-          source.id = id;
           Vue.set(state.sources, id, source);
         });
       }

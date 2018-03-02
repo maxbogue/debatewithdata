@@ -7,8 +7,8 @@
                    class="mono">{{ itemId }}</router-link>
     </h3>
     <ul class="mono" :class="$style.revs">
-      <li v-for="rev in revs" :class="revClass" :key="rev.id">
-        <router-link :to="revUrl(rev)">{{ rev.id }}</router-link>
+      <li v-for="rev in revs" :class="revClass" :key="rev.revId">
+        <router-link :to="revUrl(rev)">{{ rev.revId }}</router-link>
         <span :class="$style.username">{{ rev.username }}</span>
         <span>{{ rev.createdAt | timestamp }}</span>
       </li>
@@ -16,21 +16,18 @@
   </template>
   <template v-if="data && revId">
     <rev-nav :item-type="itemType"
-             :item-id="itemId"
-             :rev-id="revId"
-             :revs="revs" />
+             :curr="curr"
+             :prev="prev"
+             :next="next" />
     <topic-rev v-if="itemType === 'topic'"
-               :topic-id="itemId"
-               :rev-id="revId"
-               :data="data" />
+               :curr="curr"
+               :prev="prev" />
     <claim-rev v-else-if="itemType === 'claim'"
-               :claim-id="itemId"
-               :rev-id="revId"
-               :data="data" />
+               :curr="curr"
+               :prev="prev" />
     <source-rev v-else-if="itemType === 'source'"
-               :source-id="itemId"
-               :rev-id="revId"
-               :data="data" />
+                :curr="curr"
+                :prev="prev" />
   </template>
   <dwd-loader ref="loader" />
 </div>
@@ -39,8 +36,9 @@
 <script>
 import axios from 'axios';
 import dateFormat from 'dateformat';
-import forOwn from 'lodash/forOwn';
-import isPlainObject from 'lodash/isPlainObject';
+import forEach from 'lodash/forEach';
+import map from 'lodash/map';
+import mapValues from 'lodash/mapValues';
 
 import ClaimRev from '../ClaimRev.vue';
 import RevNav from '../RevNav.vue';
@@ -48,15 +46,14 @@ import SourceRev from '../SourceRev.vue';
 import TopicRev from '../TopicRev.vue';
 import DwdLoader from '../DwdLoader.vue';
 
-// Items in data maps are keyed by their IDs but don't have it also set on
-// themselves to save bytes on the wire. This function fills them in.
-function addIdsToData(data) {
-  forOwn(data, (typeMap) => {
-    if (!isPlainObject(typeMap)) {
-      return;
-    }
-    forOwn(typeMap, (item, itemId) => {
-      item.id = itemId;
+function unwrapPoints(data) {
+  forEach(data, (itemMap) => {
+    forEach(itemMap, (item) => {
+      if (!item.points) {
+        return;
+      }
+      item.points = map(item.points, (pts) =>
+        mapValues(pts, (r) => data.pointRevs[r]));
     });
   });
 }
@@ -116,6 +113,18 @@ export default {
     url: function () {
       return '/' + this.itemType + '/' + this.itemId;
     },
+    revIndex: function () {
+      return this.revs.findIndex((r) => r.revId === this.revId);
+    },
+    curr: function () {
+      return this.revs[this.revIndex];
+    },
+    prev: function () {
+      return this.revs[this.revIndex + 1];
+    },
+    next: function () {
+      return this.revs[this.revIndex - 1];
+    },
   },
   watch: {
     id: function () {
@@ -127,14 +136,15 @@ export default {
   },
   methods: {
     revUrl: function (rev) {
-      return '/' + this.itemType + '/' + this.itemId + '/rev/' + rev.id;
+      return '/' + this.itemType + '/' + this.itemId + '/rev/' + rev.revId;
     },
     loadData: function () {
       this.data = null;
       axios.get('/api/' + this.itemType + '/' + this.itemId + '/rev', {
         loader: this.$refs.loader,
       }).then((res) => {
-        addIdsToData(res.data);
+        unwrapPoints(res.data);
+        this.$store.commit('setData', res.data);
         this.data = res.data;
       });
     },

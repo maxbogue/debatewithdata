@@ -1,9 +1,27 @@
 import isEqual from 'lodash/isEqual';
 import map from 'lodash/map';
+import pick from 'lodash/pick';
 
 import { NotFoundError } from '../api/error';
 import { ValidationError, validateSource } from '../common/validate';
 import { genId } from './utils';
+
+const SOURCE_EQUALITY_FIELDS = [
+  'url',
+  'text',
+  'type',
+  'institution',
+  'publication',
+  'firstHand',
+  'deleted',
+  'deleteMessage',
+];
+
+function sourcesAreEqual(s1, s2) {
+  let filtered1 = pick(s1, SOURCE_EQUALITY_FIELDS);
+  let filtered2 = pick(s2, SOURCE_EQUALITY_FIELDS);
+  return isEqual(filtered1, filtered2);
+}
 
 export default function (sequelize, DataTypes) {
   const Source = sequelize.define('source', {
@@ -84,7 +102,7 @@ export default function (sequelize, DataTypes) {
 
       validateSource(data);
 
-      if (isEqual(data, source.head.toCoreData())) {
+      if (sourcesAreEqual(data, source.head.toCoreData())) {
         return source.head;
       }
 
@@ -138,7 +156,6 @@ export default function (sequelize, DataTypes) {
 
     Source.prototype.toData = async function () {
       let data = this.head.toCoreData();
-      data.rev = this.headId;
       data.commentCount = await this.countComments();
       return data;
     };

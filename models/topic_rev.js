@@ -123,24 +123,26 @@ export default function (sequelize, DataTypes) {
     };
 
     TopicRev.prototype.toCoreData = function () {
+      let data = {
+        id: this.topicId,
+        revId: this.id,
+      };
+
       if (this.deleted) {
-        return {
-          deleted: true,
-          deleteMessage: this.deleteMessage,
-        };
+        data.deleted = true;
+        data.deleteMessage = this.deleteMessage;
+        return data;
       }
 
-      return {
-        text: this.blob.text,
-        title: this.title,
-        subTopicIds: map(this.subTopics, (topic) => topic.id),
-        claimIds: map(this.claims, (claim) => claim.id),
-      };
+      data.text = this.blob.text;
+      data.title = this.title;
+      data.subTopicIds = map(this.subTopics, (topic) => topic.id);
+      data.claimIds = map(this.claims, (claim) => claim.id);
+      return data;
     };
 
     TopicRev.prototype.fillData = async function (data) {
       let thisData = this.toCoreData();
-      thisData.id = this.id;
       thisData.username = this.user.username;
       thisData.createdAt = this.created_at;
 

@@ -9,14 +9,13 @@
       <span class="id mono">{{ pointId }}</span>
     </div>
     <ul v-if="subPointRevs.length > 0" class="sub-points">
-      <point-rev v-for="[[pId, subCurrId, subPrevId], subSide] in subPointRevs"
-                 :point-id="pId"
-                 :curr-id="subCurrId"
-                 :prev-id="subPrevId"
-                 :point-revs="pointRevs"
+      <point-rev v-for="[[spId, currSp, prevSp], subSide] in subPointRevs"
+                 :point-id="spId"
+                 :curr="currSp"
+                 :prev="prevSp"
                  :is-for="isFor === !subSide"
                  :is-sub-point="true"
-                 :key="subCurrId" />
+                 :key="spId" />
     </ul>
   </dwd-drawer>
 </li>
@@ -36,9 +35,8 @@ export default {
   },
   props: {
     pointId: { type: String, required: true, },
-    currId: { type: String, default: '' },
-    prevId: { type: String, default: '' },
-    pointRevs: { type: Object, required: true },
+    curr: { type: Object, default: null },
+    prev: { type: Object, default: null },
     isFor: { type: Boolean, required: true },
     isSubPoint: { type: Boolean, default: false },
   },
@@ -46,12 +44,6 @@ export default {
     showDrawer: false,
   }),
   computed: {
-    curr: function () {
-      return this.pointRevs[this.currId] || null;
-    },
-    prev: function () {
-      return this.pointRevs[this.prevId] || null;
-    },
     pointClasses: function () {
       return [
         this.isSubPoint ? 'sub-point' : 'point',

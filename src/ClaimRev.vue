@@ -2,25 +2,23 @@
 <div>
   <claim-rev-content class="claim block" :curr="curr" :prev="prev" />
   <template v-if="$store.state.singleColumn">
-    <point-rev v-for="[[pointId, currId, prevId], side] in zippedPointRevs"
+    <point-rev v-for="[[pId, currP, prevP], side] in zippedPointRevs"
                :point-id="pointId"
-               :curr-id="currId"
-               :prev-id="prevId"
-               :point-revs="data.pointRevs"
+               :curr="currP"
+               :prev="prevP"
                :is-for="!side"
-               :key="currId" />
+               :key="pId" />
   </template>
   <template v-else>
     <div v-for="(sidePointRevs, side) in pointRevs"
          class="dwd-col"
          :key="'side-' + side">
-      <point-rev v-for="[pointId, currId, prevId] in sidePointRevs"
+      <point-rev v-for="[pointId, currPoint, prevPoint] in sidePointRevs"
                  :point-id="pointId"
-                 :curr-id="currId"
-                 :prev-id="prevId"
-                 :point-revs="data.pointRevs"
+                 :curr="currPoint"
+                 :prev="prevPoint"
                  :is-for="!side"
-                 :key="currId" />
+                 :key="pointId" />
     </div>
   </template>
 </div>
@@ -37,20 +35,10 @@ export default {
     PointRev,
   },
   props: {
-    claimId: { type: String, required: true },
-    revId: { type: String, required: true },
-    data: { type: Object, required: true },
+    curr: { type: Object, required: true },
+    prev: { type: Object, default: null },
   },
   computed: {
-    revIndex: function () {
-      return this.data.claimRevs.findIndex((r) => r.id === this.revId);
-    },
-    curr: function () {
-      return this.data.claimRevs[this.revIndex];
-    },
-    prev: function () {
-      return this.data.claimRevs[this.revIndex + 1];
-    },
     pointRevs: function () {
       return diffPointRevs(this.curr, this.prev);
     },

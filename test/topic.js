@@ -334,7 +334,8 @@ describe('Topic', function () {
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
-            rev: r1.id,
+            id: ID,
+            revId: r1.id,
             title: TITLE,
             text: FOO,
             claimIds: [c1r.claimId],
@@ -345,7 +346,8 @@ describe('Topic', function () {
         },
         claims: {
           [c1r.claimId]: {
-            rev: c1r.id,
+            id: c1r.claimId,
+            revId: c1r.id,
             text: BAZ,
             depth: 1,
             ...STARS_AND_COMMENTS,
@@ -371,7 +373,8 @@ describe('Topic', function () {
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
-            rev: r2.id,
+            id: ID,
+            revId: r2.id,
             deleted: true,
             deleteMessage: DELETE_MSG,
             depth: 3,
@@ -403,7 +406,8 @@ describe('Topic', function () {
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
-            rev: t1r.id,
+            id: ID,
+            revId: t1r.id,
             title: TITLE,
             text: FOO,
             claimIds: [],
@@ -412,7 +416,8 @@ describe('Topic', function () {
             ...STARS_AND_COMMENTS,
           },
           [ID2]: {
-            rev: t2r.id,
+            id: ID2,
+            revId: t2r.id,
             title: TITLE2,
             text: BAR,
             claimIds: [],
@@ -445,7 +450,8 @@ describe('Topic', function () {
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
-            rev: t1r.id,
+            id: ID,
+            revId: t1r.id,
             title: TITLE,
             text: FOO,
             claimIds: [],

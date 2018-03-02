@@ -34,29 +34,26 @@ export default {
     TopicRevContent,
   },
   props: {
-    topicId: { type: String, required: true },
-    revId: { type: String, required: true },
-    data: { type: Object, required: true },
+    curr: { type: Object, required: true },
+    prev: { type: Object, default: null },
   },
   computed: {
-    revIndex: function () {
-      return this.data.topicRevs.findIndex((r) => r.id === this.revId);
+    currHasContent: function () {
+      return !this.curr.deleted;
     },
-    curr: function () {
-      return this.data.topicRevs[this.revIndex];
-    },
-    prev: function () {
-      return this.data.topicRevs[this.revIndex + 1];
+    prevHasContent: function () {
+      return this.prev && !this.prev.deleted;
     },
     subTopics: function () {
-      let currSubTopicIds = this.curr ? this.curr.subTopicIds : [];
-      let prevSubTopicIds = this.prev ? this.prev.subTopicIds : [];
-      return diffIdLists(currSubTopicIds, prevSubTopicIds, this.data.topics);
+      let currSubTopicIds = this.currHasContent ? this.curr.subTopicIds : [];
+      let prevSubTopicIds = this.prevHasContent ? this.prev.subTopicIds : [];
+      return diffIdLists(currSubTopicIds, prevSubTopicIds,
+          this.$store.state.topics);
     },
     claims: function () {
-      let currClaimIds = this.curr ? this.curr.claimIds : [];
-      let prevClaimIds = this.prev ? this.prev.claimIds : [];
-      return diffIdLists(currClaimIds, prevClaimIds, this.data.claims);
+      let currClaimIds = this.currHasContent ? this.curr.claimIds : [];
+      let prevClaimIds = this.prevHasContent ? this.prev.claimIds : [];
+      return diffIdLists(currClaimIds, prevClaimIds, this.$store.state.claims);
     },
   },
 };

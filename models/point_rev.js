@@ -158,11 +158,11 @@ export default function (sequelize, DataTypes) {
       for (let i = 0; i < 2; i++) {
         for (let pointData of pointsData[i]) {
           let pointRev;
-          if (rev.parentId && pointData.rev) {
+          if (rev.parentId && pointData.revId) {
             // This is an update operation reusing a point revision.
-            pointRev = await PointRev.findById(pointData.rev);
+            pointRev = await PointRev.findById(pointData.revId);
             if (!pointRev) {
-              throw new ClientError('Invalid point rev: ' + pointData.rev);
+              throw new ClientError('Invalid point revId: ' + pointData.revId);
             }
           } else if (rev.parentId && pointData.id) {
             // This is an update operation updating an existing point.
@@ -289,6 +289,8 @@ export default function (sequelize, DataTypes) {
 
     PointRev.prototype.toCoreData = function (recurse=false) {
       let thisData = {
+        id: this.pointId,
+        revId: this.id,
         type: this.type,
       };
       switch (this.type) {
@@ -325,7 +327,6 @@ export default function (sequelize, DataTypes) {
      */
     PointRev.prototype.toData = async function (data, depth, user) {
       let thisData = this.toCoreData();
-      thisData.rev = this.id;
       thisData.star = await this.point.toStarData(user);
       thisData.commentCount = await this.point.countComments();
 

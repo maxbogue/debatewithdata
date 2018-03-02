@@ -224,7 +224,8 @@ describe('Source', function () {
       expect(sourceData).to.deep.equal({
         sources: {
           [rev.sourceId]: {
-            rev: rev.id,
+            id: rev.sourceId,
+            revId: rev.id,
             commentCount: 0,
             claimIds: [],
             ...MISC,
@@ -244,8 +245,9 @@ describe('Source', function () {
       let sourceData = await Source.apiGet(r1.sourceId);
       expect(sourceData).to.deep.equal({
         sources: {
-          [r1.sourceId]: {
-            rev: r2.id,
+          [r2.sourceId]: {
+            id: r2.sourceId,
+            revId: r2.id,
             deleted: true,
             deleteMessage: DELETE_MSG,
             claimIds: [],
@@ -268,7 +270,8 @@ describe('Source', function () {
       expect(sourceData).to.deep.equal({
         sources: {
           [sourceId]: {
-            rev: sourceRev.id,
+            id: sourceId,
+            revId: sourceRev.id,
             claimIds: [claimRev.claimId],
             commentCount: 0,
             ...MISC,
@@ -276,7 +279,8 @@ describe('Source', function () {
         },
         claims: {
           [claimRev.claimId]: {
-            rev: claimRev.id,
+            id: claimRev.claimId,
+            revId: claimRev.id,
             text: TEXT2,
             depth: 1,
             star: {
@@ -308,7 +312,8 @@ describe('Source', function () {
       expect(sourceData).to.deep.equal({
         sources: {
           [sourceId]: {
-            rev: sourceRev.id,
+            id: sourceId,
+            revId: sourceRev.id,
             claimIds: [claimRev.claimId],
             commentCount: 0,
             ...MISC,
@@ -316,7 +321,8 @@ describe('Source', function () {
         },
         claims: {
           [claimRev.claimId]: {
-            rev: claimRev.id,
+            id: claimRev.claimId,
+            revId: claimRev.id,
             text: TEXT2,
             depth: 1,
             star: {
@@ -337,12 +343,14 @@ describe('Source', function () {
       let sourcesData = await Source.apiGetAll();
       expect(sourcesData).to.deep.equal({
         [s1r.sourceId]: {
-          rev: s1r.id,
+          id: s1r.sourceId,
+          revId: s1r.id,
           commentCount: 0,
           ...RESEARCH,
         },
         [s2r.sourceId]: {
-          rev: s2r.id,
+          id: s2r.sourceId,
+          revId: s2r.id,
           commentCount: 0,
           ...ARTICLE,
         },
@@ -356,7 +364,8 @@ describe('Source', function () {
       let sourcesData = await Source.apiGetAll();
       expect(sourcesData).to.deep.equal({
         [s1r.sourceId]: {
-          rev: s1r.id,
+          id: s1r.sourceId,
+          revId: s1r.id,
           commentCount: 0,
           ...RESEARCH,
         }

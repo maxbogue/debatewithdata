@@ -221,7 +221,8 @@ describe('Claim', function () {
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
-            rev: rev.id,
+            id: rev.claimId,
+            revId: rev.id,
             text: FOO,
             flag: Flag.AD_HOMINEM,
             depth: 3,
@@ -247,7 +248,8 @@ describe('Claim', function () {
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
-            rev: rev.id,
+            id: rev.claimId,
+            revId: rev.id,
             text: FOO,
             depth: 3,
             star: {
@@ -264,7 +266,8 @@ describe('Claim', function () {
       expect(claimDataNoUser).to.deep.equal({
         claims: {
           [rev.claimId]: {
-            rev: rev.id,
+            id: rev.claimId,
+            revId: rev.id,
             text: FOO,
             depth: 3,
             star: {
@@ -299,7 +302,8 @@ describe('Claim', function () {
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
-            rev: rev.id,
+            id: rev.claimId,
+            revId: rev.id,
             text: FOO,
             depth: 3,
             star: {
@@ -309,7 +313,8 @@ describe('Claim', function () {
             commentCount: 0,
             points: [{
               [p1.pointId]: {
-                rev: p1.id,
+                id: p1.pointId,
+                revId: p1.id,
                 type: Point.TEXT,
                 text: BAR,
                 star: {
@@ -320,7 +325,8 @@ describe('Claim', function () {
               },
             }, {
               [p2.pointId]: {
-                rev: p2.id,
+                id: p2.pointId,
+                revId: p2.id,
                 type: Point.TEXT,
                 text: BAZ,
                 star: {
@@ -358,7 +364,8 @@ describe('Claim', function () {
       expect(c1Data).to.deep.equal({
         claims: {
           [c1.claimId]: {
-            rev: c1.id,
+            id: c1.claimId,
+            revId: c1.id,
             text: FOO,
             depth: 3,
             star: {
@@ -368,7 +375,8 @@ describe('Claim', function () {
             commentCount: 0,
             points: [{
               [p1.pointId]: {
-                rev: p1.id,
+                id: p1.pointId,
+                revId: p1.id,
                 type: Point.SUBCLAIM,
                 text: BAR,
                 star: {
@@ -378,7 +386,8 @@ describe('Claim', function () {
                 commentCount: 0,
                 points: [{
                   [p1a.pointId]: {
-                    rev: p1a.id,
+                    id: p1a.pointId,
+                    revId: p1a.id,
                     type: Point.TEXT,
                     text: BAZ,
                     star: {
@@ -411,7 +420,8 @@ describe('Claim', function () {
       expect(c2Data).to.deep.equal({
         claims: {
           [c2.claimId]: {
-            rev: c2.id,
+            id: c2.claimId,
+            revId: c2.id,
             text: BAZ,
             depth: 3,
             star: {
@@ -421,7 +431,8 @@ describe('Claim', function () {
             commentCount: 0,
             points: [{
               [p3.pointId]: {
-                rev: p3.id,
+                id: p3.pointId,
+                revId: p3.id,
                 type: Point.CLAIM,
                 claimId: c1.claimId,
                 star: {
@@ -433,7 +444,8 @@ describe('Claim', function () {
             }, {}],
           },
           [c1.claimId]: {
-            rev: c1.id,
+            id: c1.claimId,
+            revId: c1.id,
             text: FOO,
             depth: 2,
             star: {
@@ -443,7 +455,8 @@ describe('Claim', function () {
             commentCount: 0,
             points: [{
               [p1.pointId]: {
-                rev: p1.id,
+                id: p1.pointId,
+                revId: p1.id,
                 type: Point.SUBCLAIM,
                 text: BAR,
                 star: {
@@ -497,8 +510,9 @@ describe('Claim', function () {
       let claimData = await Claim.apiGet(r1.claimId);
       expect(claimData).to.deep.equal({
         claims: {
-          [r1.claimId]: {
-            rev: r2.id,
+          [r2.claimId]: {
+            id: r2.claimId,
+            revId: r2.id,
             depth: 3,
             deleted: true,
             deleteMessage: DELETE_MSG,
@@ -529,7 +543,8 @@ describe('Claim', function () {
       expect(claimsData).to.deep.equal({
         claims: {
           [c1r.claimId]: {
-            rev: c1r.id,
+            id: c1r.claimId,
+            revId: c1r.id,
             text: FOO,
             depth: 1,
             star: {
@@ -539,7 +554,8 @@ describe('Claim', function () {
             commentCount: 0,
           },
           [c2r.claimId]: {
-            rev: c2r.id,
+            id: c2r.claimId,
+            revId: c2r.id,
             text: BAR,
             depth: 1,
             star: {
@@ -567,7 +583,8 @@ describe('Claim', function () {
       expect(claimsData).to.deep.equal({
         claims: {
           [c1r.claimId]: {
-            rev: c1r.id,
+            id: c1r.claimId,
+            revId: c1r.id,
             text: FOO,
             depth: 1,
             star: {

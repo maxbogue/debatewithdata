@@ -1,6 +1,6 @@
 <template>
 <div class="block no-pad center">
-  <h3 class="mono">{{ curr.id }}</h3>
+  <h3 class="mono">{{ curr.revId }}</h3>
   <div><strong>by</strong> {{ curr.username }}</div>
   <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
   <div :class="$style.nav">
@@ -28,31 +28,19 @@ export default {
   },
   props: {
     itemType: { type: String, required: true },
-    itemId: { type: String, required: true },
-    revId: { type: String, required: true },
-    revs: { type: Array, required: true },
+    curr: { type: Object, required: true },
+    prev: { type: Object, default: null },
+    next: { type: Object, default: null },
   },
   computed: {
-    revIndex: function () {
-      return this.revs.findIndex((r) => r.id === this.revId);
-    },
-    curr: function () {
-      return this.revs[this.revIndex];
-    },
-    prev: function () {
-      return this.revs[this.revIndex + 1];
-    },
-    next: function () {
-      return this.revs[this.revIndex - 1];
-    },
     url: function () {
-      return '/' + this.itemType + '/' + this.itemId;
+      return '/' + this.itemType + '/' + this.curr.id;
     },
     prevUrl: function () {
-      return this.prev ? this.url + '/rev/' + this.prev.id : '';
+      return this.prev ? this.url + '/rev/' + this.prev.revId : '';
     },
     nextUrl: function () {
-      return this.next ? this.url + '/rev/' + this.next.id : '';
+      return this.next ? this.url + '/rev/' + this.next.revId : '';
     },
   },
 };

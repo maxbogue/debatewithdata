@@ -155,7 +155,6 @@ export default function (sequelize, DataTypes) {
       }
 
       let thisData = this.head.toCoreData();
-      thisData.rev = this.headId;
       thisData.depth = thisData.deleted ? 3 : depth;
       thisData.star = await this.toStarData(user);
       thisData.commentCount = await this.countComments();

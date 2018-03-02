@@ -81,16 +81,18 @@ export default function (sequelize, DataTypes) {
     };
 
     ClaimRev.prototype.toCoreData = function (recurse=false) {
+      let data = {
+        id: this.claimId,
+        revId: this.id,
+      };
+
       if (this.deleted) {
-        return {
-          deleted: true,
-          deleteMessage: this.deleteMessage,
-        };
+        data.deleted = true;
+        data.deleteMessage = this.deleteMessage;
+        return data;
       }
 
-      let data = {
-        text: this.blob.text,
-      };
+      data.text = this.blob.text;
 
       if (this.flag) {
         data.flag = this.flag;
@@ -105,7 +107,6 @@ export default function (sequelize, DataTypes) {
 
     ClaimRev.prototype.toRevData = function (pointRevDatas) {
       let thisData = this.toCoreData();
-      thisData.id = this.id;
       thisData.username = this.user.username;
       thisData.createdAt = this.created_at;
 

@@ -88,18 +88,20 @@ export default function (sequelize, DataTypes) {
     };
 
     SourceRev.prototype.toCoreData = function () {
+      let data = {
+        id: this.sourceId,
+        revId: this.id,
+      };
+
       if (this.deleted) {
-        return {
-          deleted: true,
-          deleteMessage: this.deleteMessage,
-        };
+        data.deleted = true;
+        data.deleteMessage = this.deleteMessage;
+        return data;
       }
 
-      let data = {
-        url: this.url,
-        text: this.blob.text,
-        type: this.type,
-      };
+      data.url = this.url;
+      data.text = this.blob.text;
+      data.type = this.type;
 
       if (this.date) {
         data.date = this.date;
@@ -124,7 +126,6 @@ export default function (sequelize, DataTypes) {
 
     SourceRev.prototype.toRevData = function () {
       let data = this.toCoreData();
-      data.id = this.id;
       data.username = this.user.username;
       data.createdAt = this.created_at;
       return data;

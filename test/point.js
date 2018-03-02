@@ -113,7 +113,8 @@ describe('Point', function () {
       expect(data).to.deep.equal({
         sources: {
           [sourceRev.sourceId]: {
-            rev: sourceRev.id,
+            id: sourceRev.sourceId,
+            revId: sourceRev.id,
             url: URL,
             text: sourceText,
             type: 'misc',
@@ -122,7 +123,8 @@ describe('Point', function () {
         },
       });
       expect(pointData).to.deep.equal({
-        rev: pointRev.id,
+        id: pointRev.pointId,
+        revId: pointRev.id,
         type: Point.SOURCE,
         sourceId: sourceRev.sourceId,
         star: {
@@ -151,7 +153,8 @@ describe('Point', function () {
       expect(data).to.deep.equal({
         claims: {
           [claimRev.claimId]: {
-            rev: claimRev.id,
+            id: claimRev.claimId,
+            revId: claimRev.id,
             text: text,
             depth: 1,
             star: {
@@ -163,7 +166,8 @@ describe('Point', function () {
         },
       });
       expect(pointData).to.deep.equal({
-        rev: pointRev.id,
+        id: pointRev.pointId,
+        revId: pointRev.id,
         type: Point.CLAIM,
         claimId: claimRev.claimId,
         star: {
@@ -197,7 +201,8 @@ describe('Point', function () {
       expect(data).to.deep.equal({
         sources: {
           [source.id]: {
-            rev: source.headId,
+            id: source.id,
+            revId: source.headId,
             url: URL,
             text: sourceText,
             type: 'misc',
@@ -206,7 +211,8 @@ describe('Point', function () {
         },
       });
       expect(pointData).to.deep.equal({
-        rev: pointRev.id,
+        id: pointRev.pointId,
+        revId: pointRev.id,
         type: Point.SOURCE,
         sourceId: source.id,
         star: {
@@ -237,7 +243,8 @@ describe('Point', function () {
       expect(data).to.deep.equal({
         claims: {
           [claim.id]: {
-            rev: claim.headId,
+            id: claim.id,
+            revId: claim.headId,
             text: text,
             depth: 1,
             star: {
@@ -249,7 +256,8 @@ describe('Point', function () {
         },
       });
       expect(pointData).to.deep.equal({
-        rev: pointRev.id,
+        id: pointRev.pointId,
+        revId: pointRev.id,
         type: Point.CLAIM,
         claimId: claim.id,
         star: {
@@ -301,7 +309,7 @@ describe('Point', function () {
         text: BAZ,
         points: [[{
           id: r2a.pointId,
-          rev: r2a.id,
+          revId: r2a.id,
           type: Point.TEXT,
           text: FOO,
         }], []],
