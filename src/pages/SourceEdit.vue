@@ -40,14 +40,15 @@ export default {
     SourceEditModal,
     SourceRevContent,
   },
+  props: {
+    id: { type: String, default: '' },
+    seed: { type: Object, default: null },
+  },
   data: () => ({
     showModal: false,
     newSource: null,
   }),
   computed: {
-    id: function () {
-      return this.$route.params.id;
-    },
     source: function () {
       return this.$store.state.sources[this.id] || null;
     },
@@ -86,10 +87,13 @@ export default {
       this.$router.push(this.id ? this.sourceUrl(this.id) : '/sources');
     },
     initialize: function () {
-      if (this.source) {
-        this.newSource = this.source;
+      let seed = this.seed || this.source;
+      if (seed && !seed.deleted) {
+        this.newSource = seed;
       }
-      this.showModal = true;
+      if (!this.seed) {
+        this.showModal = true;
+      }
     },
     checkLoaded: function () {
       if (this.needsData) {

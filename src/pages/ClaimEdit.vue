@@ -20,15 +20,16 @@
       <div class="point block against click" @click="addPoint(1)">
         <strong>Add a point against this claim.</strong>
       </div>
-      <point-edit v-for="[point, side, i] in zippedPoints"
-                  :key="point.id || point.tempId"
+      <point-edit v-for="[[pointId, point, prev], side] in zippedPoints"
+                  :key="pointId"
                   :point="point"
+                  :prev="prev"
                   :is-for="!side"
-                  @update="(p) => updatePoint(side, i, p)"
-                  @delete="points[side].splice(i, 1)" />
+                  @update="(p) => updatePoint(side, p)"
+                  @delete="deletePoint(side, point || prev)" />
     </template>
     <template v-else>
-      <div v-for="(sidePoints, side) in points"
+      <div v-for="(sidePoints, side) in pointRevs"
            class="dwd-col"
            :key="'side-' + side">
         <div class="point block click"
@@ -36,12 +37,13 @@
              @click="addPoint(side)">
           <strong>Add a point {{ !side | toSideString }} this claim.</strong>
         </div>
-        <point-edit v-for="(point, i) in sidePoints"
-                    :key="point.id || point.tempId"
+        <point-edit v-for="[pointId, point, prev] in sidePoints"
+                    :key="pointId"
                     :point="point"
+                    :prev="prev"
                     :is-for="!side"
-                    @update="(p) => updatePoint(side, i, p)"
-                    @delete="sidePoints.splice(i, 1)" />
+                    @update="(p) => updatePoint(side, p)"
+                    @delete="deletePoint(side, point || prev)" />
       </div>
     </template>
     <div v-if="id" class="block center">
@@ -61,6 +63,10 @@
 </template>
 
 <script>
+import findIndex from 'lodash/findIndex';
+import map from 'lodash/map';
+import sortBy from 'lodash/sortBy';
+
 import ClaimEditModal from '../ClaimEditModal.vue';
 import ClaimRevContent from '../ClaimRevContent.vue';
 import DeleteButton from '../DeleteButton.vue';
@@ -68,8 +74,12 @@ import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import PointEdit from '../PointEdit.vue';
 import {
-  emptyPoint, pointMapsToLists, rotateWithIndexes
+  diffPointRevs, emptyPoint, pointMapsToLists, rotateWithIndexes
 } from '../utils';
+
+function matchPoint(p) {
+  return (q) => p.id && p.id === q.id || p.tempId && p.tempId === q.tempId;
+}
 
 export default {
   components: {
@@ -80,28 +90,58 @@ export default {
     FixedBottom,
     PointEdit,
   },
+  props: {
+    id: { type: String, default: '' },
+    seed: { type: Object, default: null },
+  },
   data: () => ({
     showModal: false,
     newClaimPartial: null,
     points: [[], []],
+    pointOrder: null,
+    initialized: false,
   }),
   computed: {
-    id: function () {
-      return this.$route.params.id;
-    },
     claim: function () {
       return this.$store.state.claims[this.id];
     },
     needsData: function () {
       return this.id && (!this.claim || this.claim.depth < 3);
     },
+    newClaim: function () {
+      return {
+        ...this.newClaimPartial,
+        points: this.points,
+      };
+    },
+    pointRevs: function () {
+      // Without this flag, |pointRevs| takes form as soon as |claim| is set
+      // and before |points| is set, making the PointEdit components mount with
+      // null points and failing to initialize their subPoints field.
+      if (!this.initialized) {
+        return [[], []];
+      }
+      let pointRevs = diffPointRevs(this.newClaim, this.claim);
+      if (!this.pointOrder) {
+        return pointRevs;
+      }
+      // Sort by the point order.
+      return map(pointRevs, (ps, si) =>
+        sortBy(ps, (p) => this.pointOrder[si].indexOf(p[0])));
+    },
     zippedPoints: function () {
-      return rotateWithIndexes(this.points);
+      return rotateWithIndexes(this.pointRevs);
     },
   },
   watch: {
     id: function () {
       this.checkLoaded();
+    },
+    pointRevs: function () {
+      if (!this.pointOrder) {
+        // Initialize pointOrder with the order from diffPointRevs.
+        this.pointOrder = map(this.pointRevs, (s) => map(s, ([id]) => id));
+      }
     },
   },
   mounted: function () {
@@ -109,23 +149,33 @@ export default {
   },
   methods: {
     addPoint: function (si) {
-      this.points[si].splice(0, 0, emptyPoint());
+      let newPoint = emptyPoint();
+      this.pointOrder[si].splice(0, 0, newPoint.tempId);
+      this.points[si].splice(0, 0, newPoint);
     },
-    updatePoint: function (si, pi, point) {
-      if (!point.type) {
-        this.points[si].splice(pi, 1);
-        return;
+    updatePoint: function (si, point) {
+      let pi = findIndex(this.points[si], matchPoint(point));
+      if (pi < 0) {
+        this.points[si].push(point);
+      } else {
+        if (!point.type) {
+          this.points[si].splice(pi, 1);
+          return;
+        }
+        this.$set(this.points[si], pi, point);
       }
-      this.$set(this.points[si], pi, point);
+    },
+    deletePoint: function (si, point) {
+      let pi = findIndex(this.points[si], matchPoint(point));
+      if (pi < 0) {
+        this.points[si].push(point);
+      } else {
+        this.points[si].splice(pi, 1);
+      }
     },
     submit: function () {
       let action = 'addClaim';
-      let payload = {
-        claim: {
-          ...this.newClaimPartial,
-          points: this.points,
-        },
-      };
+      let payload = { claim: this.newClaim };
       if (this.id) {
         action = 'updateClaim';
         payload.id = this.id;
@@ -146,12 +196,14 @@ export default {
       this.$router.push(this.id ? this.claimUrl(this.id) : '/claims');
     },
     initialize: function () {
-      if (this.claim) {
-        this.newClaimPartial = this.claim;
-        this.points = pointMapsToLists(this.claim.points);
+      let seed = this.seed || this.claim;
+      if (seed && !seed.deleted) {
+        this.newClaimPartial = seed;
+        this.points = pointMapsToLists(seed.points);
       } else {
         this.showModal = true;
       }
+      this.initialized = true;
     },
     checkLoaded: function () {
       if (this.needsData) {

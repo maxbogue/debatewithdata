@@ -122,6 +122,10 @@ export default {
     TopicLinkModal,
     TopicRevContent,
   },
+  props: {
+    id: { type: String, default: '' },
+    seed: { type: Object, default: null },
+  },
   data: () => ({
     newTopicPartial: null,
     subTopicIds: [],
@@ -133,9 +137,6 @@ export default {
     showClaimModal: false,
   }),
   computed: {
-    id: function () {
-      return this.$route.params.id;
-    },
     newId: function () {
       return this.newTopicPartial && this.newTopicPartial.id;
     },
@@ -219,20 +220,21 @@ export default {
       this.$router.push(this.topic ? this.topicUrl(this.topic.id) : '/topics');
     },
     initialize: function () {
-      if (this.topic) {
+      let seed = this.seed || this.topic;
+      if (seed && !seed.deleted) {
         this.newTopicPartial = {
-          title: this.topic.title || '',
-          text: this.topic.text || '',
+          title: seed.title || '',
+          text: seed.text || '',
         };
 
         let topicStarred = pipe(this.lookupTopic, starred);
         let topicStarCount = pipe(this.lookupTopic, starCount);
-        this.subTopicIds = sortBy(this.topic.subTopicIds,
+        this.subTopicIds = sortBy(seed.subTopicIds,
             [topicStarred, topicStarCount, stableRandom]);
 
         let claimStarred = pipe(this.lookupClaim, starred);
         let claimStarCount = pipe(this.lookupClaim, starCount);
-        this.claimIds = sortBy(this.topic.claimIds,
+        this.claimIds = sortBy(seed.claimIds,
             [claimStarred, claimStarCount, stableRandom]);
       } else {
         this.showModal = true;

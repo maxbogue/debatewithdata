@@ -64,11 +64,11 @@ export function stableRandom(item) {
 }
 
 export function starCount(item) {
-  return -item.star.count;
+  return item.star ? -item.star.count : 0;
 }
 
 export function starred(item) {
-  return !item.star.starred;
+  return item.star ? !item.star.starred : false;
 }
 
 export function sortByStars(items) {
@@ -127,6 +127,13 @@ export function diffIdLists(newIds, oldIds, data) {
 // Diffs two { id: rev } maps into [id, newRev, oldRev] sorted by added,
 // removed, modified, and unmodified.
 function diffRevs(newRevs, oldRevs) {
+  if (isArray(newRevs)) {
+    let newRevMap = {};
+    for (let rev of newRevs) {
+      newRevMap[rev.id || rev.tempId] = rev;
+    }
+    newRevs = newRevMap;
+  }
   let inOld = (id) => oldRevs[id];
   let notInNew = (id) => !newRevs[id];
   let isModified = (id) => newRevs[id] === oldRevs[id];

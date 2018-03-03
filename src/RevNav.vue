@@ -13,11 +13,39 @@
                  :class="{ [$style.hidden]: !nextUrl }"
                  class="dwd-btn grey">Next</router-link>
   </div>
+  <div>
+    <router-link v-if="next && !curr.deleted"
+                 :class="$style.revert"
+                 :to="revertTo">Revert To This Revision</router-link>
+  </div>
 </div>
 </template>
 
 <script>
+import cloneDeep from 'lodash/cloneDeep';
 import dateFormat from 'dateformat';
+import forEach from 'lodash/forEach';
+
+function removeBadFields(points) {
+  for (let sidePoints of points) {
+    forEach(sidePoints, (point) => {
+      delete point.claim;
+      delete point.source;
+      if (point.points) {
+        removeBadFields(point.points);
+      }
+    });
+  }
+}
+
+function strip(type, item) {
+  if (type !== 'claim') {
+    return item;
+  }
+  item = cloneDeep(item);
+  removeBadFields(item.points);
+  return item;
+}
 
 export default {
   filters: {
@@ -42,6 +70,17 @@ export default {
     nextUrl: function () {
       return this.next ? this.url + '/rev/' + this.next.revId : '';
     },
+    // This is an ugly hack to get around claim and source being placed inside
+    // point revisions.
+    stripped: function () {
+      return strip(this.itemType, this.curr);
+    },
+    revertTo: function () {
+      return {
+        name: this.itemType + 'Edit',
+        params: { id: this.curr.id, seed: this.stripped },
+      };
+    },
   },
 };
 </script>
@@ -59,4 +98,7 @@ export default {
 
   a
     width: 7em;
+
+.revert:hover
+  text-decoration: underline
 </style>
