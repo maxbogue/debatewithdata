@@ -127,10 +127,6 @@ export default {
   },
   methods: {
     close: function () {
-      // If the point is empty, only emit it on close so it can be removed.
-      if (!this.makePoint()) {
-        this.emitPoint({});
-      }
       this.$emit('update:show', false);
     },
     cancel: function () {
