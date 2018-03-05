@@ -14,9 +14,8 @@
     <dwd-comments :url="'/api/point/' + point.id"
                   :show="showComments"
                   :hint="showDrawer" />
-    <transition-group tag="ul"
+    <transition-group tag="div"
                       v-if="subPoints.length > 0"
-                      class="sub-points"
                       :move-class="$style.subPointsMove">
       <point-block v-for="[subPoint, subSide] in subPoints"
                    :point="subPoint"

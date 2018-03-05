@@ -8,7 +8,7 @@
     <div class="info">
       <span class="id mono">{{ pointId }}</span>
     </div>
-    <ul v-if="subPointRevs.length > 0" class="sub-points">
+    <div v-if="subPointRevs.length > 0">
       <point-rev v-for="[[spId, currSp, prevSp], subSide] in subPointRevs"
                  :point-id="spId"
                  :curr="currSp"
@@ -16,7 +16,7 @@
                  :is-for="isFor === !subSide"
                  :is-sub-point="true"
                  :key="spId" />
-    </ul>
+    </div>
   </dwd-drawer>
 </li>
 </template>
@@ -67,8 +67,6 @@ export default {
       this.showDrawer = this.hasChangedSubPoints;
     },
   },
-  mounted: function () {
-    this.showDrawer = this.hasChangedSubPoints;
-  },
+  mountedTriggersWatchers: true,
 };
 </script>

@@ -12,40 +12,10 @@
     </div>
     <claim-edit-modal :show.sync="showModal"
                       :claim.sync="newClaimPartial" />
-    <template v-if="$store.state.singleColumn">
-      <div class="point block for click"
-           @click="addPoint(0)">
-        <strong>Add a point for this claim.</strong>
-      </div>
-      <div class="point block against click" @click="addPoint(1)">
-        <strong>Add a point against this claim.</strong>
-      </div>
-      <point-edit v-for="[[pointId, point, prev], side] in zippedPoints"
-                  :key="pointId"
-                  :point="point"
-                  :prev="prev"
-                  :is-for="!side"
-                  @update="(p) => updatePoint(side, p)"
-                  @delete="deletePoint(side, point || prev)" />
-    </template>
-    <template v-else>
-      <div v-for="(sidePoints, side) in pointRevs"
-           class="dwd-col"
-           :key="'side-' + side">
-        <div class="point block click"
-             :class="!side | toSideString"
-             @click="addPoint(side)">
-          <strong>Add a point {{ !side | toSideString }} this claim.</strong>
-        </div>
-        <point-edit v-for="[pointId, point, prev] in sidePoints"
-                    :key="pointId"
-                    :point="point"
-                    :prev="prev"
-                    :is-for="!side"
-                    @update="(p) => updatePoint(side, p)"
-                    @delete="deletePoint(side, point || prev)" />
-      </div>
-    </template>
+    <points-edit v-if="initialized"
+                 :curr="newClaim"
+                 :prev="claim"
+                 @update="updatePoints" />
     <div v-if="id" class="block center">
       <delete-button noun="Claim" @delete="remove" />
     </div>
@@ -63,7 +33,6 @@
 </template>
 
 <script>
-import findIndex from 'lodash/findIndex';
 import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 
@@ -72,14 +41,10 @@ import ClaimRevContent from '../ClaimRevContent.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
-import PointEdit from '../PointEdit.vue';
+import PointsEdit from '../PointsEdit.vue';
 import {
-  diffPointRevs, emptyPoint, pointMapsToLists, rotateWithIndexes
+  diffPointRevs, pointMapsToLists, rotateWithIndexes
 } from '../utils';
-
-function matchPoint(p) {
-  return (q) => p.id && p.id === q.id || p.tempId && p.tempId === q.tempId;
-}
 
 export default {
   components: {
@@ -88,7 +53,7 @@ export default {
     DeleteButton,
     DwdLoader,
     FixedBottom,
-    PointEdit,
+    PointsEdit,
   },
   props: {
     id: { type: String, default: '' },
@@ -148,30 +113,8 @@ export default {
     this.checkLoaded();
   },
   methods: {
-    addPoint: function (si) {
-      let newPoint = emptyPoint();
-      this.pointOrder[si].splice(0, 0, newPoint.tempId);
-      this.points[si].splice(0, 0, newPoint);
-    },
-    updatePoint: function (si, point) {
-      let pi = findIndex(this.points[si], matchPoint(point));
-      if (pi < 0) {
-        this.points[si].push(point);
-      } else {
-        if (!point.type) {
-          this.points[si].splice(pi, 1);
-          return;
-        }
-        this.$set(this.points[si], pi, point);
-      }
-    },
-    deletePoint: function (si, point) {
-      let pi = findIndex(this.points[si], matchPoint(point));
-      if (pi < 0) {
-        this.points[si].push(point);
-      } else {
-        this.points[si].splice(pi, 1);
-      }
+    updatePoints: function (points) {
+      this.points = points;
     },
     submit: function () {
       let action = 'addClaim';

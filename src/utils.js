@@ -136,7 +136,7 @@ function diffRevs(newRevs, oldRevs) {
   }
   let inOld = (id) => oldRevs[id];
   let notInNew = (id) => !newRevs[id];
-  let isModified = (id) => newRevs[id] === oldRevs[id];
+  let isModified = (id) => newRevs[id].revId !== oldRevs[id].revId;
 
   let [inBoth, added] = partition(Object.keys(newRevs), inOld);
   let removed = Object.keys(oldRevs).filter(notInNew);
