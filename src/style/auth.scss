@@ -2,7 +2,8 @@
   margin: 20px 0;
 
   > input {
-    &[type="text"], &[type="password"] {
+    &[type="text"],
+    &[type="password"] {
       display: block;
       height: 3em;
       margin: 10px auto 0;

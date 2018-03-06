@@ -12,11 +12,17 @@ body {
   margin-bottom: 75px;
 }
 
-h1, h2, h3, p {
+h1,
+h2,
+h3,
+p {
   margin: 1rem 0 0;
 }
 
-h1, h2, h3, strong {
+h1,
+h2,
+h3,
+strong {
   font-weight: $font-weight-bold;
 }
 
@@ -32,7 +38,8 @@ h3 {
   font-size: 1.5em;
 }
 
-ol, ul {
+ol,
+ul {
   margin-top: 0;
   margin-bottom: 10px;
 }
@@ -43,7 +50,9 @@ hr {
   margin: 20px 0;
 }
 
-textarea, input[type="text"], input[type="password"] {
+textarea,
+input[type="text"],
+input[type="password"] {
   border: 1px solid $text-light-accent;
   display: block;
   font-weight: inherit;
@@ -90,16 +99,17 @@ a {
   color: $text-dark;
   text-decoration: none;
 
+  @at-root p & {
+    color: $blue-dark-primary;
+
+    &:visited,
+    &:focus {
+      color: $blue-dark-primary;
+    }
+  }
+
   &:hover {
     color: $text-dark;
-  }
-}
-
-p a {
-  color: $blue-dark-primary;
-
-  &:visited, &:focus {
-    color: $blue-dark-primary;
   }
 }
 
@@ -154,7 +164,8 @@ p a {
   text-decoration: none;
 }
 
-.dwd-btn, a.dwd-btn {
+.dwd-btn,
+a.dwd-btn {
   border: 0;
   border-radius: 3px;
   box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
@@ -211,12 +222,14 @@ p a {
   color: $red-dark-primary;
 }
 
-del, .del {
+del,
+.del {
   background-color: $red-accent;
   text-decoration: none;
 }
 
-ins, .ins {
+ins,
+.ins {
   background-color: $green-accent;
   text-decoration: none;
 }

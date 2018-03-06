@@ -107,7 +107,7 @@ $navbar-bg-color: #333;
 $navbar-btn-accent: #666;
 $navbar-spacing: $block-spacing;
 $navbar-text-color: #aaa;
-$navbar-text-highlight: #FFF;
+$navbar-text-highlight: #fff;
 $navbar-brand-font-size: 20px;
 $navbar-link-font-size: 14px;
 
@@ -127,7 +127,9 @@ $navbar-link-font-size: 14px;
     color: $navbar-text-color;
     line-height: $navbar-brand-font-size;
 
-    &:hover, &:focus, &:global(.router-link-active) {
+    &:hover,
+    &:focus,
+    &:global(.router-link-active) {
       color: $navbar-text-highlight;
       text-decoration: none;
     }
@@ -189,7 +191,20 @@ $navbar-link-font-size: 14px;
   padding: 9px 10px;
   position: relative;
 
-  &:hover, &:focus {
+  .iconBar {
+    background-color: $navbar-text-color;
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+
+    + .iconBar {
+      margin-top: 4px;
+    }
+  }
+
+  &:hover,
+  &:focus {
     background-color: $navbar-btn-accent;
     outline: none;
     text-decoration: none;
@@ -201,18 +216,6 @@ $navbar-link-font-size: 14px;
 
   &:not(:disabled):not(.disabled) {
     cursor: pointer;
-  }
-
-  .iconBar {
-    background-color: $navbar-text-color;
-    display: block;
-    width: 22px;
-    height: 2px;
-    border-radius: 1px;
-
-    + .iconBar {
-      margin-top: 4px;
-    }
   }
 }
 
@@ -229,7 +232,8 @@ $navbar-link-font-size: 14px;
   list-style: none;
   padding-left: 0;
 
-  a, li {
+  a,
+  li {
     display: block;
     font-size: $navbar-link-font-size;
   }

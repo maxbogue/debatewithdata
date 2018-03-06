@@ -44,7 +44,7 @@ export default {
 .flags {
   background-color: $background-light;
   border: 1px solid $background-dark;
-  box-shadow: 0px 8px 16px 0px $transparent-light;
+  box-shadow: 0 8px 16px 0 $transparent-light;
   color: $text-dark;
   margin-right: 8px;
   max-height: 0;

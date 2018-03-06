@@ -135,12 +135,15 @@ export default {
   0% {
     border-color: $amber-dark-primary;
   }
+
   20% {
     border-color: $purple-dark-primary;
   }
+
   40% {
     border-color: $green-dark-primary;
   }
+
   60% {
     border-color: $blue-dark-primary;
   }
@@ -148,6 +151,7 @@ export default {
   80% {
     border-color: $pink-dark-primary;
   }
+
   100% {
     border-color: $amber-dark-primary;
   }

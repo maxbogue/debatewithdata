@@ -21,7 +21,7 @@ $c4: $amber-dark-primary;
 $c5: $green-dark-primary;
 $ball-colors: $c1 $c2 $c3 $c4 $c5;
 
-// Negative delay so the balls do not start in a line.
+/* Negative delay so the balls do not start in a line. */
 @function delay($interval, $count, $index) {
   @return ($index * $interval) - ($interval * $count);
 }
@@ -30,9 +30,11 @@ $ball-colors: $c1 $c2 $c3 $c4 $c5;
   0% {
     transform: translateY(-$translate-amount);
   }
+
   50% {
     transform: translateY($translate-amount);
   }
+
   100% {
     transform: translateY(-$translate-amount);
   }
@@ -49,6 +51,7 @@ $ball-colors: $c1 $c2 $c3 $c4 $c5;
 
 .animation {
   @include dwd-balls(5);
+
   display: flex;
   align-items: center;
   padding: $translate-amount 0;

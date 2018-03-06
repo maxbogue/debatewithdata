@@ -122,7 +122,7 @@ export default {
 .trail {
   margin-bottom: -8px;
 
-  \:global(.block) {
+  :global(.block) {
     display: block;
     font-size: 0.8em;
     margin: 8px auto 0;

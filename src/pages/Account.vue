@@ -26,7 +26,8 @@ export default {
 .account {
   margin-top: 50px;
 
-  span, strong {
+  span,
+  strong {
     display: inline-block;
     font-size: 1.5em;
     padding: 4px;

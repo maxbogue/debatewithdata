@@ -75,7 +75,7 @@ export default {
   }
 }
 
-// Transition styles.
+/* Transition styles. */
 
 .dwd-modal-enter,
 .dwd-modal-leave-active {

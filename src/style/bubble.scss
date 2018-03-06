@@ -1,13 +1,16 @@
 @import "constants";
 
-.bubble, .block {
+.bubble,
+.block {
   clear: both;
   display: block;
   overflow-wrap: break-word;
   padding: $block-padding;
   text-align: left;
 
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     line-height: 1.2;
     margin-bottom: 1rem;
 
@@ -37,76 +40,6 @@
 
   &.no-pad {
     padding: 0;
-  }
-}
-
-@mixin t1($primary-color, $accent-color) {
-  font-size: 1.25em;
-  margin-top: $block-spacing;
-
-  &.block {
-    background-color: $primary-color;
-    border-left: $accent-border-width solid $accent-color;
-
-    @at-root a#{&}:hover, &.click:hover {
-      background-color: $accent-color;
-      text-decoration: none;
-    }
-  }
-
-  &.block, > .bubble {
-    padding: 1em;
-  }
-
-  &:not(.for):not(.against) {
-    border-left: $accent-border-width solid $accent-color;
-
-    .info, .bubble {
-      background-color: $primary-color;
-    }
-
-    .bubble.click:hover {
-      background-color: $accent-color;
-      color: $text-dark;
-    }
-  }
-}
-
-.topic {
-  @include t1($pink-primary, $pink-accent);
-}
-
-.claim {
-  @include t1($blue-primary, $blue-accent);
-}
-
-.source {
-  @include t1($green-primary, $green-accent);
-}
-
-.for {
-  border-left: $accent-border-width solid $purple-accent;
-
-  &.block, > .info, > .bubble {
-    background-color: $purple-primary;
-  }
-
-  &.block.click:hover, > .bubble.click:hover {
-    background-color: $purple-accent;
-    color: $text-dark;
-  }
-}
-
-.against {
-  border-left: $accent-border-width solid $amber-accent;
-
-  &.block, > .info, > .bubble {
-    background-color: $amber-primary;
-  }
-
-  &.block.click:hover, > .bubble.click:hover {
-    background-color: $amber-accent;
-    color: $text-dark;
   }
 }
 
@@ -143,12 +76,94 @@
     }
   }
 
-  a, .click {
+  a,
+  .click {
     color: $transparent-light;
 
     &:hover {
       color: $transparent-dark;
     }
+  }
+}
+
+@mixin t1($primary-color, $accent-color) {
+  font-size: 1.25em;
+  margin-top: $block-spacing;
+
+  &.block {
+    background-color: $primary-color;
+    border-left: $accent-border-width solid $accent-color;
+
+    @at-root {
+      a#{&}:hover,
+      &.click:hover {
+        background-color: $accent-color;
+        text-decoration: none;
+      }
+    }
+  }
+
+  &.block,
+  > .bubble {
+    padding: 1em;
+  }
+
+  &:not(.for):not(.against) {
+    border-left: $accent-border-width solid $accent-color;
+
+    .info,
+    .bubble {
+      background-color: $primary-color;
+    }
+
+    .bubble.click:hover {
+      background-color: $accent-color;
+      color: $text-dark;
+    }
+  }
+}
+
+.topic {
+  @include t1($pink-primary, $pink-accent);
+}
+
+.claim {
+  @include t1($blue-primary, $blue-accent);
+}
+
+.source {
+  @include t1($green-primary, $green-accent);
+}
+
+.for {
+  border-left: $accent-border-width solid $purple-accent;
+
+  &.block,
+  > .info,
+  > .bubble {
+    background-color: $purple-primary;
+  }
+
+  &.block.click:hover,
+  > .bubble.click:hover {
+    background-color: $purple-accent;
+    color: $text-dark;
+  }
+}
+
+.against {
+  border-left: $accent-border-width solid $amber-accent;
+
+  &.block,
+  > .info,
+  > .bubble {
+    background-color: $amber-primary;
+  }
+
+  &.block.click:hover,
+  > .bubble.click:hover {
+    background-color: $amber-accent;
+    color: $text-dark;
   }
 }
 
