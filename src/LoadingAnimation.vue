@@ -11,8 +11,8 @@
 <style lang="scss" module>
 @import "style/constants";
 
-$translate-amount: 10px;
 $ball-size: 14px;
+$translate-amount: 10px;
 
 $c1: $pink-dark-primary;
 $c2: $blue-dark-primary;
@@ -57,12 +57,12 @@ $ball-colors: $c1 $c2 $c3 $c4 $c5;
   padding: $translate-amount 0;
 
   > div {
-    height: $ball-size;
-    width: $ball-size;
-    background-color: $loader-color;
-    border-radius: 100%;
     display: inline-block;
+    width: $ball-size;
+    height: $ball-size;
     margin: 3px;
+    border-radius: 100%;
+    background-color: $loader-color;
   }
 }
 </style>

@@ -121,8 +121,8 @@ export default {
 @import "style/constants";
 
 .comments {
-  font-size: 12px;
   padding: 1em;
+  font-size: 12px;
 
   ul {
     margin: 0;

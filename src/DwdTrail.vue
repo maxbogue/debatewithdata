@@ -124,11 +124,11 @@ export default {
 
   :global(.block) {
     display: block;
-    font-size: 0.8em;
+    width: 50%;
     margin: 8px auto 0;
     padding: 0.8em 1em;
+    font-size: 0.8em;
     text-decoration: none;
-    width: 50%;
   }
 }
 </style>

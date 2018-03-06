@@ -249,17 +249,17 @@ export default {
 }
 
 ul.results {
-  list-style: none;
   margin-top: 0;
   padding: 0;
+  list-style: none;
 
   li {
-    background-color: white;
-    border-style: solid;
-    border-width: 0 1px 1px 1px;
-    cursor: default;
-    font-size: 14px;
     padding: 8px;
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
+    background-color: white;
+    font-size: 14px;
+    cursor: default;
 
     &:not(:first-child) {
       border-top: none;

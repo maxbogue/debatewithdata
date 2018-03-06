@@ -38,25 +38,25 @@ export default {
 @import "style/constants";
 
 .dwd-modal-mask {
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  height: 100%;
-  justify-content: center;
-  left: 0;
   position: fixed;
-  top: 0;
-  transition: opacity 0.3s ease;
-  width: 100%;
   z-index: 9001;
+  top: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s ease;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .dwd-modal-container {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  width: 80%;
   max-height: calc(100% - #{$block-spacing * 2});
   overflow-y: auto;
   transition: all 0.3s ease;
-  width: 80%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 
   @media (min-width: $screen-sm-min) {
     width: $container-sm * 0.8;

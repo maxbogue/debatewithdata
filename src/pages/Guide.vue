@@ -104,9 +104,9 @@ export default {
 @import "../style/constants";
 
 .anchor {
+  visibility: hidden;
   color: $text-light-accent;
   font-size: 0.75em;
-  visibility: hidden;
 
   &:hover {
     color: $text-dark;
@@ -119,9 +119,9 @@ h3:hover .anchor {
 }
 
 .links {
+  margin: 0;
   font-size: 0.75em;
   font-weight: 400;
-  margin: 0;
 
   > :not(:first-child)::before {
     content: ' | ';

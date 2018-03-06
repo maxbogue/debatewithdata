@@ -6,15 +6,15 @@
 
 <style lang="scss" module>
 .fixedBottom {
-  bottom: 0;
-  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.25);
   display: flex;
-  justify-content: center;
+  position: fixed;
+  z-index: 1;
+  bottom: 0;
   left: 50%;
+  justify-content: center;
+  width: 300px;
   margin-left: -150px;
   padding: 8px;
-  position: fixed;
-  width: 300px;
-  z-index: 1;
+  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.25);
 }
 </style>

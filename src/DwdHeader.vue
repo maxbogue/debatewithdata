@@ -112,15 +112,15 @@ $navbar-brand-font-size: 20px;
 $navbar-link-font-size: 14px;
 
 .navbar {
+  position: relative;
   background-color: $navbar-bg-color;
   color: $navbar-text-color;
-  position: relative;
 
   :global(.dwd-container) {
-    margin-bottom: 0;
-    padding: 0;
     display: flex;
     justify-content: space-between;
+    margin-bottom: 0;
+    padding: 0;
   }
 
   a {
@@ -149,8 +149,8 @@ $navbar-link-font-size: 14px;
     }
 
     .navbarNav a {
-      font-size: $navbar-link-font-size * 1.2;
       padding: ($block-spacing / 1.5) $block-spacing;
+      font-size: $navbar-link-font-size * 1.2;
     }
   }
 
@@ -175,28 +175,28 @@ $navbar-link-font-size: 14px;
 
 .navbarBrand {
   display: inline-block;
-  font-size: $navbar-brand-font-size;
   padding: $navbar-spacing;
+  font-size: $navbar-brand-font-size;
   white-space: nowrap;
 }
 
 .navbarToggler {
-  background: none;
-  border-radius: 4px;
-  border: 1px solid $navbar-btn-accent;
-  float: right;
-  margin-bottom: 8px;
-  margin-right: 15px;
-  margin-top: 8px;
-  padding: 9px 10px;
   position: relative;
+  margin-top: 8px;
+  margin-right: 15px;
+  margin-bottom: 8px;
+  padding: 9px 10px;
+  float: right;
+  border: 1px solid $navbar-btn-accent;
+  border-radius: 4px;
+  background: none;
 
   .iconBar {
-    background-color: $navbar-text-color;
     display: block;
     width: 22px;
     height: 2px;
     border-radius: 1px;
+    background-color: $navbar-text-color;
 
     + .iconBar {
       margin-top: 4px;
@@ -205,8 +205,8 @@ $navbar-link-font-size: 14px;
 
   &:hover,
   &:focus {
-    background-color: $navbar-btn-accent;
     outline: none;
+    background-color: $navbar-btn-accent;
     text-decoration: none;
 
     .iconBar {
@@ -229,8 +229,8 @@ $navbar-link-font-size: 14px;
 .navbarNav {
   display: flex;
   flex-direction: column;
-  list-style: none;
   padding-left: 0;
+  list-style: none;
 
   a,
   li {

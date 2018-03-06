@@ -68,9 +68,9 @@ export default {
 @import "../style/constants";
 
 .invites {
-  list-style: none;
   margin-top: 10px;
   padding: 0;
+  list-style: none;
 
   li {
     padding: 4px;

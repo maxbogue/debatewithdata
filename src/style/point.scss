@@ -1,9 +1,9 @@
 @import "constants";
 
 .point {
+  margin-top: $block-spacing;
   font-size: 1rem;
   list-style: none;
-  margin-top: $block-spacing;
 
   &.block,
   > .bubble {
@@ -12,9 +12,9 @@
 }
 
 .sub-point {
+  margin: 3px 0 0 3px;
   font-size: 0.75rem;
   list-style: none;
-  margin: 3px 0 0 3px;
 
   &.block,
   > .bubble {
@@ -23,18 +23,18 @@
 
   &.for.block,
   &.for > .bubble {
-    background-color: $background-light;
     border-top: 1px solid $purple-accent;
     border-right: 1px solid $purple-accent;
     border-bottom: 1px solid $purple-accent;
+    background-color: $background-light;
   }
 
   &.against.block,
   &.against > .bubble {
-    background-color: $background-light;
     border-top: 1px solid $amber-accent;
     border-right: 1px solid $amber-accent;
     border-bottom: 1px solid $amber-accent;
+    background-color: $background-light;
   }
 
   &.for > .info,

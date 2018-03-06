@@ -161,8 +161,8 @@ export default {
 
   li {
     display: flex;
-    list-style: none;
     padding: 6px 8px;
+    list-style: none;
     text-align: center;
 
     .username {

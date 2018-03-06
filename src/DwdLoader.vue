@@ -40,11 +40,11 @@ export default {
 @import "style/constants";
 
 .loader {
-  align-items: center;
   display: flex;
+  align-items: center;
+  justify-content: center;
   height: 40px;
   margin: 25px 0;
-  justify-content: center;
 
   &.error {
     color: $red-dark-primary;

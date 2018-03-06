@@ -48,10 +48,10 @@ export default {
 @import "../style/constants";
 
 .activity {
+  width: 100%;
+  padding: 0;
   font-size: 0.75em;
   list-style: none;
-  padding: 0;
-  width: 100%;
 
   a:hover {
     text-decoration: underline;

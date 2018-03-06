@@ -1,8 +1,8 @@
 @import "constants";
 
 @mixin color($primary, $accent, $is-light) {
-  background-color: $primary;
   border-left: $accent-border-width solid $accent;
+  background-color: $primary;
   color: if($is-light, $text-dark, $text-light);
 
   @at-root {

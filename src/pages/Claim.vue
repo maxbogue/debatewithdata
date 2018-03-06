@@ -157,13 +157,13 @@ export default {
   }
 
   .for {
-    color: $purple-dark-primary;
     flex: 1;
+    color: $purple-dark-primary;
   }
 
   .against {
-    color: $amber-dark-primary;
     flex: 1;
+    color: $amber-dark-primary;
   }
 }
 </style>

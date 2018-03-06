@@ -93,8 +93,8 @@ export default {
 }
 
 .nav {
-  align-items: center;
   display: flex;
+  align-items: center;
   justify-content: center;
 
   a {

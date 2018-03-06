@@ -29,19 +29,19 @@ export default {
   span,
   strong {
     display: inline-block;
-    font-size: 1.5em;
     padding: 4px;
+    font-size: 1.5em;
   }
 
   span {
+    width: 60%;
     font-weight: $font-weight-light;
     text-align: left;
-    width: 60%;
   }
 
   strong {
-    text-align: right;
     width: 40%;
+    text-align: right;
   }
 }
 </style>

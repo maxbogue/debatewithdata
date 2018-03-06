@@ -42,31 +42,31 @@ export default {
 }
 
 .flags {
-  background-color: $background-light;
-  border: 1px solid $background-dark;
-  box-shadow: 0 8px 16px 0 $transparent-light;
-  color: $text-dark;
-  margin-right: 8px;
-  max-height: 0;
-  max-width: 0;
-  overflow: hidden;
-  padding: 0;
-  transition: max-height 0.5s, max-width 0.5s, visibility 0s 0.5s;
   visibility: hidden;
   z-index: 1;
+  max-width: 0;
+  max-height: 0;
+  margin-right: 8px;
+  padding: 0;
+  overflow: hidden;
+  transition: visibility 0s 0.5s, max-width 0.5s, max-height 0.5s;
+  border: 1px solid $background-dark;
+  background-color: $background-light;
+  box-shadow: 0 8px 16px 0 $transparent-light;
+  color: $text-dark;
 
   &.open {
-    transition: max-height 0.5s, max-width 0.5s, visibility 0s;
     visibility: visible;
-    max-height: 500px;
     max-width: 160px;
+    max-height: 500px;
+    transition: visibility 0s, max-width 0.5s, max-height 0.5s;
   }
 
   li {
-    cursor: pointer;
+    padding: 4px;
     font-size: 12px;
     list-style: none;
-    padding: 4px;
+    cursor: pointer;
 
     &:hover {
       background-color: $red-accent;

@@ -151,18 +151,18 @@ export default {
 @import "style/constants";
 
 .type {
-  background-color: $background-light;
-  border: 1px solid $text-light-accent;
-  border-radius: 3px;
-  font-size: 10px;
+  width: 300px;
   margin-top: 4px;
   padding: 4px;
+  border: 1px solid $text-light-accent;
+  border-radius: 3px;
+  background-color: $background-light;
+  font-size: 10px;
   text-align: center;
-  width: 300px;
 
   h2 {
-    font-size: 16px;
     margin: 0;
+    font-size: 16px;
   }
 }
 
@@ -172,8 +172,8 @@ export default {
 }
 
 .type.selected {
-  background-color: $green-dark-primary;
   border-color: $green-dark-accent;
+  background-color: $green-dark-primary;
   color: $text-light;
 }
 </style>

@@ -6,10 +6,10 @@
 }
 
 body {
+  margin-bottom: 75px;
   font-family: Roboto, Helvetica, Arial, sans-serif;
   font-weight: $font-weight-normal;
   line-height: $line-height;
-  margin-bottom: 75px;
 }
 
 h1,
@@ -45,26 +45,26 @@ ul {
 }
 
 hr {
+  margin: 20px 0;
   border: 0;
   border-top: 1px solid #eee;
-  margin: 20px 0;
 }
 
 textarea,
 input[type="text"],
 input[type="password"] {
-  border: 1px solid $text-light-accent;
   display: block;
-  font-weight: inherit;
-  overflow: hidden;
-  padding: 0.5em;
-  resize: none;
   width: 100%;
+  padding: 0.5em;
+  overflow: hidden;
+  border: 1px solid $text-light-accent;
+  font-weight: inherit;
+  resize: none;
 
   &:focus {
     border-color: $text-dark-accent;
-    box-shadow: 0 0 1px 0 $transparent-light;
     outline: none;
+    box-shadow: 0 0 1px 0 $transparent-light;
   }
 
   &.error {
@@ -140,10 +140,10 @@ a {
   }
 
   .dwd-col {
-    float: left;
+    width: 50%;
     min-height: 1em;
     padding: 0 ($block-spacing / 2) 0 0;
-    width: 50%;
+    float: left;
 
     & + .dwd-col {
       padding: 0 0 0 ($block-spacing / 2);
@@ -160,22 +160,22 @@ a {
 }
 
 .click:hover {
-  cursor: pointer;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .dwd-btn,
 a.dwd-btn {
+  display: inline-block;
+  margin: 4px;
+  padding: 8px 16px;
   border: 0;
   border-radius: 3px;
   box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-  display: inline-block;
   font-weight: inherit;
-  margin: 4px;
-  padding: 8px 16px;
   text-align: center;
   text-decoration: none;
+  cursor: pointer;
 
   &[disabled] {
     background-color: $grey-primary;
@@ -192,18 +192,18 @@ a.dwd-btn {
 }
 
 .tag {
-  background-color: $transparent-light;
+  padding: 2px 4px;
   border-radius: 4px;
+  background-color: $transparent-light;
   color: $text-light;
   font-size: 0.65em;
-  padding: 2px 4px;
 }
 
 .link-icon {
-  color: $transparent-light;
-  float: right;
-  line-height: $line-height;
   padding-left: 5px;
+  float: right;
+  color: $transparent-light;
+  line-height: $line-height;
 
   &:hover {
     text-decoration: none;

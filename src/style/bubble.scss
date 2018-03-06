@@ -2,17 +2,17 @@
 
 .bubble,
 .block {
-  clear: both;
   display: block;
-  overflow-wrap: break-word;
   padding: $block-padding;
+  clear: both;
   text-align: left;
+  overflow-wrap: break-word;
 
   h1,
   h2,
   h3 {
-    line-height: 1.2;
     margin-bottom: 1rem;
+    line-height: 1.2;
 
     &:first-child {
       margin-top: 0;
@@ -44,26 +44,26 @@
 }
 
 .info {
-  align-items: center;
   display: flex;
+  align-items: center;
   justify-content: center;
-  line-height: 1;
   padding: 0.5em;
+  line-height: 1;
 
   > :not(:first-child) {
     margin-left: 0.8em;
   }
 
   .id {
-    color: $transparent-light;
     flex: 1;
+    color: $transparent-light;
     font-size: 0.8em;
   }
 
   .dwd-btn {
-    font-size: 0.8em;
     margin: 0 4px;
     padding: 4px 8px;
+    font-size: 0.8em;
   }
 
   .controls {
@@ -87,12 +87,12 @@
 }
 
 @mixin t1($primary-color, $accent-color) {
-  font-size: 1.25em;
   margin-top: $block-spacing;
+  font-size: 1.25em;
 
   &.block {
-    background-color: $primary-color;
     border-left: $accent-border-width solid $accent-color;
+    background-color: $primary-color;
 
     @at-root {
       a#{&}:hover,
@@ -169,6 +169,6 @@
 
 .hint {
   display: block;
-  font-size: 0.75em;
   margin-bottom: -8px;
+  font-size: 0.75em;
 }
