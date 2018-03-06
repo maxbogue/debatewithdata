@@ -118,15 +118,17 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-.trail
-  margin-bottom: -8px
+<style lang="scss" module>
+.trail {
+  margin-bottom: -8px;
 
-  \:global(.block)
-    display: block
-    font-size: 0.8em
-    margin: 8px auto 0
-    padding: 0.8em 1em
-    text-decoration: none
-    width: 50%
+  \:global(.block) {
+    display: block;
+    font-size: 0.8em;
+    margin: 8px auto 0;
+    padding: 0.8em 1em;
+    text-decoration: none;
+    width: 50%;
+  }
+}
 </style>

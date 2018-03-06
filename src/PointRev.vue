@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import './style/point.sass';
+import './style/point.scss';
 import DwdDrawer from './DwdDrawer.vue';
 import PointDiff from './PointDiff.vue';
 import { diffPointRevs, rotateWithIndexes } from './utils';

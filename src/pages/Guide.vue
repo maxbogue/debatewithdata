@@ -100,26 +100,31 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "../style/constants"
+<style lang="scss" module>
+@import "../style/constants";
 
-.anchor
-  color: $text-light-accent
-  font-size: 0.75em
-  visibility: hidden
+.anchor {
+  color: $text-light-accent;
+  font-size: 0.75em;
+  visibility: hidden;
 
-  &:hover
-    color: $text-dark
-    text-decoration: none
+  &:hover {
+    color: $text-dark;
+    text-decoration: none;
+  }
+}
 
-h3:hover .anchor
-  visibility: visible
+h3:hover .anchor {
+  visibility: visible;
+}
 
-.links
-  font-size: 0.75em
-  font-weight: 400
-  margin: 0
+.links {
+  font-size: 0.75em;
+  font-weight: 400;
+  margin: 0;
 
-  > :not(:first-child)::before
-    content: ' | '
+  > :not(:first-child)::before {
+    content: ' | ';
+  }
+}
 </style>

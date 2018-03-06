@@ -37,8 +37,9 @@
 </div>
 </template>
 
-<style lang="sass" module>
-.subTitle
-  font-weight: 300
-  margin: 0
+<style lang="scss" module>
+.subTitle {
+  font-weight: 300;
+  margin: 0;
+}
 </style>

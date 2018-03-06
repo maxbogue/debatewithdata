@@ -59,7 +59,8 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-.block
-  background-color: #fff
+<style lang="scss" module>
+.block {
+  background-color: #fff;
+}
 </style>

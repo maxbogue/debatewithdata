@@ -1,0 +1,77 @@
+$screen-xs-min: 480px;
+$screen-sm-min: 768px;
+$screen-md-min: 992px;
+$screen-lg-min: 1200px;
+
+$block-spacing: 16px;
+$block-padding: 16px;
+
+$container-sm: 720px + $block-spacing * 2;
+$container-md: 940px + $block-spacing * 2;
+$container-lg: 1140px + $block-spacing * 2;
+
+$accent-border-width: 6px;
+
+$font-weight-light: 100;
+$font-weight-normal: 300;
+$font-weight-bold: 500;
+
+$line-height: 1.5;
+
+// Colors
+
+$background-light: #fff;
+$background-light-accent: #eee;
+$background-dark: #000;
+
+$text-light: #fff;
+$text-light-accent: #aaa;
+$text-dark: #000;
+$text-dark-accent: #666;
+
+$transparent-light: rgba(0, 0, 0, 0.4);
+$transparent-dark: rgba(0, 0, 0, 0.9);
+
+$loader-color: #666;
+
+$white-primary: #FFFFFF;
+$white-accent: #DDDDDD;
+
+$grey-primary: #999999;
+$grey-accent: #666666;
+
+$red-primary: #FFEBEE;
+$red-accent: #FFCDD2;
+
+$red-dark-primary: #F44336;
+$red-dark-accent: #C62828;
+
+$green-primary: #E8F5E9;
+$green-accent: #C8E6C9;
+
+$green-dark-primary: #43A047;
+$green-dark-accent: #2E7D32;
+
+$blue-primary: #E3F2FD;
+$blue-accent: #BBDEFB;
+
+$blue-dark-primary: #1E88E5;
+$blue-dark-accent: #1565C0;
+
+$pink-primary: #FCE4EC;
+$pink-accent: #F8BBD0;
+
+$pink-dark-primary: #E91E63;
+$pink-dark-accent: #AD1457;
+
+$purple-primary: #F3E5F5;
+$purple-accent: #E1BEE7;
+
+$purple-dark-primary: #8E24AA;
+$purple-dark-accent: #6A1B9A;
+
+$amber-primary: #FFF8E1;
+$amber-accent: #FFE082;
+
+$amber-dark-primary: #FFB300;
+$amber-dark-accent: #FF8F00;

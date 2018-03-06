@@ -3,7 +3,7 @@ import axios from 'axios';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import './style/index.sass';
+import './style/index.scss';
 import Account from './pages/Account.vue';
 import Activity from './pages/Activity.vue';
 import Admin from './pages/Admin.vue';

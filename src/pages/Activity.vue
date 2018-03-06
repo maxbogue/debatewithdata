@@ -44,15 +44,17 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "../style/constants"
+<style lang="scss" module>
+@import "../style/constants";
 
-.activity
-  font-size: 0.75em
-  list-style: none
-  padding: 0
-  width: 100%
+.activity {
+  font-size: 0.75em;
+  list-style: none;
+  padding: 0;
+  width: 100%;
 
-  a:hover
-    text-decoration: underline
+  a:hover {
+    text-decoration: underline;
+  }
+}
 </style>

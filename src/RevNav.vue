@@ -85,20 +85,24 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "style/constants"
+<style lang="scss" module>
+@import "style/constants";
 
-.hidden
-  visibility: hidden
+.hidden {
+  visibility: hidden;
+}
 
-.nav
-  align-items: center
-  display: flex
-  justify-content: center
+.nav {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 
-  a
+  a {
     width: 7em;
+  }
+}
 
-.revert:hover
-  text-decoration: underline
+.revert:hover {
+  text-decoration: underline;
+}
 </style>

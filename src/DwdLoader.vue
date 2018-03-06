@@ -36,18 +36,20 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "style/constants"
+<style lang="scss" module>
+@import "style/constants";
 
-.loader
-  align-items: center
-  display: flex
-  height: 40px
-  margin: 25px 0
-  justify-content: center
+.loader {
+  align-items: center;
+  display: flex;
+  height: 40px;
+  margin: 25px 0;
+  justify-content: center;
 
-  &.error
-    color: $red-dark-primary
-    font-size: 1.1em
-    text-align: center
+  &.error {
+    color: $red-dark-primary;
+    font-size: 1.1em;
+    text-align: center;
+  }
+}
 </style>

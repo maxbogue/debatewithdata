@@ -34,45 +34,52 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "style/constants"
+<style lang="scss" module>
+@import "style/constants";
 
-.flagDropdown
-  display: flex
+.flagDropdown {
+  display: flex;
+}
 
-.flags
-  background-color: $background-light
-  border: 1px solid $background-dark
-  box-shadow: 0px 8px 16px 0px $transparent-light
-  color: $text-dark
-  margin-right: 8px
-  max-height: 0
-  max-width: 0
-  overflow: hidden
-  padding: 0
-  transition: max-height 0.5s, max-width 0.5s, visibility 0s 0.5s
-  visibility: hidden
-  z-index: 1
+.flags {
+  background-color: $background-light;
+  border: 1px solid $background-dark;
+  box-shadow: 0px 8px 16px 0px $transparent-light;
+  color: $text-dark;
+  margin-right: 8px;
+  max-height: 0;
+  max-width: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: max-height 0.5s, max-width 0.5s, visibility 0s 0.5s;
+  visibility: hidden;
+  z-index: 1;
 
-  &.open
-    transition: max-height 0.5s, max-width 0.5s, visibility 0s
-    visibility: visible
-    max-height: 500px
-    max-width: 160px
+  &.open {
+    transition: max-height 0.5s, max-width 0.5s, visibility 0s;
+    visibility: visible;
+    max-height: 500px;
+    max-width: 160px;
+  }
 
-  li
-    cursor: pointer
-    font-size: 12px
-    list-style: none
-    padding: 4px
+  li {
+    cursor: pointer;
+    font-size: 12px;
+    list-style: none;
+    padding: 4px;
 
-    &:hover
-      background-color: $red-accent
+    &:hover {
+      background-color: $red-accent;
+    }
 
-    &.selected
-      background-color: $red-dark-primary
-      color: $text-light
+    &.selected {
+      background-color: $red-dark-primary;
+      color: $text-light;
+    }
 
-    &:hover.selected
-      background-color: $red-dark-accent
+    &:hover.selected {
+      background-color: $red-dark-accent;
+    }
+  }
+}
 </style>

@@ -1,0 +1,19 @@
+.auth {
+  margin: 20px 0;
+
+  > input {
+    &[type="text"], &[type="password"] {
+      display: block;
+      height: 3em;
+      margin: 10px auto 0;
+      width: 300px;
+    }
+  }
+
+  > button {
+    display: block;
+    height: 3em;
+    margin: 10px auto 0;
+    width: 300px;
+  }
+}

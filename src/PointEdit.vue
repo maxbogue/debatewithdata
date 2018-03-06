@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import './style/point.sass';
+import './style/point.scss';
 import PointDiff from './PointDiff.vue';
 import PointEditModal from './PointEditModal.vue';
 import { PointType } from '../common/constants';

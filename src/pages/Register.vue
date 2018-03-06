@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import '../style/auth.sass';
+import '../style/auth.scss';
 import DwdLoader from '../DwdLoader.vue';
 import auth from '../auth';
 

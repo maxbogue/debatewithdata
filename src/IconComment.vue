@@ -13,11 +13,13 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-.comment-icon
-  display: flex
-  align-items: center
+<style lang="scss" module>
+.comment-icon {
+  display: flex;
+  align-items: center;
+}
 
-.count
-  font-size: 0.8em
+.count {
+  font-size: 0.8em;
+}
 </style>

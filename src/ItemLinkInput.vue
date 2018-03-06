@@ -232,50 +232,62 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "style/constants"
+<style lang="scss" module>
+@import "style/constants";
 
-.input > :not(:first-child)
-  margin-top: 8px
+.input > :not(:first-child) {
+  margin-top: 8px;
+}
 
-.loader
-  justify-content: left
+.loader {
+  justify-content: left;
 
-  > div
-    transform: scale(0.6)
-    transform-origin: left
+  > div {
+    transform: scale(0.6);
+    transform-origin: left;
+  }
+}
 
-ul.results
-  list-style: none
-  margin-top: 0
-  padding: 0
+ul.results {
+  list-style: none;
+  margin-top: 0;
+  padding: 0;
 
-  li
+  li {
     background-color: white;
-    border-style: solid
-    border-width: 0 1px 1px 1px
-    cursor: default
+    border-style: solid;
+    border-width: 0 1px 1px 1px;
+    cursor: default;
     font-size: 14px;
     padding: 8px;
 
-    &:not(:first-child)
-      border-top: none
+    &:not(:first-child) {
+      border-top: none;
+    }
 
-    &.claim
-      border-color: $blue-accent
+    &.claim {
+      border-color: $blue-accent;
 
-      &.highlighted
-        background-color: $blue-accent
+      &.highlighted {
+        background-color: $blue-accent;
+      }
+    }
 
-    &.source
-      border-color: $green-accent
+    &.source {
+      border-color: $green-accent;
 
-      &.highlighted
-        background-color: $green-accent
+      &.highlighted {
+        background-color: $green-accent;
+      }
+    }
 
-    &.topic
-      border-color: $pink-accent
+    &.topic {
+      border-color: $pink-accent;
 
-      &.highlighted
-        background-color: $pink-accent
+      &.highlighted {
+        background-color: $pink-accent;
+      }
+    }
+  }
+}
 </style>

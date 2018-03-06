@@ -42,11 +42,13 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-.star
-  display: flex
-  align-items: center
+<style lang="scss" module>
+.star {
+  display: flex;
+  align-items: center;
+}
 
-.count
-  font-size: 0.8em
+.count {
+  font-size: 0.8em;
+}
 </style>

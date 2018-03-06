@@ -117,37 +117,46 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "style/constants"
+<style lang="scss" module>
+@import "style/constants";
 
-.comments
-  font-size: 12px
-  padding: 1em
+.comments {
+  font-size: 12px;
+  padding: 1em;
 
-  ul
-    margin: 0
-    padding: 0
+  ul {
+    margin: 0;
+    padding: 0;
+  }
 
-  li
-    display: flex
-    list-style: none
+  li {
+    display: flex;
+    list-style: none;
 
-    &:not(:first-child)
-      margin-top: 4px
+    &:not(:first-child) {
+      margin-top: 4px;
+    }
 
-    &:not(:hover) .delete
-      display: none
+    &:not(:hover) .delete {
+      display: none;
+    }
 
-    & :first-child
-      flex: 1
+    & :first-child {
+      flex: 1;
+    }
 
-    & :not(:first-child)
-      margin-left: 8px
+    & :not(:first-child) {
+      margin-left: 8px;
+    }
+  }
 
-  textarea
-    margin-top: 12px
-    padding: 2px 0.5em
+  textarea {
+    margin-top: 12px;
+    padding: 2px 0.5em;
+  }
+}
 
-.timestamp
-  color: $text-light-accent
+.timestamp {
+  color: $text-light-accent;
+}
 </style>

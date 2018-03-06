@@ -124,26 +124,36 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "style/constants"
+<style lang="scss" module>
+@import "style/constants";
 
-.error
-  font-size: 12px
+.error {
+  font-size: 12px;
+}
 
-@keyframes dwd-border
-  0%
-    border-color: $amber-dark-primary
-  20%
-    border-color: $purple-dark-primary
-  40%
-    border-color: $green-dark-primary
-  60%
-    border-color: $blue-dark-primary
-  80%
-    border-color: $pink-dark-primary
-  100%
-    border-color: $amber-dark-primary
+@keyframes dwd-border {
+  0% {
+    border-color: $amber-dark-primary;
+  }
+  20% {
+    border-color: $purple-dark-primary;
+  }
+  40% {
+    border-color: $green-dark-primary;
+  }
+  60% {
+    border-color: $blue-dark-primary;
+  }
 
-.loading
-  animation: dwd-border 3s infinite ease
+  80% {
+    border-color: $pink-dark-primary;
+  }
+  100% {
+    border-color: $amber-dark-primary;
+  }
+}
+
+.loading {
+  animation: dwd-border 3s infinite ease;
+}
 </style>

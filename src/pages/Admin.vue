@@ -64,18 +64,21 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "../style/constants"
+<style lang="scss" module>
+@import "../style/constants";
 
-.invites
-  list-style: none
-  margin-top: 10px
-  padding: 0
+.invites {
+  list-style: none;
+  margin-top: 10px;
+  padding: 0;
 
-  li
-    padding: 4px
+  li {
+    padding: 4px;
+  }
 
-  .used
-    color: $text-dark-accent
-    text-decoration: line-through
+  .used {
+    color: $text-dark-accent;
+    text-decoration: line-through;
+  }
+}
 </style>

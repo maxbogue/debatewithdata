@@ -147,29 +147,33 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "style/constants"
+<style lang="scss" module>
+@import "style/constants";
 
-.type
-  background-color: $background-light
-  border: 1px solid $text-light-accent
-  border-radius: 3px
-  font-size: 10px
-  margin-top: 4px
-  padding: 4px
-  text-align: center
-  width: 300px
+.type {
+  background-color: $background-light;
+  border: 1px solid $text-light-accent;
+  border-radius: 3px;
+  font-size: 10px;
+  margin-top: 4px;
+  padding: 4px;
+  text-align: center;
+  width: 300px;
 
-  h2
-    font-size: 16px
-    margin: 0
+  h2 {
+    font-size: 16px;
+    margin: 0;
+  }
+}
 
-.type:hover
-  background-color: $background-light-accent
-  cursor: pointer
+.type:hover {
+  background-color: $background-light-accent;
+  cursor: pointer;
+}
 
-.type.selected
-  background-color: $green-dark-primary
-  border-color: $green-dark-accent
-  color: $text-light
+.type.selected {
+  background-color: $green-dark-primary;
+  border-color: $green-dark-accent;
+  color: $text-light;
+}
 </style>

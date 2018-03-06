@@ -78,11 +78,13 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-.drawer
-  overflow: auto
+<style lang="scss" module>
+.drawer {
+  overflow: auto;
+}
 
-.drawerActive, .drawerActive > div
-  overflow: hidden
-  transition: all 0.5s
+.drawerActive, .drawerActive > div {
+  overflow: hidden;
+  transition: all 0.5s;
+}
 </style>

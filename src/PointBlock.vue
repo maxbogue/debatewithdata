@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import './style/point.sass';
+import './style/point.scss';
 import DwdComments from './DwdComments.vue';
 import DwdDrawer from './DwdDrawer.vue';
 import IconComment from './IconComment.vue';
@@ -82,7 +82,8 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-.subPointsMove
-  transition: transform 1s
+<style lang="scss" module>
+.subPointsMove {
+  transition: transform 1s;
+}
 </style>

@@ -140,25 +140,30 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "../style/constants"
+<style lang="scss" module>
+@import "../style/constants";
 
-.pointsMove
-  transition: transform 1s
+.pointsMove {
+  transition: transform 1s;
+}
 
-.pointHeader
-  display: flex
-  font-size: 1.25em
-  text-align: center
+.pointHeader {
+  display: flex;
+  font-size: 1.25em;
+  text-align: center;
 
-  &:global(.block) > span
-    margin-top: 0
+  &:global(.block) > span {
+    margin-top: 0;
+  }
 
-  .for
-    color: $purple-dark-primary
-    flex: 1
+  .for {
+    color: $purple-dark-primary;
+    flex: 1;
+  }
 
-  .against
-    color: $amber-dark-primary
-    flex: 1
+  .against {
+    color: $amber-dark-primary;
+    flex: 1;
+  }
+}
 </style>

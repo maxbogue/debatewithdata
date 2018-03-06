@@ -100,73 +100,88 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "style/constants"
+<style lang="scss" module>
+@import "style/constants";
 
-$navbar-bg-color: #333
-$navbar-btn-accent: #666
-$navbar-spacing: $block-spacing
-$navbar-text-color: #aaa
-$navbar-text-highlight: #FFF
-$navbar-brand-font-size: 20px
-$navbar-link-font-size: 14px
+$navbar-bg-color: #333;
+$navbar-btn-accent: #666;
+$navbar-spacing: $block-spacing;
+$navbar-text-color: #aaa;
+$navbar-text-highlight: #FFF;
+$navbar-brand-font-size: 20px;
+$navbar-link-font-size: 14px;
 
-.navbar
-  background-color: $navbar-bg-color
-  color: $navbar-text-color
-  position: relative
+.navbar {
+  background-color: $navbar-bg-color;
+  color: $navbar-text-color;
+  position: relative;
 
-  \:global(.dwd-container)
-    margin-bottom: 0
-    padding: 0
-    display: flex
-    justify-content: space-between
+  :global(.dwd-container) {
+    margin-bottom: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+  }
 
-  a
-    color: $navbar-text-color
-    line-height: $navbar-brand-font-size
+  a {
+    color: $navbar-text-color;
+    line-height: $navbar-brand-font-size;
 
-    &:hover, &:focus, &:global(.router-link-active)
-      color: $navbar-text-highlight
-      text-decoration: none
+    &:hover, &:focus, &:global(.router-link-active) {
+      color: $navbar-text-highlight;
+      text-decoration: none;
+    }
+  }
 
-  ul
-    margin: 0
+  ul {
+    margin: 0;
+  }
 
-  @media (max-width: $screen-sm-min - 0.02px)
-    \:global(.dwd-container)
-      flex-wrap: wrap  // Creates line break for collapsed content.
+  @media (max-width: $screen-sm-min - 0.02px) {
+    :global(.dwd-container) {
+      flex-wrap: wrap;
+    }
 
-    .navbarCollapse.collapse
-      display: none
+    .navbarCollapse.collapse {
+      display: none;
+    }
 
-    .navbarNav a
-      font-size: ($navbar-link-font-size * 1.2)
-      padding: ($block-spacing / 1.5) $block-spacing
+    .navbarNav a {
+      font-size: $navbar-link-font-size * 1.2;
+      padding: ($block-spacing / 1.5) $block-spacing;
+    }
+  }
 
-  @media (min-width: $screen-sm-min)
-    .navbarNav
-      flex-direction: row
+  @media (min-width: $screen-sm-min) {
+    .navbarNav {
+      flex-direction: row;
 
-      a
-        padding: $block-spacing ($block-spacing / 2)
+      a {
+        padding: $block-spacing ($block-spacing / 2);
+      }
+    }
 
-    .navbarCollapse
-      display: flex
+    .navbarCollapse {
+      display: flex;
+    }
 
-    .navbarToggler
-      display: none
+    .navbarToggler {
+      display: none;
+    }
+  }
+}
 
-.navbarBrand
-  display: inline-block
-  font-size: $navbar-brand-font-size
-  padding: $navbar-spacing
-  white-space: nowrap
+.navbarBrand {
+  display: inline-block;
+  font-size: $navbar-brand-font-size;
+  padding: $navbar-spacing;
+  white-space: nowrap;
+}
 
-.navbarToggler
+.navbarToggler {
   background: none;
   border-radius: 4px;
-  border: 1px solid $navbar-btn-accent
+  border: 1px solid $navbar-btn-accent;
   float: right;
   margin-bottom: 8px;
   margin-right: 15px;
@@ -174,44 +189,55 @@ $navbar-link-font-size: 14px
   padding: 9px 10px;
   position: relative;
 
-  &:hover, &:focus
-    background-color: $navbar-btn-accent
-    outline: none
-    text-decoration: none
+  &:hover, &:focus {
+    background-color: $navbar-btn-accent;
+    outline: none;
+    text-decoration: none;
 
-    .iconBar
+    .iconBar {
       background-color: $navbar-text-highlight;
+    }
+  }
 
-  &:not(:disabled):not(.disabled)
-    cursor: pointer
+  &:not(:disabled):not(.disabled) {
+    cursor: pointer;
+  }
 
-  .iconBar
+  .iconBar {
     background-color: $navbar-text-color;
     display: block;
     width: 22px;
     height: 2px;
     border-radius: 1px;
 
-    + .iconBar
+    + .iconBar {
       margin-top: 4px;
+    }
+  }
+}
 
-.navbarCollapse
-  flex-basis: 100%
-  flex-grow: 1
-  flex-wrap: wrap
-  align-items: center
+.navbarCollapse {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  align-items: center;
+}
 
-.navbarNav
-  display: flex
-  flex-direction: column
-  list-style: none
-  padding-left: 0
+.navbarNav {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding-left: 0;
 
-  a, li
-    display: block
-    font-size: $navbar-link-font-size
+  a, li {
+    display: block;
+    font-size: $navbar-link-font-size;
+  }
+}
 
-.navbarNavRight
-  @extend .navbarNav
-  margin-left: auto !important
+.navbarNavRight {
+  @extend .navbarNav;
+
+  margin-left: auto !important;
+}
 </style>

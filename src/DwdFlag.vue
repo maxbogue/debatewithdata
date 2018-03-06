@@ -20,15 +20,18 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "style/constants"
+<style lang="scss" module>
+@import "style/constants";
 
-.flag
-  font-size: 12px
+.flag {
+  font-size: 12px;
 
-  span
-    color: $red-dark-primary
+  span {
+    color: $red-dark-primary;
+  }
 
-  a:hover
-    text-decoration: underline
+  a:hover {
+    text-decoration: underline;
+  }
+}
 </style>

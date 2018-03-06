@@ -152,35 +152,50 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "../style/constants"
+<style lang="scss" module>
+@import "../style/constants";
 
-.revs
-  margin: 20px auto
-  padding: 0
+.revs {
+  margin: 20px auto;
+  padding: 0;
 
-  li
-    display: flex
-    list-style: none
-    padding: 6px 8px
-    text-align: center
+  li {
+    display: flex;
+    list-style: none;
+    padding: 6px 8px;
+    text-align: center;
 
-    .username
-      flex: 1
+    .username {
+      flex: 1;
+    }
+  }
 
-  li:nth-child(even)
-    &.topicRev
-      background-color: $pink-primary
-    &.claimRev
-      background-color: $blue-primary
-    &.sourceRev
-      background-color: $green-primary
+  li:nth-child(even) {
+    &.topicRev {
+      background-color: $pink-primary;
+    }
 
-  li:nth-child(odd)
-    &.topicRev
-      background-color: $pink-accent
-    &.claimRev
-      background-color: $blue-accent
-    &.sourceRev
-      background-color: $green-accent
+    &.claimRev {
+      background-color: $blue-primary;
+    }
+
+    &.sourceRev {
+      background-color: $green-primary;
+    }
+  }
+
+  li:nth-child(odd) {
+    &.topicRev {
+      background-color: $pink-accent;
+    }
+
+    &.claimRev {
+      background-color: $blue-accent;
+    }
+
+    &.sourceRev {
+      background-color: $green-accent;
+    }
+  }
+}
 </style>

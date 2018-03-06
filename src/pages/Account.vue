@@ -20,23 +20,27 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "../style/constants"
+<style lang="scss" module>
+@import "../style/constants";
 
-.account
-  margin-top: 50px
+.account {
+  margin-top: 50px;
 
-  span, strong
-    display: inline-block
-    font-size: 1.5em
-    padding: 4px
+  span, strong {
+    display: inline-block;
+    font-size: 1.5em;
+    padding: 4px;
+  }
 
-  span
-    font-weight: $font-weight-light
-    text-align: left
-    width: 60%
+  span {
+    font-weight: $font-weight-light;
+    text-align: left;
+    width: 60%;
+  }
 
-  strong
-    text-align: right
-    width: 40%
+  strong {
+    text-align: right;
+    width: 40%;
+  }
+}
 </style>

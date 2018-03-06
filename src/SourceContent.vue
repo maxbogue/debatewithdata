@@ -43,16 +43,19 @@ export default {
 };
 </script>
 
-<style lang="sass" module>
-@import "style/constants"
+<style lang="scss" module>
+@import "style/constants";
 
-.metadata
-  color: $text-dark-accent
-  font-size: 0.8em
+.metadata {
+  color: $text-dark-accent;
+  font-size: 0.8em;
 
-  a
-    color: $text-dark-accent
+  a {
+    color: $text-dark-accent;
+  }
 
-  strong
-    color: $text-dark
+  strong {
+    color: $text-dark;
+  }
+}
 </style>

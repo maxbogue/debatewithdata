@@ -4,16 +4,17 @@
 </div>
 </template>
 
-<style lang="sass" module>
-.fixedBottom
-  bottom: 0
-  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.25)
-  display: flex
-  justify-content: center
-  left: 50%
-  margin-left: -150px
-  padding: 8px
-  position: fixed
-  width: 300px
-  z-index: 1
+<style lang="scss" module>
+.fixedBottom {
+  bottom: 0;
+  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.25);
+  display: flex;
+  justify-content: center;
+  left: 50%;
+  margin-left: -150px;
+  padding: 8px;
+  position: fixed;
+  width: 300px;
+  z-index: 1;
+}
 </style>
