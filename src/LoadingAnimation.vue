@@ -52,7 +52,7 @@ $ball-colors: $c1 $c2 $c3 $c4 $c5;
 .animation {
   @include dwd-balls(5);
 
-  display: flex;
+  display: inline-flex;
   align-items: center;
   padding: $translate-amount 0;
 

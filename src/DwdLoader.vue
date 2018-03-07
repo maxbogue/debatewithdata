@@ -5,7 +5,6 @@
 <div v-else-if="error" :class="[$style.loader, $style.error]">
   {{ error }}
 </div>
-<div v-else-if="fill" :class="$style.loader"></div>
 <div v-else></div>
 </template>
 
@@ -15,9 +14,6 @@ import LoadingAnimation from './LoadingAnimation.vue';
 export default {
   components: {
     LoadingAnimation,
-  },
-  props: {
-    fill: { type: Boolean, default: false },
   },
   data: () => ({
     loading: false,
@@ -40,16 +36,14 @@ export default {
 @import "style/constants";
 
 .loader {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   height: 40px;
   margin: 25px 0;
+  clear: both;
+  text-align: center;
 
   &.error {
     color: $red-dark-primary;
     font-size: 1.1em;
-    text-align: center;
   }
 }
 </style>

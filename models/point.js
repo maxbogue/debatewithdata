@@ -1,3 +1,5 @@
+import map from 'lodash/map';
+
 import { NotFoundError } from '../api/error';
 import { genId } from './utils';
 import { validatePoint } from '../common/validate';
@@ -87,6 +89,21 @@ export default function (sequelize, DataTypes) {
       return pointRev;
     };
 
+    Point.apiGetRevs = async function (pointId) {
+      let pointRevs = await models.PointRev.findAll({
+        where: { pointId },
+        order: [['created_at', 'DESC']],
+        ...models.PointRev.INCLUDE(2, true),
+      });
+      let pointRevData = {};
+      let pointRevIds = map(pointRevs, (rev) => rev.toRevData(pointRevData));
+      return {
+        isFor: await Point.getIsFor(pointId),
+        pointRevIds: pointRevIds,
+        pointRevs: pointRevData,
+      };
+    };
+
     Point.prototype.toStarData = async function (user) {
       let count = await this.countStarredByUsers();
       let starred = false;
@@ -128,6 +145,23 @@ export default function (sequelize, DataTypes) {
         throw new NotFoundError('No claim found for ' + pointId);
       }
       return claimRevs[0].claimId;
+    };
+
+    Point.getIsFor = async function (pointId) {
+      let point = await Point.findById(pointId, {
+        include: {
+          association: Point.Head,
+        },
+      });
+      let claimRevs = await point.head.getClaimRevs({ limit: 1 });
+      if (claimRevs.length > 0) {
+        return claimRevs[0].claimPoint.isFor;
+      }
+      let pointRevs = await point.head.getSuperPointRevs({ limit: 1 });
+      if (pointRevs.length > 0) {
+        return pointRevs[0].pointPoint.isFor;
+      }
+      throw new NotFoundError('No parent found for ' + pointId);
     };
   };
 

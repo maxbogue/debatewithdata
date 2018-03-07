@@ -5,6 +5,16 @@ import { AuthError } from './error';
 
 const router = Router();
 
+router.get('/:id/claimId', async function (req, res) {
+  let claimId = await Point.getClaimId(req.params.id);
+  res.json({ claimId });
+});
+
+router.get('/:id/rev', async function (req, res) {
+  let data = await Point.apiGetRevs(req.params.id);
+  res.json(data);
+});
+
 router.post('/:id/star', async function (req, res) {
   if (!req.user) {
     throw new AuthError();

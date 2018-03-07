@@ -3,7 +3,6 @@
   <claim-rev-content class="claim block" :curr="curr" :prev="prev" />
   <template v-if="$store.state.singleColumn">
     <point-rev v-for="[[pId, currP, prevP], side] in zippedPointRevs"
-               :point-id="pointId"
                :curr="currP"
                :prev="prevP"
                :is-for="!side"
@@ -14,7 +13,6 @@
          class="dwd-col"
          :key="'side-' + side">
       <point-rev v-for="[pointId, currPoint, prevPoint] in sidePointRevs"
-                 :point-id="pointId"
                  :curr="currPoint"
                  :prev="prevPoint"
                  :is-for="!side"

@@ -14,7 +14,7 @@
                  class="dwd-btn grey">Next</router-link>
   </div>
   <div>
-    <router-link v-if="next && !curr.deleted"
+    <router-link v-if="revertTo"
                  :class="$style.revert"
                  :to="revertTo">Revert To This Revision</router-link>
   </div>
@@ -76,6 +76,10 @@ export default {
       return strip(this.itemType, this.curr);
     },
     revertTo: function () {
+      if (!this.next || this.curr.deleted || this.itemType === 'point') {
+        // Can't revert if already HEAD, deleted, or for any points.
+        return null;
+      }
       return {
         name: this.itemType + 'Edit',
         params: { id: this.curr.id, seed: this.stripped },

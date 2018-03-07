@@ -1,16 +1,15 @@
 <template>
-<li :class="pointClasses">
+<div :class="pointClasses">
   <point-diff class="bubble click"
               :curr="curr"
               :prev="prev"
               @click.native="showDrawer = !showDrawer" />
   <dwd-drawer :show="showDrawer">
     <div class="info">
-      <span class="id mono">{{ pointId }}</span>
+      <span class="id mono">{{ id }}</span>
     </div>
     <div v-if="subPointRevs.length > 0">
       <point-rev v-for="[[spId, currSp, prevSp], subSide] in subPointRevs"
-                 :point-id="spId"
                  :curr="currSp"
                  :prev="prevSp"
                  :is-for="isFor === !subSide"
@@ -18,7 +17,7 @@
                  :key="spId" />
     </div>
   </dwd-drawer>
-</li>
+</div>
 </template>
 
 <script>
@@ -34,7 +33,6 @@ export default {
     PointDiff,
   },
   props: {
-    pointId: { type: String, required: true, },
     curr: { type: Object, default: null },
     prev: { type: Object, default: null },
     isFor: { type: Boolean, required: true },
@@ -44,6 +42,9 @@ export default {
     showDrawer: false,
   }),
   computed: {
+    id: function () {
+      return this.curr ? this.curr.id : this.prev.id;
+    },
     pointClasses: function () {
       return [
         this.isSubPoint ? 'sub-point' : 'point',

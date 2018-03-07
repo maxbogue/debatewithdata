@@ -3,8 +3,7 @@
   <template v-if="data && !revId">
     <h3 class="center">
       History for
-      <router-link :to="url"
-                   class="mono">{{ itemId }}</router-link>
+      <router-link :to="url" class="mono">{{ itemId }}</router-link>
     </h3>
     <ul class="mono" :class="$style.revs">
       <li v-for="rev in revs" :class="revClass" :key="rev.revId">
@@ -28,6 +27,10 @@
     <source-rev v-else-if="itemType === 'source'"
                 :curr="curr"
                 :prev="prev" />
+    <point-rev v-else-if="itemType === 'point'"
+               :curr="curr"
+               :prev="prev"
+               :is-for="data.isFor" />
   </template>
   <dwd-loader ref="loader" />
 </div>
@@ -41,6 +44,7 @@ import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
 
 import ClaimRev from '../ClaimRev.vue';
+import PointRev from '../PointRev.vue';
 import RevNav from '../RevNav.vue';
 import SourceRev from '../SourceRev.vue';
 import TopicRev from '../TopicRev.vue';
@@ -61,6 +65,7 @@ function unwrapPoints(data) {
 export default {
   components: {
     ClaimRev,
+    PointRev,
     RevNav,
     SourceRev,
     TopicRev,
@@ -96,6 +101,8 @@ export default {
         return this.data.claimRevs;
       case 'source':
         return this.data.sourceRevs;
+      case 'point':
+        return map(this.data.pointRevIds, (id) => this.data.pointRevs[id]);
       }
       return [];
     },
@@ -107,6 +114,8 @@ export default {
         return this.$style.claimRev;
       case 'source':
         return this.$style.sourceRev;
+      case 'point':
+        return this.data.isFor ? this.$style.forRev : this.$style.againstRev;
       }
       return '';
     },
@@ -182,6 +191,14 @@ export default {
     &.sourceRev {
       background-color: $green-primary;
     }
+
+    &.forRev {
+      background-color: $purple-primary;
+    }
+
+    &.againstRev {
+      background-color: $amber-primary;
+    }
   }
 
   li:nth-child(odd) {
@@ -195,6 +212,14 @@ export default {
 
     &.sourceRev {
       background-color: $green-accent;
+    }
+
+    &.forRev {
+      background-color: $purple-accent;
+    }
+
+    &.againstRev {
+      background-color: $amber-accent;
     }
   }
 }
