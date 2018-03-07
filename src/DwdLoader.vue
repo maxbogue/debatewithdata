@@ -36,7 +36,6 @@ export default {
 @import "style/constants";
 
 .loader {
-  height: 40px;
   margin: 25px 0;
   clear: both;
   text-align: center;
