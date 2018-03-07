@@ -1,4 +1,5 @@
 import Diff from 'text-diff';
+import dateFormat from 'dateformat';
 import filter from 'lodash/filter';
 import forEach from 'lodash/forEach';
 import forOwn from 'lodash/forOwn';
@@ -9,6 +10,7 @@ import md5 from 'md5';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
 
+const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 const textDiff = new Diff();
 
 export function pipe(...fns) {
@@ -181,6 +183,17 @@ export var DwdUtilsMixin = {
   filters: {
     toSideString: function (isFor) {
       return isFor === null ? 'neutral' : isFor ? 'for' : 'against';
+    },
+    timestamp: function (isoDate, format='yyyy-mm-dd HH:MM') {
+      let date = new Date(isoDate);
+      return dateFormat(date, format);
+    },
+    shortTimestamp: function (isoDate) {
+      let date = new Date(isoDate);
+      if (Date.now() - date < ONE_DAY_MS) {
+        return dateFormat(date, 'h:MMtt');
+      }
+      return dateFormat(date, 'yyyy-mm-dd');
     },
   },
   methods: {

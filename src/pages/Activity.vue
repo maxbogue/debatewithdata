@@ -16,19 +16,12 @@
 
 <script>
 import axios from 'axios';
-import dateFormat from 'dateformat';
 
 import DwdLoader from '../DwdLoader.vue';
 
 export default {
   components: {
     DwdLoader,
-  },
-  filters: {
-    timestamp: function (seconds) {
-      let date = new Date(seconds * 1000);
-      return dateFormat(date, 'yyyy-mm-dd HH:MM');
-    },
   },
   data: () => ({
     activity: null,

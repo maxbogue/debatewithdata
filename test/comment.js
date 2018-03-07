@@ -46,7 +46,7 @@ describe('Comment', function () {
         id: comment.id,
         text: FOO,
         author: user.username,
-        created: Math.floor(comment.created_at.getTime() / 1000),
+        created: comment.created_at,
       });
     });
   });

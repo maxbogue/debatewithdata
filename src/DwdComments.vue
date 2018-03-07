@@ -5,7 +5,8 @@
       <ul>
         <li v-for="comment in comments" class="flex-row" :key="comment.id">
           <div><strong>{{ comment.author }}</strong>: {{ comment.text }}</div>
-          <div :class="$style.timestamp">{{ comment.created | timestamp }}</div>
+          <div :class="$style.timestamp"
+               >{{ comment.created | shortTimestamp }}</div>
           <div v-if="user && comment.author === user.username"
                :class="$style.delete"
                class="click fas fa-trash"
@@ -25,26 +26,14 @@
 
 <script>
 import axios from 'axios';
-import dateFormat from 'dateformat';
 
 import DwdDrawer from './DwdDrawer.vue';
 import DwdInput from './DwdInput.vue';
-
-const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 
 export default {
   components: {
     DwdDrawer,
     DwdInput,
-  },
-  filters: {
-    timestamp: function (seconds) {
-      let date = new Date(seconds * 1000);
-      if (Date.now() - date < ONE_DAY_MS) {
-        return dateFormat(date, 'h:MMtt');
-      }
-      return dateFormat(date, 'yyyy-mm-dd');
-    },
   },
   props: {
     url: { type: String, required: true },

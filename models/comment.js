@@ -47,7 +47,7 @@ export default function (sequelize, DataTypes) {
         id: this.id,
         text: this.text,
         author: this.user.username,
-        created: Math.floor(this.created_at.getTime() / 1000),
+        created: this.created_at,
       };
     };
 

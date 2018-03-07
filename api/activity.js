@@ -18,7 +18,7 @@ function itemToAction(item) {
 
 function itemToEntry(item) {
   return {
-    timestamp: Math.floor(item.created_at.getTime() / 1000),
+    timestamp: item.created_at,
     username: item.user.username,
     action: itemToAction(item),
   };
@@ -47,7 +47,7 @@ function sourceRevToEntry(sourceRev) {
 
 function commentToEntry(comment) {
   return {
-    timestamp: Math.floor(comment.created_at.getTime() / 1000),
+    timestamp: comment.created_at,
     username: comment.user.username,
     action: 'commented on',
     type: comment.commentable,
@@ -99,7 +99,7 @@ router.get('/', async function (req, res) {
   let commentEntries = map(comments, commentToEntry);
   let activity = topicEntries.concat(
       claimEntries, sourceEntries, commentEntries);
-  res.json(sortBy(activity, (e) => -e.timestamp).slice(0, 100));
+  res.json(sortBy(activity, (e) => -e.timestamp.getTime()).slice(0, 100));
 });
 
 export default router;

@@ -23,7 +23,6 @@
 
 <script>
 import cloneDeep from 'lodash/cloneDeep';
-import dateFormat from 'dateformat';
 import forEach from 'lodash/forEach';
 
 function removeBadFields(points) {
@@ -48,12 +47,6 @@ function strip(type, item) {
 }
 
 export default {
-  filters: {
-    timestamp: function (isoDate) {
-      let date = new Date(isoDate);
-      return dateFormat(date, 'yyyy-mm-dd HH:MM');
-    },
-  },
   props: {
     itemType: { type: String, required: true },
     curr: { type: Object, required: true },
