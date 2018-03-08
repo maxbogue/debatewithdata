@@ -344,6 +344,121 @@ describe('Point', function () {
     });
   });
 
+  describe('.apiGetRevs()', function () {
+    it('many revs', async function () {
+      let r1 = await Point.apiCreate(user, {
+        type: Point.TEXT,
+        text: FOO,
+      });
+      let pointId = r1.pointId;
+
+      let r2 = await Point.apiUpdate(pointId, user, {
+        type: Point.SUBCLAIM,
+        text: BAR,
+        points: [[{
+          type: Point.TEXT,
+          text: FOO,
+        }], []],
+      });
+      await r2.reload(PointRev.INCLUDE(2));
+      let r2a = r2.pointRevs[0];
+      let subPointId = r2a.pointId;
+
+      let r3 = await Point.apiUpdate(pointId, user, {
+        type: Point.SUBCLAIM,
+        text: BAZ,
+        points: [[{
+          id: subPointId,
+          revId: r2a.id,
+          type: Point.TEXT,
+          text: FOO,
+        }], []],
+      });
+      await r3.reload(PointRev.INCLUDE(2));
+
+      let r4 = await Point.apiUpdate(pointId, user, {
+        type: Point.SUBCLAIM,
+        text: BAZ,
+        points: [[{
+          id: subPointId,
+          type: Point.TEXT,
+          text: BAR,
+        }], []],
+      });
+      await r4.reload(PointRev.INCLUDE(2));
+      let r4a = r4.pointRevs[0];
+
+      // Fake a parent for our point so apiGetRevs can find isFor.
+      let claimRev = await TestClaim.create(user);
+      await claimRev.addPointRev(r4, { through: { isFor: true } });
+
+      let data = await Point.apiGetRevs(pointId);
+      expect(data).to.deep.equal({
+        isFor: true,
+        pointRevIds: [r4.id, r3.id, r2.id, r1.id],
+        pointRevs: {
+          [r1.id]: {
+            id: pointId,
+            revId: r1.id,
+            username: user.username,
+            createdAt: r1.created_at,
+            type: PointType.TEXT,
+            text: FOO,
+          },
+          [r2.id]: {
+            id: pointId,
+            revId: r2.id,
+            username: user.username,
+            createdAt: r2.created_at,
+            type: PointType.SUBCLAIM,
+            text: BAR,
+            points: [{
+              [subPointId]: r2a.id,
+            }, {}],
+          },
+          [r3.id]: {
+            id: pointId,
+            revId: r3.id,
+            username: user.username,
+            createdAt: r3.created_at,
+            type: PointType.SUBCLAIM,
+            text: BAZ,
+            points: [{
+              [subPointId]: r2a.id,
+            }, {}],
+          },
+          [r4.id]: {
+            id: pointId,
+            revId: r4.id,
+            username: user.username,
+            createdAt: r4.created_at,
+            type: PointType.SUBCLAIM,
+            text: BAZ,
+            points: [{
+              [subPointId]: r4a.id,
+            }, {}],
+          },
+          [r2a.id]: {
+            id: subPointId,
+            revId: r2a.id,
+            username: user.username,
+            createdAt: r2a.created_at,
+            type: PointType.TEXT,
+            text: FOO,
+          },
+          [r4a.id]: {
+            id: subPointId,
+            revId: r4a.id,
+            username: user.username,
+            createdAt: r4a.created_at,
+            type: PointType.TEXT,
+            text: BAR,
+          },
+        },
+      });
+    });
+  });
+
   describe('.apiToggleStar()', function () {
     it('happy', async function () {
       let rev = await Point.apiCreate(user, {

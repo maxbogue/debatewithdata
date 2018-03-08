@@ -1,3 +1,5 @@
+import map from 'lodash/map';
+
 import { NotFoundError } from '../api/error';
 import { ValidationError, validateClaim } from '../common/validate';
 import { genId } from './utils';
@@ -195,6 +197,20 @@ export default function (sequelize, DataTypes) {
         }
       }
       return data;
+    };
+
+    Claim.apiGetRevs = async function (claimId) {
+      let claimRevs = await models.ClaimRev.findAll({
+        where: { claimId },
+        order: [['created_at', 'DESC']],
+        ...models.ClaimRev.INCLUDE(3, true),
+      });
+      let pointRevData = {};
+      let claimRevData = map(claimRevs, (rev) => rev.toRevData(pointRevData));
+      return {
+        claimRevs: claimRevData,
+        pointRevs: pointRevData,
+      };
     };
 
     Claim.prototype.toStarData = async function (user) {

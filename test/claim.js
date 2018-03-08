@@ -599,6 +599,77 @@ describe('Claim', function () {
     });
   });
 
+  describe('apiGetRevs', function () {
+    it('change point', async function () {
+      let r1 = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[{
+          type: Point.TEXT,
+          text: BAR,
+        }], []],
+      });
+      await r1.reload(ClaimRev.INCLUDE(2));
+      expect(r1.pointRevs).to.have.lengthOf(1);
+      let r1a = r1.pointRevs[0];
+
+      let claimId = r1.claimId;
+      let pointId = r1a.pointId;
+
+      let r2 = await Claim.apiUpdate(claimId, user, {
+        text: FOO,
+        points: [[{
+          id: pointId,
+          type: Point.TEXT,
+          text: BAZ,
+        }], []],
+      });
+      await r2.reload(ClaimRev.INCLUDE(2));
+      expect(r2.pointRevs).to.have.lengthOf(1);
+      let r2a = r2.pointRevs[0];
+
+      let data = await Claim.apiGetRevs(claimId);
+      expect(data).to.deep.equal({
+        claimRevs: [{
+          id: claimId,
+          revId: r2.id,
+          username: user.username,
+          createdAt: r2.created_at,
+          text: FOO,
+          points: [{
+            [pointId]: r2a.id,
+          }, {}],
+        }, {
+          id: claimId,
+          revId: r1.id,
+          username: user.username,
+          createdAt: r1.created_at,
+          text: FOO,
+          points: [{
+            [pointId]: r1a.id,
+          }, {}],
+        }],
+        pointRevs: {
+          [r1a.id]: {
+            id: pointId,
+            revId: r1a.id,
+            username: user.username,
+            createdAt: r1a.created_at,
+            type: Point.TEXT,
+            text: BAR,
+          },
+          [r2a.id]: {
+            id: pointId,
+            revId: r2a.id,
+            username: user.username,
+            createdAt: r2a.created_at,
+            type: Point.TEXT,
+            text: BAZ,
+          },
+        },
+      });
+    });
+  });
+
   describe('.apiToggleStar()', function () {
     it('happy', async function () {
       let rev = await Claim.apiCreate(user, {
