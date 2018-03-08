@@ -3,7 +3,7 @@ import chai from 'chai';
 import { Claim, Point, PointRev, Source } from '../models';
 import { Flag } from '../common/flag';
 import { PointType } from '../common/constants';
-import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
+import { FOO, BAR, BAZ, TestClaim, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
@@ -136,8 +136,7 @@ describe('Point', function () {
     });
 
     it('claim link', async function () {
-      let text = 'must be long enough';
-      let claimRev = await Claim.apiCreate(user, { text, points: [[], []] });
+      let claimRev = await TestClaim.create(user);
       let pointRev = await Point.apiCreate(user, {
         type: Point.CLAIM,
         claimId: claimRev.claimId,
@@ -153,15 +152,8 @@ describe('Point', function () {
       expect(data).to.deep.equal({
         claims: {
           [claimRev.claimId]: {
-            id: claimRev.claimId,
-            revId: claimRev.id,
-            text: text,
+            ...TestClaim.verify(claimRev, false),
             depth: 1,
-            star: {
-              count: 0,
-              starred: false,
-            },
-            commentCount: 0,
           },
         },
       });

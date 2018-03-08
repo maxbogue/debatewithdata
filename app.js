@@ -59,4 +59,8 @@ app.get('/point/:id', async function (req, res) {
 
 app.use('/api', api);
 
-app.listen(config.get('port'));
+export default app;
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(config.get('port'));
+}
