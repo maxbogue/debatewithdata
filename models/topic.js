@@ -176,6 +176,28 @@ export default function (sequelize, DataTypes) {
       return data;
     };
 
+    Topic.apiGetRevs = async function (topicId) {
+      let topicRevs = await models.TopicRev.findAll({
+        where: { topicId },
+        order: [['created_at', 'DESC']],
+        ...models.TopicRev.INCLUDE(2, true),
+      });
+
+      if (topicRevs.length === 0) {
+        throw new NotFoundError('Topic not found: ' + topicId);
+      }
+
+      let data = {
+        topicRevs: [],
+        topics: {},
+        claims: {},
+      };
+      for (let topicRev of topicRevs) {
+        await topicRev.fillData(data);
+      }
+      return data;
+    };
+
     Topic.prototype.toStarData = async function (user) {
       let count = await this.countStarredByUsers();
       let starred = false;

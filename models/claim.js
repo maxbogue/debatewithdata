@@ -205,6 +205,11 @@ export default function (sequelize, DataTypes) {
         order: [['created_at', 'DESC']],
         ...models.ClaimRev.INCLUDE(3, true),
       });
+
+      if (claimRevs.length === 0) {
+        throw new NotFoundError('Claim not found: ' + claimId);
+      }
+
       let pointRevData = {};
       let claimRevData = map(claimRevs, (rev) => rev.toRevData(pointRevData));
       return {

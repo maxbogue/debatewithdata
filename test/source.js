@@ -2,6 +2,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
 import { Claim, Source, SourceRev } from '../models';
+import { NotFoundError } from '../api/error';
 import { PointType } from '../common/constants';
 import { ValidationError } from '../common/validate';
 import { registerAndVerifyUser } from './utils';
@@ -370,6 +371,36 @@ describe('Source', function () {
           ...RESEARCH,
         }
       });
+    });
+  });
+
+  describe('.apiGetRevs()', function () {
+    it('change', async function () {
+      let r1 = await Source.apiCreate(user, MISC);
+      let sourceId = r1.sourceId;
+      let r2 = await Source.apiUpdate(sourceId, user, MISC2);
+
+      let data = await Source.apiGetRevs(sourceId);
+      expect(data).to.deep.equal({
+        sourceRevs: [{
+          id: sourceId,
+          revId: r2.id,
+          username: user.username,
+          createdAt: r2.created_at,
+          ...MISC2,
+        }, {
+          id: sourceId,
+          revId: r1.id,
+          username: user.username,
+          createdAt: r1.created_at,
+          ...MISC,
+        }],
+      });
+    });
+
+    it('bad id', async function () {
+      await expect(Source.apiGetRevs('bad id')).to.be.rejectedWith(
+          NotFoundError);
     });
   });
 });

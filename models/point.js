@@ -95,6 +95,11 @@ export default function (sequelize, DataTypes) {
         order: [['created_at', 'DESC']],
         ...models.PointRev.INCLUDE(2, true),
       });
+
+      if (pointRevs.length === 0) {
+        throw new NotFoundError('Point not found: ' + pointId);
+      }
+
       let pointRevData = {};
       let pointRevIds = map(pointRevs, (rev) => rev.toRevData(pointRevData));
       return {

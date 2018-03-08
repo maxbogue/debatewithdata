@@ -465,6 +465,87 @@ describe('Topic', function () {
     });
   });
 
+  describe('.apiGetRevs()', function () {
+    it('with sub-topic and claim', async function () {
+      let r1 = await Topic.apiCreate(user, {
+        id: ID,
+        title: TITLE,
+        text: FOO,
+        subTopicIds: [],
+        claimIds: [],
+      });
+      let r2 = await Topic.apiUpdate(ID, user, {
+        title: TITLE,
+        text: BAR,
+        subTopicIds: [],
+        claimIds: [],
+        newClaims: [{
+          text: BAZ,
+          points: [[], []],
+        }],
+        newSubTopics: [{
+          id: ID2,
+          title: TITLE2,
+          text: BAZ,
+          claimIds: [],
+          subTopicIds: [],
+        }],
+      });
+      await r2.reload(TopicRev.INCLUDE(2));
+      let claim = r2.claims[0];
+      let subTopic = r2.subTopics[0];
+
+      let data = await Topic.apiGetRevs(ID);
+      expect(data).to.deep.equal({
+        topicRevs: [{
+          id: ID,
+          revId: r2.id,
+          username: user.username,
+          createdAt: r2.created_at,
+          title: TITLE,
+          text: BAR,
+          subTopicIds: [ID2],
+          claimIds: [claim.id],
+        }, {
+          id: ID,
+          revId: r1.id,
+          username: user.username,
+          createdAt: r1.created_at,
+          title: TITLE,
+          text: FOO,
+          subTopicIds: [],
+          claimIds: [],
+        }],
+        topics: {
+          [ID2]: {
+            id: ID2,
+            revId: subTopic.headId,
+            title: TITLE2,
+            text: BAZ,
+            claimIds: [],
+            subTopicIds: [],
+            depth: 1,
+            ...STARS_AND_COMMENTS,
+          },
+        },
+        claims: {
+          [claim.id]: {
+            id: claim.id,
+            revId: claim.headId,
+            text: BAZ,
+            depth: 1,
+            ...STARS_AND_COMMENTS,
+          },
+        },
+      });
+    });
+
+    it('bad id', async function () {
+      await expect(Topic.apiGetRevs('bad id')).to.be.rejectedWith(
+          NotFoundError);
+    });
+  });
+
   describe('.apiToggleStar()', function () {
     it('happy', async function () {
       await Topic.apiCreate(user, {

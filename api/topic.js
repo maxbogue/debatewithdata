@@ -1,7 +1,7 @@
 import Router from 'express-promise-router';
 
 import { AuthError } from './error';
-import { Comment, Topic, TopicRev } from '../models';
+import { Comment, Topic } from '../models';
 import { addApiData, getTrailData } from '../models/utils';
 
 const router = Router();
@@ -47,21 +47,7 @@ router.delete('/:id', async function (req, res) {
 });
 
 router.get('/:id/rev', async function (req, res) {
-  let topicRevs = await TopicRev.findAll({
-    where: {
-      topicId: req.params.id,
-    },
-    order: [['created_at', 'DESC']],
-    ...TopicRev.INCLUDE(2, true),
-  });
-  let data = {
-    topicRevs: [],
-    topics: {},
-    claims: {},
-  };
-  for (let topicRev of topicRevs) {
-    await topicRev.fillData(data);
-  }
+  let data = await Topic.apiGetRevs(req.params.id);
   res.json(data);
 });
 

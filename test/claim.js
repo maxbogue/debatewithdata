@@ -2,6 +2,7 @@ import chai from 'chai';
 
 import { Claim, ClaimRev, Point } from '../models';
 import { Flag } from '../common/flag';
+import { NotFoundError } from '../api/error';
 import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
@@ -667,6 +668,11 @@ describe('Claim', function () {
           },
         },
       });
+    });
+
+    it('bad id', async function () {
+      await expect(Claim.apiGetRevs('bad id')).to.be.rejectedWith(
+          NotFoundError);
     });
   });
 

@@ -2,6 +2,7 @@ import chai from 'chai';
 
 import { Claim, Point, PointRev, Source } from '../models';
 import { Flag } from '../common/flag';
+import { NotFoundError } from '../api/error';
 import { PointType } from '../common/constants';
 import { FOO, BAR, BAZ, TestClaim, registerAndVerifyUser } from './utils';
 
@@ -456,6 +457,11 @@ describe('Point', function () {
           },
         },
       });
+    });
+
+    it('bad id', async function () {
+      await expect(Point.apiGetRevs('bad id')).to.be.rejectedWith(
+          NotFoundError);
     });
   });
 

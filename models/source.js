@@ -226,6 +226,21 @@ export default function (sequelize, DataTypes) {
       }
       return ret;
     };
+
+    Source.apiGetRevs = async function (sourceId) {
+      let sourceRevs = await models.SourceRev.findAll({
+        where: { sourceId },
+        order: [['created_at', 'DESC']],
+        ...models.SourceRev.INCLUDE(true),
+      });
+
+      if (sourceRevs.length === 0) {
+        throw new NotFoundError('Source not found: ' + sourceId);
+      }
+
+      let sourceRevData = map(sourceRevs, (rev) => rev.toRevData());
+      return { sourceRevs: sourceRevData };
+    };
   };
 
   return Source;
