@@ -1,11 +1,13 @@
+# API Data
+
 This document describes the fields present in the API data format for items.
 Fields with a `?` after their name are optional. If a condition appears in
 parenthesis after the type, it is present iff that condition is met. `??` means
 they are still optional even if the condition is met.
 
-# Data Bundle
+## Data Bundle
 
-All API methods return a data bundle of this form. All fields are optional and
+All API methods return a data object of this form. All fields are optional and
 only set based on the specific request.
 
     // Main three are stores in the Vuex store client-side.
@@ -17,17 +19,18 @@ only set based on the specific request.
     topicRevs: [TopicRev]
     claimRevs: [ClaimRev]
     sourceRevs: [SourceRev]
-    pointRevs: { id: PointRev }
+    pointRevs: { revId: PointRev }
+    pointRevIds: [revId]  // Present for point history.
 
     id: String      // Present for add operations.
     isFor: Boolean  // Present for point history.
 
 
-# Common Metadata
+## Metadata
 
 Metadata common for all items.
 
-## All
+### All
 
 Always present.
 
@@ -37,7 +40,7 @@ Always present.
     deleted?: Boolean
     deleteMessage?: String
 
-## Items
+### Items
 
 Present for whole items (not revisions).
 
@@ -47,26 +50,26 @@ Present for whole items (not revisions).
       starred: Boolean
     }  // Not present for sources.
 
-## Revisons
+### Revisons
 
 Present only for revisions.
 
     username: String
     createdAt: Date
 
-# Core Data
+## Data
 
 Core data for each item type. These are the fields that should be used for
 diffs and equality checks. None of these are set for deleted items.
 
-## Topic
+### Topic
 
     title: String
     text: String
     subTopicIds: [String]
     claimIds: [String]
 
-## Claim
+### Claim
 
     text: String
     flag??: String
@@ -81,7 +84,7 @@ For revisions, points just map to their revision IDs.
 
     points: [{ id: revId }, { id: revId }]
 
-## Point
+### Point
 
     type: String (claim, source, text, subclaim)
     text?: String (type = text|subclaim)
@@ -102,7 +105,7 @@ embedded inside the point.
     claim?: Claim (type = claim)
     source?: Source (type = source)
 
-## Source
+### Source
 
     url: String
     text: String
@@ -111,9 +114,9 @@ embedded inside the point.
     institution?: String (type = research|authority)
     publication?: String (type = research|article)
 
-# Misc
+## Misc
 
-## Activity
+### Activity
 
     timestamp: Date
     username: String
