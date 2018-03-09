@@ -60,6 +60,12 @@
                            title="Register">Register</router-link>
             </li>
           </template>
+          <li>
+            <a href="https://github.com/maxbogue/debatewithdata"
+               title="GitHub Repo"
+               target="_blank"
+               class="fab fa-github"></a>
+          </li>
         </ul>
       </div>
     </div>
@@ -137,6 +143,10 @@ $navbar-link-font-size: 14px;
 
   ul {
     margin: 0;
+  }
+
+  :global(.fa-github) {
+    font-size: 1.4em;
   }
 
   @media (max-width: $screen-sm-min - 0.02px) {
