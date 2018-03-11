@@ -14,6 +14,37 @@
     <h2>Recent Changes</h2>
     <ul>
       <li>
+        <strong>2018-03-09:</strong> Code is now open source under the AGPLv3
+        license; link to GitHub in the header.
+      </li>
+      <li>
+        <strong>2018-03-07:</strong> Points now have their own history and
+        revision pages.
+      </li>
+      <li>
+        <strong>2018-03-03:</strong> Revision page now has a link for reverting
+        to that revision.
+      </li>
+      <li>
+        <strong>2018-02-28:</strong> More fun and colorful loading animation.
+      </li>
+      <li>
+        <strong>2018-02-28:</strong> Deleting an item now requires a message
+        explaining why.
+      </li>
+      <li>
+        <strong>2018-02-27:</strong> Topics are now added to the trail as you
+        navigate from them.
+      </li>
+      <li>
+        <strong>2018-02-26:</strong> Source page now lists claims that
+        reference it.
+      </li>
+      <li>
+        <strong>2018-02-26:</strong> Text points can now be promoted to their
+        own claims.
+      </li>
+      <li>
         <strong>2018-02-23:</strong> New sub-topics or claims can now be
         created directly from the topic edit page.
       </li>
