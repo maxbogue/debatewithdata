@@ -19,13 +19,13 @@
                        @itemType="updateLinkType" />
       <dwd-flag v-if="isClaimLike && point.flag" :flag="point.flag" />
     </div>
-    <div v-if="point.type" class="info">
+    <div class="info">
       <div class="id mono">{{ point.id || 'new' }}</div>
-      <button type="submit"
-              class="dwd-btn dwd-btn-primary">Apply</button>
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
+      <button type="submit"
+              class="dwd-btn dwd-btn-primary">Review</button>
       <div class="controls">
         <dwd-flag-dropdown v-if="isClaimLike" v-model="flag" />
         <span v-if="isClaimLike && !promoteClaim"

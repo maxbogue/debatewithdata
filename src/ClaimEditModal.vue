@@ -12,13 +12,13 @@
                  :validate="validate.text" />
       <dwd-flag v-if="flag" :flag="flag" />
     </div>
-    <div v-if="text" class="info">
+    <div class="info">
       <div class="id mono">{{ id || 'new' }}</div>
-      <button type="submit"
-              class="dwd-btn dwd-btn-primary">Apply</button>
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
+      <button type="submit"
+              class="dwd-btn dwd-btn-primary">Review</button>
       <div class="controls">
         <dwd-flag-dropdown v-model="flag" />
       </div>

@@ -15,12 +15,11 @@
     </div>
     <div class="info">
       <div v-if="!isLink" class="id mono">new</div>
-      <button type="submit"
-              class="dwd-btn dwd-btn-primary"
-              >{{ isLink ? 'Link' : 'Add' }}</button>
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
+      <button type="submit"
+              class="dwd-btn dwd-btn-primary">Review</button>
       <div v-if="!isLink" class="controls">
         <dwd-flag-dropdown v-model="flag" />
       </div>

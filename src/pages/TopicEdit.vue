@@ -51,7 +51,7 @@
     <div class="claim">
       <div class="bubble click"
            @click="showClaimModal = true">
-        <strong>Link a claim.</strong>
+        <strong>Add or link a claim.</strong>
       </div>
     </div>
     <claim-link-modal :show.sync="showClaimModal"
@@ -86,11 +86,11 @@
     </div>
     <fixed-bottom class="center pink">
       <button type="button"
-              class="dwd-btn pink-dark"
-              @click="submit">Submit</button>
-      <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
+      <button type="button"
+              class="dwd-btn pink-dark"
+              @click="submit">Submit</button>
     </fixed-bottom>
   </template>
   <dwd-loader ref="loader" />

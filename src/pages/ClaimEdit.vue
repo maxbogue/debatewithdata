@@ -21,11 +21,11 @@
     </div>
     <fixed-bottom class="center blue">
       <button type="button"
-              class="dwd-btn blue-dark"
-              @click="submit">Submit</button>
-      <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
+      <button type="button"
+              class="dwd-btn blue-dark"
+              @click="submit">Submit</button>
     </fixed-bottom>
   </template>
   <dwd-loader ref="loader" />

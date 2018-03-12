@@ -30,12 +30,11 @@
       </template>
     </div>
     <div class="info">
-      <button type="submit"
-              class="dwd-btn pink-dark"
-              >{{ isLink ? 'Link' : 'Add' }}</button>
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
+      <button type="submit"
+              class="dwd-btn pink-dark">Review</button>
     </div>
   </div>
 </dwd-modal>

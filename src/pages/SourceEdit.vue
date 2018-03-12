@@ -13,11 +13,11 @@
     <source-edit-modal :show.sync="showModal"
                        :source.sync="newSource" />
     <div class="block no-pad center">
-      <button type="submit"
-              class="dwd-btn green-dark">Submit</button>
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
+      <button type="submit"
+              class="dwd-btn green-dark">Submit</button>
     </div>
     <div v-if="id" class="block no-pad center">
       <delete-button noun="Source" @delete="remove" />

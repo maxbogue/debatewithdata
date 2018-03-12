@@ -6,11 +6,11 @@
                          @update="update" />
     <div class="info">
       <div class="id mono">{{ id || 'new' }}</div>
-      <button type="submit"
-              class="dwd-btn green-dark">Apply</button>
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
+      <button type="submit"
+              class="dwd-btn green-dark">Review</button>
       <div class="controls"></div>
     </div>
   </div>

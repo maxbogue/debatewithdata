@@ -7,9 +7,7 @@
            placeholder="password"
            v-model="password">
     <dwd-loader ref="loader" />
-    <button type="submit" class="dwd-btn dwd-btn-primary">
-      Submit
-    </button>
+    <button type="submit" class="dwd-btn dwd-btn-primary">Submit</button>
   </form>
 </div>
 </template>
