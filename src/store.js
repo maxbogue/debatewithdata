@@ -214,7 +214,7 @@ export default new Vuex.Store({
       validateSource(source);
       return axios.put('/api/source/' + id, source).then((res) => {
         commit('setData', res.data);
-        return res.data.id;
+        return id;
       });
     },
     addSource: function ({ commit }, { source }) {
