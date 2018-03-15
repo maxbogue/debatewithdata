@@ -293,48 +293,6 @@ describe('Source', function () {
         },
       });
     });
-
-    it('with claim via subpoint', async function () {
-      let sourceRev = await Source.apiCreate(user, MISC);
-      let sourceId = sourceRev.sourceId;
-      let claimRev = await Claim.apiCreate(user, {
-        text: TEXT2,
-        points: [[{
-          type: PointType.SUBCLAIM,
-          text: 'something long enough',
-          points: [[{
-            type: PointType.SOURCE,
-            sourceId,
-          }], []],
-        }], []],
-      });
-
-      let sourceData = await Source.apiGet(sourceId);
-      expect(sourceData).to.deep.equal({
-        sources: {
-          [sourceId]: {
-            id: sourceId,
-            revId: sourceRev.id,
-            claimIds: [claimRev.claimId],
-            commentCount: 0,
-            ...MISC,
-          },
-        },
-        claims: {
-          [claimRev.claimId]: {
-            id: claimRev.claimId,
-            revId: claimRev.id,
-            text: TEXT2,
-            depth: 1,
-            star: {
-              starred: false,
-              count: 0,
-            },
-            commentCount: 0,
-          },
-        },
-      });
-    });
   });
 
   describe('.apiGetAll()', function () {

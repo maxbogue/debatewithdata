@@ -1,9 +1,9 @@
 <template>
-<div class="center">
+<div class="center auth">
   <dwd-loader ref="loader" />
   <template v-if="invites">
     <h2>Invite Codes</h2>
-    <form class="auth" @submit.prevent="submit">
+    <form @submit.prevent.stop="invite">
       <input type="text"
              placeholder="note"
              v-model="note">
@@ -26,6 +26,10 @@
       </li>
     </ul>
   </template>
+  <h2>Fixes</h2>
+  <button type="button"
+          class="dwd-btn dwd-btn-primary"
+          @click="promoteAll">Promote all points</button>
 </div>
 </template>
 
@@ -55,10 +59,17 @@ export default {
     });
   },
   methods: {
-    submit: function () {
+    invite: function () {
       axios.post('/api/admin/invite', { note: this.note }).then((res) => {
         this.invites.push(res.data);
       });
+    },
+    promoteAll: function () {
+      if (window.confirm('Are you sure?')) {
+        axios.post('/api/admin/fix/promote-all').then((res) => {
+          window.alert(res.data.count + ' points promoted.');
+        });
+      }
     },
   },
 };

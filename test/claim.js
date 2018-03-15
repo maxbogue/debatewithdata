@@ -48,8 +48,9 @@ describe('Claim', function () {
       let claimRev = await Claim.apiCreate(user, {
         text: FOO,
         points: [[{
-          type: Point.TEXT,
+          type: Point.NEW_CLAIM,
           text: BAR,
+          points: [[], []],
         }], []],
       });
       await claimRev.reload(ClaimRev.INCLUDE(2));
@@ -61,7 +62,7 @@ describe('Claim', function () {
       expect(claimRev.pointRevs).to.have.lengthOf(1);
       let pointRev = claimRev.pointRevs[0];
       expect(pointRev.userId).to.equal(user.id);
-      expect(pointRev.blob.text).to.equal(BAR);
+      expect(pointRev.claim.head.blob.text).to.equal(BAR);
       expect(pointRev.claimPoint.isFor).to.be.true;
 
       let point = await Point.findById(pointRev.pointId);
@@ -72,8 +73,9 @@ describe('Claim', function () {
       let claimRev = await Claim.apiCreate(user, {
         text: FOO,
         points: [[], [{
-          type: Point.TEXT,
+          type: Point.NEW_CLAIM,
           text: BAR,
+          points: [[], []],
         }]],
       });
       await claimRev.reload(ClaimRev.INCLUDE(2));
@@ -84,7 +86,7 @@ describe('Claim', function () {
       expect(claimRev.pointRevs).to.have.lengthOf(1);
       let pointRev = claimRev.pointRevs[0];
       expect(pointRev.userId).to.equal(user.id);
-      expect(pointRev.blob.text).to.equal(BAR);
+      expect(pointRev.claim.head.blob.text).to.equal(BAR);
       expect(pointRev.claimPoint.isFor).to.be.false;
     });
   });
@@ -124,8 +126,9 @@ describe('Claim', function () {
       let r2 = await Claim.apiUpdate(r1.claimId, user, {
         text: FOO,
         points: [[{
-          type: Point.TEXT,
-          text: FOO,
+          type: Point.NEW_CLAIM,
+          text: BAR,
+          points: [[], []],
         }], []],
       });
       await r2.reload(ClaimRev.INCLUDE(2));
@@ -133,41 +136,8 @@ describe('Claim', function () {
       let r2a = r2.pointRevs[0];
       expect(r2a.userId).to.equal(user.id);
       expect(r2a.pointId).to.not.equal(r2.pointId);
-      expect(r2a.blob.text).to.equal(FOO);
+      expect(r2a.claim.head.blob.text).to.equal(BAR);
       expect(r2a.parentId).to.be.null;
-    });
-
-    it('change point', async function () {
-      let r1 = await Claim.apiCreate(user, {
-        text: FOO,
-        points: [[{
-          type: Point.TEXT,
-          text: BAR,
-        }], []],
-      });
-      await r1.reload(ClaimRev.INCLUDE(2));
-      expect(r1.pointRevs).to.have.lengthOf(1);
-      let r1a = r1.pointRevs[0];
-
-      let claim = await Claim.findById(r1.claimId);
-      expect(claim.headId).to.equal(r1.id);
-
-      let r2 = await Claim.apiUpdate(r1.claimId, user, {
-        text: FOO,
-        points: [[{
-          id: r1a.pointId,
-          type: Point.TEXT,
-          text: BAZ,
-        }], []],
-      });
-      await r2.reload(ClaimRev.INCLUDE(2));
-      expect(r2.pointRevs).to.have.lengthOf(1);
-      let r2a = r2.pointRevs[0];
-      expect(r2a.blob.text).to.equal(BAZ);
-      expect(r2a.parentId).to.equal(r1a.id);
-
-      let point = await Point.findById(r2a.pointId);
-      expect(point.headId).to.equal(r2a.id);
     });
   });
 
@@ -287,11 +257,13 @@ describe('Claim', function () {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
         points: [[{
-          type: Point.TEXT,
+          type: Point.NEW_CLAIM,
           text: BAR,
+          points: [[], []],
         }], [{
-          type: Point.TEXT,
+          type: Point.NEW_CLAIM,
           text: BAZ,
+          points: [[], []],
         }]],
       });
       await rev.reload(ClaimRev.INCLUDE(2));
@@ -316,8 +288,8 @@ describe('Claim', function () {
               [p1.pointId]: {
                 id: p1.pointId,
                 revId: p1.id,
-                type: Point.TEXT,
-                text: BAR,
+                type: Point.CLAIM,
+                claimId: p1.claimId,
                 star: {
                   count: 0,
                   starred: false,
@@ -328,8 +300,8 @@ describe('Claim', function () {
               [p2.pointId]: {
                 id: p2.pointId,
                 revId: p2.id,
-                type: Point.TEXT,
-                text: BAZ,
+                type: Point.CLAIM,
+                claimId: p2.claimId,
                 star: {
                   count: 1,
                   starred: true,
@@ -338,128 +310,73 @@ describe('Claim', function () {
               },
             }],
           },
-        },
-        sources: {},
-      });
-    });
-
-    it('nested points', async function () {
-      let c1 = await Claim.apiCreate(user, {
-        text: FOO,
-        points: [[{
-          type: Point.SUBCLAIM,
-          text: BAR,
-          points: [[{
-            type: Point.TEXT,
-            text: BAZ,
-          }], []],
-        }], []],
-      });
-      await c1.reload(ClaimRev.INCLUDE(3));
-      expect(c1.pointRevs).to.have.lengthOf(1);
-      let p1 = c1.pointRevs[0];
-      expect(p1.pointRevs).to.have.lengthOf(1);
-      let p1a = p1.pointRevs[0];
-      await Point.apiToggleStar(p1a.pointId, user);
-      let c1Data = await Claim.apiGet(c1.claimId, user);
-      expect(c1Data).to.deep.equal({
-        claims: {
-          [c1.claimId]: {
-            id: c1.claimId,
-            revId: c1.id,
-            text: FOO,
-            depth: 3,
-            star: {
-              count: 0,
-              starred: false,
-            },
-            commentCount: 0,
-            points: [{
-              [p1.pointId]: {
-                id: p1.pointId,
-                revId: p1.id,
-                type: Point.SUBCLAIM,
-                text: BAR,
-                star: {
-                  count: 0,
-                  starred: false,
-                },
-                commentCount: 0,
-                points: [{
-                  [p1a.pointId]: {
-                    id: p1a.pointId,
-                    revId: p1a.id,
-                    type: Point.TEXT,
-                    text: BAZ,
-                    star: {
-                      count: 1,
-                      starred: true,
-                    },
-                    commentCount: 0,
-                  },
-                }, {}],
-              },
-            }, {}],
-          },
-        },
-        sources: {},
-      });
-
-      let c2 = await Claim.apiCreate(user, {
-        text: BAZ,
-        points: [[{
-          type: Point.CLAIM,
-          claimId: c1.claimId,
-        }], []],
-      });
-
-      await c2.reload(ClaimRev.INCLUDE(3));
-      expect(c2.pointRevs).to.have.lengthOf(1);
-      let p3 = c2.pointRevs[0];
-
-      let c2Data = await Claim.apiGet(c2.claimId, user);
-      expect(c2Data).to.deep.equal({
-        claims: {
-          [c2.claimId]: {
-            id: c2.claimId,
-            revId: c2.id,
-            text: BAZ,
-            depth: 3,
-            star: {
-              count: 0,
-              starred: false,
-            },
-            commentCount: 0,
-            points: [{
-              [p3.pointId]: {
-                id: p3.pointId,
-                revId: p3.id,
-                type: Point.CLAIM,
-                claimId: c1.claimId,
-                star: {
-                  count: 0,
-                  starred: false,
-                },
-                commentCount: 0,
-              },
-            }, {}],
-          },
-          [c1.claimId]: {
-            id: c1.claimId,
-            revId: c1.id,
-            text: FOO,
+          [p1.claimId]: {
+            id: p1.claimId,
+            revId: p1.claim.headId,
+            text: BAR,
+            points: [{}, {}],
             depth: 2,
             star: {
               count: 0,
               starred: false,
             },
             commentCount: 0,
+          },
+          [p2.claimId]: {
+            id: p2.claimId,
+            revId: p2.claim.headId,
+            text: BAZ,
+            points: [{}, {}],
+            depth: 2,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            commentCount: 0,
+          },
+        },
+        sources: {},
+      });
+    });
+
+    it('nested points', async function () {
+      let rev = await Claim.apiCreate(user, {
+        text: FOO,
+        points: [[{
+          type: Point.NEW_CLAIM,
+          text: BAR,
+          points: [[{
+            type: Point.NEW_CLAIM,
+            text: BAZ,
+            points: [[], []],
+          }], []],
+        }], []],
+      });
+      await rev.reload(ClaimRev.INCLUDE(3));
+      expect(rev.pointRevs).to.have.lengthOf(1);
+      let p1 = rev.pointRevs[0];
+      expect(p1.claim.head.pointRevs).to.have.lengthOf(1);
+      let p1a = p1.claim.head.pointRevs[0];
+
+      let claimData = await Claim.apiGet(rev.claimId, user);
+      expect(claimData).to.deep.equal({
+        claims: {
+          [rev.claimId]: {
+            id: rev.claimId,
+            revId: rev.id,
+            text: FOO,
+            depth: 3,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            commentCount: 0,
             points: [{
               [p1.pointId]: {
                 id: p1.pointId,
                 revId: p1.id,
-                type: Point.SUBCLAIM,
-                text: BAR,
+                type: Point.CLAIM,
+                claimId: p1.claimId,
                 star: {
                   count: 0,
                   starred: false,
@@ -467,6 +384,41 @@ describe('Claim', function () {
                 commentCount: 0,
               },
             }, {}],
+          },
+          [p1.claimId]: {
+            id: p1.claimId,
+            revId: p1.claim.headId,
+            text: BAR,
+            points: [{
+              [p1a.pointId]: {
+                id: p1a.pointId,
+                revId: p1a.id,
+                type: Point.CLAIM,
+                claimId: p1a.claimId,
+                star: {
+                  count: 0,
+                  starred: false,
+                },
+                commentCount: 0,
+              },
+            }, {}],
+            depth: 2,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            commentCount: 0,
+          },
+          [p1a.claimId]: {
+            id: p1a.claimId,
+            revId: p1a.claim.headId,
+            text: BAZ,
+            depth: 1,
+            star: {
+              count: 0,
+              starred: false,
+            },
+            commentCount: 0,
           },
         },
         sources: {},
@@ -477,25 +429,27 @@ describe('Claim', function () {
       let c1 = await Claim.apiCreate(user, {
         text: FOO,
         points: [[{
-          type: Point.SUBCLAIM,
+          type: Point.NEW_CLAIM,
           text: BAR,
           points: [[{
-            type: Point.TEXT,
+            type: Point.NEW_CLAIM,
             text: BAZ,
+            points: [[], []],
           }], []],
         }], []],
       });
       await c1.reload(ClaimRev.INCLUDE(3));
       expect(c1.pointRevs).to.have.lengthOf(1);
       let p1 = c1.pointRevs[0];
-      expect(p1.pointRevs).to.have.lengthOf(1);
-      let p1a = p1.pointRevs[0];
+      expect(p1.claim.head.pointRevs).to.have.lengthOf(1);
+      let p1a = p1.claim.head.pointRevs[0];
 
       let claimId = c1.claimId;
       let pointId = p1.pointId;
       let subPointId = p1a.pointId;
       await expect(Point.getClaimId(pointId)).to.eventually.equal(claimId);
-      await expect(Point.getClaimId(subPointId)).to.eventually.equal(claimId);
+      await expect(Point.getClaimId(subPointId))
+        .to.eventually.equal(p1.claimId);
     });
 
     it('bad ID', function () {
@@ -601,32 +555,19 @@ describe('Claim', function () {
   });
 
   describe('apiGetRevs', function () {
-    it('change point', async function () {
+    it('change text', async function () {
       let r1 = await Claim.apiCreate(user, {
         text: FOO,
-        points: [[{
-          type: Point.TEXT,
-          text: BAR,
-        }], []],
+        points: [[], []],
       });
       await r1.reload(ClaimRev.INCLUDE(2));
-      expect(r1.pointRevs).to.have.lengthOf(1);
-      let r1a = r1.pointRevs[0];
-
       let claimId = r1.claimId;
-      let pointId = r1a.pointId;
 
       let r2 = await Claim.apiUpdate(claimId, user, {
-        text: FOO,
-        points: [[{
-          id: pointId,
-          type: Point.TEXT,
-          text: BAZ,
-        }], []],
+        text: BAR,
+        points: [[], []],
       });
       await r2.reload(ClaimRev.INCLUDE(2));
-      expect(r2.pointRevs).to.have.lengthOf(1);
-      let r2a = r2.pointRevs[0];
 
       let data = await Claim.apiGetRevs(claimId);
       expect(data).to.deep.equal({
@@ -635,38 +576,17 @@ describe('Claim', function () {
           revId: r2.id,
           username: user.username,
           createdAt: r2.created_at,
-          text: FOO,
-          points: [{
-            [pointId]: r2a.id,
-          }, {}],
+          text: BAR,
+          points: [{}, {}],
         }, {
           id: claimId,
           revId: r1.id,
           username: user.username,
           createdAt: r1.created_at,
           text: FOO,
-          points: [{
-            [pointId]: r1a.id,
-          }, {}],
+          points: [{}, {}],
         }],
-        pointRevs: {
-          [r1a.id]: {
-            id: pointId,
-            revId: r1a.id,
-            username: user.username,
-            createdAt: r1a.created_at,
-            type: Point.TEXT,
-            text: BAR,
-          },
-          [r2a.id]: {
-            id: pointId,
-            revId: r2a.id,
-            username: user.username,
-            createdAt: r2a.created_at,
-            type: Point.TEXT,
-            text: BAZ,
-          },
-        },
+        pointRevs: {},
       });
     });
 

@@ -6,8 +6,7 @@
                          :source="point.source"
                          @update="updateNewSource" />
     <div v-else class="bubble">
-      <div v-if="isClaimLike && promoteClaim"
-           class="hint">This point will be promoted to its own claim.</div>
+      <div v-if="isNewClaim" class="hint">This will create a new claim.</div>
       <label v-if="!point.type" class="hint">
         Add a point {{ isFor | toSideString }} the claim.
       </label>
@@ -17,7 +16,7 @@
                        placeholder="Text, URL, or ID"
                        :validate="validate"
                        @itemType="updateLinkType" />
-      <dwd-flag v-if="isClaimLike && point.flag" :flag="point.flag" />
+      <dwd-flag v-if="isNewClaim && point.flag" :flag="point.flag" />
     </div>
     <div class="info">
       <div class="id mono">{{ point.id || 'new' }}</div>
@@ -27,15 +26,7 @@
       <button type="submit"
               class="dwd-btn dwd-btn-primary">Review</button>
       <div class="controls">
-        <dwd-flag-dropdown v-if="isClaimLike" v-model="flag" />
-        <span v-if="isClaimLike && !promoteClaim"
-              title="Promote to claim."
-              class="click fas fa-arrow-circle-up"
-              @click="promoteClaim = true"></span>
-        <span v-else-if="isClaimLike && promoteClaim"
-              title="Don't promote to claim."
-              class="click fas fa-arrow-circle-down"
-              @click="promoteClaim = false"></span>
+        <dwd-flag-dropdown v-if="isNewClaim" v-model="flag" />
       </div>
     </div>
   </div>
@@ -55,7 +46,6 @@ import { isValid, validatePoint, validateSource } from '../common/validate';
 import { PointType } from '../common/constants';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
-const CLAIM_LIKE = [PointType.SUBCLAIM, PointType.TEXT, PointType.NEW_CLAIM];
 
 function isValidUrl(url) {
   return isValid(validateSource.url, url);
@@ -74,15 +64,12 @@ export default {
     show: { type: Boolean, required: true },
     point: { type: Object, required: true },
     isFor: { type: Boolean, required: true },
-    isSubPoint: { type: Boolean, default: false },
   },
   data: () => ({
     oldPoint: null,
     flag: '',
     input: '',
     linkType: '',
-    // Whether a subclaim should be promoted to a new claim.
-    promoteClaim: false,
     // Flag to prevent overwriting original without a change.
     initialized: false,
   }),
@@ -99,8 +86,8 @@ export default {
       return this.point && this.point.type === 'newSource'
           && isValidUrl(this.point.source.url);
     },
-    isClaimLike: function () {
-      return CLAIM_LIKE.includes(this.point.type);
+    isNewClaim: function () {
+      return this.point.type === PointType.NEW_CLAIM;
     },
   },
   watch: {
@@ -111,9 +98,6 @@ export default {
       }
     },
     flag: function () {
-      this.update();
-    },
-    promoteClaim: function () {
       this.update();
     },
     show: function () {
@@ -148,20 +132,14 @@ export default {
           },
         };
       } else if (!this.id && this.input) {
-        let subClaim = {
+        let newClaim = {
+          type: PointType.NEW_CLAIM,
           text: this.input,
         };
         if (this.flag) {
-          subClaim.flag = this.flag;
+          newClaim.flag = this.flag;
         }
-        if (this.promoteClaim) {
-          subClaim.type = PointType.NEW_CLAIM;
-        } else if (this.isSubPoint) {
-          subClaim.type = PointType.TEXT;
-        } else {
-          subClaim.type = PointType.SUBCLAIM;
-        }
-        return subClaim;
+        return newClaim;
       }
       return null;
     },

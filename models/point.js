@@ -1,7 +1,9 @@
+import assign from 'lodash/assign';
 import map from 'lodash/map';
 
 import { NotFoundError } from '../api/error';
 import { genId } from './utils';
+import { PointType } from '../common/constants';
 import { validatePoint } from '../common/validate';
 
 export default function (sequelize, DataTypes) {
@@ -13,10 +15,7 @@ export default function (sequelize, DataTypes) {
     },
   });
 
-  Point.CLAIM = 'claim';
-  Point.SOURCE = 'source';
-  Point.SUBCLAIM = 'subclaim';
-  Point.TEXT = 'text';
+  assign(Point, PointType);
 
   Point.associate = function (models) {
     Point.Head = Point.belongsTo(models.PointRev, {
