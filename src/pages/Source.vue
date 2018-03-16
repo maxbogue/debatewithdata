@@ -3,21 +3,16 @@
   <dwd-trail :ids="trail.concat(id)" @lastIsFor="(v) => isFor = v" />
   <template v-if="source">
     <div class="source" :class="isFor | toSideString">
-      <source-content class="bubble click"
-                      @click.native="showDrawer = !showDrawer"
-                      :source="source" />
-      <dwd-drawer :show="showDrawer">
-        <div class="info">
-          <span class="id mono">{{ id }}</span>
-          <icon-history :url="sourceUrl(id)" />
-          <icon-edit v-if="$store.state.user" :url="sourceUrl(id)" />
-          <icon-comment @click.native="showComments = !showComments"
-                        :count="source.commentCount" />
-        </div>
-        <dwd-comments :url="'/api/source/' + id"
-                      :show="showComments"
-                      :hint="showDrawer" />
-      </dwd-drawer>
+      <source-content class="bubble" :source="source" />
+      <div class="info">
+        <span class="id mono">{{ id }}</span>
+        <icon-history :url="sourceUrl(id)" />
+        <icon-edit v-if="$store.state.user" :url="sourceUrl(id)" />
+        <icon-comment @click.native="showComments = !showComments"
+                      :count="source.commentCount" />
+      </div>
+      <dwd-comments :url="'/api/source/' + id"
+                    :show="showComments" />
     </div>
     <h3 v-if="claims.length > 0">Referenced In</h3>
     <router-link v-for="claim in claims"
@@ -58,7 +53,6 @@ export default {
   },
   data: () => ({
     showComments: false,
-    showDrawer: false,
     isFor: null,
   }),
   computed: {

@@ -4,18 +4,17 @@
                     :show.sync="showModal"
                     :point="point"
                     :is-for="isFor"
-                    :is-sub-point="isSubPoint"
                     @update="emitPoint" />
   <point-diff class="bubble"
-              :class="{ click: point }"
+              :class="{ click: isEditable }"
               :curr="point"
               :prev="prev"
-              @click.native="showModal = !!point && true" />
+              @click.native="showModal = isEditable" />
   <div class="info">
     <span class="id mono">{{ id || 'new' }}</span>
     <span class="delete click fas fa-trash" @click="$emit('delete')"></span>
   </div>
-  <points-edit v-if="isSubClaim"
+  <points-edit v-if="hasSubPoints"
                :curr="point"
                :prev="prev"
                :is-for="isFor"
@@ -51,15 +50,21 @@ export default {
       let prevId = this.prev ? this.prev.id : '';
       return pointId || prevId;
     },
-    isSubPoint: function () {
-      return this.isParentFor !== null;
-    },
-    isSubClaim: function () {
+    isEditable: function () {
       if (!this.point) {
         return false;
       }
-      return this.point.type === PointType.SUBCLAIM
-          || this.point.type === PointType.NEW_CLAIM && !this.isSubPoint;
+      return this.point.type === PointType.NEW_CLAIM
+          || this.point.type === PointType.NEW_SOURCE;
+    },
+    isSubPoint: function () {
+      return this.isParentFor !== null;
+    },
+    hasSubPoints: function () {
+      if (!this.point) {
+        return false;
+      }
+      return this.point.type === PointType.NEW_CLAIM && !this.isSubPoint;
     },
     pointClass: function () {
       return [

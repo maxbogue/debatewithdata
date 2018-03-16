@@ -1,14 +1,11 @@
 <template>
 <div>
   <claim-content v-if="point.type === 'claim'"
-                 :claim="claim"
-                 :trail="trail" />
+                 :claim="claim" />
   <source-content v-else-if="point.type === 'source'"
-                  :source="source"
-                  :trail="trail" />
+                  :source="source" />
   <source-content v-else-if="point.type === 'newSource'"
-                  :source="point.source"
-                  :trail="trail" />
+                  :source="point.source" />
   <claim-content v-else :claim="point" />
 </div>
 </template>
@@ -24,7 +21,6 @@ export default {
   },
   props: {
     point: { type: Object, required: true },
-    trail: { type: Array, default: null },
   },
   computed: {
     claim: function () {

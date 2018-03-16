@@ -3,22 +3,17 @@
   <dwd-trail :ids="trail" @lastIsFor="(v) => isFor = v" />
   <template v-if="claim">
     <div class="claim" :class="isFor | toSideString">
-      <claim-content class="bubble click"
-                     @click.native="showDrawer = !showDrawer"
-                     :claim="claim" />
-      <dwd-drawer :show="showDrawer">
-        <div class="info">
-          <span class="id mono">{{ claim.id }}</span>
-          <icon-star :star="claim.star" :url="'/api' + claimUrl(id)" />
-          <icon-history :url="claimUrl(id)" />
-          <icon-edit v-if="$store.state.user" :url="claimUrl(id)" />
-          <icon-comment @click.native="showComments = !showComments"
-                        :count="claim.commentCount" />
-        </div>
-        <dwd-comments :url="'/api/claim/' + id"
-                      :show="showComments"
-                      :hint="showDrawer" />
-      </dwd-drawer>
+      <claim-content class="bubble" :claim="claim" />
+      <div class="info">
+        <span class="id mono">{{ claim.id }}</span>
+        <icon-star :star="claim.star" :url="'/api' + claimUrl(id)" />
+        <icon-history :url="claimUrl(id)" />
+        <icon-edit v-if="$store.state.user" :url="claimUrl(id)" />
+        <icon-comment @click.native="showComments = !showComments"
+                      :count="claim.commentCount" />
+      </div>
+      <dwd-comments :url="'/api/claim/' + id"
+                    :show="showComments" />
     </div>
     <template v-if="$store.state.singleColumn">
       <transition-group tag="div" :move-class="$style.pointsMove">
@@ -26,9 +21,11 @@
              class="block no-pad"
              :class="$style.pointHeader"
              key="side-text">
-          <span :class="$style.for">For</span>
+          <span :class="claimIsFor ? $style.for : $style.against"
+                >For</span>
           <span> // </span>
-          <span :class="$style.against">Against</span>
+          <span :class="claimIsFor ? $style.against : $style.for"
+                >Against</span>
         </div>
         <point-block v-for="[point, side] in zippedPoints"
                      :point="point"
@@ -47,7 +44,7 @@
              class="block no-pad"
              :class="$style.pointHeader"
              :key="'side-text-' + side">
-          <span :class="!side ? $style.for : $style.against"
+          <span :class="claimIsFor === !side ? $style.for : $style.against"
                 >{{ !side ? 'For' : 'Against' }}</span>
         </div>
         <point-block v-for="point in sidePoints"
@@ -92,7 +89,6 @@ export default {
   },
   data: () => ({
     showComments: false,
-    showDrawer: false,
     isFor: null,
   }),
   computed: {
@@ -106,7 +102,7 @@ export default {
       return this.isFor !== null ? this.isFor : true;
     },
     points: function () {
-      if (!this.claim || this.claim.deleted || this.claim.depth < 3) {
+      if (!this.claim || this.claim.deleted || this.claim.depth < 2) {
         return [];
       }
       return pointMapsToLists(this.claim.points);
@@ -128,11 +124,12 @@ export default {
   },
   methods: {
     checkLoaded: function () {
-      if (!this.claim || this.claim.depth < 3) {
+      let claim = this.claim;
+      if (!claim || claim.depth < 3) {
         this.$store.dispatch('getClaim', {
           id: this.id,
           trail: this.parseTrail(this.$route.query.trail),
-          loader: this.$refs.loader,
+          loader: !claim || claim.depth < 2 ? this.$refs.loader : null,
         });
       }
     },

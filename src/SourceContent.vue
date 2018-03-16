@@ -1,9 +1,6 @@
 <template>
 <div>
   <div>
-    <router-link v-if="trail && source && source.id"
-                 :to="sourceUrl(source.id, trail)"
-                 class="link-icon fas fa-link" />
     <span v-if="sourceHasContent">{{ source.text }}</span>
     <em v-else class="error">{{ errorMessage }}</em>
   </div>
@@ -30,7 +27,6 @@ import { itemErrorMessage } from './utils';
 export default {
   props: {
     source: { type: Object, required: true },
-    trail: { type: Array, default: null },
   },
   computed: {
     sourceHasContent: function () {
