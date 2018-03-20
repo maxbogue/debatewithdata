@@ -101,15 +101,19 @@ export default {
       if (this.value) {
         this.maskError = false;
       }
-      this.$refs.input.style.height = 'auto';
-      if (this.$refs.input.scrollHeight > 0) {
-        this.$refs.input.style.height = this.$refs.input.scrollHeight + 'px';
-      }
     },
     trimmedValue: function () {
       if (this.trimmedValue !== this.value) {
         this.$emit('input', this.trimmedValue);
       }
+    },
+    displayValue: function () {
+      this.$refs.input.style.height = 'auto';
+      this.$nextTick(() => {
+        if (this.$refs.input.scrollHeight > 0) {
+          this.$refs.input.style.height = this.$refs.input.scrollHeight + 'px';
+        }
+      });
     },
     innerError: function () {
       this.$refs.input.setCustomValidity(this.innerError);
