@@ -43,10 +43,11 @@ import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import PointsEdit from '../PointsEdit.vue';
 import {
-  diffPointRevs, pointMapsToLists, rotateWithIndexes
+  authRedirect, diffPointRevs, pointMapsToLists, rotateWithIndexes
 } from '../utils';
 
 export default {
+  beforeRouteEnter: authRedirect,
   components: {
     ClaimEditModal,
     ClaimRevContent,

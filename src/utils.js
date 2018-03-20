@@ -10,8 +10,18 @@ import md5 from 'md5';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
 
+import store from './store';
+
 const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 const textDiff = new Diff();
+
+export function authRedirect(to, from, next) {
+  if (!store.state.user) {
+    next({ path: '/login', query: { next: to.fullPath } });
+  } else {
+    next();
+  }
+}
 
 export function pipe(...fns) {
   return fns.reduce((f, g) => (...args) => g(f(...args)));

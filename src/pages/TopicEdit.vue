@@ -109,9 +109,12 @@ import FixedBottom from '../FixedBottom.vue';
 import TopicEditModal from '../TopicEditModal.vue';
 import TopicLinkModal from '../TopicLinkModal.vue';
 import TopicRevContent from '../TopicRevContent.vue';
-import { diffIdLists, pipe, stableRandom, starCount, starred } from '../utils';
+import {
+  authRedirect, diffIdLists, pipe, stableRandom, starCount, starred
+} from '../utils';
 
 export default {
+  beforeRouteEnter: authRedirect,
   components: {
     ClaimContent,
     ClaimLinkModal,

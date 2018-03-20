@@ -17,7 +17,7 @@
       <span class="id mono">{{ item.id }}</span>
       <icon-star :star="item.star" :url="'/api' + url" />
       <icon-history :url="url" />
-      <icon-edit v-if="$store.state.user" :url="url" />
+      <icon-edit :url="url" />
       <icon-comment @click.native="showComments = !showComments"
                     :count="item.commentCount" />
     </div>

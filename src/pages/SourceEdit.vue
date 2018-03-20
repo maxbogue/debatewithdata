@@ -32,8 +32,10 @@ import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import SourceEditModal from '../SourceEditModal.vue';
 import SourceRevContent from '../SourceRevContent.vue';
+import { authRedirect } from '../utils';
 
 export default {
+  beforeRouteEnter: authRedirect,
   components: {
     DeleteButton,
     DwdLoader,
