@@ -48,7 +48,7 @@
               </router-link>
             </li>
             <li>
-              <router-link to="/logout" title="Logout">Logout</router-link>
+              <router-link :to="logoutUrl" title="Logout">Logout</router-link>
             </li>
           </template>
           <template v-else>
@@ -91,6 +91,13 @@ export default {
         return '/login';
       }
       return '/login?next=' + path;
+    },
+    logoutUrl: function () {
+      let path = this.$route.fullPath;
+      if (path === '/' || path.startsWith('/logout')) {
+        return '/logout';
+      }
+      return '/logout?next=' + path;
     },
   },
   watch: {

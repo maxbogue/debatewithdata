@@ -35,6 +35,8 @@ import { DwdUtilsMixin } from './utils';
 Vue.use(VueRouter);
 Vue.mixin(DwdUtilsMixin);
 
+store.commit('setUser', auth.getUser());
+
 function httpErrorToString(error) {
   if (!error.response) {
     return 'Server not responding';
@@ -103,7 +105,6 @@ new Vue({
     ],
   }),
   created: function () {
-    this.$store.commit('setUser', auth.getUser());
     auth.updateHeader();
     axios.interceptors.request.use((config) => {
       if (config.loader) {
