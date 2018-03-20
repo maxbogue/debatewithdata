@@ -2,7 +2,8 @@ import chai from 'chai';
 
 import { Claim, Topic, TopicRev } from '../models';
 import { NotFoundError } from '../api/error';
-import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
+import { FOO, BAR, BAZ, STARS_AND_COMMENTS,
+  registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
@@ -13,14 +14,6 @@ const TITLE = 'title';
 const TITLE2 = 'title2';
 
 const DELETE_MSG = 'Violates guidelines.';
-
-const STARS_AND_COMMENTS = {
-  star: {
-    count: 0,
-    starred: false,
-  },
-  commentCount: 0,
-};
 
 describe('Topic', function () {
   let user;

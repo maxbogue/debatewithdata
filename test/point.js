@@ -2,7 +2,7 @@ import chai from 'chai';
 
 import { Claim, Point, PointRev, Source } from '../models';
 import { PointType } from '../common/constants';
-import { TestClaim, registerAndVerifyUser } from './utils';
+import { STARS_AND_COMMENTS, TestClaim, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
@@ -43,7 +43,7 @@ describe('Point', function () {
             url: URL,
             text: sourceText,
             type: 'misc',
-            commentCount: 0,
+            ...STARS_AND_COMMENTS,
           },
         },
       });
@@ -52,11 +52,7 @@ describe('Point', function () {
         revId: pointRev.id,
         type: Point.SOURCE,
         sourceId: sourceRev.sourceId,
-        star: {
-          count: 0,
-          starred: false,
-        },
-        commentCount: 0,
+        ...STARS_AND_COMMENTS,
       });
     });
 
@@ -87,11 +83,7 @@ describe('Point', function () {
         revId: pointRev.id,
         type: Point.CLAIM,
         claimId: claimRev.claimId,
-        star: {
-          count: 0,
-          starred: false,
-        },
-        commentCount: 0,
+        ...STARS_AND_COMMENTS,
       });
     });
 
@@ -123,7 +115,7 @@ describe('Point', function () {
             url: URL,
             text: sourceText,
             type: 'misc',
-            commentCount: 0,
+            ...STARS_AND_COMMENTS,
           },
         },
       });
@@ -132,11 +124,7 @@ describe('Point', function () {
         revId: pointRev.id,
         type: Point.SOURCE,
         sourceId: source.id,
-        star: {
-          count: 0,
-          starred: false,
-        },
-        commentCount: 0,
+        ...STARS_AND_COMMENTS,
       });
     });
 
@@ -164,11 +152,7 @@ describe('Point', function () {
             revId: claim.headId,
             text: text,
             depth: 1,
-            star: {
-              count: 0,
-              starred: false,
-            },
-            commentCount: 0,
+            ...STARS_AND_COMMENTS,
           },
         },
       });
@@ -177,11 +161,7 @@ describe('Point', function () {
         revId: pointRev.id,
         type: Point.CLAIM,
         claimId: claim.id,
-        star: {
-          count: 0,
-          starred: false,
-        },
-        commentCount: 0,
+        ...STARS_AND_COMMENTS,
       });
     });
   });

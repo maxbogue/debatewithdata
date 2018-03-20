@@ -43,6 +43,18 @@ export default function (sequelize, DataTypes) {
       constraints: false,
     });
     Source.hasMany(models.SourceRev);
+    Source.belongsToMany(models.User, {
+      as: 'starredByUsers',
+      through: {
+        model: models.Star,
+        unique: false,
+        scope: {
+          starrable: 'source',
+        }
+      },
+      foreignKey: 'starrableId',
+      constraints: false,
+    });
     Source.hasMany(models.Comment, {
       foreignKey: 'commentableId',
       constraints: false,
@@ -154,13 +166,14 @@ export default function (sequelize, DataTypes) {
       return rev;
     };
 
-    Source.prototype.toData = async function () {
+    Source.prototype.toData = async function (user) {
       let data = this.head.toCoreData();
+      data.star = await this.toStarData(user);
       data.commentCount = await this.countComments();
       return data;
     };
 
-    Source.apiGet = async function (sourceId) {
+    Source.apiGet = async function (sourceId, user) {
       let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
         throw new NotFoundError('Source not found: ' + sourceId);
@@ -199,7 +212,7 @@ export default function (sequelize, DataTypes) {
 
       let claims = claims1.concat(claims2);
 
-      let sourceData = await source.toData();
+      let sourceData = await source.toData(user);
       sourceData.claimIds = map(claims, (c) => c.id);
 
       let data = {
@@ -216,12 +229,12 @@ export default function (sequelize, DataTypes) {
       return data;
     };
 
-    Source.apiGetAll = async function () {
+    Source.apiGetAll = async function (user) {
       let sources = await Source.findAll(Source.INCLUDE());
       let ret = {};
       for (let source of sources) {
         if (!source.head.deleted) {
-          ret[source.id] = await source.toData();
+          ret[source.id] = await source.toData(user);
         }
       }
       return ret;
@@ -240,6 +253,29 @@ export default function (sequelize, DataTypes) {
 
       let sourceRevData = map(sourceRevs, (rev) => rev.toRevData());
       return { sourceRevs: sourceRevData };
+    };
+
+    Source.prototype.toStarData = async function (user) {
+      let count = await this.countStarredByUsers();
+      let starred = false;
+      if (user) {
+        starred = await this.hasStarredByUser(user);
+      }
+      return { count, starred };
+    };
+
+    Source.apiToggleStar = async function (sourceId, user) {
+      let source = await Source.findById(sourceId);
+      if (!source) {
+        throw new NotFoundError('Source not found: ' + sourceId);
+      }
+      let isStarred = await source.hasStarredByUser(user);
+      if (isStarred) {
+        await source.removeStarredByUser(user);
+      } else {
+        await source.addStarredByUser(user);
+      }
+      return await source.toStarData(user);
     };
   };
 

@@ -5,7 +5,7 @@ import { Claim, Source, SourceRev } from '../models';
 import { NotFoundError } from '../api/error';
 import { PointType } from '../common/constants';
 import { ValidationError } from '../common/validate';
-import { registerAndVerifyUser } from './utils';
+import { STARS_AND_COMMENTS, registerAndVerifyUser } from './utils';
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -227,9 +227,9 @@ describe('Source', function () {
           [rev.sourceId]: {
             id: rev.sourceId,
             revId: rev.id,
-            commentCount: 0,
             claimIds: [],
             ...MISC,
+            ...STARS_AND_COMMENTS,
           },
         },
         claims: {},
@@ -252,7 +252,7 @@ describe('Source', function () {
             deleted: true,
             deleteMessage: DELETE_MSG,
             claimIds: [],
-            commentCount: 0,
+            ...STARS_AND_COMMENTS,
           },
         },
         claims: {},
@@ -274,8 +274,8 @@ describe('Source', function () {
             id: sourceId,
             revId: sourceRev.id,
             claimIds: [claimRev.claimId],
-            commentCount: 0,
             ...MISC,
+            ...STARS_AND_COMMENTS,
           },
         },
         claims: {
@@ -284,11 +284,7 @@ describe('Source', function () {
             revId: claimRev.id,
             text: TEXT2,
             depth: 1,
-            star: {
-              starred: false,
-              count: 0,
-            },
-            commentCount: 0,
+            ...STARS_AND_COMMENTS,
           },
         },
       });
@@ -304,14 +300,14 @@ describe('Source', function () {
         [s1r.sourceId]: {
           id: s1r.sourceId,
           revId: s1r.id,
-          commentCount: 0,
           ...RESEARCH,
+          ...STARS_AND_COMMENTS,
         },
         [s2r.sourceId]: {
           id: s2r.sourceId,
           revId: s2r.id,
-          commentCount: 0,
           ...ARTICLE,
+          ...STARS_AND_COMMENTS,
         },
       });
     });
@@ -325,8 +321,8 @@ describe('Source', function () {
         [s1r.sourceId]: {
           id: s1r.sourceId,
           revId: s1r.id,
-          commentCount: 0,
           ...RESEARCH,
+          ...STARS_AND_COMMENTS,
         }
       });
     });

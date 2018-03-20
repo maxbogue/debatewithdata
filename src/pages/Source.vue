@@ -2,25 +2,16 @@
 <div>
   <dwd-trail :ids="trail.concat(id)" @lastIsFor="(v) => isFor = v" />
   <template v-if="source">
-    <div class="source" :class="isFor | toSideString">
-      <source-content class="bubble" :source="source" />
-      <div class="info">
-        <span class="id mono">{{ id }}</span>
-        <icon-history :url="sourceUrl(id)" />
-        <icon-edit v-if="$store.state.user" :url="sourceUrl(id)" />
-        <icon-comment @click.native="showComments = !showComments"
-                      :count="source.commentCount" />
-      </div>
-      <dwd-comments :url="'/api/source/' + id"
-                    :show="showComments" />
-    </div>
+    <item-block :item="source"
+                :is-for="isFor"
+                type="source" />
     <h3 v-if="claims.length > 0">Referenced In</h3>
-    <router-link v-for="claim in claims"
-                 class="claim block"
-                 :to="claimUrl(claim.id)"
-                 :key="claim.id">
-        <claim-content :claim="claim" />
-    </router-link>
+    <item-block v-for="claim in claims"
+                :key="claim.id"
+                :item="claim"
+                type="claim"
+                is-link
+                abbreviated />
   </template>
   <dwd-loader ref="loader" />
 </div>
@@ -29,27 +20,15 @@
 <script>
 import map from 'lodash/map';
 
-import ClaimContent from '../ClaimContent.vue';
-import DwdComments from '../DwdComments.vue';
-import DwdDrawer from '../DwdDrawer.vue';
 import DwdLoader from '../DwdLoader.vue';
 import DwdTrail from '../DwdTrail.vue';
-import IconComment from '../IconComment.vue';
-import IconEdit from '../IconEdit.vue';
-import IconHistory from '../IconHistory.vue';
-import SourceContent from '../SourceContent.vue';
+import ItemBlock from '../ItemBlock.vue';
 
 export default {
   components: {
-    ClaimContent,
-    DwdComments,
-    DwdDrawer,
     DwdLoader,
     DwdTrail,
-    IconComment,
-    IconEdit,
-    IconHistory,
-    SourceContent,
+    ItemBlock,
   },
   data: () => ({
     showComments: false,

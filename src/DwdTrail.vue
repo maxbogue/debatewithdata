@@ -1,18 +1,13 @@
 <template>
-<div v-if="topics.length + items.length > 0" :class="$style.trail">
-  <router-link v-for="(topic, i) in topics"
-               class="block topic"
-               :to="topicUrl(topic.id, ids.slice(0, i))"
-               :key="topic.id">{{ topic.title }}</router-link>
-  <template v-for="[item, url, isFor] in items">
-    <router-link v-if="url"
-                 :class="itemClass(isFor)"
-                 :to="url"
-                 :key="item.id">{{ item.text }}</router-link>
-    <div v-else
-         :class="itemClass(isFor)"
-         :key="item.id">{{ item.text }}</div>
-  </template>
+<div v-if="items.length > 0" :class="$style.trail">
+  <item-block v-for="([type, item, isFor], i) in items"
+              :key="item.id"
+              :item="item"
+              :type="type"
+              :trail="ids.slice(0, i)"
+              :is-for="isFor"
+              is-link
+              abbreviated />
 </div>
 </template>
 
@@ -20,7 +15,12 @@
 import map from 'lodash/map';
 import takeWhile from 'lodash/takeWhile';
 
+import ItemBlock from './ItemBlock.vue';
+
 export default {
+  components: {
+    ItemBlock,
+  },
   props: {
     ids: { type: Array, required: true },
   },
@@ -32,28 +32,25 @@ export default {
       return this.ids.slice(this.topics.length);
     },
     items: function () {
+      let items = map(this.topics, (topic) => ['topic', topic, null]);
       if (this.itemIds.length < 2) {
-        return [];
+        return items;
       }
-      let items = [];
       let item = this.lookupClaim(this.itemIds[0]);
       let isFor = null;
-      let itemUrl = this.claimUrl(this.itemIds[0]);
       for (let i = 1; i < this.itemIds.length; i++) {
         if (!item) {
-          return [];
+          return items;
         }
         let nextId = this.itemIds[i];
-        let [wasFound, nextIsFor, next, nextUrl] =
-            this.findInside(item.points, nextId);
-        if (!wasFound) {
+        let [type, next, nextIsFor] = this.findInside(item.points, nextId);
+        if (!type) {
           console.warn('Broken link found in trail: ' + nextId);
-          return [];
+          return items;
         }
-        items.push([item, itemUrl, isFor]);
+        items.push([type, item, isFor]);
         item = next;
         isFor = isFor === null ? nextIsFor : isFor === nextIsFor;
-        itemUrl = nextUrl;
       }
       return items;
     },
@@ -68,8 +65,8 @@ export default {
           return null;
         }
         let nextId = this.itemIds[i];
-        let [wasFound, nextIsFor, next] = this.findInside(item.points, nextId);
-        if (!wasFound) {
+        let [type, next, nextIsFor] = this.findInside(item.points, nextId);
+        if (!type) {
           return null;
         }
         item = next;
@@ -87,7 +84,7 @@ export default {
   methods: {
     findInside: function (points, id) {
       if (!points) {
-        return [false];
+        return [''];
       }
       for (let i = 0; i < 2; i++) {
         for (let pointId in points[i]) {
@@ -96,23 +93,15 @@ export default {
           }
           let point = points[i][pointId];
           if (point.type === 'claim' && point.claimId === id) {
-            let claim = this.$store.state.claims[id];
-            let trail = this.ids.slice(0, this.ids.indexOf(id));
-            let url = this.claimUrl(id, trail);
-            return [Boolean(claim), i === 0, claim, url];
+            let claim = this.lookupClaim(id);
+            return ['claim', claim, i === 0];
           } else if (point.type === 'source' && point.sourceId === id) {
-            let source = this.$store.state.sources[id];
-            return [Boolean(source), i === 0, source];
-          } else if (point.type === 'subclaim' && pointId === id) {
-            return [true, i === 0, point];
+            let source = this.lookupSource(id);
+            return ['source', source, i === 0];
           }
         }
       }
-      return [false];
-    },
-    itemClass: function (isFor) {
-      let color = isFor === null ? 'blue' : isFor ? 'purple' : 'amber';
-      return ['block', color];
+      return [''];
     },
   },
 };
@@ -122,13 +111,17 @@ export default {
 .trail {
   margin-bottom: -8px;
 
-  :global(.block) {
-    display: block;
+  :global(.topic),
+  :global(.claim),
+  :global(.source) {
     width: 50%;
     margin: 8px auto 0;
-    padding: 0.8em 1em;
     font-size: 0.8em;
-    text-decoration: none;
+
+    :global(.bubble) {
+      padding: 0.8em 1em;
+      text-decoration: none;
+    }
   }
 }
 </style>

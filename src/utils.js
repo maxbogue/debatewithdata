@@ -239,6 +239,16 @@ export var DwdUtilsMixin = {
       }
       return url;
     },
+    itemUrl: function (type, id, trail) {
+      if (type === 'topic') {
+        return this.topicUrl(id, trail);
+      } else if (type === 'claim') {
+        return this.claimUrl(id, trail);
+      } else if (type === 'source') {
+        return this.sourceUrl(id, trail);
+      }
+      return '';
+    },
   },
   mounted: function () {
     if (this.$options.mountedTriggersWatchers && this.$options.watch) {

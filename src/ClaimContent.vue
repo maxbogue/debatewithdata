@@ -18,6 +18,7 @@ export default {
   },
   props: {
     claim: { type: Object, required: true },
+    abbreviated: { type: Boolean, default: false },
   },
   computed: {
     errorMessage: function () {

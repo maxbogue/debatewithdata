@@ -2,19 +2,10 @@
 <div>
   <dwd-trail :ids="trail" @lastIsFor="(v) => isFor = v" />
   <template v-if="claim">
-    <div class="claim" :class="isFor | toSideString">
-      <claim-content class="bubble" :claim="claim" />
-      <div class="info">
-        <span class="id mono">{{ claim.id }}</span>
-        <icon-star :star="claim.star" :url="'/api' + claimUrl(id)" />
-        <icon-history :url="claimUrl(id)" />
-        <icon-edit v-if="$store.state.user" :url="claimUrl(id)" />
-        <icon-comment @click.native="showComments = !showComments"
-                      :count="claim.commentCount" />
-      </div>
-      <dwd-comments :url="'/api/claim/' + id"
-                    :show="showComments" />
-    </div>
+    <item-block :item="claim"
+                :is-for="isFor"
+                type="claim"
+                show-info />
     <template v-if="$store.state.singleColumn">
       <transition-group tag="div" :move-class="$style.pointsMove">
         <div v-if="zippedPoints.length > 0"
@@ -60,31 +51,17 @@
 </template>
 
 <script>
-import ClaimContent from '../ClaimContent.vue';
-import DwdComments from '../DwdComments.vue';
-import DwdDrawer from '../DwdDrawer.vue';
-import DwdFlag from '../DwdFlag.vue';
 import DwdLoader from '../DwdLoader.vue';
 import DwdTrail from '../DwdTrail.vue';
-import IconComment from '../IconComment.vue';
-import IconEdit from '../IconEdit.vue';
-import IconHistory from '../IconHistory.vue';
-import IconStar from '../IconStar.vue';
+import ItemBlock from '../ItemBlock.vue';
 import PointBlock from '../PointBlock.vue';
 import { pointMapsToLists, rotateWithIndexes } from '../utils';
 
 export default {
   components: {
-    ClaimContent,
-    DwdComments,
-    DwdDrawer,
-    DwdFlag,
     DwdLoader,
     DwdTrail,
-    IconComment,
-    IconEdit,
-    IconHistory,
-    IconStar,
+    ItemBlock,
     PointBlock,
   },
   data: () => ({
@@ -96,7 +73,7 @@ export default {
       return this.$route.params.id;
     },
     claim: function () {
-      return this.$store.state.claims[this.id] || null;
+      return this.lookupClaim(this.id);
     },
     claimIsFor: function () {
       return this.isFor !== null ? this.isFor : true;

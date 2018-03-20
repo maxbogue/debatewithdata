@@ -8,7 +8,7 @@ const USERNAME = 'test';
 const PASSWORD = 'testtest';
 const EMAIL = 'test@debatewithdata.org';
 
-const STARS_AND_COMMENTS = {
+export const STARS_AND_COMMENTS = {
   star: {
     count: 0,
     starred: false,
@@ -91,7 +91,7 @@ export const TestSource = {
       url: this.URL,
       type: 'misc',
       claimIds: [],
-      commentCount: 0,
+      ...STARS_AND_COMMENTS,
     };
   },
 };

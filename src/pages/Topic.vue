@@ -2,41 +2,28 @@
 <div>
   <dwd-trail :ids="trail" />
   <template v-if="topic">
-    <div class="topic t1">
-      <topic-content class="bubble click"
-                     :topic="topic"
-                     @click.native="showDrawer = !showDrawer" />
-      <dwd-drawer :show="showDrawer">
-        <div class="info">
-          <span class="id mono">{{ id }}</span>
-          <icon-star :star="topic.star" :url="'/api' + topicUrl(id)" />
-          <icon-history :url="topicUrl(id)" />
-          <icon-edit v-if="$store.state.user" :url="topicUrl(id)" />
-          <icon-comment @click.native="showComments = !showComments"
-                        :count="topic.commentCount" />
-        </div>
-        <dwd-comments :url="'/api/topic/' + id"
-                      :show="showComments"
-                      :hint="showDrawer" />
-      </dwd-drawer>
-    </div>
+    <item-block :item="topic"
+                type="topic"
+                show-info />
     <template v-if="subTopics.length > 0">
       <h3>Sub-Topics</h3>
-      <router-link v-for="subTopic in subTopics"
-                   class="topic block"
-                   :to="topicUrl(subTopic.id, trail.concat(id))"
-                   :key="subTopic.id">
-        {{ subTopic.title }}
-      </router-link>
+      <item-block v-for="subTopic in subTopics"
+                  :key="subTopic.id"
+                  :item="subTopic"
+                  :trail="trail.concat(id)"
+                  type="topic"
+                  is-link
+                  abbreviated />
     </template>
     <template v-if="claims.length > 0">
       <h3>Key Claims</h3>
-      <router-link v-for="claim in claims"
-                   class="claim block"
-                   :to="claimUrl(claim.id, trail.concat(id))"
-                   :key="claim.id">
-          <claim-content :claim="claim" />
-      </router-link>
+      <item-block v-for="claim in claims"
+                  :key="claim.id"
+                  :item="claim"
+                  :trail="trail.concat(id)"
+                  type="claim"
+                  is-link
+                  abbreviated />
     </template>
   </template>
   <dwd-loader ref="loader" />
@@ -46,41 +33,26 @@
 <script>
 import map from 'lodash/map';
 
-import ClaimContent from '../ClaimContent.vue';
-import DwdComments from '../DwdComments.vue';
-import DwdDrawer from '../DwdDrawer.vue';
 import DwdLoader from '../DwdLoader.vue';
 import DwdTrail from '../DwdTrail.vue';
-import IconComment from '../IconComment.vue';
-import IconEdit from '../IconEdit.vue';
-import IconHistory from '../IconHistory.vue';
-import IconStar from '../IconStar.vue';
-import TopicContent from '../TopicContent.vue';
+import ItemBlock from '../ItemBlock.vue';
 import { sortByStars } from '../utils';
 
 export default {
   components: {
-    ClaimContent,
-    DwdComments,
-    DwdDrawer,
     DwdLoader,
     DwdTrail,
-    IconComment,
-    IconEdit,
-    IconHistory,
-    IconStar,
-    TopicContent,
+    ItemBlock,
   },
   data: () => ({
     showComments: false,
-    showDrawer: false,
   }),
   computed: {
     id: function () {
       return this.$route.params.id;
     },
     topic: function () {
-      return this.$store.state.topics[this.id] || null;
+      return this.lookupTopic(this.id);
     },
     subTopics: function () {
       if (!this.topic || this.topic.deleted) {
