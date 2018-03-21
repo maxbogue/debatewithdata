@@ -37,19 +37,21 @@ export default {
         return items;
       }
       let item = this.lookupClaim(this.itemIds[0]);
+      let type = 'claim';
       let isFor = null;
       for (let i = 1; i < this.itemIds.length; i++) {
         if (!item) {
           return items;
         }
         let nextId = this.itemIds[i];
-        let [type, next, nextIsFor] = this.findInside(item.points, nextId);
-        if (!type) {
+        let [nextType, next, nextIsFor] = this.findInside(item.points, nextId);
+        if (!nextType) {
           console.warn('Broken link found in trail: ' + nextId);
           return items;
         }
         items.push([type, item, isFor]);
         item = next;
+        type = nextType;
         isFor = isFor === null ? nextIsFor : isFor === nextIsFor;
       }
       return items;
@@ -65,8 +67,8 @@ export default {
           return null;
         }
         let nextId = this.itemIds[i];
-        let [type, next, nextIsFor] = this.findInside(item.points, nextId);
-        if (!type) {
+        let [nextType, next, nextIsFor] = this.findInside(item.points, nextId);
+        if (!nextType) {
           return null;
         }
         item = next;

@@ -35,7 +35,7 @@ import IconHistory from './IconHistory.vue';
 import IconStar from './IconStar.vue';
 import ItemContent from './ItemContent.vue';
 
-const ANIMATION_DURATION_MS = 350;
+const ANIMATION_DURATION_MS = 300;
 const ANIMATION_DURATION_SECS = ANIMATION_DURATION_MS / 1000;
 
 export default {
