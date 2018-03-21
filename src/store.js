@@ -1,6 +1,7 @@
 import axios from 'axios';
 import clone from 'lodash/clone';
 import cloneDeep from 'lodash/cloneDeep';
+import forEach from 'lodash/forEach';
 import forOwn from 'lodash/forOwn';
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -97,6 +98,8 @@ export default new Vuex.Store({
     sourcesLoaded: false,
     user: null,
     singleColumn: windowIsSingleColumn(),
+    itemBlocks: [],
+    itemLocations: {},
   },
   mutations: {
     setData: function (state, data) {
@@ -133,6 +136,23 @@ export default new Vuex.Store({
     },
     setSingleColumn: function (state, isSingleColumn) {
       state.singleColumn = isSingleColumn;
+    },
+    registerItemBlock: function (state, vm) {
+      state.itemBlocks.push(vm);
+    },
+    unregisterItemBlock: function (state, vm) {
+      let i = state.itemBlocks.indexOf(vm);
+      if (i < 0) {
+        console.warn('Missing item block.');
+      } else {
+        state.itemBlocks.splice(i, 1);
+      }
+    },
+    storeItemBlockLocations: function (state) {
+      state.itemLocations = {};
+      forEach(state.itemBlocks, (vm) => {
+        state.itemLocations[vm.id] = vm.$el.getBoundingClientRect();
+      });
     },
   },
   actions: {

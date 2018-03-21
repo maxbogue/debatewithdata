@@ -7,34 +7,30 @@
                 type="claim"
                 show-info />
     <template v-if="$store.state.singleColumn">
-      <transition-group tag="div" :move-class="$style.pointsMove">
-        <div v-if="zippedPoints.length > 0"
-             class="block no-pad"
-             :class="$style.pointHeader"
-             key="side-text">
-          <span :class="claimIsFor ? $style.for : $style.against"
-                >For</span>
-          <span> // </span>
-          <span :class="claimIsFor ? $style.against : $style.for"
-                >Against</span>
-        </div>
-        <point-block v-for="[point, side] in zippedPoints"
-                     :point="point"
-                     :is-for="claimIsFor === !side"
-                     :trail="trail"
-                     :key="point.id" />
-      </transition-group>
+      <div v-if="zippedPoints.length > 0"
+           class="block no-pad"
+           :class="$style.pointHeader"
+           :key="id + '-side-text'">
+        <span :class="claimIsFor ? $style.for : $style.against"
+              >For</span>
+        <span> // </span>
+        <span :class="claimIsFor ? $style.against : $style.for"
+              >Against</span>
+      </div>
+      <point-block v-for="[point, side] in zippedPoints"
+                   :point="point"
+                   :is-for="claimIsFor === !side"
+                   :trail="trail"
+                   :key="point.id" />
     </template>
     <template v-else>
-      <transition-group tag="div"
-                        v-for="(sidePoints, side) in points"
-                        class="dwd-col"
-                        :move-class="$style.pointsMove"
-                        :key="'side-' + side">
+      <div v-for="(sidePoints, side) in points"
+           class="dwd-col"
+           :key="'side-' + side">
         <div v-if="sidePoints.length > 0"
              class="block no-pad"
              :class="$style.pointHeader"
-             :key="'side-text-' + side">
+             :key="id + 'side-text-' + side">
           <span :class="claimIsFor === !side ? $style.for : $style.against"
                 >{{ !side ? 'For' : 'Against' }}</span>
         </div>
@@ -43,7 +39,7 @@
                      :is-for="claimIsFor === !side"
                      :trail="trail"
                      :key="point.id" />
-      </transition-group>
+      </div>
     </template>
   </template>
   <dwd-loader ref="loader" />
@@ -116,10 +112,6 @@ export default {
 
 <style lang="scss" module>
 @import "../style/constants";
-
-.pointsMove {
-  transition: transform 1s;
-}
 
 .pointHeader {
   display: flex;
