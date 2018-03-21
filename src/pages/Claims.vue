@@ -8,12 +8,12 @@
   </div>
   <dwd-loader ref="loader" />
   <template v-if="claimsLoaded">
-    <router-link v-for="claim in claims"
-                 class="claim block"
-                 :to="claimUrl(claim.id)"
-                 :key="claim.id">
-        <claim-content :claim="claim" />
-    </router-link>
+    <item-block v-for="claim in claims"
+                :key="claim.id"
+                :item="claim"
+                type="claim"
+                is-link
+                abbreviated />
   </template>
 </div>
 </template>
@@ -21,14 +21,14 @@
 <script>
 import { mapState } from 'vuex';
 
-import ClaimContent from '../ClaimContent.vue';
 import DwdLoader from '../DwdLoader.vue';
+import ItemBlock from '../ItemBlock.vue';
 import { sortByStars } from '../utils';
 
 export default {
   components: {
-    ClaimContent,
     DwdLoader,
+    ItemBlock,
   },
   computed: {
     ...mapState([

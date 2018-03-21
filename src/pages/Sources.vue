@@ -9,12 +9,12 @@
   </div>
   <dwd-loader ref="loader" />
   <template v-if="sourcesLoaded">
-    <router-link v-for="source in sources"
-                 class="source block"
-                 :to="sourceUrl(source.id)"
-                 :key="source.id">
-      <source-content :source="source" />
-    </router-link>
+    <item-block v-for="source in sources"
+                :key="source.id"
+                :item="source"
+                type="source"
+                is-link
+                abbreviated />
   </template>
 </div>
 </template>
@@ -23,13 +23,13 @@
 import { mapState } from 'vuex';
 
 import DwdLoader from '../DwdLoader.vue';
-import SourceContent from '../SourceContent.vue';
+import ItemBlock from '../ItemBlock.vue';
 import { filterLiving } from '../utils';
 
 export default {
   components: {
     DwdLoader,
-    SourceContent,
+    ItemBlock,
   },
   computed: {
     ...mapState([

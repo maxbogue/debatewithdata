@@ -6,12 +6,12 @@
   </div>
   <dwd-loader ref="loader" />
   <template v-if="topicsLoaded">
-    <router-link v-for="topic in rootTopics"
-                 class="topic block"
-                 :to="topicUrl(topic.id)"
-                 :key="topic.id">
-      {{ topic.title }}
-    </router-link>
+    <item-block v-for="topic in rootTopics"
+                :key="topic.id"
+                :item="topic"
+                type="topic"
+                is-link
+                abbreviated />
   </template>
 </div>
 </template>
@@ -21,11 +21,13 @@ import pickBy from 'lodash/pickBy';
 import { mapState } from 'vuex';
 
 import DwdLoader from '../DwdLoader.vue';
+import ItemBlock from '../ItemBlock.vue';
 import { sortByStars } from '../utils';
 
 export default {
   components: {
     DwdLoader,
+    ItemBlock,
   },
   computed: {
     ...mapState([
