@@ -3,7 +3,7 @@
   <template v-if="data && !revId">
     <h3 class="center">
       History for
-      <router-link :to="url" class="mono">{{ itemId }}</router-link>
+      <router-link :to="urlWithTrail" class="mono">{{ itemId }}</router-link>
     </h3>
     <ul class="mono" :class="$style.revs">
       <li v-for="rev in revs" :class="revClass" :key="rev.revId">
@@ -17,7 +17,8 @@
     <rev-nav :item-type="itemType"
              :curr="curr"
              :prev="prev"
-             :next="next" />
+             :next="next"
+             :trail="trail" />
     <topic-rev v-if="itemType === 'topic'"
                :curr="curr"
                :prev="prev" />
@@ -119,9 +120,6 @@ export default {
       }
       return '';
     },
-    url: function () {
-      return '/' + this.itemType + '/' + this.itemId;
-    },
     revIndex: function () {
       return this.revs.findIndex((r) => r.revId === this.revId);
     },
@@ -134,6 +132,15 @@ export default {
     next: function () {
       return this.revs[this.revIndex - 1];
     },
+    trail: function () {
+      return this.parseTrail(this.$route.query.trail);
+    },
+    url: function () {
+      return this.itemUrl(this.itemType, this.itemId);
+    },
+    urlWithTrail: function () {
+      return this.itemUrl(this.itemType, this.itemId, this.trail);
+    },
   },
   watch: {
     id: function () {
@@ -145,11 +152,11 @@ export default {
   },
   methods: {
     revUrl: function (rev) {
-      return '/' + this.itemType + '/' + this.itemId + '/rev/' + rev.revId;
+      return this.appendToUrl(this.urlWithTrail, '/rev/' + rev.revId);
     },
     loadData: function () {
       this.data = null;
-      axios.get('/api/' + this.itemType + '/' + this.itemId + '/rev', {
+      axios.get('/api' + this.url + '/rev', {
         loader: this.$refs.loader,
       }).then((res) => {
         unwrapPoints(res.data);

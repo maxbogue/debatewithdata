@@ -9,10 +9,7 @@ export default {
   },
   computed: {
     editUrl: function () {
-      if (this.url.includes('?')) {
-        return this.url.replace('?', '/edit?');
-      }
-      return this.url + '/edit';
+      return this.appendToUrl(this.url, '/edit');
     },
   },
 };

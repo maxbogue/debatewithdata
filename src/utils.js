@@ -259,6 +259,12 @@ export var DwdUtilsMixin = {
       }
       return '';
     },
+    appendToUrl: function (url, path) {
+      if (url.includes('?')) {
+        return url.replace('?', path + '?');
+      }
+      return url + path;
+    },
   },
   mounted: function () {
     if (this.$options.mountedTriggersWatchers && this.$options.watch) {

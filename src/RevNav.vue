@@ -7,7 +7,7 @@
     <router-link :to="prevUrl"
                  :class="{ [$style.hidden]: !prevUrl }"
                  class="dwd-btn grey">Prev</router-link>
-    <router-link :to="url + '/history'"
+    <router-link :to="historyUrl"
                  class="dwd-btn grey">History</router-link>
     <router-link :to="nextUrl"
                  :class="{ [$style.hidden]: !nextUrl }"
@@ -52,16 +52,26 @@ export default {
     curr: { type: Object, required: true },
     prev: { type: Object, default: null },
     next: { type: Object, default: null },
+    trail: { type: Array, required: true },
   },
   computed: {
     url: function () {
-      return '/' + this.itemType + '/' + this.curr.id;
+      return this.itemUrl(this.itemType, this.curr.id, this.trail);
     },
     prevUrl: function () {
-      return this.prev ? this.url + '/rev/' + this.prev.revId : '';
+      if (!this.prev) {
+        return '';
+      }
+      return this.appendToUrl(this.url, '/rev/' + this.prev.revId);
     },
     nextUrl: function () {
-      return this.next ? this.url + '/rev/' + this.next.revId : '';
+      if (!this.next) {
+        return '';
+      }
+      return this.appendToUrl(this.url, '/rev/' + this.next.revId);
+    },
+    historyUrl: function () {
+      return this.appendToUrl(this.url, '/history');
     },
     // This is an ugly hack to get around claim and source being placed inside
     // point revisions.
