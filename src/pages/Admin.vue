@@ -30,6 +30,9 @@
   <button type="button"
           class="dwd-btn dwd-btn-primary"
           @click="promoteAll">Promote all points</button>
+  <button type="button"
+          class="dwd-btn dwd-btn-primary"
+          @click="pointsToLinks">Points to links</button>
 </div>
 </template>
 
@@ -68,6 +71,13 @@ export default {
       if (window.confirm('Are you sure?')) {
         axios.post('/api/admin/fix/promote-all').then((res) => {
           window.alert(res.data.count + ' points promoted.');
+        });
+      }
+    },
+    pointsToLinks: function () {
+      if (window.confirm('Are you sure?')) {
+        axios.post('/api/admin/fix/points-to-links').then((res) => {
+          window.alert(res.data.count + ' points copied to links.');
         });
       }
     },

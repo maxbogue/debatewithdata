@@ -4,8 +4,10 @@ import forOwn from 'lodash/forOwn';
 
 import makeBlob from './blob';
 import makeClaim from './claim';
+import makeClaimClaim from './claim_claim';
 import makeClaimPoint from './claim_point';
 import makeClaimRev from './claim_rev';
+import makeClaimSource from './claim_source';
 import makeComment from './comment';
 import makeInvite from './invite';
 import makePoint from './point';
@@ -38,8 +40,10 @@ function makeModel(name, makeFn) {
 
 export const Blob = makeModel('Blob', makeBlob);
 export const Claim = makeModel('Claim', makeClaim);
+export const ClaimClaim = makeModel('ClaimClaim', makeClaimClaim);
 export const ClaimPoint = makeModel('ClaimPoint', makeClaimPoint);
 export const ClaimRev = makeModel('ClaimRev', makeClaimRev);
+export const ClaimSource = makeModel('ClaimSource', makeClaimSource);
 export const Comment = makeModel('Comment', makeComment);
 export const Invite = makeModel('Invite', makeInvite);
 export const Point = makeModel('Point', makePoint);

@@ -2,7 +2,7 @@ import Router from 'express-promise-router';
 import forEach from 'lodash/forEach';
 import map from 'lodash/map';
 
-import { Claim, Invite, sequelize } from '../models';
+import { Claim, ClaimRev, Invite, PointRev, sequelize } from '../models';
 import { AuthError } from './error';
 import { PointType } from '../common/constants';
 
@@ -61,6 +61,58 @@ router.post('/fix/promote-all', async function (req, res) {
         let claimData = data.claims[claimId];
         count += pointsToNewClaims(claimData.points);
         await Claim.apiUpdate(claimId, req.user, claimData, t);
+      }
+    }
+  });
+  res.json({ count });
+});
+
+async function pointRevToLink(pointRev) {
+  let latestPointRev = await PointRev.findOne({
+    where: { point_id: pointRev.pointId },
+    order: [['created_at', 'DESC']],
+    limit: 1,
+    ...PointRev.INCLUDE(1),
+  });
+  if (latestPointRev.type === 'claim') {
+    return ['claim', latestPointRev.claim];
+  } else if (latestPointRev.type === 'source') {
+    return ['source', latestPointRev.source];
+  }
+  return [''];
+}
+
+router.post('/fix/points-to-links', async function (req, res) {
+  let claimRevs = await ClaimRev.findAll(ClaimRev.INCLUDE(2));
+
+  let links = {};
+  for (let claimRev of claimRevs) {
+    for (let pointRev of claimRev.pointRevs) {
+      if (!links[pointRev.pointId]) {
+        links[pointRev.pointId] = await pointRevToLink(pointRev);
+      }
+    }
+  }
+
+  let count = 0;
+  await sequelize.transaction(async function(t) {
+    for (let claimRev of claimRevs) {
+      for (let pointRev of claimRev.pointRevs) {
+        let [type, item] = links[pointRev.pointId];
+        let isFor = pointRev.claimPoint.isFor;
+        if (type === 'claim') {
+          count += 1;
+          await claimRev.addClaim(item, {
+            through: { isFor },
+            transaction: t,
+          });
+        } else if (type === 'source') {
+          count += 1;
+          await claimRev.addSource(item, {
+            through: { isFor },
+            transaction: t,
+          });
+        }
       }
     }
   });

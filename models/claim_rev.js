@@ -60,6 +60,14 @@ export default function (sequelize, DataTypes) {
       through: models.ClaimPoint,
       as: 'pointRevs',
     });
+    ClaimRev.Claims = ClaimRev.belongsToMany(models.Claim, {
+      through: models.ClaimClaim,
+      as: 'claims',
+    });
+    ClaimRev.Sources = ClaimRev.belongsToMany(models.Source, {
+      through: models.ClaimSource,
+      as: 'sources',
+    });
   };
 
   ClaimRev.postAssociate = function (models) {
