@@ -159,6 +159,9 @@ export default {
     needsData: function () {
       return this.id && !this.topic;
     },
+    trail: function () {
+      return this.parseTrail(this.$route.query.trail);
+    },
   },
   watch: {
     id: function () {
@@ -209,7 +212,7 @@ export default {
         payload.id = this.topic.id;
       }
       this.$store.dispatch(action, payload).then((id) => {
-        this.$router.push(this.topicUrl(id));
+        this.$router.push(this.topicUrl(id), this.trail);
       });
     },
     remove: function () {
@@ -220,7 +223,8 @@ export default {
       });
     },
     cancel: function () {
-      this.$router.push(this.topic ? this.topicUrl(this.topic.id) : '/topics');
+      let url = this.topic ? this.topicUrl(this.id, this.trail) : '/topics';
+      this.$router.push(url);
     },
     initialize: function () {
       let seed = this.seed || this.topic;

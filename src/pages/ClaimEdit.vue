@@ -98,6 +98,9 @@ export default {
     zippedPoints: function () {
       return rotateWithIndexes(this.pointRevs);
     },
+    trail: function () {
+      return this.parseTrail(this.$route.query.trail);
+    },
   },
   watch: {
     id: function () {
@@ -125,7 +128,7 @@ export default {
         payload.id = this.id;
       }
       this.$store.dispatch(action, payload).then((id) => {
-        this.$router.push(this.claimUrl(id));
+        this.$router.push(this.claimUrl(id, this.trail));
       });
     },
     remove: function (message) {
@@ -137,7 +140,8 @@ export default {
       });
     },
     cancel: function () {
-      this.$router.push(this.id ? this.claimUrl(this.id) : '/claims');
+      let url = this.id ? this.claimUrl(this.id, this.trail) : '/claims';
+      this.$router.push(url);
     },
     initialize: function () {
       let seed = this.seed || this.claim;
@@ -153,6 +157,7 @@ export default {
       if (this.needsData) {
         this.$store.dispatch('getClaim', {
           id: this.id,
+          trail: this.trail,
           loader: this.$refs.loader,
         }).then(() => {
           this.initialize();

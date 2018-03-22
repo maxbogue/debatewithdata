@@ -1,9 +1,10 @@
 <template>
 <div>
-  <dwd-trail :ids="trail" @lastIsFor="(v) => isFor = v" />
+  <dwd-trail :ids="newTrail" @lastIsFor="(v) => isFor = v" />
   <template v-if="claim">
     <item-block :item="claim"
                 :is-for="isFor"
+                :trail="trail"
                 type="claim"
                 show-info />
     <template v-if="$store.state.singleColumn">
@@ -20,7 +21,7 @@
       <point-block v-for="[point, side] in zippedPoints"
                    :point="point"
                    :is-for="claimIsFor === !side"
-                   :trail="trail"
+                   :trail="newTrail"
                    :key="point.id" />
     </template>
     <template v-else>
@@ -37,7 +38,7 @@
         <point-block v-for="point in sidePoints"
                      :point="point"
                      :is-for="claimIsFor === !side"
-                     :trail="trail"
+                     :trail="newTrail"
                      :key="point.id" />
       </div>
     </template>
@@ -84,7 +85,10 @@ export default {
       return rotateWithIndexes(this.points);
     },
     trail: function () {
-      return this.parseTrail(this.$route.query.trail).concat(this.id);
+      return this.parseTrail(this.$route.query.trail);
+    },
+    newTrail: function () {
+      return this.trail.concat(this.id);
     },
   },
   watch: {
@@ -101,7 +105,7 @@ export default {
       if (!claim || claim.depth < 3) {
         this.$store.dispatch('getClaim', {
           id: this.id,
-          trail: this.parseTrail(this.$route.query.trail),
+          trail: this.trail,
           loader: !claim || claim.depth < 2 ? this.$refs.loader : null,
         });
       }

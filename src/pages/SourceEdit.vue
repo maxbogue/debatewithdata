@@ -57,6 +57,9 @@ export default {
     needsData: function () {
       return this.id && !this.source;
     },
+    trail: function () {
+      return this.parseTrail(this.$route.query.trail);
+    },
   },
   watch: {
     id: function () {
@@ -75,7 +78,7 @@ export default {
         payload.id = this.id;
       }
       this.$store.dispatch(action, payload).then((id) => {
-        this.$router.push(this.sourceUrl(id));
+        this.$router.push(this.sourceUrl(id, this.trail));
       });
     },
     remove: function () {
@@ -86,7 +89,8 @@ export default {
       });
     },
     cancel: function () {
-      this.$router.push(this.id ? this.sourceUrl(this.id) : '/sources');
+      let url = this.id ? this.sourceUrl(this.id, this.trail) : '/sources';
+      this.$router.push(url);
     },
     initialize: function () {
       let seed = this.seed || this.source;

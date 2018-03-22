@@ -4,6 +4,7 @@
   <template v-if="source">
     <item-block :item="source"
                 :is-for="isFor"
+                :trail="trail"
                 type="source" />
     <h3 v-if="claims.length > 0">Referenced In</h3>
     <item-block v-for="claim in claims"

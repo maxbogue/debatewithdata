@@ -3,6 +3,7 @@
   <dwd-trail :ids="trail" />
   <template v-if="topic">
     <item-block :item="topic"
+                :trail="trail"
                 type="topic"
                 show-info />
     <template v-if="subTopics.length > 0">
@@ -10,7 +11,7 @@
       <item-block v-for="subTopic in subTopics"
                   :key="subTopic.id"
                   :item="subTopic"
-                  :trail="trail.concat(id)"
+                  :trail="newTrail"
                   type="topic"
                   is-link
                   abbreviated />
@@ -20,7 +21,7 @@
       <item-block v-for="claim in claims"
                   :key="claim.id"
                   :item="claim"
-                  :trail="trail.concat(id)"
+                  :trail="newTrail"
                   type="claim"
                   is-link
                   abbreviated />
@@ -68,6 +69,9 @@ export default {
     },
     trail: function () {
       return this.parseTrail(this.$route.query.trail);
+    },
+    newTrail: function () {
+      return this.trail.concat(this.id);
     },
   },
   watch: {
