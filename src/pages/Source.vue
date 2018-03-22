@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import filter from 'lodash/filter';
 import map from 'lodash/map';
 
 import DwdLoader from '../DwdLoader.vue';
@@ -49,7 +50,9 @@ export default {
       if (!this.source || !this.source.claimIds) {
         return [];
       }
-      return map(this.source.claimIds, this.lookupClaim);
+      let notInTrail = filter(
+          this.source.claimIds, (id) => !this.trail.includes(id));
+      return map(notInTrail, this.lookupClaim);
     },
   },
   watch: {
