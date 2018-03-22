@@ -100,6 +100,7 @@ export default new Vuex.Store({
     singleColumn: windowIsSingleColumn(),
     itemBlocks: [],
     itemLocations: {},
+    itemBlockSliding: false,
   },
   mutations: {
     setData: function (state, data) {
@@ -150,9 +151,13 @@ export default new Vuex.Store({
     },
     storeItemBlockLocations: function (state) {
       state.itemLocations = {};
+      state.itemBlockSliding = false;
       forEach(state.itemBlocks, (vm) => {
         state.itemLocations[vm.id] = vm.$el.getBoundingClientRect();
       });
+    },
+    itemBlockSliding: function (state) {
+      state.itemBlockSliding = true;
     },
   },
   actions: {

@@ -106,14 +106,24 @@ export default {
       }
     },
     animateFade: function () {
-      this.$el.style.opacity = 0;
-      // Delay fading in til after any slides have completed.
-      setTimeout(() => {
-        this.$el.style.transition = `opacity ${ANIMATION_DURATION_SECS * 2}s`;
-        this.$el.style.opacity = 1;
-      }, ANIMATION_DURATION_MS);
+      // Wait for nextTick to let any sliding blocks mark itemBlockSliding.
+      this.$nextTick(() => {
+        let delay = 0;
+        if (this.$store.state.itemBlockSliding) {
+          // Delay fade if a block is sliding.
+          delay = ANIMATION_DURATION_MS;
+        }
+        this.$el.style.opacity = 0;
+        // Delay fading in til after any slides have completed.
+        setTimeout(() => {
+          this.$el.style.transition = `opacity ${ANIMATION_DURATION_SECS * 2}s`;
+          this.$el.style.opacity = 1;
+        }, delay);
+      });
     },
     animateSlide: function () {
+      this.$store.commit('itemBlockSliding');
+
       let from = this.animateFrom;
       let to = this.$el.getBoundingClientRect();
 
