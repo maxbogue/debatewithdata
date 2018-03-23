@@ -215,9 +215,10 @@ export default {
         this.$router.push(this.topicUrl(id), this.trail);
       });
     },
-    remove: function () {
+    remove: function (message) {
       this.$store.dispatch('removeTopic', {
         id: this.topic.id,
+        message,
       }).then(() => {
         this.$router.push('/topics');
       });

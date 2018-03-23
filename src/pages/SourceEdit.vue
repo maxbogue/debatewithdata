@@ -81,9 +81,10 @@ export default {
         this.$router.push(this.sourceUrl(id, this.trail));
       });
     },
-    remove: function () {
+    remove: function (message) {
       this.$store.dispatch('removeSource', {
         id: this.id,
+        message,
       }).then(() => {
         this.$router.push('/sources');
       });
