@@ -83,7 +83,12 @@ async function pointRevToLink(pointRev) {
 }
 
 router.post('/fix/points-to-links', async function (req, res) {
-  let claimRevs = await ClaimRev.findAll(ClaimRev.INCLUDE(2));
+  let claimRevs = await ClaimRev.findAll({
+    include: [...ClaimRev.INCLUDE(2).include, {
+      association: ClaimRev.PointRevs,
+      ...PointRev.INCLUDE(1),
+    }],
+  });
 
   let links = {};
   for (let claimRev of claimRevs) {
@@ -97,12 +102,16 @@ router.post('/fix/points-to-links', async function (req, res) {
   let count = 0;
   await sequelize.transaction(async function(t) {
     for (let claimRev of claimRevs) {
+      if (claimRev.subClaims.length > 0 || claimRev.sources.length > 0) {
+        // Already converted.
+        continue;
+      }
       for (let pointRev of claimRev.pointRevs) {
         let [type, item] = links[pointRev.pointId];
         let isFor = pointRev.claimPoint.isFor;
         if (type === 'claim') {
           count += 1;
-          await claimRev.addClaim(item, {
+          await claimRev.addSubClaim(item, {
             through: { isFor },
             transaction: t,
           });
