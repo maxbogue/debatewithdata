@@ -1,3 +1,4 @@
+import { asyncForOwn } from '../common/utils';
 import { genRevId } from './utils';
 import { validateClaim } from '../common/validate';
 
@@ -60,9 +61,9 @@ export default function (sequelize, DataTypes) {
       through: models.ClaimPoint,
       as: 'pointRevs',
     });
-    ClaimRev.Claims = ClaimRev.belongsToMany(models.Claim, {
+    ClaimRev.SubClaims = ClaimRev.belongsToMany(models.Claim, {
       through: models.ClaimClaim,
-      as: 'claims',
+      as: 'subClaims',
     });
     ClaimRev.Sources = ClaimRev.belongsToMany(models.Source, {
       through: models.ClaimSource,
@@ -81,11 +82,57 @@ export default function (sequelize, DataTypes) {
       }
       if (n > 1) {
         include.push({
-          association: ClaimRev.PointRevs,
-          ...models.PointRev.INCLUDE(n - 1, includeUser),
+          association: ClaimRev.SubClaims,
+          ...models.Claim.INCLUDE(n - 1),
+        });
+        include.push({
+          association: ClaimRev.Sources,
+          ...models.Source.INCLUDE(),
         });
       }
       return { include };
+    };
+
+    ClaimRev.createForApi = async function (claim, user, data, transaction) {
+      const blob = await models.Blob.fromText(data.text, transaction);
+      const claimRev = await models.ClaimRev.create({
+        userId: user.id,
+        claimId: claim.id,
+        parentId: claim.headId,
+        blobHash: blob.hash,
+        flag: data.flag,
+      }, { transaction });
+
+      let subClaimIds = data.subClaimIds ? { ...data.subClaimIds } : {};
+      let sourceIds = data.sourceIds ? { ...data.sourceIds } : {};
+
+      if (data.newSubClaims) {
+        for (let claimData of data.newSubClaims) {
+          let rev = await models.Claim.apiCreate(user, claimData, transaction);
+          subClaimIds[rev.claimId] = claimData.isFor;
+        }
+      }
+      if (data.newSources) {
+        for (let sourceData of data.newSources) {
+          let rev = await models.Source.apiCreate(
+              user, sourceData, transaction);
+          sourceIds[rev.sourceId] = sourceData.isFor;
+        }
+      }
+
+      await asyncForOwn(subClaimIds, (isFor, subClaimId) =>
+        claimRev.addSubClaim(subClaimId, {
+          through: { isFor },
+          transaction,
+        }));
+      await asyncForOwn(sourceIds, (isFor, sourceId) =>
+        claimRev.addSource(sourceId, {
+          through: { isFor },
+          transaction,
+        }));
+      await claim.setHead(claimRev, { transaction });
+
+      return claimRev;
     };
 
     ClaimRev.prototype.toCoreData = function (recurse=false) {
@@ -107,23 +154,35 @@ export default function (sequelize, DataTypes) {
       }
 
       if (recurse) {
-        data.points = models.PointRev.toCoreDatas(this.pointRevs, true);
+        data.subClaimIds = {};
+        for (let claim of this.subClaims) {
+          data.subClaimIds[claim.id] = claim.claimClaim.isFor;
+        }
+        data.sourceIds = {};
+        for (let source of this.sources) {
+          data.sourceIds[source.id] = source.claimSource.isFor;
+        }
       }
 
       return data;
     };
 
-    ClaimRev.prototype.toRevData = function (pointRevDatas) {
-      let thisData = this.toCoreData();
+    // Only called for apiGetRevs.
+    ClaimRev.prototype.fillData = async function (data) {
+      let thisData = this.toCoreData(true);
       thisData.username = this.user.username;
       thisData.createdAt = this.created_at;
 
-      if (!thisData.deleted && this.pointRevs) {
-        thisData.points = models.PointRev.toRevDatas(
-            this.pointRevs, pointRevDatas);
+      if (!thisData.deleted) {
+        for (let subClaim of this.subClaims) {
+          await subClaim.fillData(data, 1);
+        }
+        for (let source of this.sources) {
+          data.sources[source.id] = await source.toData();
+        }
       }
 
-      return thisData;
+      data.claimRevs.push(thisData);
     };
   };
 

@@ -33,18 +33,13 @@
 </template>
 
 <script>
-import map from 'lodash/map';
-import sortBy from 'lodash/sortBy';
-
 import ClaimEditModal from '../ClaimEditModal.vue';
 import ClaimRevContent from '../ClaimRevContent.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import PointsEdit from '../PointsEdit.vue';
-import {
-  authRedirect, diffPointRevs, pointMapsToLists, rotateWithIndexes
-} from '../utils';
+import { authRedirect, combineAndSortPoints, splitPoints } from '../utils';
 
 export default {
   beforeRouteEnter: authRedirect,
@@ -64,7 +59,6 @@ export default {
     showModal: false,
     newClaimPartial: null,
     points: [[], []],
-    pointOrder: null,
     initialized: false,
   }),
   computed: {
@@ -77,26 +71,8 @@ export default {
     newClaim: function () {
       return {
         ...this.newClaimPartial,
-        points: this.points,
+        ...splitPoints(this.points),
       };
-    },
-    pointRevs: function () {
-      // Without this flag, |pointRevs| takes form as soon as |claim| is set
-      // and before |points| is set, making the PointEdit components mount with
-      // null points and failing to initialize their subPoints field.
-      if (!this.initialized) {
-        return [[], []];
-      }
-      let pointRevs = diffPointRevs(this.newClaim, this.claim);
-      if (!this.pointOrder) {
-        return pointRevs;
-      }
-      // Sort by the point order.
-      return map(pointRevs, (ps, si) =>
-        sortBy(ps, (p) => this.pointOrder[si].indexOf(p[0])));
-    },
-    zippedPoints: function () {
-      return rotateWithIndexes(this.pointRevs);
     },
     trail: function () {
       return this.parseTrail(this.$route.query.trail);
@@ -105,12 +81,6 @@ export default {
   watch: {
     id: function () {
       this.checkLoaded();
-    },
-    pointRevs: function () {
-      if (!this.pointOrder) {
-        // Initialize pointOrder with the order from diffPointRevs.
-        this.pointOrder = map(this.pointRevs, (s) => map(s, ([id]) => id));
-      }
     },
   },
   mounted: function () {
@@ -147,7 +117,7 @@ export default {
       let seed = this.seed || this.claim;
       if (seed && !seed.deleted) {
         this.newClaimPartial = seed;
-        this.points = pointMapsToLists(seed.points);
+        this.points = combineAndSortPoints(seed, this.$store.state);
       } else {
         this.showModal = true;
       }

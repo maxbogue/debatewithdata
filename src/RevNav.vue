@@ -22,30 +22,6 @@
 </template>
 
 <script>
-import cloneDeep from 'lodash/cloneDeep';
-import forEach from 'lodash/forEach';
-
-function removeBadFields(points) {
-  for (let sidePoints of points) {
-    forEach(sidePoints, (point) => {
-      delete point.claim;
-      delete point.source;
-      if (point.points) {
-        removeBadFields(point.points);
-      }
-    });
-  }
-}
-
-function strip(type, item) {
-  if (type !== 'claim') {
-    return item;
-  }
-  item = cloneDeep(item);
-  removeBadFields(item.points);
-  return item;
-}
-
 export default {
   props: {
     itemType: { type: String, required: true },
@@ -73,11 +49,6 @@ export default {
     historyUrl: function () {
       return this.appendToUrl(this.url, '/history');
     },
-    // This is an ugly hack to get around claim and source being placed inside
-    // point revisions.
-    stripped: function () {
-      return strip(this.itemType, this.curr);
-    },
     revertTo: function () {
       if (!this.next || this.curr.deleted || this.itemType === 'point') {
         // Can't revert if already HEAD, deleted, or for any points.
@@ -85,7 +56,7 @@ export default {
       }
       return {
         name: this.itemType + 'Edit',
-        params: { id: this.curr.id, seed: this.stripped },
+        params: { id: this.curr.id, seed: this.curr },
       };
     },
   },

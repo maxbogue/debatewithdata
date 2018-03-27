@@ -2,17 +2,17 @@
 <div>
   <claim-rev-content class="claim block" :curr="curr" :prev="prev" />
   <template v-if="$store.state.singleColumn">
-    <point-rev v-for="[[pId, currP, prevP], side] in zippedPointRevs"
+    <point-rev v-for="[[pId, currP, prevP], side] in zippedPointDiffs"
                :curr="currP"
                :prev="prevP"
                :is-for="!side"
                :key="pId" />
   </template>
   <template v-else>
-    <div v-for="(sidePointRevs, side) in pointRevs"
+    <div v-for="(sidePointDiffs, side) in pointDiffs"
          class="dwd-col"
          :key="'side-' + side">
-      <point-rev v-for="[pointId, currPoint, prevPoint] in sidePointRevs"
+      <point-rev v-for="[pointId, currPoint, prevPoint] in sidePointDiffs"
                  :curr="currPoint"
                  :prev="prevPoint"
                  :is-for="!side"
@@ -25,7 +25,7 @@
 <script>
 import ClaimRevContent from './ClaimRevContent.vue';
 import PointRev from './PointRev.vue';
-import { diffPointRevs, rotateWithIndexes } from './utils';
+import { diffPoints, rotateWithIndexes } from './utils';
 
 export default {
   components: {
@@ -37,10 +37,10 @@ export default {
     prev: { type: Object, default: null },
   },
   computed: {
-    pointRevs: function () {
-      return diffPointRevs(this.curr, this.prev);
+    pointDiffs: function () {
+      return diffPoints(this.curr, this.prev, this.$store.state);
     },
-    zippedPointRevs: function () {
+    zippedPointDiffs: function () {
       return rotateWithIndexes(this.points);
     },
   },

@@ -220,7 +220,6 @@ const claimConstraints = {
   },
   text: { presence: true, length: { minimum: 10 } },
   flag: { inclusion: { within: FlagData } },
-  points: { presence: true, custom: validatePoints },
 };
 
 const claimValidators = mapValues(claimConstraints, constraintToValidator);

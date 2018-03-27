@@ -19,12 +19,8 @@ only set based on the specific request.
     topicRevs: [TopicRev]
     claimRevs: [ClaimRev]
     sourceRevs: [SourceRev]
-    pointRevs: { revId: PointRev }
-    pointRevIds: [revId]  // Present for point history.
 
     id: String      // Present for add operations.
-    isFor: Boolean  // Present for point history.
-
 
 ## Metadata
 
@@ -72,38 +68,13 @@ diffs and equality checks. None of these are set for deleted items.
 ### Claim
 
     text: String
-    flag??: String
-    points: [
-      { id: Point },  // Points for.
-      { id: Point },  // Points against.
-    ]
-
-### ClaimRev
-
-For revisions, points just map to their revision IDs.
-
-    points: [{ id: revId }, { id: revId }]
-
-### Point
-
-    type: String (claim, source, text, subclaim)
-    text?: String (type = text|subclaim)
-    flag??: String (type = text|subclaim)
-    claimId?: String (type = claim)
-    sourceId?: String (type = source)
-    points?: [
-      { id: Point },  // Points for.
-      { id: Point },  // Points against.
-    ] (type = subclaim)
-
-### PointRev
-
-For revisions, points just map to their revision IDs. Claim and source are
-embedded inside the point.
-
-    points?: [{ id: revId }, { id: revId }] (type = subclaim)
-    claim?: Claim (type = claim)
-    source?: Source (type = source)
+    flag?: String
+    // Optional when sending to server.
+    subClaimIds: { id: Boolean }
+    sourceIds: { id: Boolean }
+    // Only when sending to server.
+    newSubClaims: [{...Claim, isFor: Boolean }]
+    newSources: [{...Source, isFor: Boolean }]
 
 ### Source
 

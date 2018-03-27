@@ -141,6 +141,7 @@ export default function (sequelize, DataTypes) {
       return data;
     };
 
+    // Only called for apiGetRevs.
     TopicRev.prototype.fillData = async function (data) {
       let thisData = this.toCoreData();
       thisData.username = this.user.username;
@@ -150,7 +151,6 @@ export default function (sequelize, DataTypes) {
         for (let subTopic of this.subTopics) {
           await subTopic.fillData(data, 1);
         }
-
         for (let claim of this.claims) {
           await claim.fillData(data, 1);
         }

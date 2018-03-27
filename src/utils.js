@@ -7,10 +7,12 @@ import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import map from 'lodash/map';
 import md5 from 'md5';
+import omit from 'lodash/omit';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
 
 import store from './store';
+import { PointType } from '../common/constants';
 
 const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 const textDiff = new Diff();
@@ -58,6 +60,74 @@ export function emptyPoints() {
   return [[emptyPoint()], [emptyPoint()]];
 }
 
+function combinePoints(claim, state) {
+  let points = [{}, {}];
+  if (!claim || claim.deleted) {
+    return points;
+  }
+  forOwn(claim.subClaimIds, (isFor, id) => {
+    points[isFor ? 0 : 1][id] = {
+      ...state.claims[id],
+      pointType: PointType.CLAIM,
+    };
+  });
+  forOwn(claim.sourceIds, (isFor, id) => {
+    points[isFor ? 0 : 1][id] = {
+      ...state.sources[id],
+      pointType: PointType.SOURCE,
+    };
+  });
+  if (claim.newSubClaims) {
+    for (let subClaim of claim.newSubClaims) {
+      points[subClaim.isFor ? 0 : 1][subClaim.tempId] = {
+        ...subClaim,
+        pointType: PointType.NEW_CLAIM,
+      };
+    }
+  }
+  if (claim.newSources) {
+    for (let source of claim.newSources) {
+      points[source.isFor ? 0 : 1][source.tempId] = {
+        ...source,
+        pointType: PointType.NEW_SOURCE,
+      };
+    }
+  }
+  return points;
+}
+
+export function splitPoints(points) {
+  let subClaimIds = {};
+  let sourceIds = {};
+  let newSubClaims = [];
+  let newSources = [];
+  for (let i = 0; i < points.length; i += 1) {
+    for (let point of points[i]) {
+      if (point.pointType === PointType.CLAIM) {
+        subClaimIds[point.id] = i === 0;
+      } else if (point.pointType === PointType.SOURCE) {
+        sourceIds[point.id] = i === 0;
+      } else if (point.pointType === PointType.NEW_CLAIM) {
+        newSubClaims.push({
+          ...omit(point, 'pointType'),
+          isFor: i === 0,
+        });
+      } else if (point.pointType === PointType.NEW_SOURCE) {
+        newSources.push({
+          ...omit(point, 'pointType'),
+          isFor: i === 0,
+        });
+      }
+    }
+  }
+  return {
+    subClaimIds,
+    sourceIds,
+    newSubClaims,
+    newSources,
+  };
+}
+
 export function filterLiving(items) {
   return filter(items, (item) => !item.deleted);
 }
@@ -88,19 +158,8 @@ export function sortByStars(items) {
   return sortBy(livingItems, [starred, starCount, stableRandom]);
 }
 
-function prepItem(item, id) {
-  if (!item.id) {
-    item.id = id;
-  }
-  return item;
-}
-
-function prepAndSortByStars(items) {
-  return sortByStars(map(items, prepItem));
-}
-
-export function pointMapsToLists(pointMaps) {
-  return pointMaps.map(prepAndSortByStars);
+export function combineAndSortPoints(claim, state) {
+  return combinePoints(claim, state).map(sortByStars);
 }
 
 export function rotateWithIndexes(lists) {
@@ -136,45 +195,40 @@ export function diffIdLists(newIds, oldIds, data) {
   return added.concat(removed, inBoth);
 }
 
-// Diffs two { id: rev } maps into [id, newRev, oldRev] sorted by added,
+// Diffs two { id: item } maps into [id, newItem, oldItem] sorted by added,
 // removed, modified, and unmodified.
-function diffRevs(newRevs, oldRevs) {
-  if (isArray(newRevs)) {
-    let newRevMap = {};
-    for (let rev of newRevs) {
-      newRevMap[rev.id || rev.tempId] = rev;
+function diffItems(newItems, oldItems) {
+  if (isArray(newItems)) {
+    let newItemMap = {};
+    for (let rev of newItems) {
+      newItemMap[rev.id || rev.tempId] = rev;
     }
-    newRevs = newRevMap;
+    newItems = newItemMap;
   }
-  let inOld = (id) => oldRevs[id];
-  let notInNew = (id) => !newRevs[id];
-  let isModified = (id) => newRevs[id].revId !== oldRevs[id].revId;
+  let inOld = (id) => oldItems[id];
+  let notInNew = (id) => !newItems[id];
 
-  let [inBoth, added] = partition(Object.keys(newRevs), inOld);
-  let removed = Object.keys(oldRevs).filter(notInNew);
-  let [modified, unmodified] = partition(inBoth, isModified);
+  let [inBoth, added] = partition(Object.keys(newItems), inOld);
+  let removed = Object.keys(oldItems).filter(notInNew);
 
   added.sort();
   removed.sort();
-  modified.sort();
-  unmodified.sort();
+  inBoth.sort();
 
-  let ids = added.concat(removed, modified, unmodified);
-  return map(ids, (id) => [id, newRevs[id], oldRevs[id]]);
+  let ids = added.concat(removed, inBoth);
+  return map(ids, (id) => [id, newItems[id], oldItems[id]]);
 }
 
-export function diffPointRevs(newItem, oldItem) {
-  let newHasPoints = newItem && newItem.points;
-  let oldHasPoints = oldItem && oldItem.points;
-  let pointRevs = [];
+export function diffPoints(newItem, oldItem, state) {
+  let newPoints = newItem && newItem.points || combinePoints(newItem, state);
+  let oldPoints = oldItem && oldItem.points || combinePoints(oldItem, state);
+  let pointDiffs = [];
 
   for (let i of [0, 1]) {
-    let newPoints = newHasPoints ? newItem.points[i] : {};
-    let oldPoints = oldHasPoints ? oldItem.points[i] : {};
-    pointRevs.push(diffRevs(newPoints, oldPoints));
+    pointDiffs.push(diffItems(newPoints[i], oldPoints[i]));
   }
 
-  return pointRevs;
+  return pointDiffs;
 }
 
 export function itemErrorMessage(item) {

@@ -3,7 +3,6 @@ import chaiAsPromised from 'chai-as-promised';
 
 import { Claim, Source, SourceRev } from '../models';
 import { NotFoundError } from '../api/error';
-import { PointType } from '../common/constants';
 import { ValidationError } from '../common/validate';
 import { STARS_AND_COMMENTS, registerAndVerifyUser } from './utils';
 
@@ -264,7 +263,9 @@ describe('Source', function () {
       let sourceId = sourceRev.sourceId;
       let claimRev = await Claim.apiCreate(user, {
         text: TEXT2,
-        points: [[{ type: PointType.SOURCE, sourceId }], []],
+        sourceIds: {
+          [sourceId]: true,
+        }
       });
 
       let sourceData = await Source.apiGet(sourceId);

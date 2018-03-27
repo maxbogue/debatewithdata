@@ -55,7 +55,6 @@ export const TestClaim = {
   create: function (user) {
     return Claim.apiCreate(user, {
       text: this.TEXT,
-      points: [[], []],
     });
   },
   verify: function (claimRev, includePoints=true) {
@@ -67,7 +66,8 @@ export const TestClaim = {
       ...STARS_AND_COMMENTS,
     };
     if (includePoints) {
-      ret.points = [{}, {}];
+      ret.subClaimIds = {};
+      ret.sourceIds = {};
     }
     return ret;
   },

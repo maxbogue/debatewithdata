@@ -28,10 +28,6 @@
     <source-rev v-else-if="itemType === 'source'"
                 :curr="curr"
                 :prev="prev" />
-    <point-rev v-else-if="itemType === 'point'"
-               :curr="curr"
-               :prev="prev"
-               :is-for="data.isFor" />
   </template>
   <dwd-loader ref="loader" />
 </div>
@@ -40,33 +36,16 @@
 <script>
 import axios from 'axios';
 import dateFormat from 'dateformat';
-import forEach from 'lodash/forEach';
-import map from 'lodash/map';
-import mapValues from 'lodash/mapValues';
 
 import ClaimRev from '../ClaimRev.vue';
-import PointRev from '../PointRev.vue';
 import RevNav from '../RevNav.vue';
 import SourceRev from '../SourceRev.vue';
 import TopicRev from '../TopicRev.vue';
 import DwdLoader from '../DwdLoader.vue';
 
-function unwrapPoints(data) {
-  forEach(data, (itemMap) => {
-    forEach(itemMap, (item) => {
-      if (!item.points) {
-        return;
-      }
-      item.points = map(item.points, (pts) =>
-        mapValues(pts, (r) => data.pointRevs[r]));
-    });
-  });
-}
-
 export default {
   components: {
     ClaimRev,
-    PointRev,
     RevNav,
     SourceRev,
     TopicRev,
@@ -102,8 +81,6 @@ export default {
         return this.data.claimRevs;
       case 'source':
         return this.data.sourceRevs;
-      case 'point':
-        return map(this.data.pointRevIds, (id) => this.data.pointRevs[id]);
       }
       return [];
     },
@@ -115,8 +92,6 @@ export default {
         return this.$style.claimRev;
       case 'source':
         return this.$style.sourceRev;
-      case 'point':
-        return this.data.isFor ? this.$style.forRev : this.$style.againstRev;
       }
       return '';
     },
@@ -159,7 +134,6 @@ export default {
       axios.get('/api' + this.url + '/rev', {
         loader: this.$refs.loader,
       }).then((res) => {
-        unwrapPoints(res.data);
         this.$store.commit('setData', res.data);
         this.data = res.data;
       });

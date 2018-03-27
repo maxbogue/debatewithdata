@@ -27,6 +27,7 @@ import './style/point.scss';
 import PointDiff from './PointDiff.vue';
 import PointEditModal from './PointEditModal.vue';
 import { PointType } from '../common/constants';
+import { splitPoints } from './utils';
 
 export default {
   name: 'PointEdit',
@@ -54,8 +55,8 @@ export default {
       if (!this.point) {
         return false;
       }
-      return this.point.type === PointType.NEW_CLAIM
-          || this.point.type === PointType.NEW_SOURCE;
+      return this.point.pointType === PointType.NEW_CLAIM
+          || this.point.pointType === PointType.NEW_SOURCE;
     },
     isSubPoint: function () {
       return this.isParentFor !== null;
@@ -64,7 +65,7 @@ export default {
       if (!this.point) {
         return false;
       }
-      return this.point.type === PointType.NEW_CLAIM && !this.isSubPoint;
+      return this.point.pointType === PointType.NEW_CLAIM && !this.isSubPoint;
     },
     pointClass: function () {
       return [
@@ -77,7 +78,7 @@ export default {
     this.$options.components.PointsEdit = require('./PointsEdit.vue').default;
   },
   mounted: function () {
-    if (this.point && !this.point.type) {
+    if (this.point && !this.point.pointType) {
       this.showModal = true;
     }
   },
@@ -88,16 +89,20 @@ export default {
       } else {
         p.id = this.id;
       }
-      if (p.type === PointType.SUBCLAIM || p.type === PointType.NEW_CLAIM) {
-        p.points = this.subPoints;
+      if (p.pointType === PointType.SUBCLAIM
+          || p.pointType === PointType.NEW_CLAIM) {
+        p = {
+          ...p,
+          ...splitPoints(this.subPoints),
+        };
       }
       this.$emit('update', p);
     },
     updateSubPoints: function (newSubPoints) {
       this.subPoints = newSubPoints;
-      if ([PointType.SUBCLAIM, PointType.NEW_CLAIM].includes(this.point.type)) {
+      if (this.point.pointType === PointType.NEW_CLAIM) {
         this.emitPoint({
-          type: this.point.type,
+          pointType: this.point.pointType,
           text: this.point.text,
           flag: this.point.flag,
         });

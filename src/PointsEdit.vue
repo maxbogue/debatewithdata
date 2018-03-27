@@ -12,7 +12,7 @@
     <strong v-if="isSubPoints">Add a sub-point against this point.</strong>
     <strong v-else>Add a point against this claim.</strong>
   </div>
-  <point-edit v-for="[[pointId, point, prev], side] in zippedPointRevs"
+  <point-edit v-for="[[pointId, point, prev], side] in zippedPointDiffs"
               :key="pointId"
               :point="point"
               :prev="prev"
@@ -22,7 +22,7 @@
               @delete="deletePoint(side, point || prev)" />
 </div>
 <div v-else>
-  <div v-for="(sidePoints, side) in pointRevs"
+  <div v-for="(sidePoints, side) in pointDiffs"
        class="dwd-col"
        :key="'side-' + side">
     <div class="block click"
@@ -52,7 +52,7 @@ import sortBy from 'lodash/sortBy';
 
 import PointEdit from './PointEdit.vue';
 import {
-  diffPointRevs, emptyPoint, pointMapsToLists, rotateWithIndexes
+  combineAndSortPoints, diffPoints, emptyPoint, rotateWithIndexes
 } from './utils';
 
 function matchPoint(p) {
@@ -76,31 +76,32 @@ export default {
     isSubPoints: function () {
       return this.isFor !== null;
     },
-    pointRevs: function () {
-      let pointRevs = diffPointRevs({ points: this.points }, this.prev);
+    pointDiffs: function () {
+      let pointDiffs = diffPoints(
+          { points: this.points }, this.prev, this.$store.state);
       if (this.pointOrder) {
         // Sort by the point order.
-        pointRevs = map(pointRevs, (ps, si) =>
+        pointDiffs = map(pointDiffs, (ps, si) =>
           sortBy(ps, (p) => this.pointOrder[si].indexOf(p[0])));
       }
-      return pointRevs;
+      return pointDiffs;
     },
-    zippedPointRevs: function () {
-      return rotateWithIndexes(this.pointRevs);
+    zippedPointDiffs: function () {
+      return rotateWithIndexes(this.pointDiffs);
     },
   },
   watch: {
-    pointRevs: function () {
+    pointDiffs: function () {
       if (!this.pointOrder) {
-        // Initialize pointOrder with the order from diffPointRevs.
-        this.pointOrder = map(this.pointRevs, (s) => map(s, ([id]) => id));
+        // Initialize pointOrder with the order from diffPoints.
+        this.pointOrder = map(this.pointDiffs, (s) => map(s, ([id]) => id));
       }
     },
   },
   mountedTriggersWatchers: true,
   mounted: function () {
-    if (this.curr && this.curr.points) {
-      this.points = pointMapsToLists(this.curr.points);
+    if (this.curr) {
+      this.points = combineAndSortPoints(this.curr, this.$store.state);
     }
   },
   methods: {
@@ -120,7 +121,7 @@ export default {
       if (pi < 0) {
         this.points[si].push(point);
       } else {
-        if (!point.type) {
+        if (!point.pointType) {
           this.points[si].splice(pi, 1);
           return;
         }

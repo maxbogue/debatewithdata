@@ -3,11 +3,11 @@
   <div class="point" :class="isFor | toSideString">
     <source-edit-content v-if="isUrl"
                          class="bubble"
-                         :source="point.source"
+                         :source="point"
                          @update="updateNewSource" />
     <div v-else class="bubble">
       <div v-if="isNewClaim" class="hint">This will create a new claim.</div>
-      <label v-if="!point.type" class="hint">
+      <label v-if="!point.pointType" class="hint">
         Add a point {{ isFor | toSideString }} the claim.
       </label>
       <item-link-input v-model="input"
@@ -83,11 +83,11 @@ export default {
     isUrl: function () {
       // Don't check the input directly here so that the first transition to
       // source editing correctly triggers an update.
-      return this.point && this.point.type === 'newSource'
-          && isValidUrl(this.point.source.url);
+      return this.point && this.point.pointType === PointType.NEW_SOURCE
+          && isValidUrl(this.point.url);
     },
     isNewClaim: function () {
-      return this.point.type === PointType.NEW_CLAIM;
+      return this.point.pointType === PointType.NEW_CLAIM;
     },
   },
   watch: {
@@ -118,22 +118,26 @@ export default {
       this.close();
     },
     makePoint: function () {
-      if (this.id && !this.linkType && this.oldPoint.type) {
+      if (this.id && !this.linkType && this.oldPoint.pointType) {
         return this.oldPoint;
       } else if (this.linkType === PointType.SOURCE) {
-        return { type: PointType.SOURCE, sourceId: this.input };
+        return {
+          pointType: PointType.SOURCE,
+          ...this.lookupSource(this.input),
+        };
       } else if (this.linkType === PointType.CLAIM) {
-        return { type: PointType.CLAIM, claimId: this.input };
+        return {
+          pointType: PointType.CLAIM,
+          ...this.lookupClaim(this.input),
+        };
       } else if (isValidUrl(this.input)) {
         return {
-          type: PointType.NEW_SOURCE,
-          source: {
-            url: this.input,
-          },
+          pointType: PointType.NEW_SOURCE,
+          url: this.input,
         };
       } else if (!this.id && this.input) {
         let newClaim = {
-          type: PointType.NEW_CLAIM,
+          pointType: PointType.NEW_CLAIM,
           text: this.input,
         };
         if (this.flag) {
@@ -153,7 +157,7 @@ export default {
     },
     updateNewSource: function (source) {
       this.input = source.url;
-      this.emitPoint({ type: PointType.NEW_SOURCE, source });
+      this.emitPoint({ pointType: PointType.NEW_SOURCE, ...source });
     },
     updateLinkType: function (linkType) {
       this.linkType = linkType;
@@ -164,21 +168,13 @@ export default {
       this.oldPoint = this.point ? clone(this.point) : null;
       this.input = '';
       if (this.point) {
-        switch (this.point.type) {
-        case PointType.CLAIM:
-          this.input = this.point.claimId;
-          break;
-        case PointType.SOURCE:
-          this.input = this.point.sourceId;
-          break;
-        case PointType.SUBCLAIM:
-        case PointType.TEXT:
+        switch (this.point.pointType) {
         case PointType.NEW_CLAIM:
           this.input = this.point.text;
           this.flag = this.point.flag || '';
           break;
         case PointType.NEW_SOURCE:
-          this.input = this.point.source.url;
+          this.input = this.point.url;
           break;
         }
       }
@@ -188,11 +184,11 @@ export default {
       });
     },
     validate: function (input) {
-      switch (this.point.type) {
-      case 'claim':
+      switch (this.point.pointType) {
+      case PointType.CLAIM:
         validatePoint.claimId(input);
         break;
-      case 'source':
+      case PointType.SOURCE:
         validatePoint.sourceId(input);
         break;
       default:

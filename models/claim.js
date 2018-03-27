@@ -1,5 +1,3 @@
-import map from 'lodash/map';
-
 import { NotFoundError } from '../api/error';
 import { ValidationError, validateClaim } from '../common/validate';
 import { genId } from './utils';
@@ -70,21 +68,7 @@ export default function (sequelize, DataTypes) {
       validateClaim(data);
 
       const claim = await Claim.create({}, { transaction });
-      const blob = await models.Blob.fromText(data.text, transaction);
-      const claimRev = await models.ClaimRev.create({
-        userId: user.id,
-        claimId: claim.id,
-        blobHash: blob.hash,
-        flag: data.flag,
-      }, { transaction });
-      await claim.setHead(claimRev, { transaction });
-
-      if (data.points) {
-        await models.PointRev.createPoints(
-            user, claimRev, data.points, transaction);
-      }
-
-      return claimRev;
+      return models.ClaimRev.createForApi(claim, user, data, transaction);
     };
 
     Claim.apiUpdate = async function (claimId, user, data, transaction) {
@@ -101,22 +85,7 @@ export default function (sequelize, DataTypes) {
         throw new NotFoundError('Claim not found: ' + claimId);
       }
 
-      const blob = await models.Blob.fromText(data.text, transaction);
-      const claimRev = await models.ClaimRev.create({
-        userId: user.id,
-        claimId: claim.id,
-        parentId: claim.headId,
-        blobHash: blob.hash,
-        flag: data.flag,
-      }, { transaction });
-      await claim.setHead(claimRev, { transaction });
-
-      if (data.points) {
-        await models.PointRev.createPoints(
-            user, claimRev, data.points, transaction);
-      }
-
-      return claimRev;
+      return models.ClaimRev.createForApi(claim, user, data, transaction);
     };
 
     Claim.apiDelete = async function (claimId, user, msg, transaction) {
@@ -156,14 +125,18 @@ export default function (sequelize, DataTypes) {
         return;
       }
 
-      let thisData = this.head.toCoreData();
+      let thisData = this.head.toCoreData(depth > 1);
       thisData.depth = thisData.deleted ? 3 : depth;
       thisData.star = await this.toStarData(user);
       thisData.commentCount = await this.countComments();
 
       if (!thisData.deleted && depth > 1) {
-        thisData.points = await models.PointRev.toDatas(
-            this.head.pointRevs, data, depth - 1, user);
+        for (let claim of this.head.subClaims) {
+          await claim.fillData(data, depth - 1, user);
+        }
+        for (let source of this.head.sources) {
+          data.sources[source.id] = await source.toData();
+        }
       }
 
       data.claims[this.id] = thisData;
@@ -210,12 +183,11 @@ export default function (sequelize, DataTypes) {
         throw new NotFoundError('Claim not found: ' + claimId);
       }
 
-      let pointRevData = {};
-      let claimRevData = map(claimRevs, (rev) => rev.toRevData(pointRevData));
-      return {
-        claimRevs: claimRevData,
-        pointRevs: pointRevData,
-      };
+      let data = { claimRevs: [], claims: {}, sources: {} };
+      for (let claimRev of claimRevs) {
+        await claimRev.fillData(data);
+      }
+      return data;
     };
 
     Claim.prototype.toStarData = async function (user) {

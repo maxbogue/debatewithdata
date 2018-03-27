@@ -44,7 +44,7 @@ export default {
           return items;
         }
         let nextId = this.itemIds[i];
-        let [nextType, next, nextIsFor] = this.findInside(item.points, nextId);
+        let [nextType, next, nextIsFor] = this.findInside(item, nextId);
         if (!nextType) {
           console.warn('Broken link found in trail: ' + nextId);
           return items;
@@ -67,7 +67,7 @@ export default {
           return null;
         }
         let nextId = this.itemIds[i];
-        let [nextType, next, nextIsFor] = this.findInside(item.points, nextId);
+        let [nextType, next, nextIsFor] = this.findInside(item, nextId);
         if (!nextType) {
           return null;
         }
@@ -84,24 +84,13 @@ export default {
   },
   mountedTriggersWatchers: true,
   methods: {
-    findInside: function (points, id) {
-      if (!points) {
-        return [''];
-      }
-      for (let i = 0; i < 2; i++) {
-        for (let pointId in points[i]) {
-          if (!Object.prototype.hasOwnProperty.call(points[i], pointId)) {
-            continue;
-          }
-          let point = points[i][pointId];
-          if (point.type === 'claim' && point.claimId === id) {
-            let claim = this.lookupClaim(id);
-            return ['claim', claim, i === 0];
-          } else if (point.type === 'source' && point.sourceId === id) {
-            let source = this.lookupSource(id);
-            return ['source', source, i === 0];
-          }
-        }
+    findInside: function (item, id) {
+      if (item.subClaimIds && typeof item.subClaimIds[id] === 'boolean') {
+        let claim = this.lookupClaim(id);
+        return ['claim', claim, item.subClaimIds[id]];
+      } else if (item.sourceIds && typeof item.sourceIds[id] === 'boolean') {
+        let source = this.lookupSource(id);
+        return ['source', source, item.sourceIds[id]];
       }
       return [''];
     },

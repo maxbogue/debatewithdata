@@ -18,11 +18,13 @@
         <span :class="claimIsFor ? $style.against : $style.for"
               >Against</span>
       </div>
-      <point-block v-for="[point, side] in zippedPoints"
-                   :point="point"
-                   :is-for="claimIsFor === !side"
-                   :trail="newTrail"
-                   :key="point.id" />
+      <item-block v-for="[point, side] in zippedPoints"
+                  :item="point"
+                  :type="point.pointType"
+                  :is-for="claimIsFor === !side"
+                  :trail="newTrail"
+                  :key="point.id"
+                  is-link />
     </template>
     <template v-else>
       <div v-for="(sidePoints, side) in points"
@@ -35,11 +37,13 @@
           <span :class="claimIsFor === !side ? $style.for : $style.against"
                 >{{ !side ? 'For' : 'Against' }}</span>
         </div>
-        <point-block v-for="point in sidePoints"
-                     :point="point"
-                     :is-for="claimIsFor === !side"
-                     :trail="newTrail"
-                     :key="point.id" />
+        <item-block v-for="point in sidePoints"
+                    :item="point"
+                    :type="point.pointType"
+                    :is-for="claimIsFor === !side"
+                    :trail="newTrail"
+                    :key="point.id"
+                    is-link />
       </div>
     </template>
   </template>
@@ -51,15 +55,13 @@
 import DwdLoader from '../DwdLoader.vue';
 import DwdTrail from '../DwdTrail.vue';
 import ItemBlock from '../ItemBlock.vue';
-import PointBlock from '../PointBlock.vue';
-import { pointMapsToLists, rotateWithIndexes } from '../utils';
+import { combineAndSortPoints, rotateWithIndexes } from '../utils';
 
 export default {
   components: {
     DwdLoader,
     DwdTrail,
     ItemBlock,
-    PointBlock,
   },
   data: () => ({
     showComments: false,
@@ -79,7 +81,7 @@ export default {
       if (!this.claim || this.claim.deleted || this.claim.depth < 2) {
         return [];
       }
-      return pointMapsToLists(this.claim.points);
+      return combineAndSortPoints(this.claim, this.$store.state);
     },
     zippedPoints: function () {
       return rotateWithIndexes(this.points);
