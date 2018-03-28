@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     checkLoaded: function () {
-      if (!this.topic) {
+      if (!this.topic || this.topic.depth < 3) {
         this.$store.dispatch('getTopic', {
           id: this.id,
           trail: this.trail,

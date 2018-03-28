@@ -133,15 +133,12 @@ export default function (sequelize, DataTypes) {
       thisData.star = await this.toStarData(user);
       thisData.commentCount = await this.countComments();
 
-      if (!this.head.deleted) {
-        if (depth > 1) {
-          for (let subTopic of this.head.subTopics) {
-            await subTopic.fillData(data, depth - 1, user);
-          }
+      if (!this.head.deleted && depth > 1) {
+        for (let subTopic of this.head.subTopics) {
+          await subTopic.fillData(data, depth - 1, user);
         }
-
         for (let claim of this.head.claims) {
-          await claim.fillData(data, 1, user);
+          await claim.fillData(data, depth - 1, user);
         }
       }
 
@@ -165,12 +162,12 @@ export default function (sequelize, DataTypes) {
       }
       let topics = await Topic.findAll({
         ...query,
-        ...Topic.INCLUDE(2),
+        ...Topic.INCLUDE(1),
       });
       let data = { topics: {}, claims: {} };
       for (let topic of topics) {
         if (!topic.head.deleted) {
-          await topic.fillData(data, 2, user);
+          await topic.fillData(data, 1, user);
         }
       }
       return data;

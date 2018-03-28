@@ -72,10 +72,7 @@ export default function (sequelize, DataTypes) {
 
   TopicRev.postAssociate = function (models) {
     TopicRev.INCLUDE = function (n, includeUser=false) {
-      let include = [models.Blob, {
-        association: TopicRev.Claims,
-        ...models.Claim.INCLUDE(1),
-      }];
+      let include = [models.Blob];
       if (includeUser) {
         include.push(models.User);
       }
@@ -83,6 +80,10 @@ export default function (sequelize, DataTypes) {
         include.push({
           association: TopicRev.SubTopics,
           ...models.Topic.INCLUDE(n - 1),
+        });
+        include.push({
+          association: TopicRev.Claims,
+          ...models.Claim.INCLUDE(n - 1),
         });
       }
       return { include };
