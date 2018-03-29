@@ -23,7 +23,7 @@ import { mapState } from 'vuex';
 
 import DwdLoader from '../DwdLoader.vue';
 import ItemBlock from '../ItemBlock.vue';
-import { sortByStars } from '../utils';
+import { filterLiving, sortByStars } from '../utils';
 
 export default {
   components: {
@@ -36,7 +36,7 @@ export default {
       'user',
     ]),
     claims: function () {
-      return sortByStars(this.$store.state.claims);
+      return sortByStars(filterLiving(this.$store.state.claims));
     },
     addUrl: function () {
       if (this.user) {

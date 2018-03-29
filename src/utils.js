@@ -154,8 +154,7 @@ export function starred(item) {
 }
 
 export function sortByStars(items) {
-  let livingItems = filterLiving(items);
-  return sortBy(livingItems, [starred, starCount, stableRandom]);
+  return sortBy(items, [starred, starCount, stableRandom]);
 }
 
 export function combineAndSortPoints(claim, state) {

@@ -21,7 +21,7 @@ import { mapState } from 'vuex';
 
 import DwdLoader from '../DwdLoader.vue';
 import ItemBlock from '../ItemBlock.vue';
-import { sortByStars } from '../utils';
+import { filterLiving, sortByStars } from '../utils';
 
 export default {
   components: {
@@ -35,7 +35,7 @@ export default {
       'user',
     ]),
     topics: function () {
-      return sortByStars(this.rootTopics);
+      return sortByStars(filterLiving(this.rootTopics));
     },
     addUrl: function () {
       if (this.user) {
