@@ -2,6 +2,7 @@ import Sequelize from 'sequelize';
 import config from 'config';
 import forOwn from 'lodash/forOwn';
 
+import graph from '../common/graph';
 import makeBlob from './blob';
 import makeClaim from './claim';
 import makeClaimClaim from './claim_claim';
@@ -68,4 +69,26 @@ forOwn(models, (model) => {
   if ('postAssociate' in model) {
     model.postAssociate(models);
   }
+});
+
+async function initGraph() {
+  let getId = (item) => item.id;
+
+  let topics = await Topic.findAll(Topic.INCLUDE(2));
+  for (let topic of topics) {
+    let subTopicIds = topic.head.subTopics.map(getId);
+    let claimIds = topic.head.claims.map(getId);
+    graph.updateChildren(topic.id, [...subTopicIds, ...claimIds]);
+  }
+
+  let claims = await Claim.findAll(Claim.INCLUDE(2));
+  for (let claim of claims) {
+    let subClaimIds = claim.head.subClaims.map(getId);
+    let sourceIds = claim.head.sources.map(getId);
+    graph.updateChildren(claim.id, [...subClaimIds, ...sourceIds]);
+  }
+}
+
+initGraph().catch((err) => {
+  console.error(err.stack);
 });

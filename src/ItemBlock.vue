@@ -5,7 +5,8 @@
                class="bubble click">
     <item-content :item="item"
                   :type="type"
-                  :abbreviated="abbreviated" />
+                  :abbreviated="abbreviated"
+                  is-link />
   </router-link>
   <item-content v-else
                 class="bubble"

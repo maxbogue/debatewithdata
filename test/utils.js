@@ -45,6 +45,7 @@ export const TestTopic = {
       subTopicIds: [],
       claimIds: [],
       depth: 3,
+      childCount: 0,
       ...STARS_AND_COMMENTS,
     };
   },
@@ -63,6 +64,7 @@ export const TestClaim = {
       revId: claimRev.id,
       text: this.TEXT,
       depth: 3,
+      childCount: 0,
       ...STARS_AND_COMMENTS,
     };
     if (includePoints) {

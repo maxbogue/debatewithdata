@@ -152,6 +152,7 @@ describe('Point', function () {
             revId: claim.headId,
             text: text,
             depth: 1,
+            childCount: 0,
             ...STARS_AND_COMMENTS,
           },
         },

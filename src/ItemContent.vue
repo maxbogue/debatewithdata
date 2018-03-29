@@ -1,13 +1,16 @@
 <template>
 <topic-content v-if="type === 'topic'"
                :topic="item"
-               :abbreviated="abbreviated" />
+               :abbreviated="abbreviated"
+               :is-link="isLink" />
 <claim-content v-else-if="type === 'claim'"
                :claim="item"
-               :abbreviated="abbreviated" />
+               :abbreviated="abbreviated"
+               :is-link="isLink" />
 <source-content v-else-if="type === 'source'"
                 :source="item"
-                :abbreviated="abbreviated" />
+                :abbreviated="abbreviated"
+                :is-link="isLink" />
 <div v-else>Invalid item type.</div>
 </template>
 
@@ -26,6 +29,7 @@ export default {
     item: { type: Object, required: true },
     type: { type: String, required: true },
     abbreviated: { type: Boolean, default: false },
+    isLink: { type: Boolean, default: false },
   },
 };
 </script>

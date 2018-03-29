@@ -1,3 +1,6 @@
+import keys from 'lodash/keys';
+
+import graph from '../common/graph';
 import { asyncForOwn } from '../common/utils';
 import { genRevId } from './utils';
 import { validateClaim } from '../common/validate';
@@ -131,6 +134,9 @@ export default function (sequelize, DataTypes) {
           transaction,
         }));
       await claim.setHead(claimRev, { transaction });
+
+      let childIds = [...keys(subClaimIds), ...keys(sourceIds)];
+      graph.updateChildren(claim.id, childIds);
 
       return claimRev;
     };

@@ -189,6 +189,7 @@ describe('Claim', function () {
             subClaimIds: {},
             sourceIds: {},
             depth: 3,
+            childCount: 0,
             ...STARS_AND_COMMENTS,
           },
         },
@@ -211,6 +212,7 @@ describe('Claim', function () {
             subClaimIds: {},
             sourceIds: {},
             depth: 3,
+            childCount: 0,
             star: {
               count: 1,
               starred: true,
@@ -230,6 +232,7 @@ describe('Claim', function () {
             subClaimIds: {},
             sourceIds: {},
             depth: 3,
+            childCount: 0,
             star: {
               count: 1,
               starred: false,
@@ -269,6 +272,7 @@ describe('Claim', function () {
             },
             sourceIds: {},
             depth: 3,
+            childCount: 2,
             ...STARS_AND_COMMENTS,
           },
           [c1.id]: {
@@ -278,6 +282,7 @@ describe('Claim', function () {
             subClaimIds: {},
             sourceIds: {},
             depth: 2,
+            childCount: 0,
             ...STARS_AND_COMMENTS,
           },
           [c2.id]: {
@@ -287,6 +292,7 @@ describe('Claim', function () {
             subClaimIds: {},
             sourceIds: {},
             depth: 2,
+            childCount: 0,
             ...STARS_AND_COMMENTS,
           },
         },
@@ -324,6 +330,7 @@ describe('Claim', function () {
             },
             sourceIds: {},
             depth: 3,
+            childCount: 2,
             ...STARS_AND_COMMENTS,
           },
           [c1.id]: {
@@ -335,6 +342,7 @@ describe('Claim', function () {
             },
             sourceIds: {},
             depth: 2,
+            childCount: 1,
             ...STARS_AND_COMMENTS,
           },
           [c1a.id]: {
@@ -342,6 +350,7 @@ describe('Claim', function () {
             revId: c1a.headId,
             text: BAZ,
             depth: 1,
+            childCount: 0,
             ...STARS_AND_COMMENTS,
           },
         },
@@ -364,9 +373,10 @@ describe('Claim', function () {
           [r2.claimId]: {
             id: r2.claimId,
             revId: r2.id,
-            depth: 3,
             deleted: true,
             deleteMessage: DELETE_MSG,
+            depth: 3,
+            childCount: 0,
             ...STARS_AND_COMMENTS,
           },
         },
@@ -392,6 +402,7 @@ describe('Claim', function () {
             revId: c1r.id,
             text: FOO,
             depth: 1,
+            childCount: 0,
             ...STARS_AND_COMMENTS,
           },
           [c2r.claimId]: {
@@ -399,6 +410,7 @@ describe('Claim', function () {
             revId: c2r.id,
             text: BAR,
             depth: 1,
+            childCount: 0,
             star: {
               count: 1,
               starred: true,
@@ -426,6 +438,7 @@ describe('Claim', function () {
             revId: c1r.id,
             text: FOO,
             depth: 1,
+            childCount: 0,
             ...STARS_AND_COMMENTS,
           },
         },

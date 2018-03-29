@@ -1,3 +1,4 @@
+import graph from '../common/graph';
 import { NotFoundError } from '../api/error';
 import { ValidationError, validateClaim } from '../common/validate';
 import { genId } from './utils';
@@ -116,6 +117,9 @@ export default function (sequelize, DataTypes) {
         deleteMessage: msg,
       });
       await claim.setHead(claimRev);
+
+      graph.updateChildren(claim.id, []);
+
       return claimRev;
     };
 
@@ -129,6 +133,7 @@ export default function (sequelize, DataTypes) {
       thisData.depth = thisData.deleted ? 3 : depth;
       thisData.star = await this.toStarData(user);
       thisData.commentCount = await this.countComments();
+      thisData.childCount = graph.getCount(this.id);
 
       if (!thisData.deleted && depth > 1) {
         for (let claim of this.head.subClaims) {

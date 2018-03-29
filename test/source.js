@@ -285,6 +285,7 @@ describe('Source', function () {
             revId: claimRev.id,
             text: TEXT2,
             depth: 1,
+            childCount: 1,
             ...STARS_AND_COMMENTS,
           },
         },
