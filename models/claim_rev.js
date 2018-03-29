@@ -60,10 +60,6 @@ export default function (sequelize, DataTypes) {
       },
       onDelete: 'RESTRICT',
     });
-    ClaimRev.PointRevs = ClaimRev.belongsToMany(models.PointRev, {
-      through: models.ClaimPoint,
-      as: 'pointRevs',
-    });
     ClaimRev.SubClaims = ClaimRev.belongsToMany(models.Claim, {
       through: models.ClaimClaim,
       as: 'subClaims',

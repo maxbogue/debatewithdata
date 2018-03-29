@@ -14,63 +14,20 @@
     <h2>Recent Changes</h2>
     <ul>
       <li>
-        <strong>2018-03-09:</strong> Code is now open source under the AGPLv3
-        license; link to GitHub in the header.
+        <strong>2018-03-22:</strong> Trail now sticks through the edit and
+        history pages.
       </li>
       <li>
-        <strong>2018-03-07:</strong> Points now have their own history and
-        revision pages.
+        <strong>2018-03-21:</strong> Navigation now animates common item blocks
+        from their previous locations to give continuity.
       </li>
       <li>
-        <strong>2018-03-03:</strong> Revision page now has a link for reverting
-        to that revision.
+        <strong>2018-03-16:</strong> Control/info bar is now always shown and
+        tapping a point now navigates to the linked source/claim.
       </li>
       <li>
-        <strong>2018-02-28:</strong> More fun and colorful loading animation.
-      </li>
-      <li>
-        <strong>2018-02-28:</strong> Deleting an item now requires a message
-        explaining why.
-      </li>
-      <li>
-        <strong>2018-02-27:</strong> Topics are now added to the trail as you
-        navigate from them.
-      </li>
-      <li>
-        <strong>2018-02-26:</strong> Source page now lists claims that
-        reference it.
-      </li>
-      <li>
-        <strong>2018-02-26:</strong> Text points can now be promoted to their
-        own claims.
-      </li>
-      <li>
-        <strong>2018-02-23:</strong> New sub-topics or claims can now be
-        created directly from the topic edit page.
-      </li>
-      <li>
-        <strong>2018-02-19:</strong> Linking items while editing topics or
-        points will now autocomplete existing items.
-      </li>
-      <li>
-        <strong>2018-02-10:</strong> Added an optional date field for sources
-        that supports YYYY, YYYY-MM, or YYYY-MM-DD formats.
-      </li>
-      <li>
-        <strong>2018-02-08:</strong> Field validation during editing is now
-        much more robust and gives clearer errors.
-      </li>
-      <li>
-        <strong>2018-01-31:</strong> Added a source needed flag.
-      </li>
-      <li>
-        <strong>2018-01-29:</strong> All editing now uses pop-up modals to
-        support more powerful features and a clear diff showing what's changed
-        when the modal is closed.
-      </li>
-      <li>
-        <strong>2018-01-27:</strong> There are now history and revision views
-        for all three data types.
+        <strong>2018-03-15:</strong> Points are now always links to claims or
+        sources; they can no longer contain text internal to a claim.
       </li>
     </ul>
   </div>
@@ -85,13 +42,10 @@
     </p>
 
     <h3>Search</h3>
-    <p>It&#39;s difficult to find things right now. There will be:</p>
-    <ul>
-      <li>
-        A search feature that matches the text of sources, claims, and maybe
-        points needs to be added.
-      </li>
-    </ul>
+    <p>
+      It&#39;s difficult to find things right now. There will be a search
+      feature to find topics, claims, and sources by text.
+    </p>
 
     <h3>Raw Data</h3>
     <p>

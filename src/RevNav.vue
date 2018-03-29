@@ -50,8 +50,8 @@ export default {
       return this.appendToUrl(this.url, '/history');
     },
     revertTo: function () {
-      if (!this.next || this.curr.deleted || this.itemType === 'point') {
-        // Can't revert if already HEAD, deleted, or for any points.
+      if (!this.next || this.curr.deleted) {
+        // Can't revert if already HEAD or is a deletion.
         return null;
       }
       return {

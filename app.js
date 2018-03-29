@@ -2,7 +2,6 @@ import config from 'config';
 import express from 'express';
 import path from 'path';
 
-import { Point } from './models';
 import api from './api';
 
 const DIRNAME = path.resolve(__dirname, '..');
@@ -51,11 +50,6 @@ app.get('/topic/:id/edit', sendIndex);
 app.get('/topics', sendIndex);
 app.get('/topics/add', sendIndex);
 app.get('/verify-email', sendIndex);
-
-app.get('/point/:id', async function (req, res) {
-  let claimId = await Point.getClaimId(req.params.id);
-  res.redirect('/claim/' + claimId);
-});
 
 app.use('/api', api);
 

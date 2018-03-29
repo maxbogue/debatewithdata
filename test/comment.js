@@ -11,10 +11,7 @@ describe('Comment', function () {
 
   beforeEach(async function () {
     user = await registerAndVerifyUser();
-    let claimRev = await Claim.apiCreate(user, {
-      text: BAZ,
-      points: [[], []],
-    });
+    let claimRev = await Claim.apiCreate(user, { text: BAZ });
     claimId = claimRev.claimId;
   });
 

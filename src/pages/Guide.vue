@@ -45,16 +45,11 @@
   </p>
 
   <h2>Points<a href="#points"></a></h2>
-  <p>A point for or against a claim can be one of three things:</p>
-  <ul>
-    <li>
-      A link to a source (paste in an ID or create a new source by entering a
-      URL).
-    </li>
-    <li>A link to another claim (paste in an ID).</li>
-    <li>Text that only exists inside the parent claim.</li>
-  </ul>
-  <p>If a claim is the "what", the points are the "why" (or "why not").</p>
+  <p>
+    A point for or against a claim is either a link to another claim or a link
+    to a source. If a claim is the "what", its points are the "why" or "why
+    not".
+  </p>
 
   <h2>Logical Fallacies<a href="#fallacies"></a></h2>
   <p>

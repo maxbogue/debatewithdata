@@ -24,10 +24,7 @@ describe('Topic', function () {
 
   describe('.apiCreate()', function () {
     it('happy', async function () {
-      let claimRev = await Claim.apiCreate(user, {
-        text: BAR,
-        points: [[], []],
-      });
+      let claimRev = await Claim.apiCreate(user, { text: BAR });
       let topicRev = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -130,7 +127,6 @@ describe('Topic', function () {
         subTopicIds: [],
         newClaims: [{
           text: BAR,
-          points: [[], []],
         }],
       });
       await topicRev.reload(TopicRev.INCLUDE(3));
@@ -155,7 +151,6 @@ describe('Topic', function () {
     it('normal update', async function () {
       let c1r = await Claim.apiCreate(user, {
         text: BAZ,
-        points: [[], []],
       });
       let r1 = await Topic.apiCreate(user, {
         id: ID,
@@ -167,7 +162,6 @@ describe('Topic', function () {
 
       let c2r = await Claim.apiCreate(user, {
         text: BAZ,
-        points: [[], []],
       });
       let r2 = await Topic.apiUpdate(ID, user, {
         title: TITLE2,
@@ -246,7 +240,6 @@ describe('Topic', function () {
         subTopicIds: [],
         newClaims: [{
           text: BAR,
-          points: [[], []],
         }],
       });
       await r2.reload(TopicRev.INCLUDE(3));
@@ -314,7 +307,6 @@ describe('Topic', function () {
     it('happy', async function () {
       let c1r = await Claim.apiCreate(user, {
         text: BAZ,
-        points: [[], []],
       });
       let r1 = await Topic.apiCreate(user, {
         id: ID,
@@ -486,7 +478,6 @@ describe('Topic', function () {
         claimIds: [],
         newClaims: [{
           text: BAZ,
-          points: [[], []],
         }],
         newSubTopics: [{
           id: ID2,

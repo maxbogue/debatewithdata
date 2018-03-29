@@ -55,10 +55,7 @@ describe('Activity', function () {
     it('lifecycle', async function () {
       let r1 = await TestClaim.create(user);
       let claimId = r1.claimId;
-      let r2 = await Claim.apiUpdate(claimId, user, {
-        text: BAR,
-        points: [[], []],
-      });
+      let r2 = await Claim.apiUpdate(claimId, user, { text: BAR });
       let r3 = await Claim.apiDelete(claimId, user, 'is for test');
       return request(app)
         .get('/api/activity')

@@ -42,7 +42,7 @@ import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
 import SourceEditContent from './SourceEditContent.vue';
-import { isValid, validatePoint, validateSource } from '../common/validate';
+import { isValid, validateClaim, validateSource } from '../common/validate';
 import { PointType } from '../common/constants';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
@@ -185,14 +185,12 @@ export default {
     },
     validate: function (input) {
       switch (this.point.pointType) {
-      case PointType.CLAIM:
-        validatePoint.claimId(input);
+      case PointType.NEW_SOURCE:
+        validateSource.url(input);
         break;
-      case PointType.SOURCE:
-        validatePoint.sourceId(input);
+      case PointType.NEW_CLAIM:
+        validateClaim.text(input);
         break;
-      default:
-        validatePoint.text(input);
       }
     },
   },

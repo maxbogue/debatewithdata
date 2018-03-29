@@ -124,7 +124,7 @@ justify why the worse thing will follow.`,
     ],
     tldr: 'Depends on data that it does not source.',
     desc: `Some part of the argument depends on data that needs to be
-sourced in a point or sub-point.`,
+sourced.`,
   },
   [Flag.STRAWMAN]: {
     name: 'Strawman',

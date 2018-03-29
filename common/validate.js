@@ -9,7 +9,7 @@ import omit from 'lodash/omit';
 import validate from 'validate.js';
 
 import { FlagData } from './flag';
-import { PointType, SourceType, POINT_TYPES, SOURCE_TYPES } from './constants';
+import { SourceType, SOURCE_TYPES } from './constants';
 
 validate.validators.format.message = 'has invalid format: "%{value}"';
 validate.validators.length.tooShort =
@@ -158,55 +158,6 @@ export function validateSource(source) {
   forOwn(sourceValidators, (f, k) => f(source[k], source));
 }
 validate.extend(validateSource, sourceValidators);
-
-////////////
-// Points //
-////////////
-
-function validatePoints(points, key) {
-  if (points.length !== 2) {
-    throw new ValidationError(key, 'must be an array of 2.');
-  }
-  forEach(points[0], validatePoint);
-  forEach(points[1], validatePoint);
-}
-
-const CLAIM_LIKE = [PointType.TEXT, PointType.SUBCLAIM, PointType.NEW_CLAIM];
-
-const pointConstraints = {
-  type: { presence: true, inclusion: POINT_TYPES },
-  text: {
-    presenceIff: { type: CLAIM_LIKE },
-    length: { minimum: 10 },
-  },
-  flag: {
-    presenceOnlyIf: { type: CLAIM_LIKE },
-    inclusion: { within: FlagData },
-  },
-  claimId: {
-    presenceIff: { type: PointType.CLAIM },
-    format: ID_FORMAT,
-  },
-  source: {
-    presenceIff: { type: PointType.NEW_SOURCE },
-    custom: validateSource,
-  },
-  sourceId: {
-    presenceIff: { type: PointType.SOURCE },
-    format: ID_FORMAT,
-  },
-  points: {
-    presenceIff: { type: [PointType.SUBCLAIM, PointType.NEW_CLAIM] },
-    custom: validatePoints,
-  },
-};
-
-const pointValidators = mapValues(pointConstraints, constraintToValidator);
-
-export function validatePoint(point) {
-  forOwn(pointValidators, (f, k) => f(point[k], point));
-}
-validate.extend(validatePoint, pointValidators);
 
 ////////////
 // Claims //

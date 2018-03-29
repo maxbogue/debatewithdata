@@ -13,7 +13,6 @@ import History from './pages/History.vue';
 import Home from './pages/Home.vue';
 import Login from './pages/Login.vue';
 import Logout from './pages/Logout.vue';
-import Point from './pages/Point.vue';
 import Register from './pages/Register.vue';
 import ResetPassword from './pages/ResetPassword.vue';
 import Source from './pages/Source.vue';
@@ -50,7 +49,6 @@ const router = new VueRouter({
     { path: '/guide', component: Guide },
     { path: '/login', component: Login },
     { path: '/logout', component: Logout },
-    { path: '/point/:id', component: Point, props: true },
     { path: '/register', component: Register },
     { path: '/reset-password', component: ResetPassword },
     { path: '/source/:id', component: Source },
