@@ -27,6 +27,7 @@ describe('Item', function () {
             [topicId]: TestTopic.verify(topicRev),
           },
           claims: {},
+          sources: {},
         });
     });
 

@@ -150,24 +150,26 @@ export default function (sequelize, DataTypes) {
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
-      let data = { topics: {}, claims: {} };
+      let data = { topics: {}, claims: {}, sources: {} };
       await topic.fillData(data, 3, user);
       return data;
     };
 
     Topic.apiGetAll = async function (user, topicIds) {
       let query = {};
+      let depth = 1;
       if (topicIds) {
         query.where = { id: topicIds };
+        depth = 3;
       }
       let topics = await Topic.findAll({
         ...query,
-        ...Topic.INCLUDE(1),
+        ...Topic.INCLUDE(depth),
       });
-      let data = { topics: {}, claims: {} };
+      let data = { topics: {}, claims: {}, sources: {} };
       for (let topic of topics) {
         if (!topic.head.deleted) {
-          await topic.fillData(data, 1, user);
+          await topic.fillData(data, depth, user);
         }
       }
       return data;

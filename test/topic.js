@@ -348,6 +348,7 @@ describe('Topic', function () {
             ...STARS_AND_COMMENTS,
           },
         },
+        sources: {},
       });
     });
 
@@ -377,6 +378,7 @@ describe('Topic', function () {
           },
         },
         claims: {},
+        sources: {},
       });
     });
   });
@@ -422,6 +424,7 @@ describe('Topic', function () {
           },
         },
         claims: {},
+        sources: {},
       });
     });
 
@@ -456,6 +459,7 @@ describe('Topic', function () {
           },
         },
         claims: {},
+        sources: {},
       });
     });
   });

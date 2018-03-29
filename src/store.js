@@ -12,26 +12,7 @@ import { validateClaim, validateSource,
 
 Vue.use(Vuex);
 
-function setTopicDepth(topics, id, depth) {
-  let topic = topics[id];
-  if (!topic) {
-    console.warn('Broken sub-topic link: ' + id);
-    return;
-  }
-  if (topic.depth && topic.depth <= depth) {
-    return;
-  }
-  if (topic.deleted) {
-    topic.depth = 3;
-    return;
-  }
-  topic.depth = depth;
-  for (let subTopicId of topic.subTopicIds) {
-    setTopicDepth(topics, subTopicId, depth + 1);
-  }
-}
-
-function setTopicDepths(topics) {
+function getRootTopics(topics) {
   let rootTopics = clone(topics);
   forOwn(topics, (topic) => {
     if (!topic.deleted) {
@@ -40,9 +21,7 @@ function setTopicDepths(topics) {
       }
     }
   });
-  forOwn(rootTopics, (topic) => {
-    setTopicDepth(topics, topic.id, 1);
-  });
+  return rootTopics;
 }
 
 // Whether the claim for claimId in s1 should be written to s2.
@@ -96,6 +75,7 @@ export default new Vuex.Store({
     topicsLoaded: false,
     claimsLoaded: false,
     sourcesLoaded: false,
+    rootTopics: {},
     user: null,
     singleColumn: windowIsSingleColumn(),
     itemBlocks: [],
@@ -108,7 +88,7 @@ export default new Vuex.Store({
         forOwn(data.topics, (topic, id) => {
           Vue.set(state.topics, id, topic);
         });
-        setTopicDepths(state.topics);
+        state.rootTopics = getRootTopics(state.topics);
       }
       if (data.claims) {
         forOwn(data.claims, (claim, id) => {
