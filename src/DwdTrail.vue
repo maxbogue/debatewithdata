@@ -7,7 +7,8 @@
               :trail="ids.slice(0, i)"
               :is-for="isFor"
               is-link
-              abbreviated />
+              abbreviated
+              mini />
 </div>
 </template>
 
@@ -99,19 +100,23 @@ export default {
 </script>
 
 <style lang="scss" module>
-.trail {
-  margin-bottom: -8px;
+@import "style/constants";
 
+.trail {
   :global(.topic),
   :global(.claim),
   :global(.source) {
-    width: 50%;
-    margin: 8px auto 0;
-    font-size: 0.8em;
+    position: relative;
 
-    :global(.bubble) {
-      padding: 0.8em 1em;
-      text-decoration: none;
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: calc(50% - #{$accent-border-width / 2});
+      width: 2px;
+      height: $mini-block-spacing;
+      transform: translate(-50%, 100%);
+      background: $background-light-accent;
     }
   }
 }

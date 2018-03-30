@@ -188,11 +188,14 @@ describe('Claim', function () {
             flag: Flag.AD_HOMINEM,
             subClaimIds: {},
             sourceIds: {},
+            superTopicIds: [],
+            superClaimIds: [],
             depth: 3,
             childCount: 0,
             ...STARS_AND_COMMENTS,
           },
         },
+        topics: {},
         sources: {},
       });
     });
@@ -211,6 +214,8 @@ describe('Claim', function () {
             text: FOO,
             subClaimIds: {},
             sourceIds: {},
+            superTopicIds: [],
+            superClaimIds: [],
             depth: 3,
             childCount: 0,
             star: {
@@ -220,6 +225,7 @@ describe('Claim', function () {
             commentCount: 0,
           },
         },
+        topics: {},
         sources: {},
       });
       let claimDataNoUser = await Claim.apiGet(rev.claimId);
@@ -231,6 +237,8 @@ describe('Claim', function () {
             text: FOO,
             subClaimIds: {},
             sourceIds: {},
+            superTopicIds: [],
+            superClaimIds: [],
             depth: 3,
             childCount: 0,
             star: {
@@ -240,6 +248,7 @@ describe('Claim', function () {
             commentCount: 0,
           },
         },
+        topics: {},
         sources: {},
       });
     });
@@ -271,6 +280,8 @@ describe('Claim', function () {
               [c2.id]: false,
             },
             sourceIds: {},
+            superTopicIds: [],
+            superClaimIds: [],
             depth: 3,
             childCount: 2,
             ...STARS_AND_COMMENTS,
@@ -296,6 +307,7 @@ describe('Claim', function () {
             ...STARS_AND_COMMENTS,
           },
         },
+        topics: {},
         sources: {},
       });
     });
@@ -329,6 +341,8 @@ describe('Claim', function () {
               [c1.id]: true,
             },
             sourceIds: {},
+            superTopicIds: [],
+            superClaimIds: [],
             depth: 3,
             childCount: 2,
             ...STARS_AND_COMMENTS,
@@ -354,6 +368,7 @@ describe('Claim', function () {
             ...STARS_AND_COMMENTS,
           },
         },
+        topics: {},
         sources: {},
       });
     });
@@ -375,11 +390,14 @@ describe('Claim', function () {
             revId: r2.id,
             deleted: true,
             deleteMessage: DELETE_MSG,
+            superTopicIds: [],
+            superClaimIds: [],
             depth: 3,
             childCount: 0,
             ...STARS_AND_COMMENTS,
           },
         },
+        topics: {},
         sources: {},
       });
     });
@@ -418,6 +436,7 @@ describe('Claim', function () {
             commentCount: 0,
           },
         },
+        topics: {},
         sources: {},
       });
     });
@@ -442,6 +461,7 @@ describe('Claim', function () {
             ...STARS_AND_COMMENTS,
           },
         },
+        topics: {},
         sources: {},
       });
     });

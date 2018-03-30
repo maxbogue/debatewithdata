@@ -40,6 +40,7 @@ describe('Item', function () {
           claims: {
             [claimId]: TestClaim.verify(claimRev),
           },
+          topics: {},
           sources: {},
         });
     });

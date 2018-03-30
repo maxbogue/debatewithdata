@@ -2,6 +2,15 @@
 <div>
   <dwd-trail :ids="newTrail" @lastIsFor="(v) => isFor = v" />
   <template v-if="claim">
+    <div v-if="trail.length === 0">
+      <item-block v-for="[item, type] in superItems"
+                  :key="item.id"
+                  :item="item"
+                  :type="type"
+                  abbreviated
+                  is-link
+                  mini />
+    </div>
     <item-block :item="claim"
                 :is-for="isFor"
                 :trail="trail"
@@ -52,6 +61,8 @@
 </template>
 
 <script>
+import map from 'lodash/map';
+
 import DwdLoader from '../DwdLoader.vue';
 import DwdTrail from '../DwdTrail.vue';
 import ItemBlock from '../ItemBlock.vue';
@@ -91,6 +102,17 @@ export default {
     },
     newTrail: function () {
       return this.trail.concat(this.id);
+    },
+    superItems: function () {
+      if (!this.claim) {
+        return [];
+      }
+
+      let superTopics = map(this.claim.superTopicIds || [],
+          (id) => [this.lookupTopic(id), 'topic']);
+      let superClaims = map(this.claim.superClaimIds || [],
+          (id) => [this.lookupClaim(id), 'claim']);
+      return superTopics.concat(superClaims);
     },
   },
   watch: {

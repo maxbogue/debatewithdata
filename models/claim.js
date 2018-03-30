@@ -144,6 +144,44 @@ export default function (sequelize, DataTypes) {
         }
       }
 
+      if (depth === 3) {
+        let superClaims = await models.Claim.findAll({
+          include: [{
+            association: models.Claim.Head,
+            required: true,
+            include: [models.Blob, {
+              association: models.ClaimRev.SubClaims,
+              where: { id: this.id },
+            }],
+          }],
+        });
+
+        let superClaimIds = [];
+        for (let superClaim of superClaims) {
+          superClaimIds.push(superClaim.id);
+          await superClaim.fillData(data, 1, user);
+        }
+        thisData.superClaimIds = superClaimIds;
+
+        let superTopics = await models.Topic.findAll({
+          include: [{
+            association: models.Topic.Head,
+            required: true,
+            include: [models.Blob, {
+              association: models.TopicRev.Claims,
+              where: { id: this.id },
+            }],
+          }],
+        });
+
+        let superTopicIds = [];
+        for (let superTopic of superTopics) {
+          superTopicIds.push(superTopic.id);
+          await superTopic.fillData(data, 1, user);
+        }
+        thisData.superTopicIds = superTopicIds;
+      }
+
       data.claims[this.id] = thisData;
     };
 
@@ -152,8 +190,9 @@ export default function (sequelize, DataTypes) {
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
       }
-      let data = { claims: {}, sources: {} };
+      let data = { topics: {}, claims: {}, sources: {} };
       await claim.fillData(data, 3, user);
+
       return data;
     };
 
@@ -168,7 +207,7 @@ export default function (sequelize, DataTypes) {
         ...query,
         ...Claim.INCLUDE(depth),
       });
-      let data = { claims: {}, sources: {} };
+      let data = { topics: {}, claims: {}, sources: {} };
       for (let claim of claims) {
         if (!claim.head.deleted) {
           await claim.fillData(data, depth, user);

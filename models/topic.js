@@ -147,6 +147,25 @@ export default function (sequelize, DataTypes) {
         }
       }
 
+      if (depth === 3) {
+        let superTopics = await models.Topic.findAll({
+          include: [{
+            association: models.Topic.Head,
+            required: true,
+            include: [models.Blob, {
+              association: models.TopicRev.SubTopics,
+              where: { id: this.id },
+            }],
+          }],
+        });
+        let superTopicIds = [];
+        for (let superTopic of superTopics) {
+          superTopicIds.push(superTopic.id);
+          await superTopic.fillData(data, 1, user);
+        }
+        thisData.superTopicIds = superTopicIds;
+      }
+
       data.topics[this.id] = thisData;
     };
 

@@ -2,6 +2,15 @@
 <div>
   <dwd-trail :ids="trail" />
   <template v-if="topic">
+    <div v-if="trail.length === 0">
+      <item-block v-for="superTopic in superTopics"
+                  :key="superTopic.id"
+                  :item="superTopic"
+                  type="topic"
+                  abbreviated
+                  is-link
+                  mini />
+    </div>
     <item-block :item="topic"
                 :trail="trail"
                 type="topic"
@@ -72,6 +81,12 @@ export default {
     },
     newTrail: function () {
       return this.trail.concat(this.id);
+    },
+    superTopics: function () {
+      if (!this.topic) {
+        return [];
+      }
+      return map(this.topic.superTopicIds || [], this.lookupTopic);
     },
   },
   watch: {

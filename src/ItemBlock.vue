@@ -55,6 +55,7 @@ export default {
     isFor: { type: Boolean, default: null },
     isLink: { type: Boolean, default: false },
     abbreviated: { type: Boolean, default: false },
+    mini: { type: Boolean, default: false },
   },
   data: () => ({
     showComments: false,
@@ -64,6 +65,7 @@ export default {
       return [
         this.type,
         this.$options.filters.toSideString(this.isFor),
+        { [this.$style.mini]: this.mini },
       ];
     },
     id: function () {
@@ -87,6 +89,7 @@ export default {
   mounted: function () {
     this.$store.commit('registerItemBlock', this);
     this.$el.addEventListener('transitionend', () => {
+      this.$el.classList.remove(this.$style.animating);
       this.$el.style.overflow = '';
       this.$el.style.transition = '';
       this.$el.style.transform = '';
@@ -114,8 +117,10 @@ export default {
           // Delay fade if a block is sliding.
           delay = ANIMATION_DURATION_MS;
         }
+
+        this.$el.classList.add(this.$style.animating);
         this.$el.style.opacity = 0;
-        // Delay fading in til after any slides have completed.
+
         setTimeout(() => {
           this.$el.style.transition = `opacity ${ANIMATION_DURATION_SECS * 2}s`;
           this.$el.style.opacity = 1;
@@ -133,6 +138,7 @@ export default {
       let sx = from.width / to.width;
       let sy = from.height / to.height;
 
+      this.$el.classList.add(this.$style.animating);
       this.$el.style.transform =
           `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
       this.$el.style.transformOrigin = 'top left';
@@ -146,3 +152,30 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" module>
+@import "style/constants";
+
+.mini {
+  &:global(.topic),
+  &:global(.claim),
+  &:global(.source) {
+    width: 50%;
+    margin: $mini-block-spacing auto 0;
+    font-size: 0.8em;
+
+    &:last-child {
+      margin-bottom: -$mini-block-spacing;
+    }
+
+    :global(.bubble) {
+      padding: 0.8em 1em;
+      text-decoration: none;
+    }
+  }
+}
+
+.animating::after {
+  display: none;
+}
+</style>

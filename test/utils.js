@@ -44,6 +44,7 @@ export const TestTopic = {
       title: this.TITLE,
       subTopicIds: [],
       claimIds: [],
+      superTopicIds: [],
       depth: 3,
       childCount: 0,
       ...STARS_AND_COMMENTS,
@@ -58,20 +59,19 @@ export const TestClaim = {
       text: this.TEXT,
     });
   },
-  verify: function (claimRev, includePoints=true) {
-    let ret = {
+  verify: function (claimRev) {
+    return {
       id: claimRev.claimId,
       revId: claimRev.id,
       text: this.TEXT,
+      subClaimIds: {},
+      sourceIds: {},
+      superTopicIds: [],
+      superClaimIds: [],
       depth: 3,
       childCount: 0,
       ...STARS_AND_COMMENTS,
     };
-    if (includePoints) {
-      ret.subClaimIds = {};
-      ret.sourceIds = {};
-    }
-    return ret;
   },
 };
 
