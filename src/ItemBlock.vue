@@ -95,6 +95,7 @@ export default {
       this.$el.style.transform = '';
       this.$el.style.transformOrigin = '';
       this.$el.style.opacity = '';
+      this.$el.style.height = '';
     });
     this.$nextTick(this.animate);
   },
@@ -105,27 +106,43 @@ export default {
     animate: function () {
       if (this.animateFrom) {
         this.animateSlide();
-      } else {
-        this.animateFade();
+        return;
       }
-    },
-    animateFade: function () {
+
       // Wait for nextTick to let any sliding blocks mark itemBlockSliding.
       this.$nextTick(() => {
-        let delay = 0;
-        if (this.$store.state.itemBlockSliding) {
-          // Delay fade if a block is sliding.
-          delay = ANIMATION_DURATION_MS;
+        if (this.mini && this.$store.state.itemBlockSliding) {
+          this.animateOpen();
+        } else {
+          this.animateFade();
         }
-
-        this.$el.classList.add(this.$style.animating);
-        this.$el.style.opacity = 0;
-
-        setTimeout(() => {
-          this.$el.style.transition = `opacity ${ANIMATION_DURATION_SECS * 2}s`;
-          this.$el.style.opacity = 1;
-        }, delay);
       });
+    },
+    animateFade: function () {
+      let delay = 0;
+      if (this.$store.state.itemBlockSliding) {
+        // Delay fade if a block is sliding.
+        delay = ANIMATION_DURATION_MS;
+      }
+
+      this.$el.classList.add(this.$style.animating);
+      this.$el.style.opacity = 0;
+
+      setTimeout(() => {
+        this.$el.style.transition = `opacity ${ANIMATION_DURATION_SECS * 2}s`;
+        this.$el.style.opacity = 1;
+      }, delay);
+    },
+    animateOpen: function () {
+      this.$el.classList.add(this.$style.animating);
+      let height = this.$el.scrollHeight;
+      this.$el.style.height = 0;
+      this.$el.style.overflow = 'hidden';
+
+      setTimeout(() => {
+        this.$el.style.transition = `height ${ANIMATION_DURATION_SECS * 2}s`;
+        this.$el.style.height = height + 'px';
+      }, ANIMATION_DURATION_MS);
     },
     animateSlide: function () {
       this.$store.commit('itemBlockSliding');
@@ -137,6 +154,12 @@ export default {
       let dy = from.top - to.top;
       let sx = from.width / to.width;
       let sy = from.height / to.height;
+
+      if (dx === 0 && dy === 0 && sx === 1 && sy === 1) {
+        // Exit early if the item doesn't move, otherwise the animating class
+        // never gets removed.
+        return;
+      }
 
       this.$el.classList.add(this.$style.animating);
       this.$el.style.transform =
