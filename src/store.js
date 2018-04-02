@@ -15,7 +15,7 @@ Vue.use(Vuex);
 function getRootTopics(topics) {
   let rootTopics = clone(topics);
   forOwn(topics, (topic) => {
-    if (!topic.deleted) {
+    if (topic.subTopicIds) {
       for (let subTopicId of topic.subTopicIds) {
         delete rootTopics[subTopicId];
       }
