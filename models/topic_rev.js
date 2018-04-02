@@ -1,5 +1,3 @@
-import map from 'lodash/map';
-
 import graph from '../common/graph';
 import { genRevId } from './utils';
 import { validateTopic } from '../common/validate';
@@ -140,8 +138,12 @@ export default function (sequelize, DataTypes) {
 
       data.text = this.blob.text;
       data.title = this.title;
-      data.subTopicIds = map(this.subTopics, (topic) => topic.id);
-      data.claimIds = map(this.claims, (claim) => claim.id);
+      if (this.subTopics) {
+        data.subTopicIds = this.subTopics.map((topic) => topic.id);
+      }
+      if (this.claims) {
+        data.claimIds = this.claims.map((claim) => claim.id);
+      }
       return data;
     };
 

@@ -181,7 +181,7 @@ export default function (sequelize, DataTypes) {
 
     Topic.apiGetAll = async function (user, topicIds) {
       let query = {};
-      let depth = 1;
+      let depth = 2;
       if (topicIds) {
         query.where = { id: topicIds };
         depth = 3;
