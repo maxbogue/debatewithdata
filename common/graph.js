@@ -1,54 +1,76 @@
-function mapDiff(a, b) {
-  let c = new Map(a);
-  for (let k of b.keys()) {
+import { ValidationError } from './validate';
+
+function difference(a, b) {
+  let c = new Set(a);
+  for (let k of b) {
     c.delete(k);
   }
   return c;
 }
 
 class Node {
-  constructor () {
-    this.children = new Map();
+  constructor (id) {
+    this.id = id;
+    this.children = new Set();
     // Parents are tracked to propagate recounts up the tree.
     this.parents = new Set();
+    // Count is cached for efficiency.
     this.count = 0;
   }
 
-  walkUnique(seen) {
-    for (let [id, node] of this.children) {
-      if (seen.has(id)) {
-        continue;
-      }
-      seen.add(id);
-      node.walkUnique(seen);
+  cycleCheck(children, path) {
+    if (!path) {
+      path = [];
+    }
+    if (path.includes(this.id)) {
+      throw new ValidationError('Cycle found: ' + path.join(' -> '));
+    }
+    for (let child of children) {
+      child.cycleCheck(child.children, path.concat(this.id));
     }
   }
 
-  updateCount(seen) {
+  walk(seen) {
+    if (!seen) {
+      seen = new Set();
+    }
+    if (seen.has(this.id)) {
+      return;
+    }
+    seen.add(this.id);
+    for (let child of this.children) {
+      child.walk(seen);
+    }
+  }
+
+  update(seen) {
     if (!seen) {
       seen = new Set();
     }
     // Get the set of all unique children.
-    this.walkUnique(seen);
-    // The count is just the size of that set.
-    this.count = seen.size;
+    this.walk(seen);
+    // The count is just the size of that set minus ourself.
+    this.count = seen.size - 1;
     for (let parent of this.parents) {
       // Use the set to prevent scanning this entire subtree for the parent.
-      parent.updateCount(new Set(seen));
+      parent.update(new Set(seen));
     }
   }
 
   setChildren(children) {
-    let added = mapDiff(children, this.children);
-    let removed = mapDiff(this.children, children);
-    for (let node of added.values()) {
+    // Check for cycles before changing anything.
+    this.cycleCheck(children);
+
+    let added = difference(children, this.children);
+    let removed = difference(this.children, children);
+    for (let node of added) {
       node.parents.add(this);
     }
-    for (let node of removed.values()) {
+    for (let node of removed) {
       node.parents.delete(this);
     }
     this.children = children;
-    this.updateCount();
+    this.update();
   }
 }
 
@@ -59,7 +81,7 @@ function getOrCreate(nodes, id) {
     return node;
   }
 
-  node = new Node();
+  node = new Node(id);
   nodes.set(id, node);
   return node;
 }
@@ -71,9 +93,9 @@ export class Graph {
 
   updateChildren(id, childIds) {
     let node = getOrCreate(this.nodes, id);
-    let children = new Map();
+    let children = new Set();
     for (let childId of childIds) {
-      children.set(childId, getOrCreate(this.nodes, childId));
+      children.add(getOrCreate(this.nodes, childId));
     }
     node.setChildren(children);
   }

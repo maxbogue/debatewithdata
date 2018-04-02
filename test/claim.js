@@ -3,6 +3,7 @@ import chai from 'chai';
 import { Claim, ClaimRev } from '../models';
 import { Flag } from '../common/flag';
 import { NotFoundError } from '../api/error';
+import { ValidationError } from '../common/validate';
 import { FOO, BAR, BAZ, STARS_AND_COMMENTS,
   registerAndVerifyUser } from './utils';
 
@@ -130,6 +131,27 @@ describe('Claim', function () {
       expect(subClaim.head.userId).to.equal(user.id);
       expect(subClaim.head.blob.text).to.equal(BAR);
       expect(subClaim.claimClaim.isFor).to.be.true;
+    });
+
+    it('cycle fails', async function () {
+      let c1r = await Claim.apiCreate(user, {
+        text: FOO,
+        newSubClaims: [{
+          text: BAR,
+          isFor: false,
+        }],
+      });
+      await c1r.reload(ClaimRev.INCLUDE(2));
+
+      expect(c1r.subClaims).to.have.lengthOf(1);
+      let c2 = c1r.subClaims[0];
+
+      await expect(Claim.apiUpdate(c2.id, user, {
+        text: BAR,
+        subClaimIds: {
+          [c1r.claimId]: true,
+        },
+      })).to.be.rejectedWith(ValidationError);
     });
   });
 
