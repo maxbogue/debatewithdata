@@ -14,6 +14,14 @@
     <h2>Recent Changes</h2>
     <ul>
       <li>
+        <strong>2018-03-30:</strong> Topics and claims now show parent links if
+        there is no trail.
+      </li>
+      <li>
+        <strong>2018-03-29:</strong> Item links now show the count of items in
+        the entire subtree beneath them.
+      </li>
+      <li>
         <strong>2018-03-22:</strong> Trail now sticks through the edit and
         history pages.
       </li>
