@@ -1,27 +1,6 @@
-import isEqual from 'lodash/isEqual';
-import map from 'lodash/map';
-import pick from 'lodash/pick';
-
 import { NotFoundError } from '../api/error';
-import { ValidationError, validateSource } from '../common/validate';
+import { ValidationError } from '../common/validate';
 import { genId } from './utils';
-
-const SOURCE_EQUALITY_FIELDS = [
-  'url',
-  'text',
-  'type',
-  'institution',
-  'publication',
-  'firstHand',
-  'deleted',
-  'deleteMessage',
-];
-
-function sourcesAreEqual(s1, s2) {
-  let filtered1 = pick(s1, SOURCE_EQUALITY_FIELDS);
-  let filtered2 = pick(s2, SOURCE_EQUALITY_FIELDS);
-  return isEqual(filtered1, filtered2);
-}
 
 export default function (sequelize, DataTypes) {
   const Source = sequelize.define('source', {
@@ -81,23 +60,8 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      validateSource(data);
-
       let source = await Source.create({}, { transaction });
-      let blob = await models.Blob.fromText(data.text, transaction);
-      let rev = await models.SourceRev.create({
-        userId: user.id,
-        sourceId: source.id,
-        blobHash: blob.hash,
-        url: data.url,
-        date: data.date,
-        type: data.type,
-        institution: data.institution,
-        publication: data.publication,
-        firstHand: data.firstHand,
-      }, { transaction });
-      await source.setHead(rev, { transaction });
-      return rev;
+      return models.SourceRev.createForApi(source, user, data, transaction);
     };
 
     Source.apiUpdate = async function (sourceId, user, data, transaction) {
@@ -112,27 +76,7 @@ export default function (sequelize, DataTypes) {
         throw new NotFoundError('Source not found: ' + sourceId);
       }
 
-      validateSource(data);
-
-      if (sourcesAreEqual(data, source.head.toCoreData())) {
-        return source.head;
-      }
-
-      let blob = await models.Blob.fromText(data.text, transaction);
-      let rev = await models.SourceRev.create({
-        userId: user.id,
-        sourceId: source.id,
-        parentId: source.headId,
-        blobHash: blob.hash,
-        url: data.url,
-        date: data.date,
-        type: data.type,
-        institution: data.institution,
-        publication: data.publication,
-        firstHand: data.firstHand,
-      }, { transaction });
-      await source.setHead(rev, { transaction });
-      return rev;
+      return models.SourceRev.createForApi(source, user, data, transaction);
     };
 
     Source.apiDelete = async function (sourceId, user, msg, transaction) {
@@ -192,7 +136,7 @@ export default function (sequelize, DataTypes) {
       });
 
       let sourceData = await source.toData(user);
-      sourceData.claimIds = map(claims, (c) => c.id);
+      sourceData.claimIds = claims.map((claim) => claim.id);
 
       let data = {
         sources: {
@@ -230,7 +174,7 @@ export default function (sequelize, DataTypes) {
         throw new NotFoundError('Source not found: ' + sourceId);
       }
 
-      let sourceRevData = map(sourceRevs, (rev) => rev.toRevData());
+      let sourceRevData = sourceRevs.map((rev) => rev.toRevData());
       return { sourceRevs: sourceRevData };
     };
 

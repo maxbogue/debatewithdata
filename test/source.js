@@ -5,6 +5,7 @@ import { Claim, Source, SourceRev } from '../models';
 import { NotFoundError } from '../api/error';
 import { ValidationError } from '../common/validate';
 import { STARS_AND_COMMENTS, registerAndVerifyUser } from './utils';
+import { randomHexString } from '../models/utils';
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -66,6 +67,7 @@ describe('Source', function () {
       expect(rev.blob.text).to.equal(TEXT);
       expect(rev.url).to.equal(URL);
       expect(rev.date).to.be.null;
+      expect(rev.table).to.be.undefined;
       expect(rev.type).to.equal('misc');
       expect(rev.institution).to.be.null;
       expect(rev.publication).to.be.null;
@@ -250,6 +252,34 @@ describe('Source', function () {
             revId: r2.id,
             deleted: true,
             deleteMessage: DELETE_MSG,
+            claimIds: [],
+            ...STARS_AND_COMMENTS,
+          },
+        },
+        claims: {},
+      });
+    });
+
+    it('with tabular', async function () {
+      let tabData = [];
+      for (let i = 0; i < 10; i += 1) {
+        tabData.push(randomHexString(6));
+      }
+      let table = tabData.join(',');
+      let sourceRev = await Source.apiCreate(user, {
+        ...MISC,
+        table,
+      });
+      let sourceId = sourceRev.sourceId;
+
+      let sourceData = await Source.apiGet(sourceId);
+      expect(sourceData).to.deep.equal({
+        sources: {
+          [sourceId]: {
+            id: sourceId,
+            revId: sourceRev.id,
+            ...MISC,
+            table,
             claimIds: [],
             ...STARS_AND_COMMENTS,
           },
