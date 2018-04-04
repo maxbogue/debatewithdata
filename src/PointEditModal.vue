@@ -4,7 +4,7 @@
     <source-edit-content v-if="isUrl"
                          class="bubble"
                          :source="point"
-                         @update="updateNewSource" />
+                         @update:source="updateNewSource" />
     <div v-else class="bubble">
       <div v-if="isNewClaim" class="hint">This will create a new claim.</div>
       <label v-if="!point.pointType" class="hint">

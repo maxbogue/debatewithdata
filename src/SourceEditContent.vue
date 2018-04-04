@@ -16,7 +16,7 @@
              placeholder="description"
              :validate="validate.text" />
   <label for="date" class="hint">
-    Date the source.
+    Optionally date the source.
   </label>
   <dwd-input v-model="date"
              id="date"
@@ -24,27 +24,21 @@
              mono
              :validate="validate.date.emptyAsNull" />
   <label class="hint">Classify the type of source.</label>
-  <div>
-    <div :class="typeClass('misc')"
-         @click="type = 'misc'">
-      <h2>Miscellaneous</h2>
-      <div>A source that does not fall under any other category.</div>
-    </div>
-    <div :class="typeClass('research')"
-         @click="type = 'research'">
-      <h2>Research</h2>
-      <div>Scientific research published by an institution.</div>
-    </div>
-    <div :class="typeClass('article')"
-         @click="type = 'article'">
-      <h2>Article</h2>
-      <div>A news article reporting on something that happened.</div>
-    </div>
-    <div :class="typeClass('authority')"
-         @click="type = 'authority'">
-      <h2>Authority</h2>
-      <div>An authoritative source for the data.</div>
-    </div>
+  <div :class="$style.type">
+    <select v-model="type">
+      <option value="misc">Miscellaneous</option>
+      <option value="research">Research</option>
+      <option value="article">Article</option>
+      <option value="authority">Authority</option>
+    </select>
+    <div v-if="type === 'misc'"
+         >A source that does not fall under any other category.</div>
+    <div v-if="type === 'research'"
+         >Scientific research published by an institution.</div>
+    <div v-if="type === 'article'"
+         >A news article reporting on something that happened.</div>
+    <div v-if="type === 'authority'"
+         >An authoritative source for the data.</div>
   </div>
   <template v-if="type === 'research' || type === 'authority'">
     <label for="institution" class="hint">
@@ -119,19 +113,13 @@ export default {
       this.initialize();
     },
     newSource: function () {
-      this.$emit('update', this.newSource);
+      this.$emit('update:source', this.newSource);
     },
   },
   mounted: function () {
     this.initialize();
   },
   methods: {
-    typeClass: function (type) {
-      return {
-        [this.$style.type]: true,
-        [this.$style.selected]: type === this.type,
-      };
-    },
     initialize: function () {
       if (this.source) {
         this.url = this.source.url;
@@ -151,29 +139,16 @@ export default {
 @import "style/constants";
 
 .type {
-  width: 300px;
-  margin-top: 4px;
-  padding: 4px;
-  border: 1px solid $text-light-accent;
-  border-radius: 3px;
-  background-color: $background-light;
-  font-size: 10px;
-  text-align: center;
+  display: flex;
+  align-items: center;
 
-  h2 {
-    margin: 0;
-    font-size: 16px;
+  select {
+    margin-right: 8px;
+    font-weight: inherit;
   }
-}
 
-.type:hover {
-  background-color: $background-light-accent;
-  cursor: pointer;
-}
-
-.type.selected {
-  border-color: $green-dark-accent;
-  background-color: $green-dark-primary;
-  color: $text-light;
+  div {
+    font-size: 0.8em;
+  }
 }
 </style>

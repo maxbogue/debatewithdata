@@ -1,22 +1,22 @@
 <template>
 <div>
   <form v-if="!needsData" @submit.prevent="commit">
-    <div class="source neutral">
+    <source-edit-block v-if="showEdit"
+                       :source.sync="newSource"
+                       @close="showEdit = false" />
+    <div v-else class="source neutral">
       <source-rev-content class="bubble click"
                           :prev="source"
                           :curr="newSource"
-                          @click.native="showModal = true" />
-      <div class="info">
-        <span class="id mono">{{ id || 'new' }}</span>
-      </div>
+                          @click.native="showEdit = true" />
     </div>
-    <source-edit-modal :show.sync="showModal"
-                       :source.sync="newSource" />
     <div class="block no-pad center">
-      <button type="button"
+      <button :disabled="showEdit"
+              type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
-      <button type="submit"
+      <button :disabled="showEdit"
+              type="submit"
               class="dwd-btn green-dark">Submit</button>
     </div>
     <div v-if="id" class="block no-pad center">
@@ -30,7 +30,7 @@
 <script>
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
-import SourceEditModal from '../SourceEditModal.vue';
+import SourceEditBlock from '../SourceEditBlock.vue';
 import SourceRevContent from '../SourceRevContent.vue';
 import { authRedirect } from '../utils';
 
@@ -39,7 +39,7 @@ export default {
   components: {
     DeleteButton,
     DwdLoader,
-    SourceEditModal,
+    SourceEditBlock,
     SourceRevContent,
   },
   props: {
@@ -47,7 +47,7 @@ export default {
     seed: { type: Object, default: null },
   },
   data: () => ({
-    showModal: false,
+    showEdit: false,
     newSource: null,
   }),
   computed: {
@@ -99,7 +99,7 @@ export default {
         this.newSource = seed;
       }
       if (!this.seed) {
-        this.showModal = true;
+        this.showEdit = true;
       }
     },
     checkLoaded: function () {

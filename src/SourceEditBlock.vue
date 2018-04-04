@@ -1,35 +1,33 @@
 <template>
-<dwd-modal :show="show" @close="close" @cancel="cancel">
-  <div class="source">
-    <source-edit-content class="bubble"
-                         :source="source"
-                         @update="update" />
-    <div class="info">
-      <div class="id mono">{{ id || 'new' }}</div>
-      <button type="button"
-              class="dwd-btn white"
-              @click="cancel">Cancel</button>
-      <button type="submit"
-              class="dwd-btn green-dark">Review</button>
-      <div class="controls"></div>
-    </div>
+<form-valid class="source"
+            @submit="close"
+            @keydown.native.enter="close"
+            @keydown.native.esc="cancel">
+  <source-edit-content class="bubble"
+                       :source="source"
+                       @update:source="update" />
+  <div class="info">
+    <button type="button"
+            class="dwd-btn white"
+            @click="cancel">Cancel</button>
+    <button type="submit"
+            class="dwd-btn green-dark">Review</button>
   </div>
-</dwd-modal>
+</form-valid>
 </template>
 
 <script>
 import clone from 'lodash/clone';
 
-import DwdModal from './DwdModal.vue';
+import FormValid from './FormValid.vue';
 import SourceEditContent from './SourceEditContent.vue';
 
 export default {
   components: {
-    DwdModal,
+    FormValid,
     SourceEditContent,
   },
   props: {
-    show: { type: Boolean, required: true },
     source: { type: Object, default: null },
   },
   data: () => ({
@@ -58,7 +56,7 @@ export default {
       this.$emit('update:source', newSource);
     },
     close: function () {
-      this.$emit('update:show', false);
+      this.$emit('close');
     },
     cancel: function () {
       this.close();

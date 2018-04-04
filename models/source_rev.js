@@ -7,11 +7,12 @@ import { validateSource } from '../common/validate';
 const SOURCE_EQUALITY_FIELDS = [
   'url',
   'text',
+  'date',
+  'table',
   'type',
   'institution',
   'publication',
   'firstHand',
-  'tables',
   'deleted',
   'deleteMessage',
 ];

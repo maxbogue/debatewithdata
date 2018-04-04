@@ -4,28 +4,28 @@
        @click="close"
        @keydown.enter="close"
        @keydown.esc="cancel">
-    <form ref="form"
-          class="dwd-modal-container"
-          @submit.prevent.stop="close"
-          @click.stop>
+    <form-valid class="dwd-modal-container"
+                @submit="close"
+                @click.native.stop>
       <slot></slot>
-    </form>
+    </form-valid>
   </div>
 </transition>
 </template>
 
 <script>
+import FormValid from './FormValid.vue';
+
 export default {
+  components: {
+    FormValid,
+  },
   props: {
     show: { type: Boolean, required: true },
   },
   methods: {
     close: function () {
-      if (this.$refs.form.checkValidity()) {
-        this.$emit('close');
-      } else {
-        this.$refs.form.reportValidity();
-      }
+      this.$emit('close');
     },
     cancel: function () {
       this.$emit('cancel');
