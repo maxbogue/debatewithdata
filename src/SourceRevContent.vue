@@ -51,10 +51,12 @@
 
     <div v-html="urlDiff" :class="$style.url"></div>
   </div>
+  <source-table-diff :curr="safeCurr.table" :prev="safePrev.table" />
 </div>
 </template>
 
 <script>
+import SourceTableDiff from './SourceTableDiff.vue';
 import { diff } from './utils';
 
 const EMPTY_SOURCE = {
@@ -65,6 +67,9 @@ const EMPTY_SOURCE = {
 };
 
 export default {
+  components: {
+    SourceTableDiff,
+  },
   props: {
     curr: { type: Object, default: null },
     prev: { type: Object, default: null },

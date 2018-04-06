@@ -58,16 +58,22 @@
                placeholder="Scientific journal, newspaper, etc."
                :validate="validate.publication" />
   </template>
+  <label for="table" class="hint">
+    Tabular data.
+  </label>
+  <source-edit-table :table.sync="table" />
 </div>
 </template>
 
 <script>
 import DwdInput from './DwdInput.vue';
+import SourceEditTable from './SourceEditTable.vue';
 import { validateSource } from '../common/validate';
 
 export default {
   components: {
     DwdInput,
+    SourceEditTable,
   },
   props: {
     source: { type: Object, default: null },
@@ -80,6 +86,7 @@ export default {
     institution: '',
     publication: '',
     firstHand: false,
+    table: null,
     validate: validateSource,
   }),
   computed: {
@@ -92,6 +99,10 @@ export default {
       if (this.date) {
         source.date = this.date;
       }
+      if (this.table) {
+        source.table = this.table;
+      }
+
       switch (this.type) {
       case 'research':
         source.institution = this.institution;
@@ -125,6 +136,7 @@ export default {
         this.url = this.source.url;
         this.text = this.source.text || '';
         this.date = this.source.date || '';
+        this.table = this.source.table;
         this.type = this.source.type || 'misc';
         this.institution = this.source.institution || '';
         this.publication = this.source.publication || '';
