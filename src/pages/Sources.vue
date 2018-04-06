@@ -1,11 +1,11 @@
 <template>
 <div>
   <h3 class="center">
-    Sources are external sources of data used to support claims.
+    Data are external sources of data used to support claims.
   </h3>
   <div class="block no-pad center">
-    <router-link :to="addUrl"
-                 class="dwd-btn green-dark">New Source</router-link>
+    <router-link to="/datas/add"
+                 class="dwd-btn green-dark">New Data</router-link>
   </div>
   <dwd-loader ref="loader" />
   <template v-if="sourcesLoaded">
@@ -39,12 +39,6 @@ export default {
     ]),
     sources: function () {
       return filterLiving(this.$store.state.sources);
-    },
-    addUrl: function () {
-      if (this.user) {
-        return '/sources/add';
-      }
-      return '/login?next=/sources/add';
     },
   },
   mounted: function () {

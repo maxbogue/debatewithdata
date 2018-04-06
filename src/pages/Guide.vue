@@ -4,8 +4,9 @@
   <p>
     The goal of DebateWithData is to create a reference for the debates that
     people have. Debates are represented by <strong>claims</strong>, which have
-    <strong>points</strong> for and against them. <strong>Sources</strong> are
-    linked to by points to tie data into an argument.
+    points for and against them. Points are links to either other claims or to
+    <strong>data</strong> objects. Finally, <strong>topics</strong> facilitate
+    discovery of the key claims for an area of debate.
   </p>
 
   <h2>Alpha</h2>
@@ -27,12 +28,14 @@
     know me and find that preferable.
   </p>
 
-  <h2>Sources<a href="#sources"></a></h2>
+  <h2>Data<a href="#data"></a></h2>
   <p>
-    A source here is a source of <em>data</em>. It consists of a URL and a
-    short description of the data that URL provides, as well as other optional
-    metadata. The closer to the origin of the data, the better a source is.
-    Primary sources like research papers or firsthand news articles are best.
+    A data object consists of a URL, a short description of the data that URL
+    provides, some other optional metadata, and optionally a table of the raw
+    data. In the future it will be possible to use the tabular data to generate
+    graphs to support claims. The closer to the origin of the data the URL is,
+    the better. Primary sources like research papers or firsthand news
+    articles are best.
   </p>
 
   <h2>Claims<a href="#claims"></a></h2>
@@ -47,7 +50,7 @@
   <h2>Points<a href="#points"></a></h2>
   <p>
     A point for or against a claim is either a link to another claim or a link
-    to a source. If a claim is the "what", its points are the "why" or "why
+    to a data object. If a claim is the "what", its points are the "why" or "why
     not".
   </p>
 

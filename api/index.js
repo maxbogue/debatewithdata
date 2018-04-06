@@ -20,7 +20,7 @@ router.use('/activity', activity);
 router.use('/admin', admin);
 router.use('/claim', claim);
 router.use('/item', item);
-router.use('/source', source);
+router.use('/data', source);
 router.use('/topic', topic);
 
 router.use(apiErrorHandler);

@@ -52,7 +52,7 @@ export default {
   }),
   computed: {
     source: function () {
-      return this.$store.state.sources[this.id] || null;
+      return this.lookupSource(this.id);
     },
     needsData: function () {
       return this.id && !this.source;
@@ -86,11 +86,11 @@ export default {
         id: this.id,
         message,
       }).then(() => {
-        this.$router.push('/sources');
+        this.$router.push('/datas');
       });
     },
     cancel: function () {
-      let url = this.id ? this.sourceUrl(this.id, this.trail) : '/sources';
+      let url = this.id ? this.sourceUrl(this.id, this.trail) : '/datas';
       this.$router.push(url);
     },
     initialize: function () {

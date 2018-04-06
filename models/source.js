@@ -73,7 +73,7 @@ export default function (sequelize, DataTypes) {
 
       let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
-        throw new NotFoundError('Source not found: ' + sourceId);
+        throw new NotFoundError('Data not found: ' + sourceId);
       }
 
       return models.SourceRev.createForApi(source, user, data, transaction);
@@ -88,7 +88,7 @@ export default function (sequelize, DataTypes) {
 
       let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
-        throw new NotFoundError('Source not found: ' + sourceId);
+        throw new NotFoundError('Data not found: ' + sourceId);
       }
 
       if (!msg) {
@@ -120,7 +120,7 @@ export default function (sequelize, DataTypes) {
     Source.apiGet = async function (sourceId, user) {
       let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
-        throw new NotFoundError('Source not found: ' + sourceId);
+        throw new NotFoundError('Data not found: ' + sourceId);
       }
 
       // Referenced by claims.
@@ -171,7 +171,7 @@ export default function (sequelize, DataTypes) {
       });
 
       if (sourceRevs.length === 0) {
-        throw new NotFoundError('Source not found: ' + sourceId);
+        throw new NotFoundError('Data not found: ' + sourceId);
       }
 
       let sourceRevData = sourceRevs.map((rev) => rev.toRevData());
@@ -190,7 +190,7 @@ export default function (sequelize, DataTypes) {
     Source.apiToggleStar = async function (sourceId, user) {
       let source = await Source.findById(sourceId);
       if (!source) {
-        throw new NotFoundError('Source not found: ' + sourceId);
+        throw new NotFoundError('Data not found: ' + sourceId);
       }
       let isStarred = await source.hasStarredByUser(user);
       if (isStarred) {

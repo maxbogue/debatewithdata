@@ -10,7 +10,7 @@
     <ul>
       <li>Find a claim you want to know more about.</li>
       <li>Read the points for that claim to understand both sides of it.</li>
-      <li>Dive into the sources to see the data behind each side.</li>
+      <li>Dive into the data behind each side.</li>
     </ul>
   </div>
   <div class="block pink">
@@ -26,8 +26,7 @@
   <div class="block green">
     <h3>Contribute</h3>
     <ul>
-      <li>Add sources that contribute relevant data to a discussion. The closer
-        to the origin of the data, the better.</li>
+      <li>Link in data that contributes to a discussion.</li>
       <li>Add claims you've encountered people making, regardless of whether
         you agree with them personally.</li>
       <li>Star any claims and points that you think are relevant, compelling,

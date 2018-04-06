@@ -296,7 +296,7 @@ export var DwdUtilsMixin = {
       return url;
     },
     sourceUrl: function (sourceId, trail) {
-      let url = '/source/' + sourceId;
+      let url = '/data/' + sourceId;
       if (trail && trail.length > 0) {
         url += '?trail=' + trail.join(',');
       }

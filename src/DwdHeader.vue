@@ -23,7 +23,7 @@
             <router-link to="/claims" title="Claims">Claims</router-link>
           </li>
           <li>
-            <router-link to="/sources" title="Sources">Sources</router-link>
+            <router-link to="/datas" title="Data">Data</router-link>
           </li>
           <li>
             <router-link to="/guide" title="Guide">Guide</router-link>

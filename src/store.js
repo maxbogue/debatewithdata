@@ -204,33 +204,33 @@ export default new Vuex.Store({
       });
     },
     getSource: function ({ commit, state }, { id, trail, loader }) {
-      let url = addTrailToUrl('/api/source/' + id, trail, state);
+      let url = addTrailToUrl('/api/data/' + id, trail, state);
       return axios.get(url, { loader }).then((res) => {
         commit('setData', res.data);
       });
     },
     getSources: function ({ commit }, { loader }) {
-      return axios.get('/api/source', { loader }).then((res) => {
+      return axios.get('/api/data', { loader }).then((res) => {
         commit('setData', { sources: res.data });
         commit('setSourcesLoaded');
       });
     },
     updateSource: function ({ commit }, { id, source }) {
       validateSource(source);
-      return axios.put('/api/source/' + id, source).then((res) => {
+      return axios.put('/api/data/' + id, source).then((res) => {
         commit('setData', res.data);
         return id;
       });
     },
     addSource: function ({ commit }, { source }) {
       validateSource(source);
-      return axios.post('/api/source', source).then((res) => {
+      return axios.post('/api/data', source).then((res) => {
         commit('setData', res.data);
         return res.data.id;
       });
     },
     removeSource: function ({ commit }, { id, message }) {
-      return axios.delete(`/api/source/${id}?message=${message}`)
+      return axios.delete(`/api/data/${id}?message=${message}`)
         .then((res) => {
           commit('setData', res.data);
         });
