@@ -1,30 +1,31 @@
 <template>
-<dwd-modal :show="show" @close="close" @cancel="cancel">
-  <div class="claim t1">
-    <div class="bubble">
-      <label for="text" class="hint">
-        A claim should be a short, simple statement about the world.
-      </label>
-      <dwd-input v-model="text"
-                 id="text"
-                 placeholder="claim"
-                 :focus="true"
-                 :validate="validate.text" />
-      <dwd-flag v-if="flag" :flag="flag" />
-    </div>
-    <div class="info">
-      <div class="id mono">{{ id || 'new' }}</div>
-      <button type="button"
-              class="dwd-btn white"
-              @click="cancel">Cancel</button>
-      <button type="submit"
-              class="dwd-btn dwd-btn-primary">Review</button>
-      <div class="controls">
-        <dwd-flag-dropdown v-model="flag" />
-      </div>
+<form-valid class="claim"
+            @submit="close"
+            @keydown.native.enter="close"
+            @keydown.native.esc="cancel">
+  <div class="bubble">
+    <label for="text" class="hint">
+      A claim should be a short, simple statement about the world.
+    </label>
+    <dwd-input v-model="text"
+               id="text"
+               placeholder="claim"
+               :focus="true"
+               :validate="validate.text" />
+    <dwd-flag v-if="flag" :flag="flag" />
+  </div>
+  <div class="info">
+    <div class="id mono">{{ id || 'new' }}</div>
+    <button type="button"
+            class="dwd-btn white"
+            @click="cancel">Cancel</button>
+    <button type="submit"
+            class="dwd-btn dwd-btn-primary">Review</button>
+    <div class="controls">
+      <dwd-flag-dropdown v-model="flag" />
     </div>
   </div>
-</dwd-modal>
+</form-valid>
 </template>
 
 <script>
@@ -33,7 +34,7 @@ import clone from 'lodash/clone';
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdInput from './DwdInput.vue';
-import DwdModal from './DwdModal.vue';
+import FormValid from './FormValid.vue';
 import { validateClaim } from '../common/validate';
 
 export default {
@@ -41,10 +42,9 @@ export default {
     DwdFlag,
     DwdFlagDropdown,
     DwdInput,
-    DwdModal,
+    FormValid,
   },
   props: {
-    show: { type: Boolean, required: true },
     claim: { type: Object, default: null },
   },
   data: () => ({
@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     close: function () {
-      this.$emit('update:show', false);
+      this.$emit('close');
     },
     cancel: function () {
       this.close();

@@ -1,18 +1,16 @@
 <template>
 <div>
   <template v-if="!needsData">
-    <div class="topic">
+    <topic-edit-block v-if="showEditBlock"
+                      :topic.sync="newTopicPartial"
+                      :old-id="id"
+                      @close="showEditBlock = false" />
+    <div v-else class="topic neutral">
       <topic-rev-content class="bubble click"
                          :prev="topic"
                          :curr="newTopicPartial"
-                         @click.native="showModal = true" />
-      <div class="info">
-        <span class="id mono">{{ id || newId || 'new' }}</span>
-      </div>
+                         @click.native="showEditBlock = true" />
     </div>
-    <topic-edit-modal :show.sync="showModal"
-                      :topic.sync="newTopicPartial"
-                      :old-id="id" />
     <h3>Sub-Topics</h3>
     <div class="topic">
       <div class="bubble click"
@@ -88,7 +86,8 @@
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
-      <button type="button"
+      <button :disabled="showEditBlock"
+              type="button"
               class="dwd-btn pink-dark"
               @click="submit">Submit</button>
     </fixed-bottom>
@@ -106,7 +105,7 @@ import ClaimLinkModal from '../ClaimLinkModal.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
-import TopicEditModal from '../TopicEditModal.vue';
+import TopicEditBlock from '../TopicEditBlock.vue';
 import TopicLinkModal from '../TopicLinkModal.vue';
 import TopicRevContent from '../TopicRevContent.vue';
 import {
@@ -121,7 +120,7 @@ export default {
     DeleteButton,
     DwdLoader,
     FixedBottom,
-    TopicEditModal,
+    TopicEditBlock,
     TopicLinkModal,
     TopicRevContent,
   },
@@ -135,7 +134,7 @@ export default {
     newSubTopics: [],
     claimIds: [],
     newClaims: [],
-    showModal: false,
+    showEditBlock: false,
     showSubTopicModal: false,
     showClaimModal: false,
   }),
@@ -244,8 +243,9 @@ export default {
         let claimStarCount = pipe(this.lookupClaim, starCount);
         this.claimIds = sortBy(seed.claimIds,
             [claimStarred, claimStarCount, stableRandom]);
-      } else {
-        this.showModal = true;
+      }
+      if (!this.seed) {
+        this.showEditBlock = true;
       }
     },
     checkLoaded: function () {

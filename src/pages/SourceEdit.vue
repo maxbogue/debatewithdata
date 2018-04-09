@@ -1,21 +1,20 @@
 <template>
 <div>
   <form v-if="!needsData" @submit.prevent="commit">
-    <source-edit-block v-if="showEdit"
+    <source-edit-block v-if="showEditBlock"
                        :source.sync="newSource"
-                       @close="showEdit = false" />
+                       @close="showEditBlock = false" />
     <div v-else class="source neutral">
       <source-rev-content class="bubble click"
                           :prev="source"
                           :curr="newSource"
-                          @click.native="showEdit = true" />
+                          @click.native="showEditBlock = true" />
     </div>
     <div class="block no-pad center">
-      <button :disabled="showEdit"
-              type="button"
+      <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
-      <button :disabled="showEdit"
+      <button :disabled="showEditBlock"
               type="submit"
               class="dwd-btn green-dark">Submit</button>
     </div>
@@ -47,7 +46,7 @@ export default {
     seed: { type: Object, default: null },
   },
   data: () => ({
-    showEdit: false,
+    showEditBlock: false,
     newSource: null,
   }),
   computed: {
@@ -99,7 +98,7 @@ export default {
         this.newSource = seed;
       }
       if (!this.seed) {
-        this.showEdit = true;
+        this.showEditBlock = true;
       }
     },
     checkLoaded: function () {

@@ -1,17 +1,15 @@
 <template>
 <div>
   <template v-if="!needsData">
-    <div class="claim t1">
+    <claim-edit-block v-if="showEditBlock"
+                      :claim.sync="newClaimPartial"
+                      @close="showEditBlock = false" />
+    <div v-else class="claim neutral">
       <claim-rev-content class="bubble click"
                          :prev="claim"
                          :curr="newClaimPartial"
-                         @click.native="showModal = true" />
-      <div class="info">
-        <span class="id mono">{{ id || 'new' }}</span>
-      </div>
+                         @click.native="showEditBlock = true" />
     </div>
-    <claim-edit-modal :show.sync="showModal"
-                      :claim.sync="newClaimPartial" />
     <points-edit v-if="initialized"
                  :curr="newClaim"
                  :prev="claim"
@@ -23,7 +21,8 @@
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
-      <button type="button"
+      <button :disabled="showEditBlock"
+              type="button"
               class="dwd-btn blue-dark"
               @click="submit">Submit</button>
     </fixed-bottom>
@@ -33,7 +32,7 @@
 </template>
 
 <script>
-import ClaimEditModal from '../ClaimEditModal.vue';
+import ClaimEditBlock from '../ClaimEditBlock.vue';
 import ClaimRevContent from '../ClaimRevContent.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
@@ -44,7 +43,7 @@ import { authRedirect, combineAndSortPoints, splitPoints } from '../utils';
 export default {
   beforeRouteEnter: authRedirect,
   components: {
-    ClaimEditModal,
+    ClaimEditBlock,
     ClaimRevContent,
     DeleteButton,
     DwdLoader,
@@ -56,7 +55,7 @@ export default {
     seed: { type: Object, default: null },
   },
   data: () => ({
-    showModal: false,
+    showEditBlock: false,
     newClaimPartial: null,
     points: [[], []],
     initialized: false,
@@ -118,8 +117,9 @@ export default {
       if (seed && !seed.deleted) {
         this.newClaimPartial = seed;
         this.points = combineAndSortPoints(seed, this.$store.state);
-      } else {
-        this.showModal = true;
+      }
+      if (!this.seed) {
+        this.showEditBlock = true;
       }
       this.initialized = true;
     },

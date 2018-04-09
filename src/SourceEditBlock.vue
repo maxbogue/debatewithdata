@@ -7,11 +7,13 @@
                        :source="source"
                        @update:source="update" />
   <div class="info">
+    <div class="id mono">{{ id || 'new' }}</div>
     <button type="button"
             class="dwd-btn white"
             @click="cancel">Cancel</button>
     <button type="submit"
             class="dwd-btn green-dark">Review</button>
+    <div class="controls"></div>
   </div>
 </form-valid>
 </template>
@@ -41,15 +43,10 @@ export default {
       return null;
     },
   },
-  watch: {
-    show: function () {
-      if (this.show) {
-        this.initialize();
-      }
-    },
-  },
   mounted: function () {
-    this.initialize();
+    if (this.source) {
+      this.oldSource = clone(this.source);
+    }
   },
   methods: {
     update: function (newSource) {
@@ -60,12 +57,7 @@ export default {
     },
     cancel: function () {
       this.close();
-      this.$emit('update:source', this.oldSource);
-    },
-    initialize: function () {
-      if (this.source) {
-        this.oldSource = clone(this.source);
-      }
+      this.update(this.oldSource);
     },
   },
 };
