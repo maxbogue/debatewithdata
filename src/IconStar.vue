@@ -1,9 +1,9 @@
 <template>
-<span :class="$style.star">
+<span :class="[$style.star, { click: user }]"
+      :title="star.count + ' stars'"
+      @click="toggle">
   <span class="fa-star"
-        :class="classes"
-        :title="star.count + ' stars'"
-        @click="toggle"></span>
+        :class="star.starred ? 'fas' : 'far'"></span>
   <span class="mono"
         :class="$style.count">{{ star.count }}</span>
 </span>
@@ -20,12 +20,6 @@ export default {
   computed: {
     user: function () {
       return this.$store.state.user;
-    },
-    classes: function () {
-      return [
-        this.star.starred ? 'fas' : 'far',
-        this.user ? 'click' : '',
-      ];
     },
   },
   methods: {

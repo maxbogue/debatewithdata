@@ -16,11 +16,13 @@
   <template v-if="!abbreviated">
     <div class="info">
       <span class="id mono">{{ id }}</span>
-      <icon-star :star="item.star" :url="'/api' + url" />
-      <icon-history :url="urlWithTrail" />
-      <icon-edit :url="urlWithTrail" />
-      <icon-comment @click.native="showComments = !showComments"
-                    :count="item.commentCount" />
+      <span class="controls">
+        <icon-star :star="item.star" :url="'/api' + url" />
+        <icon-history :url="urlWithTrail" />
+        <icon-edit :url="urlWithTrail" />
+        <icon-comment @click.native="showComments = !showComments"
+                      :count="item.commentCount" />
+      </span>
     </div>
     <dwd-comments :url="'/api' + url"
                   :show="showComments" />
