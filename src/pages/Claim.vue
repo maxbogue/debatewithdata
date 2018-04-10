@@ -17,15 +17,17 @@
                 type="claim"
                 show-info />
     <template v-if="$store.state.singleColumn">
-      <div v-if="zippedPoints.length > 0"
-           class="block no-pad"
+      <div class="block no-pad"
            :class="$style.pointHeader"
            :key="id + '-side-text'">
-        <span :class="claimIsFor ? $style.for : $style.against"
-              >For</span>
-        <span> // </span>
-        <span :class="claimIsFor ? $style.against : $style.for"
-              >Against</span>
+        <div :class="sideClass(0)">
+          <span>For</span>
+          <icon-add :id="id" :extras="{ initAddPoint: 0 }" type="claim" />
+        </div>
+        <div :class="sideClass(1)">
+          <span>Against</span>
+          <icon-add :id="id" :extras="{ initAddPoint: 1 }" type="claim" />
+        </div>
       </div>
       <item-block v-for="[point, side] in zippedPoints"
                   :item="point"
@@ -39,12 +41,11 @@
       <div v-for="(sidePoints, side) in points"
            class="dwd-col"
            :key="'side-' + side">
-        <div v-if="sidePoints.length > 0"
-             class="block no-pad"
-             :class="$style.pointHeader"
+        <div class="block no-pad"
+             :class="[$style.pointHeader, sideClass(side)]"
              :key="id + 'side-text-' + side">
-          <span :class="claimIsFor === !side ? $style.for : $style.against"
-                >{{ !side ? 'For' : 'Against' }}</span>
+            <span>{{ !side ? 'For' : 'Against' }}</span>
+            <icon-add :id="id" :extras="{ initAddPoint: side }" type="claim" />
         </div>
         <item-block v-for="point in sidePoints"
                     :item="point"
@@ -65,6 +66,7 @@ import map from 'lodash/map';
 
 import DwdLoader from '../DwdLoader.vue';
 import DwdTrail from '../DwdTrail.vue';
+import IconAdd from '../IconAdd.vue';
 import ItemBlock from '../ItemBlock.vue';
 import { combineAndSortPoints, rotateWithIndexes } from '../utils';
 
@@ -72,6 +74,7 @@ export default {
   components: {
     DwdLoader,
     DwdTrail,
+    IconAdd,
     ItemBlock,
   },
   data: () => ({
@@ -134,6 +137,9 @@ export default {
         });
       }
     },
+    sideClass: function (side) {
+      return this.claimIsFor === !side ? this.$style.for : this.$style.against;
+    },
   },
 };
 </script>
@@ -146,18 +152,43 @@ export default {
   font-size: 1.25em;
   text-align: center;
 
-  &:global(.block) > span {
+  &:global(.block) > * {
     margin-top: 0;
   }
+}
 
-  .for {
+.for,
+.against {
+  flex: 1;
+  align-items: center;
+
+  span {
     flex: 1;
-    color: $purple-dark-primary;
+    align-items: center;
   }
+}
 
-  .against {
-    flex: 1;
-    color: $amber-dark-primary;
+.for {
+  color: $purple-dark-primary;
+
+  a {
+    color: $purple-accent;
+
+    &:hover {
+      color: $purple-dark-primary;
+    }
+  }
+}
+
+.against {
+  color: $amber-dark-primary;
+
+  a {
+    color: $amber-accent;
+
+    &:hover {
+      color: $amber-dark-primary;
+    }
   }
 }
 </style>

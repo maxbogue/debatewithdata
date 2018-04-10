@@ -67,6 +67,7 @@ export default {
     curr: { type: Object, default: null },
     prev: { type: Object, default: null },
     isFor: { type: Boolean, default: null },
+    initAddPoint: { type: Number, default: -1 },
   },
   data: () => ({
     points: [[], []],
@@ -102,6 +103,9 @@ export default {
   mounted: function () {
     if (this.curr) {
       this.points = combineAndSortPoints(this.curr, this.$store.state);
+    }
+    if (this.initAddPoint >= 0) {
+      this.addPoint(this.initAddPoint);
     }
   },
   methods: {

@@ -13,6 +13,7 @@
     <points-edit v-if="initialized"
                  :curr="newClaim"
                  :prev="claim"
+                 :init-add-point="initAddPoint"
                  @update="updatePoints" />
     <div v-if="id" class="block center">
       <delete-button noun="Claim" @delete="remove" />
@@ -53,6 +54,7 @@ export default {
   props: {
     id: { type: String, default: '' },
     seed: { type: Object, default: null },
+    initAddPoint: { type: Number, default: -1 },
   },
   data: () => ({
     showEditBlock: false,
@@ -118,7 +120,7 @@ export default {
         this.newClaimPartial = seed;
         this.points = combineAndSortPoints(seed, this.$store.state);
       }
-      if (!this.seed) {
+      if (!this.seed && this.initAddPoint < 0) {
         this.showEditBlock = true;
       }
       this.initialized = true;
