@@ -9,8 +9,7 @@
                :is-link="isLink" />
 <source-content v-else-if="type === 'source'"
                 :source="item"
-                :abbreviated="abbreviated"
-                :is-link="isLink" />
+                :abbreviated="abbreviated" />
 <div v-else>Invalid item type.</div>
 </template>
 

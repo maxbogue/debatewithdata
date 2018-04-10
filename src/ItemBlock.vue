@@ -3,7 +3,8 @@
   <router-link v-if="isLink"
                :to="urlWithTrail"
                class="bubble click">
-    <item-content :item="item"
+    <item-content :class="$style.contentSpacing"
+                  :item="item"
                   :type="type"
                   :abbreviated="abbreviated"
                   is-link />
@@ -180,6 +181,10 @@ export default {
 
 <style lang="scss" module>
 @import "style/constants";
+
+.contentSpacing > :not(:first-child) {
+  margin-top: $block-content-spacing;
+}
 
 .mini {
   &:global(.topic),

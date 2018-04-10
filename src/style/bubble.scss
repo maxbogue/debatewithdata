@@ -24,7 +24,7 @@
   }
 
   > :not(:first-child) {
-    margin-top: 8px;
+    margin-top: $block-content-spacing;
   }
 
   ul {

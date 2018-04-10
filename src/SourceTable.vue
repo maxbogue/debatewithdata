@@ -1,12 +1,14 @@
 <template>
-<table :class="$style.table">
-  <tr>
-    <th v-for="(header, i) in rows[0]" :key="'header' + i">{{ header }}</th>
-  </tr>
-  <tr v-for="(row, i) in rows.slice(1)" :key="'row' + i">
-    <td v-for="(cell, j) in row" :key="i + ',' + j">{{ cell }}</td>
-  </tr>
-</table>
+<div :class="$style.wrapper">
+  <table :class="$style.table">
+    <tr>
+      <th v-for="(header, i) in rows[0]" :key="'header' + i">{{ header }}</th>
+    </tr>
+    <tr v-for="(row, i) in rows.slice(1)" :key="'row' + i">
+      <td v-for="(cell, j) in row" :key="i + ',' + j">{{ cell }}</td>
+    </tr>
+  </table>
+</div>
 </template>
 
 <script>
@@ -25,6 +27,12 @@ export default {
 </script>
 
 <style lang="scss" module>
+.wrapper {
+  display: inline-block;
+  max-height: 200px;
+  overflow: auto;
+}
+
 .table {
   border-collapse: collapse;
   font-size: 0.7em;
