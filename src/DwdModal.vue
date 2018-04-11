@@ -1,10 +1,11 @@
 <template>
 <transition v-if="show" name="dwd-modal">
   <div class="dwd-modal-mask"
-       @click="close"
-       @keydown.enter="close"
+       @click="submit"
+       @keydown.enter="submit"
        @keydown.esc="cancel">
-    <form-valid class="dwd-modal-container"
+    <form-valid ref="form"
+                class="dwd-modal-container"
                 @submit="close"
                 @click.native.stop>
       <slot></slot>
@@ -24,6 +25,9 @@ export default {
     show: { type: Boolean, required: true },
   },
   methods: {
+    submit: function () {
+      this.$refs.form.submit();
+    },
     close: function () {
       this.$emit('close');
     },

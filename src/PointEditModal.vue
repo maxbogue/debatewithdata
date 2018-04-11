@@ -111,11 +111,15 @@ export default {
   },
   methods: {
     close: function () {
+      let p = this.makePoint();
+      if (!p) {
+        this.$emit('update', {});
+      }
       this.$emit('update:show', false);
     },
     cancel: function () {
       this.$emit('update', this.oldPoint);
-      this.close();
+      this.$emit('update:show', false);
     },
     makePoint: function () {
       if (this.id && !this.linkType && this.oldPoint.pointType) {
