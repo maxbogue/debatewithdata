@@ -58,9 +58,7 @@
                placeholder="Scientific journal, newspaper, etc."
                :validate="validate.publication" />
   </template>
-  <label for="table" class="hint">
-    Tabular data.
-  </label>
+  <label for="table" class="hint">Manage tabular data.</label>
   <source-edit-table :table.sync="table" />
 </div>
 </template>
