@@ -1,6 +1,9 @@
 <template>
 <div :class="$style.wrapper">
   <table :class="$style.table">
+    <tr v-if="title">
+      <th :colspan="rows[0].length" v-html="title"></th>
+    </tr>
     <tr>
       <th v-for="(header, i) in rows[0]" :key="'header' + i">{{ header }}</th>
     </tr>
@@ -19,8 +22,17 @@ export default {
     table: { type: String, required: true },
   },
   computed: {
-    rows: function () {
+    tableData: function () {
       return deserializeTable(this.table);
+    },
+    title: function () {
+      if (this.tableData[0].length !== 1) {
+        return '';
+      }
+      return this.tableData[0][0];
+    },
+    rows: function () {
+      return this.title ? this.tableData.slice(1) : this.tableData;
     },
   },
 };

@@ -7,6 +7,14 @@
   </template>
   <table v-if="rows" :class="$style.table">
     <tr>
+      <th :colspan="numCols">
+        <textarea type="text"
+                  :value="title"
+                  @input="updateTitle($event.target.value)"
+                  @keydown.188.prevent></textarea>
+      </th>
+    </tr>
+    <tr>
       <th v-for="(_, i) in rows[0]" :key="'header' + i">
         <textarea type="text"
                   :value="rows[0][i]"
@@ -34,9 +42,18 @@ export default {
     table: { type: String, default: null },
   },
   data: () => ({
+    title: '',
     rows: null,
     initialized: false,
   }),
+  computed: {
+    numCols: function () {
+      if (!this.rows) {
+        return 0;
+      }
+      return this.rows[0].length;
+    },
+  },
   watch: {
     table: function () {
       this.init();
@@ -48,7 +65,15 @@ export default {
   methods: {
     init: function () {
       if (!this.initialized && this.table) {
-        this.rows = deserializeTable(this.table);
+        this.initialized = true;
+        let rows = deserializeTable(this.table);
+        if (rows[0].length === 1) {
+          this.title = rows[0][0];
+          this.rows = rows.slice(1);
+        } else {
+          this.title = '';
+          this.rows = rows;
+        }
       }
     },
     addColumn: function () {
@@ -59,6 +84,10 @@ export default {
     deleteTable: function () {
       this.rows = null;
       this.$emit('update:table', null);
+    },
+    updateTitle: function (newTitle) {
+      this.title = newTitle.replace(/,/g, '');
+      this.emitTable();
     },
     updateCell: function (i, j, text) {
       let useTabs = text.includes('\t');
@@ -103,7 +132,11 @@ export default {
 
       // If there was no table before, this needs to be set to prevent init.
       this.initialized = true;
-      this.$emit('update:table', serializeTable(this.rows.slice(0, -1)));
+      this.emitTable();
+    },
+    emitTable: function () {
+      this.$emit('update:table', serializeTable(
+          this.title, this.rows.slice(0, -1)));
     },
   },
 };

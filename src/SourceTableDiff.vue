@@ -1,6 +1,9 @@
 <template>
 <source-table v-if="curr && prev && curr === prev" :table="curr" />
 <table v-else-if="curr && prev" :class="$style.table">
+  <tr v-if="diffTitle">
+    <th :colspan="numCols" v-html="diffTitle"></th>
+  </tr>
   <tr>
     <th v-for="(headerDiff, i) in diffRows[0]"
         :key="'header' + i"
@@ -30,20 +33,52 @@ export default {
     prev: { type: String, default: '' },
   },
   computed: {
-    diffRows: function () {
-      if (!this.curr || !this.prev) {
+    prevTable: function () {
+      if (!this.prev) {
         return [];
       }
-      let prevRows = deserializeTable(this.prev);
-      let currRows = deserializeTable(this.curr);
-      let numRows = Math.max(prevRows.length, currRows.length);
-      let numCols = Math.max(prevRows[0].length, currRows[0].length);
+      return deserializeTable(this.prev);
+    },
+    currTable: function () {
+      if (!this.curr) {
+        return [];
+      }
+      return deserializeTable(this.curr);
+    },
+    prevTitle: function () {
+      if (this.prevTable[0].length !== 1) {
+        return '';
+      }
+      return this.prevTable[0][0];
+    },
+    currTitle: function () {
+      if (this.currTable[0].length !== 1) {
+        return '';
+      }
+      return this.currTable[0][0];
+    },
+    diffTitle: function () {
+      return diff(this.prevTitle, this.currTitle);
+    },
+    prevRows: function () {
+      return this.prevTitle ? this.prevTable.slice(1) : this.prevTable;
+    },
+    currRows: function () {
+      return this.currTitle ? this.currTable.slice(1) : this.currTable;
+    },
+    numRows: function () {
+      return Math.max(this.prevRows.length, this.currRows.length);
+    },
+    numCols: function () {
+      return Math.max(this.prevRows[0].length, this.currRows[0].length);
+    },
+    diffRows: function () {
       let diffs = [];
-      for (let i = 0; i < numRows; i += 1) {
-        let prevRow = prevRows[i];
-        let currRow = currRows[i];
+      for (let i = 0; i < this.numRows; i += 1) {
+        let prevRow = this.prevRows[i];
+        let currRow = this.currRows[i];
         let newRow = [];
-        for (let j = 0; j < numCols; j += 1) {
+        for (let j = 0; j < this.numCols; j += 1) {
           let prevCell = prevRow && prevRow[j] || '';
           let currCell = currRow && currRow[j] || '';
           newRow.push(diff(prevCell, currCell));
