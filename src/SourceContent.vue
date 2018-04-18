@@ -19,7 +19,7 @@
           <div><strong>Published in:</strong> {{ source.publication }}</div>
         </template>
       </template>
-      <a :href="source.url" target="_blank">{{ source.url }}</a>
+      <a :href="source.url" target="_blank" @click.stop>{{ source.url }}</a>
     </div>
     <template v-if="!abbreviated">
       <source-chart v-if="source.chart"
