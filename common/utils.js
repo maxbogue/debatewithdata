@@ -7,10 +7,15 @@ export async function asyncForOwn(obj, f) {
   }
 }
 
+function stripCommas(s) {
+  return s.replace(/,/g, '');
+}
+
 export function deserializeTable(tableString) {
   return tableString.split('\n').map((row) => row.split(','));
 }
 
-export function serializeTable(rows) {
-  return rows.map((row) => row.join(',')).join('\n');
+export function serializeTable(title, rows) {
+  return [stripCommas(title)].concat(rows.map(
+      (row) => row.map(stripCommas).join(','))).join('\n');
 }

@@ -52,10 +52,19 @@
     <div v-html="urlDiff" :class="$style.url"></div>
   </div>
   <source-table-diff :curr="safeCurr.table" :prev="safePrev.table" />
+  <source-chart v-if="safeCurr.chart && !safePrev.chart"
+                :table="safeCurr.table"
+                :chart="safeCurr.chart"
+                class="ins" />
+  <source-chart v-if="!safeCurr.chart && safePrev.chart"
+                :table="safePrev.table"
+                :chart="safePrev.chart"
+                class="del" />
 </div>
 </template>
 
 <script>
+import SourceChart from './SourceChart.vue';
 import SourceTableDiff from './SourceTableDiff.vue';
 import { diff } from './utils';
 
@@ -68,6 +77,7 @@ const EMPTY_SOURCE = {
 
 export default {
   components: {
+    SourceChart,
     SourceTableDiff,
   },
   props: {

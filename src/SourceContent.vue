@@ -21,17 +21,24 @@
       </template>
       <a :href="source.url" target="_blank">{{ source.url }}</a>
     </div>
-    <source-table v-if="!abbreviated && source.table" :table="source.table" />
+    <template v-if="!abbreviated">
+      <source-chart v-if="source.chart"
+                    :chart="source.chart"
+                    :table="source.table" />
+      <source-table v-else-if="source.table" :table="source.table" />
+    </template>
   </template>
 </div>
 </template>
 
 <script>
+import SourceChart from './SourceChart.vue';
 import SourceTable from './SourceTable.vue';
 import { itemErrorMessage } from './utils';
 
 export default {
   components: {
+    SourceChart,
     SourceTable,
   },
   props: {

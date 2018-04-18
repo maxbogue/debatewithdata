@@ -33,6 +33,7 @@
     "bcrypt": "^1.0.3",
     "blake2": "^1.4.0",
     "body-parser": "^1.18.2",
+    "chart.js": "^2.7.2",
     "config": "^1.30.0",
     "css-loader": "^0.28.10",
     "dashify": "^1.0.0",

@@ -23,9 +23,9 @@
              placeholder="YYYY-MM-DD"
              mono
              :validate="validate.date.emptyAsNull" />
-  <label class="hint">Classify the type of source.</label>
+  <label for="type" class="hint">Classify the type of source.</label>
   <div :class="$style.type">
-    <select v-model="type">
+    <select v-model="type" id="type">
       <option value="misc">Miscellaneous</option>
       <option value="research">Research</option>
       <option value="article">Article</option>
@@ -60,17 +60,22 @@
   </template>
   <label for="table" class="hint">Manage tabular data.</label>
   <source-edit-table :table.sync="table" />
+  <source-edit-chart v-if="table"
+                     :table="table"
+                     :chart.sync="chart" />
 </div>
 </template>
 
 <script>
 import DwdInput from './DwdInput.vue';
+import SourceEditChart from './SourceEditChart.vue';
 import SourceEditTable from './SourceEditTable.vue';
 import { validateSource } from '../common/validate';
 
 export default {
   components: {
     DwdInput,
+    SourceEditChart,
     SourceEditTable,
   },
   props: {
@@ -85,6 +90,7 @@ export default {
     publication: '',
     firstHand: false,
     table: null,
+    chart: null,
     validate: validateSource,
   }),
   computed: {
@@ -99,6 +105,9 @@ export default {
       }
       if (this.table) {
         source.table = this.table;
+      }
+      if (this.chart) {
+        source.chart = this.chart;
       }
 
       switch (this.type) {
@@ -135,6 +144,7 @@ export default {
         this.text = this.source.text || '';
         this.date = this.source.date || '';
         this.table = this.source.table;
+        this.chart = this.source.chart;
         this.type = this.source.type || 'misc';
         this.institution = this.source.institution || '';
         this.publication = this.source.publication || '';

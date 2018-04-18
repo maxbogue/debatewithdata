@@ -9,6 +9,7 @@ const SOURCE_EQUALITY_FIELDS = [
   'text',
   'date',
   'table',
+  'chart',
   'type',
   'institution',
   'publication',
@@ -41,6 +42,9 @@ export default function (sequelize, DataTypes) {
     type: {
       type: DataTypes.TEXT,
       validate: validateSource.type.forDb,
+    },
+    chart: {
+      type: DataTypes.TEXT,
     },
     institution: {
       type: DataTypes.TEXT,
@@ -140,6 +144,7 @@ export default function (sequelize, DataTypes) {
         date: data.date,
         tableHash: tableBlob.hash,
         type: data.type,
+        chart: data.chart ? JSON.stringify(data.chart) : null,
         institution: data.institution,
         publication: data.publication,
         firstHand: data.firstHand,
@@ -168,9 +173,11 @@ export default function (sequelize, DataTypes) {
       if (this.date) {
         data.date = this.date;
       }
-
       if (this.tableBlob) {
         data.table = this.tableBlob.text;
+      }
+      if (this.chart) {
+        data.chart = JSON.parse(this.chart);
       }
 
       switch (this.type) {
