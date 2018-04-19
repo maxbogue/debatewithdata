@@ -1,6 +1,6 @@
 <template>
 <div :class="$style.dataTable">
-  <span v-if="!rows" @click="rows = [['']]">Add Table</span>
+  <span v-if="!rows" @click="addTable">Add Table</span>
   <template v-else>
     <span @click="addColumn">Add Column</span>
     | <span @click="deleteTable">Delete Table</span>
@@ -9,6 +9,7 @@
     <tr>
       <th :colspan="numCols">
         <textarea type="text"
+                  placeholder="title (default units)"
                   :value="title"
                   @input="updateTitle($event.target.value)"
                   @keydown.188.prevent></textarea>
@@ -17,6 +18,7 @@
     <tr>
       <th v-for="(_, i) in rows[0]" :key="'header' + i">
         <textarea type="text"
+                  :placeholder="headerPlaceholder(i)"
                   :value="rows[0][i]"
                   @input="updateCell(0, i, $event.target.value)"
                   @keydown.188.prevent></textarea>
@@ -25,6 +27,7 @@
     <tr v-for="(row, i) in rows.slice(1)" :key="i">
       <td v-for="(_, j) in row" :key="i + ',' + j">
         <textarea type="text"
+                  :placeholder="j === 0 ? 'row label' : 'data'"
                   :value="rows[i + 1][j]"
                   @input="updateCell(i + 1, j, $event.target.value)"
                   @keydown.188.prevent></textarea>
@@ -76,6 +79,13 @@ export default {
         }
       }
     },
+    headerPlaceholder: function (col) {
+      return col === 0 ? 'row label units' : 'column label (units)';
+    },
+    addTable: function () {
+      this.rows = [['', ''], ['', ''], ['', '']];
+      this.initialized = true;
+    },
     addColumn: function () {
       for (let row of this.rows) {
         row.push('');
@@ -99,9 +109,6 @@ export default {
         let newCells = newRows[m].split(useTabs ? '\t' : ',');
         for (let n = 0; n < newCells.length; n += 1) {
           let t = newCells[n].replace(/,/g, '');
-          if (!t) {
-            continue;
-          }
           if (j + n === this.rows[0].length) {
             this.addColumn();
           }
@@ -111,6 +118,8 @@ export default {
       this.updateRows();
     },
     updateRows: function () {
+      this.initialized = true;
+
       // If every cell is empty, erase the table.
       if (this.rows.every((row) => row.every((cell) => !cell))) {
         this.$emit('update:table', null);
@@ -118,8 +127,9 @@ export default {
       }
 
       // Purge empty rows.
-      for (let i = 1; i < this.rows.length - 1; i += 1) {
-        while (this.rows[i].every((cell) => !cell)) {
+      for (let i = 2; i < this.rows.length - 1; i += 1) {
+        while (i < this.rows.length - 1
+            && this.rows[i].every((cell) => !cell)) {
           this.rows.splice(i, 1);
         }
       }
@@ -130,8 +140,6 @@ export default {
         this.rows.push(this.rows[0].map(() => ''));
       }
 
-      // If there was no table before, this needs to be set to prevent init.
-      this.initialized = true;
       this.emitTable();
     },
     emitTable: function () {

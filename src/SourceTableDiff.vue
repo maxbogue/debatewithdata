@@ -35,42 +35,37 @@ export default {
   computed: {
     prevTable: function () {
       if (!this.prev) {
-        return [];
+        return [['']];
       }
       return deserializeTable(this.prev);
     },
     currTable: function () {
       if (!this.curr) {
-        return [];
+        return [['']];
       }
       return deserializeTable(this.curr);
     },
     prevTitle: function () {
-      if (this.prevTable[0].length !== 1) {
-        return '';
-      }
       return this.prevTable[0][0];
     },
     currTitle: function () {
-      if (this.currTable[0].length !== 1) {
-        return '';
-      }
       return this.currTable[0][0];
     },
     diffTitle: function () {
       return diff(this.prevTitle, this.currTitle);
     },
     prevRows: function () {
-      return this.prevTitle ? this.prevTable.slice(1) : this.prevTable;
+      return this.prevTable.slice(1);
     },
     currRows: function () {
-      return this.currTitle ? this.currTable.slice(1) : this.currTable;
+      return this.currTable.slice(1);
     },
     numRows: function () {
       return Math.max(this.prevRows.length, this.currRows.length);
     },
     numCols: function () {
-      return Math.max(this.prevRows[0].length, this.currRows[0].length);
+      return Math.max(this.prevRows.length > 0 ? this.prevRows[0].length : 0,
+          this.currRows.length > 0 ? this.currRows[0].length : 0);
     },
     diffRows: function () {
       let diffs = [];

@@ -26,13 +26,10 @@ export default {
       return deserializeTable(this.table);
     },
     title: function () {
-      if (this.tableData[0].length !== 1) {
-        return '';
-      }
       return this.tableData[0][0];
     },
     rows: function () {
-      return this.title ? this.tableData.slice(1) : this.tableData;
+      return this.tableData.slice(1);
     },
   },
 };
