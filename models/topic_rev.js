@@ -1,4 +1,3 @@
-import graph from '../common/graph';
 import { genRevId } from './utils';
 import { validateTopic } from '../common/validate';
 
@@ -119,7 +118,7 @@ export default function (sequelize, DataTypes) {
       await topicRev.addSubTopics(subTopicIds, { transaction });
       await topic.setHead(topicRev, { transaction });
 
-      graph.updateChildren(topic.id, [...subTopicIds, ...claimIds]);
+      topic.updateGraph(subTopicIds, claimIds);
 
       return topicRev;
     };

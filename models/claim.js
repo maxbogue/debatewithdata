@@ -1,4 +1,8 @@
-import graph from '../common/graph';
+import keys from 'lodash/keys';
+import partition from 'lodash/partition';
+import zipWith from 'lodash/zipWith';
+
+import graph, { Graph } from '../common/graph';
 import { NotFoundError } from '../api/error';
 import { ValidationError, validateClaim } from '../common/validate';
 import { genId } from './utils';
@@ -118,7 +122,7 @@ export default function (sequelize, DataTypes) {
       });
       await claim.setHead(claimRev);
 
-      graph.updateChildren(claim.id, []);
+      graph.updateClaimPoints(claim.id, [[], []]);
 
       return claimRev;
     };
@@ -255,6 +259,25 @@ export default function (sequelize, DataTypes) {
         await claim.addStarredByUser(user);
       }
       return await claim.toStarData(user);
+    };
+
+    Claim.prototype.updateGraph = function (subClaims, sources) {
+      let partedSubClaims = subClaims
+        ? partition(keys(subClaims), (id) => subClaims[id])
+        : partition(this.head.subClaims, (c) => c.claimClaim.isFor);
+
+      let partedSources = sources
+        ? partition(keys(sources), (id) => sources[id])
+        : partition(this.head.sources, (s) => s.claimSource.isFor);
+
+      let claimInfos = partedSubClaims.map((ls) => ls.map(Graph.toClaimInfo));
+      let sourceInfos = partedSources.map((ls) => ls.map(Graph.toSourceInfo));
+
+      // Merge together the claim and source nested arrays.
+      let pointInfos = zipWith(claimInfos, sourceInfos,
+          (head, ...tail) => head.concat(...tail));
+
+      graph.updateClaimPoints(this.id, pointInfos);
     };
   };
 

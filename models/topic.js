@@ -1,4 +1,4 @@
-import graph from '../common/graph';
+import graph, { Graph } from '../common/graph';
 import { NotFoundError } from '../api/error';
 import { ValidationError, validateTopic } from '../common/validate';
 
@@ -121,7 +121,7 @@ export default function (sequelize, DataTypes) {
       });
       await topic.setHead(topicRev);
 
-      graph.updateChildren(topic.id, []);
+      graph.updateTopicChildren(topic.id, []);
 
       return topicRev;
     };
@@ -242,6 +242,14 @@ export default function (sequelize, DataTypes) {
         await topic.addStarredByUser(user);
       }
       return await topic.toStarData(user);
+    };
+
+    Topic.prototype.updateGraph = function (subTopics, claims) {
+      subTopics = subTopics || this.head.subTopics;
+      claims = claims || this.head.claims;
+      let topicInfos = subTopics.map(Graph.toTopicInfo);
+      let claimInfos = claims.map(Graph.toClaimInfo);
+      graph.updateTopicChildren(this.id, [...topicInfos, ...claimInfos]);
     };
   };
 

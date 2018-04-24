@@ -5,6 +5,9 @@ import { ValidationError } from './validate';
 
 const expect = chai.expect;
 
+const t = Graph.toTopicInfo;
+const c = Graph.toClaimInfo;
+
 const A = 'a';
 const B = 'b';
 const C = 'c';
@@ -19,18 +22,18 @@ describe('graph', function () {
 
   describe('counts', function () {
     it('basic', function () {
-      graph.updateChildren(A, [B, C]);
+      graph.updateTopicChildren(A, [t(B), t(C)]);
       expect(graph.getCount(A)).to.equal(2);
       expect(graph.getCount(B)).to.equal(0);
       expect(graph.getCount(C)).to.equal(0);
 
-      graph.updateChildren(C, [D]);
+      graph.updateTopicChildren(C, [t(D)]);
       expect(graph.getCount(A)).to.equal(3);
       expect(graph.getCount(B)).to.equal(0);
       expect(graph.getCount(C)).to.equal(1);
       expect(graph.getCount(D)).to.equal(0);
 
-      graph.updateChildren(C, []);
+      graph.updateTopicChildren(C, []);
       expect(graph.getCount(A)).to.equal(2);
       expect(graph.getCount(B)).to.equal(0);
       expect(graph.getCount(C)).to.equal(0);
@@ -38,16 +41,17 @@ describe('graph', function () {
     });
 
     it('cycle', function () {
-      graph.updateChildren(A, [B]);
-      graph.updateChildren(B, [C]);
+      graph.updateClaimPoints(A, [[c(B)], []]);
+      graph.updateClaimPoints(B, [[c(C)], []]);
       expect(graph.getCount(A)).to.equal(2);
       expect(graph.getCount(B)).to.equal(1);
       expect(graph.getCount(C)).to.equal(0);
 
-      expect(() => graph.updateChildren(C, [A])).to.throw(ValidationError);
+      expect(() => graph.updateClaimPoints(C, [[c(A)], []]))
+        .to.throw(ValidationError);
 
       // Check that it still functions after failed update.
-      graph.updateChildren(C, [D]);
+      graph.updateClaimPoints(C, [[c(D)], []]);
       expect(graph.getCount(A)).to.equal(3);
       expect(graph.getCount(B)).to.equal(2);
       expect(graph.getCount(C)).to.equal(1);
