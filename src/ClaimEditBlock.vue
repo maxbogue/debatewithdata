@@ -15,7 +15,7 @@
     <dwd-flag v-if="flag" :flag="flag" />
   </div>
   <div class="info">
-    <div class="id mono">{{ id || 'new' }}</div>
+    <needs-data-edit v-model="needsData" />
     <button type="button"
             class="dwd-btn white"
             @click="cancel">Cancel</button>
@@ -31,6 +31,7 @@
 <script>
 import clone from 'lodash/clone';
 
+import NeedsDataEdit from './NeedsDataEdit.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdInput from './DwdInput.vue';
@@ -39,6 +40,7 @@ import { validateClaim } from '../common/validate';
 
 export default {
   components: {
+    NeedsDataEdit,
     DwdFlag,
     DwdFlagDropdown,
     DwdInput,
@@ -50,6 +52,7 @@ export default {
   data: () => ({
     text: '',
     flag: '',
+    needsData: null,
     oldClaim: null,
     validate: validateClaim,
   }),
@@ -61,7 +64,10 @@ export default {
       return null;
     },
     newClaim: function () {
-      let claim = { text: this.text };
+      let claim = {
+        text: this.text,
+        needsData: this.needsData,
+      };
       if (this.flag) {
         claim.flag = this.flag;
       }
@@ -97,6 +103,7 @@ export default {
         this.oldClaim = clone(this.claim);
         this.text = this.claim.text;
         this.flag = this.claim.flag || '';
+        this.needsData = this.claim.needsData;
       }
     },
   },

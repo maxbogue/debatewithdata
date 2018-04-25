@@ -47,7 +47,7 @@ router.delete('/:id', async function (req, res) {
 });
 
 router.get('/:id/rev', async function (req, res) {
-  let data = await Claim.apiGetRevs(req.params.id);
+  let data = await Claim.apiGetRevs(req.params.id, req.user);
   res.json(data);
 });
 

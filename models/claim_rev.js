@@ -13,6 +13,10 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.TEXT,
       validate: validateClaim.flag.forDb,
     },
+    needsData: {
+      field: 'needs_data',
+      type: DataTypes.BOOLEAN,
+    },
     deleted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -97,6 +101,7 @@ export default function (sequelize, DataTypes) {
         parentId: claim.headId,
         blobHash: blob.hash,
         flag: data.flag,
+        needsData: data.needsData,
       }, { transaction });
 
       let subClaimIds = data.subClaimIds ? { ...data.subClaimIds } : {};
@@ -146,6 +151,7 @@ export default function (sequelize, DataTypes) {
       }
 
       data.text = this.blob.text;
+      data.needsData = this.needsData;
 
       if (this.flag) {
         data.flag = this.flag;

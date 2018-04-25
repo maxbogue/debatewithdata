@@ -4,12 +4,11 @@
     <claim-edit-block v-if="showEditBlock"
                       :claim.sync="newClaimPartial"
                       @close="showEditBlock = false" />
-    <div v-else class="claim neutral">
-      <claim-rev-content class="bubble click"
-                         :prev="claim"
-                         :curr="newClaimPartial"
-                         @click.native="showEditBlock = true" />
-    </div>
+    <claim-rev-block v-else
+                     :prev="claim"
+                     :curr="newClaimPartial"
+                     can-edit
+                     @start-editing="showEditBlock = true" />
     <points-edit v-if="initialized"
                  :curr="newClaim"
                  :prev="claim"
@@ -34,7 +33,7 @@
 
 <script>
 import ClaimEditBlock from '../ClaimEditBlock.vue';
-import ClaimRevContent from '../ClaimRevContent.vue';
+import ClaimRevBlock from '../ClaimRevBlock.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
@@ -45,7 +44,7 @@ export default {
   beforeRouteEnter: authRedirect,
   components: {
     ClaimEditBlock,
-    ClaimRevContent,
+    ClaimRevBlock,
     DeleteButton,
     DwdLoader,
     FixedBottom,

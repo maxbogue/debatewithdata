@@ -1,7 +1,7 @@
 <template>
 <div :class="$style.flagDropdown">
   <ul :class="[$style.flags, { [$style.open]: showFlags }]">
-    <li v-for="(v, k) in flags"
+    <li v-for="[k, v] in flags"
         :class="{ [$style.selected]: k === value }"
         :key="k"
         @click="selectFlag(k)">{{ v.name }}</li>
@@ -12,6 +12,9 @@
 </template>
 
 <script>
+import map from 'lodash/map';
+import sortBy from 'lodash/sortBy';
+
 import { FlagData } from '../common/flag';
 
 export default {
@@ -23,7 +26,8 @@ export default {
   }),
   computed: {
     flags: function () {
-      return FlagData;
+      let flagList = map(FlagData, (v, k) => [k, v]);
+      return sortBy(flagList, ([, v]) => v.name);
     },
   },
   methods: {

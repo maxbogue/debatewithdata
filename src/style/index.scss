@@ -156,7 +156,7 @@ a {
 }
 
 .mono {
-  font-family: "Roboto Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: $font-family-mono;
 }
 
 .click:hover {

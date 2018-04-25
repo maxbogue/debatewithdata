@@ -16,7 +16,8 @@
                 :abbreviated="abbreviated" />
   <template v-if="!abbreviated">
     <div class="info">
-      <span class="id mono">{{ id }}</span>
+      <claim-data-analysis v-if="type === 'claim'" :claim="item" />
+      <span v-else class="id mono">{{ id }}</span>
       <span class="controls">
         <icon-star :star="item.star" :url="'/api' + url" />
         <icon-history :url="urlWithTrail" />
@@ -32,6 +33,7 @@
 </template>
 
 <script>
+import ClaimDataAnalysis from './ClaimDataAnalysis.vue';
 import DwdComments from './DwdComments.vue';
 import IconComment from './IconComment.vue';
 import IconEdit from './IconEdit.vue';
@@ -44,6 +46,7 @@ const ANIMATION_DURATION_SECS = ANIMATION_DURATION_MS / 1000;
 
 export default {
   components: {
+    ClaimDataAnalysis,
     DwdComments,
     IconComment,
     IconEdit,

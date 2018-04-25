@@ -220,18 +220,22 @@ export default function (sequelize, DataTypes) {
       return data;
     };
 
-    Claim.apiGetRevs = async function (claimId) {
+    Claim.apiGetRevs = async function (claimId, user) {
+      let claim = await Claim.findById(claimId, Claim.INCLUDE(1));
       let claimRevs = await models.ClaimRev.findAll({
         where: { claimId },
         order: [['created_at', 'DESC']],
-        ...models.ClaimRev.INCLUDE(3, true),
+        ...models.ClaimRev.INCLUDE(2, true),
       });
 
-      if (claimRevs.length === 0) {
+      if (!claim || claimRevs.length === 0) {
         throw new NotFoundError('Claim not found: ' + claimId);
       }
 
-      let data = { claimRevs: [], claims: {}, sources: {} };
+      let data = { claimRevs: [], topics: {}, claims: {}, sources: {} };
+
+      // Include the claim itself for star/comment info.
+      await claim.fillData(data, 1, user);
       for (let claimRev of claimRevs) {
         await claimRev.fillData(data);
       }

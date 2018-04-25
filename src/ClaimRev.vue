@@ -1,6 +1,6 @@
 <template>
 <div>
-  <claim-rev-content class="claim block" :curr="curr" :prev="prev" />
+  <claim-rev-block :curr="curr" :prev="prev" />
   <template v-if="$store.state.singleColumn">
     <point-rev v-for="[[pId, currP, prevP], side] in zippedPointDiffs"
                :curr="currP"
@@ -23,13 +23,13 @@
 </template>
 
 <script>
-import ClaimRevContent from './ClaimRevContent.vue';
+import ClaimRevBlock from './ClaimRevBlock.vue';
 import PointRev from './PointRev.vue';
 import { diffPoints, rotateWithIndexes } from './utils';
 
 export default {
   components: {
-    ClaimRevContent,
+    ClaimRevBlock,
     PointRev,
   },
   props: {
