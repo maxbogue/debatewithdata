@@ -60,6 +60,10 @@
     flex: 1;
     font-family: $font-family-mono;
     font-size: 0.6em;
+
+    span {
+      padding: 4px;
+    }
   }
 
   .dwd-btn {

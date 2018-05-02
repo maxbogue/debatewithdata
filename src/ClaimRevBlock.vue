@@ -17,9 +17,10 @@
       <span class="del">{{ needsDataString(safePrev.needsData) }}</span>
       <span class="ins">{{ needsDataString(safeCurr.needsData) }}</span>
     </div>
-    <claim-data-analysis v-else :claim="safeCurr" />
+    <claim-data-analysis v-else :claim="safeCurr" no-color />
     <span class="controls">
-      <icon-comment :count="commentCount"
+      <icon-comment v-if="id"
+                    :count="commentCount"
                     @click.native="showComments = !showComments" />
     </span>
   </div>
@@ -34,7 +35,10 @@ import DwdFlag from './DwdFlag.vue';
 import IconComment from './IconComment.vue';
 import { diff } from './utils';
 
-const EMPTY_CLAIM = { text: '' };
+const EMPTY_CLAIM = {
+  text: '',
+  needsData: null,
+};
 
 export default {
   components: {
@@ -68,6 +72,9 @@ export default {
       return this.safeCurr.id || this.safePrev.id;
     },
     commentCount: function () {
+      if (!this.id) {
+        return 0;
+      }
       return this.lookupClaim(this.id).commentCount;
     },
     url: function () {

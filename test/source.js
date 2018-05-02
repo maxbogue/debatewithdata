@@ -317,6 +317,7 @@ describe('Source', function () {
             needsData: null,
             depth: 1,
             childCount: 1,
+            dataCounts: [1, 0],
             ...STARS_AND_COMMENTS,
           },
         },

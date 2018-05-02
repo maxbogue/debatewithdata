@@ -41,9 +41,6 @@ class Node {
   }
 
   walk(seen) {
-    if (!seen) {
-      seen = new Set();
-    }
     if (seen.has(this.id)) {
       return;
     }
@@ -105,10 +102,15 @@ class ClaimNode extends Node {
   constructor (id) {
     super(id);
     this.points = [new Set(), new Set()];
+    this.dataCounts = [0, 0];
   }
 
   getChildren() {
     return this.points.reduce(union);
+  }
+
+  getDataCounts() {
+    return this.dataCounts;
   }
 
   setChildren(points) {
@@ -117,16 +119,36 @@ class ClaimNode extends Node {
     this.points = points;
     this.update();
   }
+
+  update(seen) {
+    this.updateDataCounts();
+    super.update(seen);
+  }
+
+  updateDataCounts() {
+    let dataCounts = [0, 0];
+    for (let i = 0; i < 2; i += 1) {
+      for (let child of this.points[i]) {
+        let [f, a] = child.getDataCounts();
+        dataCounts[i] += f;
+        dataCounts[1 - i] += a;
+      }
+    }
+    this.dataCounts = dataCounts;
+  }
 }
 
 class SourceNode extends Node {
   constructor (id) {
     super(id);
-    this.children = new Set();
   }
 
   getChildren() {
-    return this.children;
+    return new Set();
+  }
+
+  getDataCounts() {
+    return [1, 0];
   }
 }
 
@@ -182,6 +204,11 @@ export class Graph {
   getCount(id) {
     let node = this.nodes.get(id);
     return node ? node.count : 0;
+  }
+
+  getDataCounts(id) {
+    let node = this.nodes.get(id);
+    return node && node.dataCounts ? node.dataCounts : [0, 0];
   }
 
   static toTopicInfo(item) {

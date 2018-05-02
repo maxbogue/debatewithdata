@@ -71,6 +71,7 @@ export const TestClaim = {
       superClaimIds: [],
       depth: 3,
       childCount: 0,
+      dataCounts: [0, 0],
       ...STARS_AND_COMMENTS,
     };
   },

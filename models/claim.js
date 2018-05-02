@@ -138,6 +138,7 @@ export default function (sequelize, DataTypes) {
       thisData.star = await this.toStarData(user);
       thisData.commentCount = await this.countComments();
       thisData.childCount = graph.getCount(this.id);
+      thisData.dataCounts = graph.getDataCounts(this.id);
 
       if (!thisData.deleted && depth > 1) {
         for (let claim of this.head.subClaims) {

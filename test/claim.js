@@ -11,6 +11,36 @@ const expect = chai.expect;
 
 const DELETE_MSG = 'Violates guidelines.';
 
+const CLAIM_DEPTH_1 = {
+  needsData: null,
+  depth: 1,
+  childCount: 0,
+  dataCounts: [0, 0],
+  ...STARS_AND_COMMENTS,
+};
+
+const CLAIM_DEPTH_2 = {
+  needsData: null,
+  subClaimIds: {},
+  sourceIds: {},
+  depth: 2,
+  childCount: 0,
+  dataCounts: [0, 0],
+  ...STARS_AND_COMMENTS,
+};
+
+const CLAIM_DEPTH_3 = {
+  needsData: null,
+  subClaimIds: {},
+  sourceIds: {},
+  superTopicIds: [],
+  superClaimIds: [],
+  depth: 3,
+  childCount: 0,
+  dataCounts: [0, 0],
+  ...STARS_AND_COMMENTS,
+};
+
 describe('Claim', function () {
   let user;
 
@@ -204,18 +234,11 @@ describe('Claim', function () {
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
+            ...CLAIM_DEPTH_3,
             id: rev.claimId,
             revId: rev.id,
             text: FOO,
             flag: Flag.AD_HOMINEM,
-            needsData: null,
-            subClaimIds: {},
-            sourceIds: {},
-            superTopicIds: [],
-            superClaimIds: [],
-            depth: 3,
-            childCount: 0,
-            ...STARS_AND_COMMENTS,
           },
         },
         topics: {},
@@ -232,21 +255,14 @@ describe('Claim', function () {
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
+            ...CLAIM_DEPTH_3,
             id: rev.claimId,
             revId: rev.id,
             text: FOO,
-            needsData: null,
-            subClaimIds: {},
-            sourceIds: {},
-            superTopicIds: [],
-            superClaimIds: [],
-            depth: 3,
-            childCount: 0,
             star: {
               count: 1,
               starred: true,
             },
-            commentCount: 0,
           },
         },
         topics: {},
@@ -256,21 +272,14 @@ describe('Claim', function () {
       expect(claimDataNoUser).to.deep.equal({
         claims: {
           [rev.claimId]: {
+            ...CLAIM_DEPTH_3,
             id: rev.claimId,
             revId: rev.id,
             text: FOO,
-            needsData: null,
-            subClaimIds: {},
-            sourceIds: {},
-            superTopicIds: [],
-            superClaimIds: [],
-            depth: 3,
-            childCount: 0,
             star: {
               count: 1,
               starred: false,
             },
-            commentCount: 0,
           },
         },
         topics: {},
@@ -297,42 +306,27 @@ describe('Claim', function () {
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
+            ...CLAIM_DEPTH_3,
             id: rev.claimId,
             revId: rev.id,
             text: FOO,
-            needsData: null,
             subClaimIds: {
               [c1.id]: true,
               [c2.id]: false,
             },
-            sourceIds: {},
-            superTopicIds: [],
-            superClaimIds: [],
-            depth: 3,
             childCount: 2,
-            ...STARS_AND_COMMENTS,
           },
           [c1.id]: {
+            ...CLAIM_DEPTH_2,
             id: c1.id,
             revId: c1.headId,
             text: BAR,
-            needsData: null,
-            subClaimIds: {},
-            sourceIds: {},
-            depth: 2,
-            childCount: 0,
-            ...STARS_AND_COMMENTS,
           },
           [c2.id]: {
+            ...CLAIM_DEPTH_2,
             id: c2.id,
             revId: c2.headId,
             text: BAZ,
-            needsData: null,
-            subClaimIds: {},
-            sourceIds: {},
-            depth: 2,
-            childCount: 0,
-            ...STARS_AND_COMMENTS,
           },
         },
         topics: {},
@@ -362,41 +356,30 @@ describe('Claim', function () {
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
+            ...CLAIM_DEPTH_3,
             id: rev.claimId,
             revId: rev.id,
             text: FOO,
-            needsData: null,
             subClaimIds: {
               [c1.id]: true,
             },
-            sourceIds: {},
-            superTopicIds: [],
-            superClaimIds: [],
-            depth: 3,
             childCount: 2,
-            ...STARS_AND_COMMENTS,
           },
           [c1.id]: {
+            ...CLAIM_DEPTH_2,
             id: c1.id,
             revId: c1.headId,
             text: BAR,
-            needsData: null,
             subClaimIds: {
               [c1a.id]: true,
             },
-            sourceIds: {},
-            depth: 2,
             childCount: 1,
-            ...STARS_AND_COMMENTS,
           },
           [c1a.id]: {
+            ...CLAIM_DEPTH_1,
             id: c1a.id,
             revId: c1a.headId,
             text: BAZ,
-            needsData: null,
-            depth: 1,
-            childCount: 0,
-            ...STARS_AND_COMMENTS,
           },
         },
         topics: {},
@@ -425,6 +408,7 @@ describe('Claim', function () {
             superClaimIds: [],
             depth: 3,
             childCount: 0,
+            dataCounts: [0, 0],
             ...STARS_AND_COMMENTS,
           },
         },
@@ -447,26 +431,20 @@ describe('Claim', function () {
       expect(claimsData).to.deep.equal({
         claims: {
           [c1r.claimId]: {
+            ...CLAIM_DEPTH_1,
             id: c1r.claimId,
             revId: c1r.id,
             text: FOO,
-            needsData: null,
-            depth: 1,
-            childCount: 0,
-            ...STARS_AND_COMMENTS,
           },
           [c2r.claimId]: {
+            ...CLAIM_DEPTH_1,
             id: c2r.claimId,
             revId: c2r.id,
             text: BAR,
-            needsData: null,
-            depth: 1,
-            childCount: 0,
             star: {
               count: 1,
               starred: true,
             },
-            commentCount: 0,
           },
         },
         topics: {},
@@ -486,13 +464,10 @@ describe('Claim', function () {
       expect(claimsData).to.deep.equal({
         claims: {
           [c1r.claimId]: {
+            ...CLAIM_DEPTH_1,
             id: c1r.claimId,
             revId: c1r.id,
             text: FOO,
-            needsData: null,
-            depth: 1,
-            childCount: 0,
-            ...STARS_AND_COMMENTS,
           },
         },
         topics: {},
@@ -537,13 +512,10 @@ describe('Claim', function () {
         }],
         claims: {
           [r2.claimId]: {
+            ...CLAIM_DEPTH_1,
             id: r2.claimId,
             revId: r2.id,
             text: BAR,
-            needsData: null,
-            depth: 1,
-            childCount: 0,
-            ...STARS_AND_COMMENTS,
           },
         },
         topics: {},
