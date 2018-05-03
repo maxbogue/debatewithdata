@@ -1,11 +1,12 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
+import { STARS_AND_COMMENTS, registerAndVerifyUser } from './utils';
 import { Claim, Source, SourceRev } from '../models';
 import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError } from '../common/validate';
-import { STARS_AND_COMMENTS, registerAndVerifyUser } from './utils';
 import { randomHexString } from '../models/utils';
+import { serializeTable } from '../common/utils';
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -294,7 +295,7 @@ describe('Source', function () {
       for (let i = 0; i < 10; i += 1) {
         tabData.push(randomHexString(6));
       }
-      let table = tabData.join(',');
+      let table = serializeTable('title', [tabData]);
       let sourceRev = await Source.apiCreate(user, {
         ...MISC,
         table,

@@ -7,15 +7,16 @@ export async function asyncForOwn(obj, f) {
   }
 }
 
-function stripCommas(s) {
-  return s.replace(/,/g, '');
+function stripTabs(s) {
+  return s.replace(/\t/g, '');
 }
 
 export function deserializeTable(tableString) {
-  return tableString.split('\n').map((row) => row.split(','));
+  const separator = tableString.includes('\t') ? '\t' : ',';
+  return tableString.split('\n').map((row) => row.split(separator));
 }
 
 export function serializeTable(title, rows) {
-  return [stripCommas(title)].concat(rows.map(
-      (row) => row.map(stripCommas).join(','))).join('\n');
+  return [stripTabs(title)].concat(rows.map(
+      (row) => row.map(stripTabs).join('\t'))).join('\n');
 }
