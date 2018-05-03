@@ -10,6 +10,7 @@ import validate from 'validate.js';
 
 import { FlagData } from './flag';
 import { SourceType, SOURCE_TYPES } from './constants';
+import { deserializeTable } from './utils';
 
 validate.validators.format.message = 'has invalid format: "%{value}"';
 validate.validators.length.tooShort =
@@ -21,12 +22,32 @@ const ID_FORMAT = {
   pattern: /[0-9a-f]{12}/,
   message: 'must be 12 hex characters.',
 };
+
 const REV_ID_FORMAT = {
   pattern: /[0-9a-f]{24}/,
   message: 'must be 24 hex characters.',
 };
-const CUSTOM_VALIDATORS =
-    ['presenceIff', 'presenceOnlyIf', 'validIfDeleted', 'custom', 'arrayOf'];
+
+const IS_OPTIONAL_BOOLEAN = {
+  inclusion: {
+    within: [true, false],
+    message: '^must be a boolean',
+  },
+};
+
+const IS_BOOLEAN = {
+  ...IS_OPTIONAL_BOOLEAN,
+  presence: true,
+};
+
+const CUSTOM_VALIDATORS = [
+  'presenceIff',
+  'presenceOnlyIf',
+  'validIfDeleted',
+  'custom',
+  'arrayOf',
+  'objectOf',
+];
 
 export class ValidationError extends Error {
   constructor(key, message) {
@@ -95,6 +116,23 @@ function constraintToValidator(constraint, key) {
         elementValidator(e, item);
       });
     }
+    if (validate.isDefined(value) && constraint.objectOf) {
+      if (!validate.isObject(value)) {
+        throw new ValidationError(key, 'must be an object.');
+      }
+      forEach(value, (v, k) => {
+        if (constraint.objectOf.key) {
+          let keyValidator = constraintToValidator(
+              constraint.objectOf.key, `${key}.${k}`);
+          keyValidator(k, item);
+        }
+        if (constraint.objectOf.value) {
+          let valueValidator = constraintToValidator(
+              constraint.objectOf.value, `${key}.${k}`);
+          valueValidator(v, item);
+        }
+      });
+    }
     let errors = validate.single(value, omit(constraint, CUSTOM_VALIDATORS));
     if (errors) {
       throw new ValidationError(key, errors[0]);
@@ -108,6 +146,15 @@ function constraintToValidator(constraint, key) {
   validator.emptyAsNull = (val) => validator(val === '' ? null : val);
   return validator;
 }
+
+const commonConstraints = {
+  baseRev: { format: REV_ID_FORMAT },
+  deleteMessage: {
+    validIfDeleted: true,
+    presenceIff: { deleted: true },
+    length: { minimum: 10 },
+  },
+};
 
 /////////////
 // Sources //
@@ -132,16 +179,35 @@ function validateDate(s, key) {
   }
 }
 
-const sourceConstraints = {
-  baseRev: { format: REV_ID_FORMAT },
-  deleteMessage: {
-    validIfDeleted: true,
-    presenceIff: { deleted: true },
-    length: { minimum: 10 },
-  },
+function validateTable(t, key) {
+  let table = deserializeTable(t);
+  if (table.length < 2) {
+    throw new ValidationError(key, 'must have a title and data.');
+  }
+  if (table[0].length !== 1) {
+    throw new ValidationError(key, 'missing title.');
+  }
+  let rows = table.slice(1);
+  if (rows[0].length <2) {
+    throw new ValidationError(key, 'rows must have two columns.');
+  }
+  if (!rows.every((row) => row.length === rows[0].length)) {
+    throw new ValidationError(key, 'rows must all be the same length.');
+  }
+}
+
+function validateChart(c, key) {
+  if (typeof c !== 'object') {
+    throw new ValidationError(key, 'must be an object.');
+  }
+}
+
+export const sourceConstraints = {
   url: { presence: true, url: true },
   text: { presence: true, length: { minimum: 10 } },
   date: { custom: validateDate },
+  table: { custom: validateTable },
+  chart: { custom: validateChart },
   type: { presence: true, inclusion: SOURCE_TYPES },
   institution: {
     presenceIff: {
@@ -157,7 +223,10 @@ const sourceConstraints = {
   },
 };
 
-const sourceValidators = mapValues(sourceConstraints, constraintToValidator);
+const sourceValidators = mapValues({
+  ...commonConstraints,
+  ...sourceConstraints,
+}, constraintToValidator);
 
 export function validateSource(source) {
   forOwn(sourceValidators, (f, k) => f(source[k], source));
@@ -168,18 +237,32 @@ validate.extend(validateSource, sourceValidators);
 // Claims //
 ////////////
 
-const claimConstraints = {
-  baseRev: { format: REV_ID_FORMAT },
-  deleteMessage: {
-    validIfDeleted: true,
-    presenceIff: { deleted: true },
-    length: { minimum: 10 },
-  },
+export const claimConstraints = {
   text: { presence: true, length: { minimum: 10 } },
   flag: { inclusion: { within: FlagData } },
+  needsData: IS_OPTIONAL_BOOLEAN,
+  subClaimIds: {
+    objectOf: {
+      key: {
+        format: ID_FORMAT,
+      },
+      value: IS_BOOLEAN,
+    },
+  },
+  sourceIds: {
+    objectOf: {
+      key: {
+        format: ID_FORMAT,
+      },
+      value: IS_BOOLEAN,
+    },
+  },
 };
 
-const claimValidators = mapValues(claimConstraints, constraintToValidator);
+const claimValidators = mapValues({
+  ...commonConstraints,
+  ...claimConstraints,
+}, constraintToValidator);
 
 export function validateClaim(claim) {
   forOwn(claimValidators, (f, k) => f(claim[k], claim));
@@ -195,13 +278,7 @@ const TOPIC_ID_FORMAT = {
   message: 'must be lowercase letters, numbers, or dashes.',
 };
 
-const topicConstraints = {
-  baseRev: { format: REV_ID_FORMAT },
-  deleteMessage: {
-    validIfDeleted: true,
-    presenceIff: { deleted: true },
-    length: { minimum: 10 },
-  },
+export const topicConstraints = {
   id: { format: TOPIC_ID_FORMAT },
   title: { presence: { allowEmpty: false } },
   text: { presence: true },
@@ -219,7 +296,10 @@ const topicConstraints = {
   },
 };
 
-const topicValidators = mapValues(topicConstraints, constraintToValidator);
+const topicValidators = mapValues({
+  ...commonConstraints,
+  ...topicConstraints,
+}, constraintToValidator);
 
 export function validateTopic(topic) {
   forOwn(topicValidators, (f, k) => f(topic[k], topic));
