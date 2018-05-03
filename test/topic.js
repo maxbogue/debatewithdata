@@ -1,7 +1,8 @@
 import chai from 'chai';
 
 import { Claim, Topic, TopicRev } from '../models';
-import { NotFoundError } from '../api/error';
+import { ConflictError, NotFoundError } from '../api/error';
+import { ValidationError } from '../common/validate';
 import { FOO, BAR, BAZ, STARS_AND_COMMENTS,
   registerAndVerifyUser } from './utils';
 
@@ -164,6 +165,7 @@ describe('Topic', function () {
         text: BAZ,
       });
       let r2 = await Topic.apiUpdate(ID, user, {
+        baseRev: r1.id,
         title: TITLE2,
         text: BAR,
         claimIds: [c2r.claimId],
@@ -194,6 +196,7 @@ describe('Topic', function () {
         subTopicIds: [],
       });
       let r2 = await Topic.apiUpdate(ID, user, {
+        baseRev: r1.id,
         title: TITLE,
         text: FOO,
         claimIds: [],
@@ -234,6 +237,7 @@ describe('Topic', function () {
         subTopicIds: [],
       });
       let r2 = await Topic.apiUpdate(ID, user, {
+        baseRev: r1.id,
         title: TITLE,
         text: FOO,
         claimIds: [],
@@ -257,6 +261,50 @@ describe('Topic', function () {
 
       let topic = await Topic.findById(r2.topicId);
       expect(topic.headId).to.equal(r2.id);
+    });
+
+    it('baseRev', async function () {
+      let r1 = await Topic.apiCreate(user, {
+        id: ID,
+        title: TITLE,
+        text: FOO,
+        claimIds: [],
+        subTopicIds: [],
+      });
+      await Topic.apiUpdate(ID, user, {
+        baseRev: r1.id,
+        title: TITLE,
+        text: FOO,
+        claimIds: [],
+        subTopicIds: [],
+      });
+
+      // No baseRev.
+      await expect(Topic.apiUpdate(ID, user, {
+        id: ID,
+        title: TITLE,
+        text: FOO,
+        claimIds: [],
+        subTopicIds: [],
+      })).to.be.rejectedWith(ValidationError);
+      // Garbage baseRev.
+      await expect(Topic.apiUpdate(ID, user, {
+        baseRev: 'jklsahfjklashd',
+        id: ID,
+        title: TITLE,
+        text: FOO,
+        claimIds: [],
+        subTopicIds: [],
+      })).to.be.rejectedWith(ValidationError);
+      // Invalid baseRev.
+      await expect(Topic.apiUpdate(ID, user, {
+        baseRev: r1.id,
+        id: ID,
+        title: TITLE,
+        text: FOO,
+        claimIds: [],
+        subTopicIds: [],
+      })).to.be.rejectedWith(ConflictError);
     });
   });
 
@@ -476,6 +524,7 @@ describe('Topic', function () {
         claimIds: [],
       });
       let r2 = await Topic.apiUpdate(ID, user, {
+        baseRev: r1.id,
         title: TITLE,
         text: BAR,
         subTopicIds: [],

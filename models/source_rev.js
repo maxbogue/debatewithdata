@@ -124,8 +124,6 @@ export default function (sequelize, DataTypes) {
     };
 
     SourceRev.createForApi = async function (source, user, data, transaction) {
-      validateSource(data);
-
       if (source.head && sourcesAreEqual(data, source.head.toCoreData())) {
         return source.head;
       }

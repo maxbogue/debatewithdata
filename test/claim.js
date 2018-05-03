@@ -2,7 +2,7 @@ import chai from 'chai';
 
 import { Claim, ClaimRev } from '../models';
 import { Flag } from '../common/flag';
-import { NotFoundError } from '../api/error';
+import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError } from '../common/validate';
 import { FOO, BAR, BAZ, STARS_AND_COMMENTS,
   registerAndVerifyUser } from './utils';
@@ -126,6 +126,7 @@ describe('Claim', function () {
       expect(claim.headId).to.equal(r1.id);
 
       let r2 = await Claim.apiUpdate(r1.claimId, user, {
+        baseRev: r1.id,
         text: BAR,
       });
       await r2.reload(ClaimRev.INCLUDE(2));
@@ -148,6 +149,7 @@ describe('Claim', function () {
       expect(claim.headId).to.equal(r1.id);
 
       let r2 = await Claim.apiUpdate(r1.claimId, user, {
+        baseRev: r1.id,
         text: FOO,
         newSubClaims: [{
           text: BAR,
@@ -177,11 +179,38 @@ describe('Claim', function () {
       let c2 = c1r.subClaims[0];
 
       await expect(Claim.apiUpdate(c2.id, user, {
+        baseRev: c2.headId,
         text: BAR,
         subClaimIds: {
           [c1r.claimId]: true,
         },
       })).to.be.rejectedWith(ValidationError);
+    });
+
+    it('baseRev', async function () {
+      let r1 = await Claim.apiCreate(user, {
+        text: FOO,
+      });
+      let claimId = r1.claimId;
+      await Claim.apiUpdate(claimId, user, {
+        baseRev: r1.id,
+        text: BAR,
+      });
+
+      // No baseRev.
+      await expect(Claim.apiUpdate(claimId, user, {
+        text: FOO,
+      })).to.be.rejectedWith(ValidationError);
+      // Garbage baseRev.
+      await expect(Claim.apiUpdate(claimId, user, {
+        baseRev: 'jklsahfjklashd',
+        text: FOO,
+      })).to.be.rejectedWith(ValidationError);
+      // Invalid baseRev.
+      await expect(Claim.apiUpdate(claimId, user, {
+        baseRev: r1.id,
+        text: FOO,
+      })).to.be.rejectedWith(ConflictError);
     });
   });
 
@@ -485,6 +514,7 @@ describe('Claim', function () {
       let claimId = r1.claimId;
 
       let r2 = await Claim.apiUpdate(claimId, user, {
+        baseRev: r1.id,
         text: BAR,
       });
       await r2.reload(ClaimRev.INCLUDE(2));

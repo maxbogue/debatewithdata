@@ -1,5 +1,5 @@
-import { NotFoundError } from '../api/error';
-import { ValidationError } from '../common/validate';
+import { ConflictError, NotFoundError } from '../api/error';
+import { ValidationError, validateSource } from '../common/validate';
 import { genId } from './utils';
 
 export default function (sequelize, DataTypes) {
@@ -60,6 +60,8 @@ export default function (sequelize, DataTypes) {
         });
       }
 
+      validateSource(data);
+
       let source = await Source.create({}, { transaction });
       return models.SourceRev.createForApi(source, user, data, transaction);
     };
@@ -74,6 +76,16 @@ export default function (sequelize, DataTypes) {
       let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
+      }
+
+      validateSource(data);
+      if (!data.baseRev) {
+        throw new ValidationError('baseRev', 'required for update operations.');
+      }
+
+      if (data.baseRev !== source.headId) {
+        let newData = await Source.apiGet(sourceId, user);
+        throw new ConflictError('Base item changed.', newData);
       }
 
       return models.SourceRev.createForApi(source, user, data, transaction);

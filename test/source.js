@@ -2,7 +2,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
 import { Claim, Source, SourceRev } from '../models';
-import { NotFoundError } from '../api/error';
+import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError } from '../common/validate';
 import { STARS_AND_COMMENTS, registerAndVerifyUser } from './utils';
 import { randomHexString } from '../models/utils';
@@ -154,7 +154,10 @@ describe('Source', function () {
       let source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
-      let rev2 = await Source.apiUpdate(source.id, user, MISC2);
+      let rev2 = await Source.apiUpdate(source.id, user, {
+        ...MISC2,
+        baseRev: rev1.id,
+      });
       await rev2.reload(SourceRev.INCLUDE());
       expect(rev2.deleted).to.be.false;
       expect(rev2.userId).to.equal(user.id);
@@ -174,9 +177,35 @@ describe('Source', function () {
       let source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
-      let rev2 = await Source.apiUpdate(source.id, user, MISC);
+      let rev2 = await Source.apiUpdate(source.id, user, {
+        ...MISC,
+        baseRev: rev1.id,
+      });
       expect(rev2.id).to.equal(rev1.id);
       expect(rev2.parentId).to.be.null;
+    });
+
+    it('baseRev', async function () {
+      let rev1 = await Source.apiCreate(user, MISC);
+      let sourceId = rev1.sourceId;
+      await Source.apiUpdate(sourceId, user, {
+        ...MISC2,
+        baseRev: rev1.id,
+      });
+
+      // No baseRev.
+      await expect(Source.apiUpdate(sourceId, user, MISC))
+        .to.be.rejectedWith(ValidationError);
+      // Garbage baseRev.
+      await expect(Source.apiUpdate(sourceId, user, {
+        ...MISC,
+        baseRev: 'jklsahfjklashd',
+      })).to.be.rejectedWith(ValidationError);
+      // Invalid baseRev.
+      await expect(Source.apiUpdate(sourceId, user, {
+        ...MISC,
+        baseRev: rev1.id,
+      })).to.be.rejectedWith(ConflictError);
     });
   });
 
@@ -366,7 +395,10 @@ describe('Source', function () {
     it('change', async function () {
       let r1 = await Source.apiCreate(user, MISC);
       let sourceId = r1.sourceId;
-      let r2 = await Source.apiUpdate(sourceId, user, MISC2);
+      let r2 = await Source.apiUpdate(sourceId, user, {
+        ...MISC2,
+        baseRev: r1.id,
+      });
 
       let data = await Source.apiGetRevs(sourceId);
       expect(data).to.deep.equal({

@@ -6,6 +6,7 @@
        @keydown.esc="cancel">
     <form-valid ref="form"
                 class="dwd-modal-container"
+                :style="maxWidth ? { maxWidth } : {}"
                 @submit="close"
                 @click.native.stop>
       <slot></slot>
@@ -23,6 +24,7 @@ export default {
   },
   props: {
     show: { type: Boolean, required: true },
+    maxWidth: { type: String, default: null },
   },
   methods: {
     submit: function () {

@@ -3,7 +3,7 @@ import partition from 'lodash/partition';
 import zipWith from 'lodash/zipWith';
 
 import graph, { Graph } from '../common/graph';
-import { NotFoundError } from '../api/error';
+import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError, validateClaim } from '../common/validate';
 import { genId } from './utils';
 
@@ -83,11 +83,19 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      validateClaim(data);
-
       const claim = await Claim.findById(claimId, Claim.INCLUDE(1));
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
+      }
+
+      validateClaim(data);
+      if (!data.baseRev) {
+        throw new ValidationError('baseRev', 'required for update operations.');
+      }
+
+      if (data.baseRev !== claim.headId) {
+        let newData = await Claim.apiGet(claimId, user);
+        throw new ConflictError('Base item changed.', newData);
       }
 
       return models.ClaimRev.createForApi(claim, user, data, transaction);

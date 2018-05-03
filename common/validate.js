@@ -21,6 +21,10 @@ const ID_FORMAT = {
   pattern: /[0-9a-f]{12}/,
   message: 'must be 12 hex characters.',
 };
+const REV_ID_FORMAT = {
+  pattern: /[0-9a-f]{24}/,
+  message: 'must be 24 hex characters.',
+};
 const CUSTOM_VALIDATORS =
     ['presenceIff', 'presenceOnlyIf', 'validIfDeleted', 'custom', 'arrayOf'];
 
@@ -129,6 +133,7 @@ function validateDate(s, key) {
 }
 
 const sourceConstraints = {
+  baseRev: { format: REV_ID_FORMAT },
   deleteMessage: {
     validIfDeleted: true,
     presenceIff: { deleted: true },
@@ -164,6 +169,7 @@ validate.extend(validateSource, sourceValidators);
 ////////////
 
 const claimConstraints = {
+  baseRev: { format: REV_ID_FORMAT },
   deleteMessage: {
     validIfDeleted: true,
     presenceIff: { deleted: true },
@@ -190,6 +196,7 @@ const TOPIC_ID_FORMAT = {
 };
 
 const topicConstraints = {
+  baseRev: { format: REV_ID_FORMAT },
   deleteMessage: {
     validIfDeleted: true,
     presenceIff: { deleted: true },

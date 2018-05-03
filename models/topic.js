@@ -1,5 +1,5 @@
 import graph, { Graph } from '../common/graph';
-import { NotFoundError } from '../api/error';
+import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError, validateTopic } from '../common/validate';
 
 export default function (sequelize, DataTypes) {
@@ -82,11 +82,19 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      validateTopic(data);
-
       const topic = await Topic.findById(id, Topic.INCLUDE(3));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
+      }
+
+      validateTopic(data);
+      if (!data.baseRev) {
+        throw new ValidationError('baseRev', 'required for update operations.');
+      }
+
+      if (data.baseRev !== topic.headId) {
+        let newData = await Topic.apiGet(id, user);
+        throw new ConflictError('Base item changed.', newData);
       }
 
       return models.TopicRev.createForApi(topic, user, data, transaction);

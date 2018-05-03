@@ -75,6 +75,7 @@ export default {
       if (this.id) {
         action = 'updateSource';
         payload.id = this.id;
+        payload.source.baseRev = this.source.revId;
       }
       this.$store.dispatch(action, payload).then((id) => {
         this.$router.push(this.sourceUrl(id, this.trail));

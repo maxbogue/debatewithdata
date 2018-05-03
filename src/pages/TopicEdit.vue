@@ -206,9 +206,10 @@ export default {
           newClaims: this.newClaims,
         },
       };
-      if (this.topic) {
+      if (this.id) {
         action = 'updateTopic';
         payload.id = this.topic.id;
+        payload.topic.baseRev = this.topic.revId;
       }
       this.$store.dispatch(action, payload).then((id) => {
         this.$router.push(this.topicUrl(id), this.trail);

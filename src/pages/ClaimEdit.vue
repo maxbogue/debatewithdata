@@ -96,6 +96,7 @@ export default {
       if (this.id) {
         action = 'updateClaim';
         payload.id = this.id;
+        payload.claim.baseRev = this.claim.revId;
       }
       this.$store.dispatch(action, payload).then((id) => {
         this.$router.push(this.claimUrl(id, this.trail));

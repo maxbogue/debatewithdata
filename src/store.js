@@ -12,6 +12,9 @@ import { validateClaim, validateSource,
 
 Vue.use(Vuex);
 
+const CONFLICT_ERROR_MESSAGE = 'Item was modified since you began editing.'
+  + ' Please review your changes against the new version and try again.';
+
 function getRootTopics(topics) {
   let rootTopics = clone(topics);
   forOwn(topics, (topic) => {
@@ -77,6 +80,7 @@ export default new Vuex.Store({
     sourcesLoaded: false,
     rootTopics: {},
     user: null,
+    errorMessage: '',
     singleColumn: windowIsSingleColumn(),
     itemBlocks: [],
     itemLocations: {},
@@ -114,6 +118,9 @@ export default new Vuex.Store({
     },
     setUser: function (state, user) {
       state.user = user;
+    },
+    setErrorMessage: function (state, errorMessage) {
+      state.errorMessage = errorMessage;
     },
     setSingleColumn: function (state, isSingleColumn) {
       state.singleColumn = isSingleColumn;
@@ -158,6 +165,12 @@ export default new Vuex.Store({
       return axios.put('/api/topic/' + id, topic).then((res) => {
         commit('setData', res.data);
         return id;
+      }).catch((err) => {
+        if (err.response.status === 409) {
+          commit('setData', err.response.data.data);
+          commit('setErrorMessage', CONFLICT_ERROR_MESSAGE);
+        }
+        throw err;
       });
     },
     addTopic: function ({ commit }, { topic }) {
@@ -189,6 +202,12 @@ export default new Vuex.Store({
       return axios.put('/api/claim/' + id, copyClaim(claim)).then((res) => {
         commit('setData', res.data);
         return id;
+      }).catch((err) => {
+        if (err.response.status === 409) {
+          commit('setData', err.response.data.data);
+          commit('setErrorMessage', CONFLICT_ERROR_MESSAGE);
+        }
+        throw err;
       });
     },
     addClaim: function ({ commit }, { claim }) {
@@ -220,6 +239,12 @@ export default new Vuex.Store({
       return axios.put('/api/data/' + id, source).then((res) => {
         commit('setData', res.data);
         return id;
+      }).catch((err) => {
+        if (err.response.status === 409) {
+          commit('setData', err.response.data.data);
+          commit('setErrorMessage', CONFLICT_ERROR_MESSAGE);
+        }
+        throw err;
       });
     },
     addSource: function ({ commit }, { source }) {
