@@ -15,6 +15,8 @@ import { deserializeTable } from './utils';
 validate.validators.format.message = 'has invalid format: "%{value}"';
 validate.validators.length.tooShort =
     'too short (minimum is %{count} characters).';
+validate.validators.length.tooLong =
+    'too long (maximum is %{count} characters).';
 validate.validators.presence.options = { message: 'can\'t be blank.' };
 validate.validators.url.options = { message: 'must be a valid URL.' };
 
@@ -208,8 +210,18 @@ function validateChart(c, key) {
 
 export const sourceConstraints = {
   id: { format: ID_FORMAT },
-  url: { presence: true, url: true },
-  text: { presence: true, length: { minimum: 10 } },
+  url: {
+    presence: true,
+    url: true,
+    length: { maximum: 1024 },
+  },
+  text: {
+    presence: true,
+    length: {
+      minimum: 10,
+      maximum: 1024,
+    },
+  },
   date: { custom: validateDate },
   table: { custom: validateTable },
   chart: { custom: validateChart },
@@ -218,13 +230,19 @@ export const sourceConstraints = {
     presenceIff: {
       type: [SourceType.RESEARCH, SourceType.AUTHORITY],
     },
-    length: { minimum: 3 },
+    length: {
+      minimum: 3,
+      maximum: 128,
+    },
   },
   publication: {
     presenceIff: {
       type: [SourceType.RESEARCH, SourceType.ARTICLE],
     },
-    length: { minimum: 3 },
+    length: {
+      minimum: 3,
+      maximum: 128,
+    },
   },
 };
 
@@ -244,7 +262,13 @@ validate.extend(validateSource, sourceValidators);
 
 export const claimConstraints = {
   id: { format: ID_FORMAT },
-  text: { presence: true, length: { minimum: 10 } },
+  text: {
+    presence: true,
+    length: {
+      minimum: 10,
+      maximum: 1024,
+    },
+  },
   flag: { inclusion: { within: FlagData } },
   needsData: IS_OPTIONAL_BOOLEAN,
   subClaimIds: {
@@ -290,8 +314,20 @@ const TOPIC_ID_FORMAT = {
 
 export const topicConstraints = {
   id: { format: TOPIC_ID_FORMAT },
-  title: { presence: { allowEmpty: false } },
-  text: { presence: true },
+  title: {
+    presence: { allowEmpty: false },
+    length: {
+      minimum: 3,
+      maximum: 128,
+    },
+  },
+  text: {
+    presence: true,
+    length: {
+      minimum: 10,
+      maximum: 1024,
+    },
+  },
   subTopicIds: {
     default: () => [],
     arrayOf: {
