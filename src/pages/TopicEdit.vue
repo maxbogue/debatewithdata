@@ -86,7 +86,7 @@
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
-      <button :disabled="showEditBlock"
+      <button :disabled="showEditBlock || noChange"
               type="button"
               class="dwd-btn pink-dark"
               @click="submit">Submit</button>
@@ -111,6 +111,7 @@ import TopicRevContent from '../TopicRevContent.vue';
 import {
   authRedirect, diffIdLists, pipe, stableRandom, starCount, starred
 } from '../utils';
+import { topicsAreEqual } from '../../common/equality';
 
 export default {
   beforeRouteEnter: authRedirect,
@@ -158,6 +159,18 @@ export default {
     needsData: function () {
       return this.id && !this.topic;
     },
+    newTopic: function () {
+      return {
+        ...this.newTopicPartial,
+        subTopicIds: filter(this.subTopicIds, this.lookupTopic),
+        claimIds: filter(this.claimIds, this.lookupClaim),
+        newSubTopics: this.newSubTopics,
+        newClaims: this.newClaims,
+      };
+    },
+    noChange: function () {
+      return topicsAreEqual(this.topic, this.newTopic);
+    },
     trail: function () {
       return this.parseTrail(this.$route.query.trail);
     },
@@ -197,15 +210,7 @@ export default {
     },
     submit: function () {
       let action = 'addTopic';
-      let payload = {
-        topic: {
-          ...this.newTopicPartial,
-          subTopicIds: filter(this.subTopicIds, this.lookupTopic),
-          claimIds: filter(this.claimIds, this.lookupClaim),
-          newSubTopics: this.newSubTopics,
-          newClaims: this.newClaims,
-        },
-      };
+      let payload = { topic: this.newTopic };
       if (this.id) {
         action = 'updateTopic';
         payload.id = this.topic.id;

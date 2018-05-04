@@ -47,6 +47,7 @@ const CUSTOM_VALIDATORS = [
   'custom',
   'arrayOf',
   'objectOf',
+  'default',
 ];
 
 export class ValidationError extends Error {
@@ -101,6 +102,9 @@ function constraintToValidator(constraint, key) {
       }
       if (constraint.presenceOnlyIf) {
         validatePresenceIf(key, value, item, constraint.presenceOnlyIf, false);
+      }
+      if (constraint.default && !validate.isDefined(value)) {
+        item[key] = constraint.default();
       }
     }
     if (validate.isDefined(value) && constraint.custom) {
@@ -203,6 +207,7 @@ function validateChart(c, key) {
 }
 
 export const sourceConstraints = {
+  id: { format: ID_FORMAT },
   url: { presence: true, url: true },
   text: { presence: true, length: { minimum: 10 } },
   date: { custom: validateDate },
@@ -238,10 +243,12 @@ validate.extend(validateSource, sourceValidators);
 ////////////
 
 export const claimConstraints = {
+  id: { format: ID_FORMAT },
   text: { presence: true, length: { minimum: 10 } },
   flag: { inclusion: { within: FlagData } },
   needsData: IS_OPTIONAL_BOOLEAN,
   subClaimIds: {
+    default: () => ({}),
     objectOf: {
       key: {
         format: ID_FORMAT,
@@ -250,6 +257,7 @@ export const claimConstraints = {
     },
   },
   sourceIds: {
+    default: () => ({}),
     objectOf: {
       key: {
         format: ID_FORMAT,
@@ -257,6 +265,8 @@ export const claimConstraints = {
       value: IS_BOOLEAN,
     },
   },
+  newSubClaims: {},
+  newSources: {},
 };
 
 const claimValidators = mapValues({
@@ -283,17 +293,19 @@ export const topicConstraints = {
   title: { presence: { allowEmpty: false } },
   text: { presence: true },
   subTopicIds: {
-    presence: true,
+    default: () => [],
     arrayOf: {
       format: TOPIC_ID_FORMAT,
     },
   },
   claimIds: {
-    presence: true,
+    default: () => [],
     arrayOf: {
       format: ID_FORMAT,
     },
   },
+  newSubTopics: {},
+  newClaims: {},
 };
 
 const topicValidators = mapValues({

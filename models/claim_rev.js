@@ -138,7 +138,7 @@ export default function (sequelize, DataTypes) {
       return claimRev;
     };
 
-    ClaimRev.prototype.toCoreData = function (recurse=false) {
+    ClaimRev.prototype.toCoreData = function (recurse=true) {
       let data = {
         id: this.claimId,
         revId: this.id,
@@ -173,7 +173,7 @@ export default function (sequelize, DataTypes) {
 
     // Only called for apiGetRevs.
     ClaimRev.prototype.fillData = async function (data) {
-      let thisData = this.toCoreData(true);
+      let thisData = this.toCoreData();
       thisData.username = this.user.username;
       thisData.createdAt = this.created_at;
 

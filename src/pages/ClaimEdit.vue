@@ -21,7 +21,7 @@
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
-      <button :disabled="showEditBlock"
+      <button :disabled="showEditBlock || noChange"
               type="button"
               class="dwd-btn blue-dark"
               @click="submit">Submit</button>
@@ -39,6 +39,7 @@ import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import PointsEdit from '../PointsEdit.vue';
 import { authRedirect, combineAndSortPoints, splitPoints } from '../utils';
+import { claimsAreEqual } from '../../common/equality';
 
 export default {
   beforeRouteEnter: authRedirect,
@@ -73,6 +74,9 @@ export default {
         ...this.newClaimPartial,
         ...splitPoints(this.points),
       };
+    },
+    noChange: function () {
+      return claimsAreEqual(this.claim, this.newClaim);
     },
     trail: function () {
       return this.parseTrail(this.$route.query.trail);

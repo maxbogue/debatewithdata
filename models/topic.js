@@ -1,6 +1,7 @@
 import graph, { Graph } from '../common/graph';
 import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError, validateTopic } from '../common/validate';
+import { topicsAreEqual } from '../common/equality';
 
 export default function (sequelize, DataTypes) {
   const Topic = sequelize.define('topic', {
@@ -82,7 +83,7 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      const topic = await Topic.findById(id, Topic.INCLUDE(3));
+      const topic = await Topic.findById(id, Topic.INCLUDE(2));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
@@ -95,6 +96,10 @@ export default function (sequelize, DataTypes) {
       if (data.baseRev !== topic.headId) {
         let newData = await Topic.apiGet(id, user);
         throw new ConflictError('Base item changed.', newData);
+      }
+
+      if (topicsAreEqual(data, topic.head.toCoreData())) {
+        return topic.head;
       }
 
       return models.TopicRev.createForApi(topic, user, data, transaction);

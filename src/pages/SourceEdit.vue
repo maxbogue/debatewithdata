@@ -14,7 +14,7 @@
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
-      <button :disabled="showEditBlock"
+      <button :disabled="showEditBlock || noChange"
               type="submit"
               class="dwd-btn green-dark">Submit</button>
     </div>
@@ -32,6 +32,7 @@ import DwdLoader from '../DwdLoader.vue';
 import SourceEditBlock from '../SourceEditBlock.vue';
 import SourceRevContent from '../SourceRevContent.vue';
 import { authRedirect } from '../utils';
+import { sourcesAreEqual } from '../../common/equality';
 
 export default {
   beforeRouteEnter: authRedirect,
@@ -55,6 +56,9 @@ export default {
     },
     needsData: function () {
       return this.id && !this.source;
+    },
+    noChange: function () {
+      return sourcesAreEqual(this.source, this.newSource);
     },
     trail: function () {
       return this.parseTrail(this.$route.query.trail);

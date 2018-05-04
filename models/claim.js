@@ -6,6 +6,7 @@ import graph, { Graph } from '../common/graph';
 import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError, validateClaim } from '../common/validate';
 import { genId } from './utils';
+import { claimsAreEqual } from '../common/equality';
 
 export default function (sequelize, DataTypes) {
   const Claim = sequelize.define('claim', {
@@ -83,7 +84,7 @@ export default function (sequelize, DataTypes) {
         });
       }
 
-      const claim = await Claim.findById(claimId, Claim.INCLUDE(1));
+      const claim = await Claim.findById(claimId, Claim.INCLUDE(2));
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
       }
@@ -96,6 +97,10 @@ export default function (sequelize, DataTypes) {
       if (data.baseRev !== claim.headId) {
         let newData = await Claim.apiGet(claimId, user);
         throw new ConflictError('Base item changed.', newData);
+      }
+
+      if (claimsAreEqual(data, claim.head.toCoreData())) {
+        return claim.head;
       }
 
       return models.ClaimRev.createForApi(claim, user, data, transaction);

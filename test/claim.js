@@ -187,6 +187,16 @@ describe('Claim', function () {
       })).to.be.rejectedWith(ValidationError);
     });
 
+    it('no change no-op', async function () {
+      let r1 = await Claim.apiCreate(user, { text: FOO });
+      let r2 = await Claim.apiUpdate(r1.claimId, user, {
+        baseRev: r1.id,
+        text: FOO,
+      });
+      expect(r2.id).to.equal(r1.id);
+      expect(r2.parentId).to.be.null;
+    });
+
     it('baseRev', async function () {
       let r1 = await Claim.apiCreate(user, {
         text: FOO,

@@ -1,28 +1,5 @@
-import isEqual from 'lodash/isEqual';
-import pick from 'lodash/pick';
-
 import { genRevId } from './utils';
 import { validateSource } from '../common/validate';
-
-const SOURCE_EQUALITY_FIELDS = [
-  'url',
-  'text',
-  'date',
-  'table',
-  'chart',
-  'type',
-  'institution',
-  'publication',
-  'firstHand',
-  'deleted',
-  'deleteMessage',
-];
-
-function sourcesAreEqual(s1, s2) {
-  let filtered1 = pick(s1, SOURCE_EQUALITY_FIELDS);
-  let filtered2 = pick(s2, SOURCE_EQUALITY_FIELDS);
-  return isEqual(filtered1, filtered2);
-}
 
 export default function (sequelize, DataTypes) {
   const SourceRev = sequelize.define('source_rev', {
@@ -124,10 +101,6 @@ export default function (sequelize, DataTypes) {
     };
 
     SourceRev.createForApi = async function (source, user, data, transaction) {
-      if (source.head && sourcesAreEqual(data, source.head.toCoreData())) {
-        return source.head;
-      }
-
       let blob = await models.Blob.fromText(data.text, transaction);
       let tableBlob = {};
       if (data.table) {

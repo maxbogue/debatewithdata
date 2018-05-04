@@ -1,6 +1,7 @@
 import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError, validateSource } from '../common/validate';
 import { genId } from './utils';
+import { sourcesAreEqual } from '../common/equality';
 
 export default function (sequelize, DataTypes) {
   const Source = sequelize.define('source', {
@@ -86,6 +87,10 @@ export default function (sequelize, DataTypes) {
       if (data.baseRev !== source.headId) {
         let newData = await Source.apiGet(sourceId, user);
         throw new ConflictError('Base item changed.', newData);
+      }
+
+      if (sourcesAreEqual(data, source.head.toCoreData())) {
+        return source.head;
       }
 
       return models.SourceRev.createForApi(source, user, data, transaction);
