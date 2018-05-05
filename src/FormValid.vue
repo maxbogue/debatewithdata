@@ -1,5 +1,6 @@
 <template>
-<form @submit.prevent.stop="submit">
+<form @submit.prevent.stop="submit"
+      @keydown.enter="submit">
   <slot></slot>
 </form>
 </template>

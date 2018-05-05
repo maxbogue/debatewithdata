@@ -1,7 +1,6 @@
 <template>
 <form-valid class="claim"
             @submit="close"
-            @keydown.native.enter="close"
             @keydown.native.esc="cancel">
   <div class="bubble">
     <label for="text" class="hint">
@@ -78,11 +77,6 @@ export default {
     },
   },
   watch: {
-    show: function () {
-      if (this.show) {
-        this.initialize();
-      }
-    },
     newClaim: function () {
       this.$emit('update:claim', this.newClaim);
     },

@@ -2,7 +2,6 @@
 <transition v-if="show" name="dwd-modal">
   <div class="dwd-modal-mask"
        @click="submit"
-       @keydown.enter="submit"
        @keydown.esc="cancel">
     <form-valid ref="form"
                 class="dwd-modal-container"

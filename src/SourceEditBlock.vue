@@ -1,7 +1,6 @@
 <template>
 <form-valid class="source"
             @submit="close"
-            @keydown.native.enter="close"
             @keydown.native.esc="cancel">
   <source-edit-content class="bubble"
                        :source="source"

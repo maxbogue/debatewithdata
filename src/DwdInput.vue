@@ -108,6 +108,11 @@ export default {
       }
     },
     displayValue: function () {
+      // Disallow pasted in tabs and newlines.
+      if (/\t|\n/.test(this.displayValue)) {
+        this.displayValue = this.displayValue.replace(/\t|\n/g, ' ');
+        return;
+      }
       this.$refs.input.style.height = 'auto';
       this.$nextTick(() => {
         if (this.$refs.input.scrollHeight > 0) {
