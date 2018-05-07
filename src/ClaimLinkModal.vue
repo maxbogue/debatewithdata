@@ -35,6 +35,7 @@ import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
 import { validateClaim } from '../common/validate';
+import { ItemType } from '../common/constants';
 
 export default {
   components: {
@@ -92,7 +93,7 @@ export default {
       this.$emit('update:show', false);
     },
     updateIsLink: function (itemType) {
-      this.isLink = itemType === 'claim';
+      this.isLink = itemType === ItemType.CLAIM;
     },
   },
 };

@@ -17,6 +17,7 @@ import map from 'lodash/map';
 import takeWhile from 'lodash/takeWhile';
 
 import ItemBlock from './ItemBlock.vue';
+import { ItemType } from '../common/constants';
 
 export default {
   components: {
@@ -33,12 +34,12 @@ export default {
       return this.ids.slice(this.topics.length);
     },
     items: function () {
-      let items = map(this.topics, (topic) => ['topic', topic, null]);
+      let items = map(this.topics, (topic) => [ItemType.TOPIC, topic, null]);
       if (this.itemIds.length < 2) {
         return items;
       }
       let item = this.lookupClaim(this.itemIds[0]);
-      let type = 'claim';
+      let type = ItemType.CLAIM;
       let isFor = null;
       for (let i = 1; i < this.itemIds.length; i++) {
         if (!item) {
@@ -88,10 +89,10 @@ export default {
     findInside: function (item, id) {
       if (item.subClaimIds && typeof item.subClaimIds[id] === 'boolean') {
         let claim = this.lookupClaim(id);
-        return ['claim', claim, item.subClaimIds[id]];
+        return [ItemType.CLAIM, claim, item.subClaimIds[id]];
       } else if (item.sourceIds && typeof item.sourceIds[id] === 'boolean') {
         let source = this.lookupSource(id);
-        return ['source', source, item.sourceIds[id]];
+        return [ItemType.SOURCE, source, item.sourceIds[id]];
       }
       return [''];
     },

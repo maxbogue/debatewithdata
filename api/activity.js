@@ -3,6 +3,7 @@ import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 
 import { ClaimRev, Comment, SourceRev, TopicRev, User } from '../models';
+import { ItemType } from '../common/constants';
 
 const router = Router();
 
@@ -26,21 +27,21 @@ function itemToEntry(item) {
 
 function topicRevToEntry(topicRev) {
   let entry = itemToEntry(topicRev);
-  entry.type = 'topic';
+  entry.type = ItemType.TOPIC;
   entry.id = topicRev.topicId;
   return entry;
 }
 
 function claimRevToEntry(claimRev) {
   let entry = itemToEntry(claimRev);
-  entry.type = 'claim';
+  entry.type = ItemType.CLAIM;
   entry.id = claimRev.claimId;
   return entry;
 }
 
 function sourceRevToEntry(sourceRev) {
   let entry = itemToEntry(sourceRev);
-  entry.type = 'source';
+  entry.type = ItemType.SOURCE;
   entry.id = sourceRev.sourceId;
   return entry;
 }

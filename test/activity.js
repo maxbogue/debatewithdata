@@ -2,9 +2,10 @@ import request from 'supertest';
 
 import app from '../app';
 
-import { Claim, Comment } from '../models';
 import { FOO, BAR, TestClaim, TestSource, TestTopic,
   registerAndVerifyUser } from './utils';
+import { Claim, Comment } from '../models';
+import { ItemType } from '../common/constants';
 
 describe('Activity', function () {
   let user;
@@ -29,25 +30,25 @@ describe('Activity', function () {
           timestamp: sourceRev.created_at.toISOString(),
           username: user.username,
           action: 'added',
-          type: 'source',
+          type: ItemType.SOURCE,
           id: sourceRev.sourceId,
         }, {
           timestamp: comment.created_at.toISOString(),
           username: user.username,
           action: 'commented on',
-          type: 'claim',
+          type: ItemType.CLAIM,
           id: claimRev.claimId,
         }, {
           timestamp: claimRev.created_at.toISOString(),
           username: user.username,
           action: 'added',
-          type: 'claim',
+          type: ItemType.CLAIM,
           id: claimRev.claimId,
         }, {
           timestamp: topicRev.created_at.toISOString(),
           username: user.username,
           action: 'added',
-          type: 'topic',
+          type: ItemType.TOPIC,
           id: topicRev.topicId,
         }]);
     });
@@ -66,19 +67,19 @@ describe('Activity', function () {
           timestamp: r3.created_at.toISOString(),
           username: user.username,
           action: 'deleted',
-          type: 'claim',
+          type: ItemType.CLAIM,
           id: claimId,
         }, {
           timestamp: r2.created_at.toISOString(),
           username: user.username,
           action: 'edited',
-          type: 'claim',
+          type: ItemType.CLAIM,
           id: claimId,
         }, {
           timestamp: r1.created_at.toISOString(),
           username: user.username,
           action: 'added',
-          type: 'claim',
+          type: ItemType.CLAIM,
           id: claimId,
         }]);
     });

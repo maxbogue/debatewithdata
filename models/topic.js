@@ -1,5 +1,6 @@
 import graph, { Graph } from '../common/graph';
 import { ConflictError, NotFoundError } from '../api/error';
+import { ItemType } from '../common/constants';
 import { ValidationError, validateTopic } from '../common/validate';
 import { topicsAreEqual } from '../common/equality';
 
@@ -31,7 +32,7 @@ export default function (sequelize, DataTypes) {
         model: models.Star,
         unique: false,
         scope: {
-          starrable: 'topic',
+          starrable: ItemType.TOPIC,
         }
       },
       foreignKey: 'starrableId',
@@ -41,7 +42,7 @@ export default function (sequelize, DataTypes) {
       foreignKey: 'commentableId',
       constraints: false,
       scope: {
-        commentable: 'topic',
+        commentable: ItemType.TOPIC,
       },
     });
   };

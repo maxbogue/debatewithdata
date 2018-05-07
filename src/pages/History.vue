@@ -19,13 +19,13 @@
              :prev="prev"
              :next="next"
              :trail="trail" />
-    <topic-rev v-if="itemType === 'topic'"
+    <topic-rev v-if="itemType === ItemType.TOPIC"
                :curr="curr"
                :prev="prev" />
-    <claim-rev v-else-if="itemType === 'claim'"
+    <claim-rev v-else-if="itemType === ItemType.CLAIM"
                :curr="curr"
                :prev="prev" />
-    <source-rev v-else-if="itemType === 'source'"
+    <source-rev v-else-if="itemType === ItemType.SOURCE"
                 :curr="curr"
                 :prev="prev" />
   </template>
@@ -42,8 +42,10 @@ import RevNav from '../RevNav.vue';
 import SourceRev from '../SourceRev.vue';
 import TopicRev from '../TopicRev.vue';
 import DwdLoader from '../DwdLoader.vue';
+import { ItemType } from '../../common/constants';
 
 export default {
+  ItemType,
   components: {
     ClaimRev,
     RevNav,
@@ -75,22 +77,22 @@ export default {
         return [];
       }
       switch (this.itemType) {
-      case 'topic':
+      case ItemType.TOPIC:
         return this.data.topicRevs;
-      case 'claim':
+      case ItemType.CLAIM:
         return this.data.claimRevs;
-      case 'source':
+      case ItemType.SOURCE:
         return this.data.sourceRevs;
       }
       return [];
     },
     revClass: function () {
       switch (this.itemType) {
-      case 'topic':
+      case ItemType.TOPIC:
         return this.$style.topicRev;
-      case 'claim':
+      case ItemType.CLAIM:
         return this.$style.claimRev;
-      case 'source':
+      case ItemType.SOURCE:
         return this.$style.sourceRev;
       }
       return '';

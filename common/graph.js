@@ -1,3 +1,4 @@
+import { ItemType } from '../common/constants';
 import { ValidationError } from './validate';
 
 function difference(a, b) {
@@ -160,13 +161,13 @@ function getOrCreate(nodes, info) {
   }
 
   switch (info.type) {
-  case 'topic':
+  case ItemType.TOPIC:
     node = new TopicNode(info.id);
     break;
-  case 'claim':
+  case ItemType.CLAIM:
     node = new ClaimNode(info.id);
     break;
-  case 'source':
+  case ItemType.SOURCE:
     node = new SourceNode(info.id);
     break;
   default:
@@ -190,12 +191,12 @@ export class Graph {
   }
 
   updateTopicChildren(id, childInfos) {
-    let node = getOrCreate(this.nodes, { id, type: 'topic' });
+    let node = getOrCreate(this.nodes, { id, type: ItemType.TOPIC });
     node.setChildren(infosToNodes(this.nodes, childInfos));
   }
 
   updateClaimPoints(id, pointInfos) {
-    let node = getOrCreate(this.nodes, { id, type: 'claim' });
+    let node = getOrCreate(this.nodes, { id, type: ItemType.CLAIM });
     let points = pointInfos.map(
         (sideInfos) => infosToNodes(this.nodes, sideInfos));
     node.setChildren(points);
@@ -213,17 +214,17 @@ export class Graph {
 
   static toTopicInfo(item) {
     let id = typeof item === 'string' ? item : item.id;
-    return { id, type: 'topic' };
+    return { id, type: ItemType.TOPIC };
   }
 
   static toClaimInfo(item) {
     let id = typeof item === 'string' ? item : item.id;
-    return { id, type: 'claim' };
+    return { id, type: ItemType.CLAIM };
   }
 
   static toSourceInfo(item) {
     let id = typeof item === 'string' ? item : item.id;
-    return { id, type: 'source' };
+    return { id, type: ItemType.SOURCE };
   }
 }
 

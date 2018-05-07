@@ -39,6 +39,7 @@ import SourceContent from './SourceContent.vue';
 import TopicContent from './TopicContent.vue';
 
 import { DEBOUNCE_DELAY_MS } from './constants';
+import { ItemType } from '../common/constants';
 
 // All IDs only use lowercase letters, numbers, and dashes.
 const ANY_ID_REGEX = /^[0-9a-z-]+$/;
@@ -77,11 +78,11 @@ export default {
     },
     itemType: function () {
       if (this.topic) {
-        return 'topic';
+        return ItemType.TOPIC;
       } else if (this.claim) {
-        return 'claim';
+        return ItemType.CLAIM;
       } else if (this.source) {
-        return 'source';
+        return ItemType.SOURCE;
       }
       return '';
     },
@@ -201,21 +202,21 @@ export default {
       let claim = this.lookupClaim(result.ref);
       if (claim) {
         return {
-          type: 'claim',
+          type: ItemType.CLAIM,
           data: claim,
         };
       }
       let source = this.lookupSource(result.ref);
       if (source) {
         return {
-          type: 'source',
+          type: ItemType.SOURCE,
           data: source,
         };
       }
       let topic = this.lookupTopic(result.ref);
       if (topic) {
         return {
-          type: 'topic',
+          type: ItemType.TOPIC,
           data: topic,
         };
       }

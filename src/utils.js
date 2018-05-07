@@ -12,7 +12,7 @@ import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
 
 import store from './store';
-import { PointType } from '../common/constants';
+import { ItemType, PointType } from '../common/constants';
 
 const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 const textDiff = new Diff();
@@ -303,11 +303,11 @@ export var DwdUtilsMixin = {
       return url;
     },
     itemUrl: function (type, id, trail) {
-      if (type === 'topic') {
+      if (type === ItemType.TOPIC) {
         return this.topicUrl(id, trail);
-      } else if (type === 'claim') {
+      } else if (type === ItemType.CLAIM) {
         return this.claimUrl(id, trail);
-      } else if (type === 'source') {
+      } else if (type === ItemType.SOURCE) {
         return this.sourceUrl(id, trail);
       }
       return '';

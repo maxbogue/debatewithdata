@@ -46,6 +46,7 @@ import dashify from 'dashify';
 import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
+import { ItemType } from '../common/constants';
 import { validateTopic } from '../common/validate';
 
 export default {
@@ -107,7 +108,7 @@ export default {
       this.$emit('update:show', false);
     },
     updateIsLink: function (itemType) {
-      this.isLink = itemType === 'topic';
+      this.isLink = itemType === ItemType.TOPIC;
     },
   },
 };

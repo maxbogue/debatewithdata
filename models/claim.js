@@ -4,6 +4,7 @@ import zipWith from 'lodash/zipWith';
 
 import graph, { Graph } from '../common/graph';
 import { ConflictError, NotFoundError } from '../api/error';
+import { ItemType } from '../common/constants';
 import { ValidationError, validateClaim } from '../common/validate';
 import { genId } from './utils';
 import { claimsAreEqual } from '../common/equality';
@@ -36,7 +37,7 @@ export default function (sequelize, DataTypes) {
         model: models.Star,
         unique: false,
         scope: {
-          starrable: 'claim',
+          starrable: ItemType.CLAIM,
         }
       },
       foreignKey: 'starrableId',
@@ -46,7 +47,7 @@ export default function (sequelize, DataTypes) {
       foreignKey: 'commentableId',
       constraints: false,
       scope: {
-        commentable: 'claim',
+        commentable: ItemType.CLAIM,
       },
     });
   };

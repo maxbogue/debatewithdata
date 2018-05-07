@@ -69,6 +69,7 @@ import DwdTrail from '../DwdTrail.vue';
 import IconAdd from '../IconAdd.vue';
 import ItemBlock from '../ItemBlock.vue';
 import { combineAndSortPoints, rotateWithIndexes } from '../utils';
+import { ItemType } from '../../common/constants';
 
 export default {
   components: {
@@ -112,9 +113,9 @@ export default {
       }
 
       let superTopics = map(this.claim.superTopicIds || [],
-          (id) => [this.lookupTopic(id), 'topic']);
+          (id) => [this.lookupTopic(id), ItemType.TOPIC]);
       let superClaims = map(this.claim.superClaimIds || [],
-          (id) => [this.lookupClaim(id), 'claim']);
+          (id) => [this.lookupClaim(id), ItemType.CLAIM]);
       return superTopics.concat(superClaims);
     },
   },

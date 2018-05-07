@@ -1,4 +1,5 @@
 import { ConflictError, NotFoundError } from '../api/error';
+import { ItemType } from '../common/constants';
 import { ValidationError, validateSource } from '../common/validate';
 import { genId } from './utils';
 import { sourcesAreEqual } from '../common/equality';
@@ -29,7 +30,7 @@ export default function (sequelize, DataTypes) {
         model: models.Star,
         unique: false,
         scope: {
-          starrable: 'source',
+          starrable: ItemType.SOURCE,
         }
       },
       foreignKey: 'starrableId',
@@ -39,7 +40,7 @@ export default function (sequelize, DataTypes) {
       foreignKey: 'commentableId',
       constraints: false,
       scope: {
-        commentable: 'source',
+        commentable: ItemType.SOURCE,
       },
     });
   };

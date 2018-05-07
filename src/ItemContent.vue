@@ -1,13 +1,13 @@
 <template>
-<topic-content v-if="type === 'topic'"
+<topic-content v-if="type === ItemType.TOPIC"
                :topic="item"
                :abbreviated="abbreviated"
                :is-link="isLink" />
-<claim-content v-else-if="type === 'claim'"
+<claim-content v-else-if="type === ItemType.CLAIM"
                :claim="item"
                :abbreviated="abbreviated"
                :is-link="isLink" />
-<source-content v-else-if="type === 'source'"
+<source-content v-else-if="type === ItemType.SOURCE"
                 :source="item"
                 :abbreviated="abbreviated" />
 <div v-else>Invalid item type.</div>
@@ -17,8 +17,10 @@
 import ClaimContent from './ClaimContent.vue';
 import SourceContent from './SourceContent.vue';
 import TopicContent from './TopicContent.vue';
+import { ItemType } from '../common/constants';
 
 export default {
+  ItemType,
   components: {
     ClaimContent,
     SourceContent,

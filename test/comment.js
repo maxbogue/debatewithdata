@@ -1,6 +1,7 @@
 import chai from 'chai';
 
 import { Claim, Comment } from '../models';
+import { ItemType } from '../common/constants';
 import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
@@ -19,7 +20,7 @@ describe('Comment', function () {
     it('happy', async function () {
       let comment = await Comment.apiAdd(Claim, claimId, user, FOO);
       expect(comment.userId).to.equal(user.id);
-      expect(comment.commentable).to.equal('claim');
+      expect(comment.commentable).to.equal(ItemType.CLAIM);
       expect(comment.commentableId).to.equal(claimId);
       expect(comment.text).to.equal(FOO);
       expect(comment.deleted).to.be.false;
