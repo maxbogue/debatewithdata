@@ -46,7 +46,6 @@ const ANIMATION_DURATION_MS = 300;
 const ANIMATION_DURATION_SECS = ANIMATION_DURATION_MS / 1000;
 
 export default {
-  ItemType,
   components: {
     ClaimDataAnalysis,
     DwdComments,
@@ -66,6 +65,7 @@ export default {
     mini: { type: Boolean, default: false },
   },
   data: () => ({
+    ItemType,
     showComments: false,
   }),
   computed: {

@@ -4,6 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { STARS_AND_COMMENTS, registerAndVerifyUser } from './utils';
 import { Claim, Source, SourceRev } from '../models';
 import { ConflictError, NotFoundError } from '../api/error';
+import { SourceType } from '../common/constants';
 import { ValidationError } from '../common/validate';
 import { randomHexString } from '../models/utils';
 import { serializeTable } from '../common/utils';
@@ -21,32 +22,32 @@ const PUBLICATION = 'publication';
 const MISC = {
   url: URL,
   text: TEXT,
-  type: 'misc',
+  type: SourceType.MISC,
 };
 const MISC2 = {
   url: URL2,
   text: TEXT2,
   date: DATE,
-  type: 'misc',
+  type: SourceType.MISC,
 };
 const RESEARCH = {
   url: URL,
   text: TEXT,
-  type: 'research',
+  type: SourceType.RESEARCH,
   institution: INSTITUTION,
   publication: PUBLICATION,
 };
 const ARTICLE = {
   url: URL,
   text: TEXT,
-  type: 'article',
+  type: SourceType.ARTICLE,
   publication: PUBLICATION,
   firstHand: true,
 };
 const AUTHORITY = {
   url: URL,
   text: TEXT,
-  type: 'authority',
+  type: SourceType.AUTHORITY,
   institution: INSTITUTION,
 };
 
@@ -69,7 +70,7 @@ describe('Source', function () {
       expect(rev.url).to.equal(URL);
       expect(rev.date).to.be.null;
       expect(rev.table).to.be.undefined;
-      expect(rev.type).to.equal('misc');
+      expect(rev.type).to.equal(SourceType.MISC);
       expect(rev.institution).to.be.null;
       expect(rev.publication).to.be.null;
       expect(rev.firstHand).to.be.null;
@@ -83,17 +84,17 @@ describe('Source', function () {
       await expect(Source.apiCreate(user, {
         url: 'debatewithdata.org',
         text: TEXT,
-        type: 'misc',
+        type: SourceType.MISC,
       })).to.be.rejectedWith(ValidationError);
       await expect(Source.apiCreate(user, {
         url: URL,
         text: 'short',
-        type: 'misc',
+        type: SourceType.MISC,
       })).to.be.rejectedWith(ValidationError);
       await expect(Source.apiCreate(user, {
         url: URL,
         text: TEXT,
-        type: 'article',
+        type: SourceType.ARTICLE,
       })).to.be.rejectedWith(ValidationError);
     });
 
@@ -104,7 +105,7 @@ describe('Source', function () {
       expect(rev.userId).to.equal(user.id);
       expect(rev.blob.text).to.equal(TEXT);
       expect(rev.url).to.equal(URL);
-      expect(rev.type).to.equal('research');
+      expect(rev.type).to.equal(SourceType.RESEARCH);
       expect(rev.institution).to.equal(INSTITUTION);
       expect(rev.publication).to.equal(PUBLICATION);
       expect(rev.firstHand).to.be.null;
@@ -121,7 +122,7 @@ describe('Source', function () {
       expect(rev.userId).to.equal(user.id);
       expect(rev.blob.text).to.equal(TEXT);
       expect(rev.url).to.equal(URL);
-      expect(rev.type).to.equal('article');
+      expect(rev.type).to.equal(SourceType.ARTICLE);
       expect(rev.institution).to.be.null;
       expect(rev.publication).to.equal(PUBLICATION);
       expect(rev.firstHand).to.be.true;
@@ -138,7 +139,7 @@ describe('Source', function () {
       expect(rev.userId).to.equal(user.id);
       expect(rev.blob.text).to.equal(TEXT);
       expect(rev.url).to.equal(URL);
-      expect(rev.type).to.equal('authority');
+      expect(rev.type).to.equal(SourceType.AUTHORITY);
       expect(rev.institution).to.equal(INSTITUTION);
       expect(rev.publication).to.be.null;
       expect(rev.firstHand).to.be.null;
@@ -165,7 +166,7 @@ describe('Source', function () {
       expect(rev2.blob.text).to.equal(TEXT2);
       expect(rev2.url).to.equal(URL2);
       expect(rev2.date).to.equal(DATE);
-      expect(rev2.type).to.equal('misc');
+      expect(rev2.type).to.equal(SourceType.MISC);
 
       expect(rev2.parentId).to.equal(rev1.id);
 

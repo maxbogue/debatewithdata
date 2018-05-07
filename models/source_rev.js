@@ -1,5 +1,6 @@
 import { genRevId } from './utils';
 import { validateSource } from '../common/validate';
+import { SourceType } from '../common/constants';
 
 export default function (sequelize, DataTypes) {
   const SourceRev = sequelize.define('source_rev', {
@@ -152,15 +153,15 @@ export default function (sequelize, DataTypes) {
       }
 
       switch (this.type) {
-      case 'research':
+      case SourceType.RESEARCH:
         data.institution = this.institution;
         data.publication = this.publication;
         break;
-      case 'article':
+      case SourceType.ARTICLE:
         data.publication = this.publication;
         data.firstHand = this.firstHand;
         break;
-      case 'authority':
+      case SourceType.AUTHORITY:
         data.institution = this.institution;
         break;
       }

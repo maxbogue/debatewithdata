@@ -20,7 +20,6 @@ import TopicContent from './TopicContent.vue';
 import { ItemType } from '../common/constants';
 
 export default {
-  ItemType,
   components: {
     ClaimContent,
     SourceContent,
@@ -32,5 +31,8 @@ export default {
     abbreviated: { type: Boolean, default: false },
     isLink: { type: Boolean, default: false },
   },
+  data: () => ({
+    ItemType,
+  }),
 };
 </script>

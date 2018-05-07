@@ -1,4 +1,5 @@
 import { Claim, Invite, Source, Topic, User } from '../models';
+import { SourceType } from '../common/constants';
 
 export const FOO = 'foo is too short';
 export const BAR = 'bar is too short';
@@ -84,7 +85,7 @@ export const TestSource = {
     return Source.apiCreate(user, {
       text: this.TEXT,
       url: this.URL,
-      type: 'misc',
+      type: SourceType.MISC,
     });
   },
   verify: function (sourceRev) {
@@ -93,7 +94,7 @@ export const TestSource = {
       revId: sourceRev.id,
       text: this.TEXT,
       url: this.URL,
-      type: 'misc',
+      type: SourceType.MISC,
       claimIds: [],
       ...STARS_AND_COMMENTS,
     };

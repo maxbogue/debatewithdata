@@ -3,32 +3,34 @@
   <div v-html="textDiff"></div>
   <div :class="$style.metadata">
     <div v-if="dateDiff" v-html="dateDiff"></div>
-    <div v-if="safePrev.type === 'article' && safeCurr.type === 'article'">
+    <div v-if="safePrev.type === SourceType.ARTICLE
+               && safeCurr.type === SourceType.ARTICLE">
       <strong>Article in:</strong> <span v-html="publicationDiff"></span>
     </div>
     <template v-else>
-      <div v-if="safePrev.type === 'article'" class="del">
+      <div v-if="safePrev.type === SourceType.ARTICLE" class="del">
         <strong>Article in:</strong> {{ safePrev.publication }}
       </div>
-      <div v-if="safeCurr.type === 'article'" class="ins">
+      <div v-if="safeCurr.type === SourceType.ARTICLE" class="ins">
         <strong>Article in:</strong> {{ safeCurr.publication }}
       </div>
     </template>
 
-    <div v-if="safePrev.type === 'authority' && safeCurr.type === 'authority'">
+    <div v-if="safePrev.type === SourceType.AUTHORITY
+               && safeCurr.type === SourceType.AUTHORITY">
       <strong>Authority:</strong> <span v-html="institutionDiff"></span>
     </div>
     <template v-else>
-      <div v-if="safePrev.type === 'authority'" class="del">
+      <div v-if="safePrev.type === SourceType.AUTHORITY" class="del">
         <strong>Authority:</strong> {{ safePrev.institution }}
       </div>
-      <div v-if="safeCurr.type === 'authority'" class="ins">
+      <div v-if="safeCurr.type === SourceType.AUTHORITY" class="ins">
         <strong>Authority:</strong> {{ safeCurr.institution }}
       </div>
     </template>
 
-    <template v-if="safePrev.type === 'research'
-                    && safeCurr.type === 'research'">
+    <template v-if="safePrev.type === SourceType.RESEARCH
+                    && safeCurr.type === SourceType.RESEARCH">
       <div>
         <strong>Research by:</strong>
         <span v-html="institutionDiff"></span>
@@ -39,11 +41,11 @@
       </div>
     </template>
     <template v-else>
-      <div v-if="safePrev.type === 'research'" class="del">
+      <div v-if="safePrev.type === SourceType.RESEARCH" class="del">
         <div><strong>Research by:</strong> {{ safePrev.institution }}</div>
         <div><strong>Published in:</strong> {{ safePrev.publication }}</div>
       </div>
-      <div v-if="safeCurr.type === 'research'" class="ins">
+      <div v-if="safeCurr.type === SourceType.RESEARCH" class="ins">
         <div><strong>Research by:</strong> {{ safeCurr.institution }}</div>
         <div><strong>Published in:</strong> {{ safeCurr.publication }}</div>
       </div>
@@ -67,12 +69,13 @@
 import SourceChart from './SourceChart.vue';
 import SourceTableDiff from './SourceTableDiff.vue';
 import { diff } from './utils';
+import { SourceType } from '../common/constants';
 
 const EMPTY_SOURCE = {
   url: '',
   text: '',
   date: '',
-  type: 'misc',
+  type: SourceType.MISC,
 };
 
 export default {
@@ -84,6 +87,9 @@ export default {
     curr: { type: Object, default: null },
     prev: { type: Object, default: null },
   },
+  data: () => ({
+    SourceType,
+  }),
   computed: {
     safeCurr: function () {
       if (!this.curr || this.curr.deleted) {

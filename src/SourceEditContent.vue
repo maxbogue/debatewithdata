@@ -31,16 +31,17 @@
       <option value="article">Article</option>
       <option value="authority">Authority</option>
     </select>
-    <div v-if="type === 'misc'"
+    <div v-if="type === SourceType.MISC"
          >A source that does not fall under any other category.</div>
-    <div v-if="type === 'research'"
+    <div v-if="type === SourceType.RESEARCH"
          >Scientific research published by an institution.</div>
-    <div v-if="type === 'article'"
+    <div v-if="type === SourceType.ARTICLE"
          >A news article reporting on something that happened.</div>
-    <div v-if="type === 'authority'"
+    <div v-if="type === SourceType.AUTHORITY"
          >An authoritative source for the data.</div>
   </div>
-  <template v-if="type === 'research' || type === 'authority'">
+  <template v-if="type === SourceType.RESEARCH
+                  || type === SourceType.AUTHORITY">
     <label for="institution" class="hint">
       What institution produced the data?
     </label>
@@ -49,7 +50,7 @@
                placeholder="College, government agency, etc."
                :validate="validate.institution" />
   </template>
-  <template v-if="type === 'research' || type === 'article'">
+  <template v-if="type === SourceType.RESEARCH || type === SourceType.ARTICLE">
     <label for="publication" class="hint">
       Where was the {{ type }} published?
     </label>
@@ -71,6 +72,7 @@ import DwdInput from './DwdInput.vue';
 import SourceEditChart from './SourceEditChart.vue';
 import SourceEditTable from './SourceEditTable.vue';
 import { validateSource } from '../common/validate';
+import { SourceType } from '../common/constants';
 
 export default {
   components: {
@@ -82,10 +84,11 @@ export default {
     source: { type: Object, default: null },
   },
   data: () => ({
+    SourceType,
     text: '',
     url: '',
     date: '',
-    type: 'misc',
+    type: SourceType.MISC,
     institution: '',
     publication: '',
     firstHand: false,
@@ -111,15 +114,15 @@ export default {
       }
 
       switch (this.type) {
-      case 'research':
+      case SourceType.RESEARCH:
         source.institution = this.institution;
         source.publication = this.publication;
         break;
-      case 'article':
+      case SourceType.ARTICLE:
         source.publication = this.publication;
         source.firstHand = this.firstHand;
         break;
-      case 'authority':
+      case SourceType.AUTHORITY:
         source.institution = this.institution;
         break;
       }
@@ -145,7 +148,7 @@ export default {
         this.date = this.source.date || '';
         this.table = this.source.table;
         this.chart = this.source.chart;
-        this.type = this.source.type || 'misc';
+        this.type = this.source.type || SourceType.MISC;
         this.institution = this.source.institution || '';
         this.publication = this.source.publication || '';
         this.firstHand = this.source.firstHand;

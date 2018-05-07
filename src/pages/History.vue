@@ -45,7 +45,6 @@ import DwdLoader from '../DwdLoader.vue';
 import { ItemType } from '../../common/constants';
 
 export default {
-  ItemType,
   components: {
     ClaimRev,
     RevNav,
@@ -60,6 +59,7 @@ export default {
     },
   },
   data: () => ({
+    ItemType,
     data: null,
   }),
   computed: {
