@@ -41,8 +41,21 @@ import PointsEdit from '../PointsEdit.vue';
 import { authRedirect, combineAndSortPoints, splitPoints } from '../utils';
 import { claimsAreEqual } from '../../common/equality';
 
+const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
+
+function confirmLeave(to, from, next) {
+  /* eslint no-invalid-this: "off" */
+  if (!this.noChange && !window.confirm(BEFORE_UNLOAD_MESSAGE)) {
+    next(false);
+  } else {
+    next();
+  }
+}
+
 export default {
   beforeRouteEnter: authRedirect,
+  beforeRouteUpdate: confirmLeave,
+  beforeRouteLeave: confirmLeave,
   components: {
     ClaimEditBlock,
     ClaimRevBlock,
@@ -89,8 +102,20 @@ export default {
   },
   mounted: function () {
     this.checkLoaded();
+    window.addEventListener('beforeunload', this.beforeUnload);
+  },
+  beforeDestroy: function () {
+    window.removeEventListener('beforeunload', this.beforeUnload);
   },
   methods: {
+    beforeUnload: function (e) {
+      if (this.noChange) {
+        // Indicates not to warn.
+        return undefined;
+      }
+      (e || window.event).returnValue = BEFORE_UNLOAD_MESSAGE;
+      return BEFORE_UNLOAD_MESSAGE;
+    },
     updatePoints: function (points) {
       this.points = points;
     },
