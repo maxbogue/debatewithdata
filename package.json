@@ -57,6 +57,7 @@
     "sequelize": "^4.37.6",
     "sequelize-cli": "^4.0.0",
     "style-loader": "^0.21.0",
+    "systemd": "^0.3.1",
     "text-diff": "^1.0.1",
     "url-loader": "^1.0.1",
     "url-search-params": "^0.10.0",

@@ -1,0 +1,11 @@
+[Unit]
+Description=Socket for DebateWithData
+
+[Socket]
+ListenStream=/var/run/dwd.socket
+SocketUser=www-dwd
+SocketGroup=www-data
+SocketMode=0660
+
+[Install]
+WantedBy=sockets.target

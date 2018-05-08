@@ -1,0 +1,16 @@
+[Unit]
+Description=DebateWithData
+After=network.target
+
+[Service]
+Environment=NODE_ENV=production
+ExecStart=/opt/nvm/nvm-exec node build/main.js
+WorkingDirectory=/var/www/debatewithdata
+User=www-dwd
+Group=www-data
+Type=simple
+SyslogIdentifier=dwd
+StandardError=syslog
+StandardOutput=syslog
+NotifyAccess=all
+Restart=on-failure
