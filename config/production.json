@@ -1,4 +1,4 @@
 {
-  "port": 7143,
+  "port": "systemd",
   "db": "postgresql://dwd@localhost:5432/dwd"
 }
