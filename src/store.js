@@ -1,6 +1,6 @@
 import axios from 'axios';
-import clone from 'lodash/clone';
 import cloneDeep from 'lodash/cloneDeep';
+import filter from 'lodash/filter';
 import forEach from 'lodash/forEach';
 import forOwn from 'lodash/forOwn';
 import Vue from 'vue';
@@ -14,18 +14,6 @@ Vue.use(Vuex);
 
 const CONFLICT_ERROR_MESSAGE = 'Item was modified since you began editing.'
   + ' Please review your changes against the new version and try again.';
-
-function getRootTopics(topics) {
-  let rootTopics = clone(topics);
-  forOwn(topics, (topic) => {
-    if (topic.subTopicIds) {
-      for (let subTopicId of topic.subTopicIds) {
-        delete rootTopics[subTopicId];
-      }
-    }
-  });
-  return rootTopics;
-}
 
 // Whether the claim for claimId in s1 should be written to s2.
 // This is the case if:
@@ -78,7 +66,6 @@ export default new Vuex.Store({
     topicsLoaded: false,
     claimsLoaded: false,
     sourcesLoaded: false,
-    rootTopics: {},
     user: null,
     errorMessage: '',
     singleColumn: windowIsSingleColumn(),
@@ -86,13 +73,17 @@ export default new Vuex.Store({
     itemLocations: {},
     itemBlockSliding: false,
   },
+  getters: {
+    rootTopics: function (state) {
+      return filter(state.topics, (topic) => topic.isRoot);
+    },
+  },
   mutations: {
     setData: function (state, data) {
       if (data.topics) {
         forOwn(data.topics, (topic, id) => {
           Vue.set(state.topics, id, topic);
         });
-        state.rootTopics = getRootTopics(state.topics);
       }
       if (data.claims) {
         forOwn(data.claims, (claim, id) => {
@@ -154,8 +145,9 @@ export default new Vuex.Store({
         commit('setData', res.data);
       });
     },
-    getTopics: function ({ commit }, { loader }) {
-      return axios.get('/api/topic', { loader }).then((res) => {
+    getTopics: function ({ commit }, { mode, loader }) {
+      let url = mode ? `/api/topic?mode=${mode}` : '/api/topic';
+      return axios.get(url, { loader }).then((res) => {
         commit('setData', res.data);
         commit('setTopicsLoaded');
       });

@@ -1,6 +1,10 @@
 <template>
 <div>
-  <template v-if="!needsData">
+  <div v-if="!id && (!user || !user.admin)"
+       class="block no-pad">
+    Must be an admin to add a root-level topic.
+  </div>
+  <template v-else-if="!needsData">
     <topic-edit-block v-if="showEditBlock"
                       :topic.sync="newTopicPartial"
                       :old-id="id"
@@ -99,6 +103,7 @@
 <script>
 import filter from 'lodash/filter';
 import sortBy from 'lodash/sortBy';
+import { mapState } from 'vuex';
 
 import ClaimContent from '../ClaimContent.vue';
 import ClaimLinkModal from '../ClaimLinkModal.vue';
@@ -153,6 +158,9 @@ export default {
     showClaimModal: false,
   }),
   computed: {
+    ...mapState([
+      'user',
+    ]),
     newId: function () {
       return this.newTopicPartial && this.newTopicPartial.id;
     },

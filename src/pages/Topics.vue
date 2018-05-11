@@ -1,8 +1,10 @@
 <template>
 <div>
   <h3 class="center">Topics represent common topics of debate.</h3>
-  <div class="block no-pad center">
-    <router-link :to="addUrl" class="dwd-btn pink-dark">New Topic</router-link>
+  <div v-if="user && user.admin" class="block no-pad center">
+    <router-link :to="addUrl"
+                 class="dwd-btn pink-dark"
+                 >New Root Topic</router-link>
   </div>
   <dwd-loader ref="loader" />
   <template v-if="topicsLoaded">
@@ -17,7 +19,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import DwdLoader from '../DwdLoader.vue';
 import ItemBlock from '../ItemBlock.vue';
@@ -30,9 +32,11 @@ export default {
   },
   computed: {
     ...mapState([
-      'rootTopics',
       'topicsLoaded',
       'user',
+    ]),
+    ...mapGetters([
+      'rootTopics',
     ]),
     topics: function () {
       return sortByStars(filterLiving(this.rootTopics));

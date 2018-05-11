@@ -151,7 +151,7 @@ export default {
       });
     }
     if (this.allowTopic) {
-      this.$store.dispatch('getTopics', {}).then(() => {
+      this.$store.dispatch('getTopics', { mode: 'all' }).then(() => {
         this.updateIndex(this.$store.state.topics);
       });
     }

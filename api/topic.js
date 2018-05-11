@@ -7,15 +7,21 @@ import { addApiData, getTrailData } from '../models/utils';
 const router = Router();
 
 router.get('/', async function (req, res) {
-  let data = await Topic.apiGetAll(req.user);
-  res.json(data);
+  let mode = req.query.mode;
+  if (!mode || mode !== 'all') {
+    let data = await Topic.apiGetRoots(req.user);
+    res.json(data);
+  } else {
+    let data = await Topic.apiGetAll(req.user);
+    res.json(data);
+  }
 });
 
 router.post('/', async function (req, res) {
-  if (!req.user) {
-    throw new AuthError();
+  if (!req.user || !req.user.admin) {
+    throw new AuthError('Must be authenticated as an admin user.');
   }
-  let rev = await Topic.apiCreate(req.user, req.body);
+  let rev = await Topic.apiCreate(req.user, req.body, true);
   let data = await Topic.apiGet(rev.topicId, req.user);
   data.id = rev.topicId;
   res.json(data);

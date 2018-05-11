@@ -40,6 +40,7 @@ export const TestTopic = {
   verify: function (topicRev) {
     return {
       id: this.ID,
+      isRoot: false,
       revId: topicRev.id,
       text: this.TEXT,
       title: this.TITLE,

@@ -16,6 +16,41 @@ const TITLE2 = 'title2';
 
 const DELETE_MSG = 'Violates guidelines.';
 
+const TOPIC_DEPTH_1 = {
+  id: ID,
+  isRoot: false,
+  title: TITLE,
+  text: FOO,
+  depth: 1,
+  childCount: 0,
+  ...STARS_AND_COMMENTS,
+};
+
+const TOPIC_DEPTH_2 = {
+  id: ID,
+  isRoot: false,
+  title: TITLE,
+  text: FOO,
+  claimIds: [],
+  subTopicIds: [],
+  depth: 2,
+  childCount: 0,
+  ...STARS_AND_COMMENTS,
+};
+
+const TOPIC_DEPTH_3 = {
+  id: ID,
+  isRoot: false,
+  title: TITLE,
+  text: FOO,
+  claimIds: [],
+  subTopicIds: [],
+  superTopicIds: [],
+  depth: 3,
+  childCount: 0,
+  ...STARS_AND_COMMENTS,
+};
+
 describe('Topic', function () {
   let user;
 
@@ -346,16 +381,10 @@ describe('Topic', function () {
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
-            id: ID,
+            ...TOPIC_DEPTH_3,
             revId: r1.id,
-            title: TITLE,
-            text: FOO,
             claimIds: [c1r.claimId],
-            subTopicIds: [],
-            superTopicIds: [],
-            depth: 3,
             childCount: 1,
-            ...STARS_AND_COMMENTS,
           },
         },
         claims: {
@@ -392,6 +421,7 @@ describe('Topic', function () {
         topics: {
           [ID]: {
             id: ID,
+            isRoot: false,
             revId: r2.id,
             deleted: true,
             deleteMessage: DELETE_MSG,
@@ -423,26 +453,15 @@ describe('Topic', function () {
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
-            id: ID,
+            ...TOPIC_DEPTH_2,
             revId: t1r.id,
-            title: TITLE,
-            text: FOO,
-            claimIds: [],
-            subTopicIds: [],
-            depth: 2,
-            childCount: 0,
-            ...STARS_AND_COMMENTS,
           },
           [ID2]: {
+            ...TOPIC_DEPTH_2,
             id: ID2,
             revId: t2r.id,
             title: TITLE2,
             text: BAR,
-            claimIds: [],
-            subTopicIds: [],
-            depth: 2,
-            childCount: 0,
-            ...STARS_AND_COMMENTS,
           },
         },
         claims: {},
@@ -466,15 +485,8 @@ describe('Topic', function () {
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
-            id: ID,
+            ...TOPIC_DEPTH_2,
             revId: t1r.id,
-            title: TITLE,
-            text: FOO,
-            claimIds: [],
-            subTopicIds: [],
-            depth: 2,
-            childCount: 0,
-            ...STARS_AND_COMMENTS,
           },
         },
         claims: {},
@@ -532,13 +544,11 @@ describe('Topic', function () {
         }],
         topics: {
           [ID2]: {
+            ...TOPIC_DEPTH_1,
             id: ID2,
             revId: subTopic.headId,
             title: TITLE2,
             text: BAZ,
-            depth: 1,
-            childCount: 0,
-            ...STARS_AND_COMMENTS,
           },
         },
         claims: {

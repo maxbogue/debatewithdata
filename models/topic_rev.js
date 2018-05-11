@@ -1,5 +1,5 @@
 import { genRevId } from './utils';
-import { validateTopic } from '../common/validate';
+import { ValidationError, validateTopic } from '../common/validate';
 
 export default function (sequelize, DataTypes) {
   const TopicRev = sequelize.define('topic_rev', {
@@ -100,9 +100,19 @@ export default function (sequelize, DataTypes) {
       let subTopicIds = [...data.subTopicIds];
       let claimIds = [...data.claimIds];
 
+      let rootSubTopics = await models.Topic.findAll({
+        where: { id: subTopicIds, isRoot: true },
+        attributes: ['id'],
+      });
+
+      if (rootSubTopics.length > 0) {
+        throw new ValidationError(`subTopicIds[${rootSubTopics[0].id}]`,
+            'root topics cannot be sub-topics.');
+      }
+
       if (data.newSubTopics) {
         for (let subTopicData of data.newSubTopics) {
-          await models.Topic.apiCreate(user, subTopicData, transaction);
+          await models.Topic.apiCreate(user, subTopicData, false, transaction);
           subTopicIds.push(subTopicData.id);
         }
       }

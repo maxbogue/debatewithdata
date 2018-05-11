@@ -11,6 +11,12 @@ export default function (sequelize, DataTypes) {
       primaryKey: true,
       validate: validateTopic.id.forDb,
     },
+    isRoot: {
+      field: 'is_root',
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   });
 
   Topic.associate = function (models) {
@@ -57,17 +63,20 @@ export default function (sequelize, DataTypes) {
       };
     };
 
-    Topic.apiCreate = async function (user, data, transaction) {
+    Topic.apiCreate = async function (user, data, isRoot=false, transaction) {
       if (!transaction) {
         return await sequelize.transaction(function(t) {
-          return Topic.apiCreate(user, data, t);
+          return Topic.apiCreate(user, data, isRoot, t);
         });
       }
 
       validateTopic(data);
 
       try {
-        const topic = await Topic.create({ id: data.id }, { transaction });
+        const topic = await Topic.create({
+          id: data.id,
+          isRoot,
+        }, { transaction });
         return models.TopicRev.createForApi(topic, user, data, transaction);
       } catch (e) {
         if (e instanceof sequelize.UniqueConstraintError) {
@@ -147,6 +156,7 @@ export default function (sequelize, DataTypes) {
       }
 
       let thisData = this.head.toCoreData();
+      thisData.isRoot = this.isRoot;
       thisData.depth = this.head.deleted ? 3 : depth;
       thisData.star = await this.toStarData(user);
       thisData.commentCount = await this.countComments();
@@ -190,6 +200,25 @@ export default function (sequelize, DataTypes) {
       }
       let data = { topics: {}, claims: {}, sources: {} };
       await topic.fillData(data, 3, user);
+      return data;
+    };
+
+    Topic.apiSetIsRoot = async function (id, isRoot) {
+      let topic = await Topic.findById(id);
+      await topic.update({ isRoot });
+    };
+
+    Topic.apiGetRoots = async function (user) {
+      let topics = await Topic.findAll({
+        query: { isRoot: true },
+        ...Topic.INCLUDE(2),
+      });
+      let data = { topics: {}, claims: {}, sources: {} };
+      for (let topic of topics) {
+        if (!topic.head.deleted) {
+          await topic.fillData(data, 2, user);
+        }
+      }
       return data;
     };
 
