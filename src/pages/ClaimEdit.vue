@@ -45,7 +45,11 @@ const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
 
 function confirmLeave(to, from, next) {
   /* eslint no-invalid-this: "off" */
-  if (!this.noChange && !window.confirm(BEFORE_UNLOAD_MESSAGE)) {
+  if (this.unloadOverride || this.noChange) {
+    next();
+    return;
+  }
+  if (!window.confirm(BEFORE_UNLOAD_MESSAGE)) {
     next(false);
   } else {
     next();
@@ -74,6 +78,7 @@ export default {
     newClaimPartial: null,
     points: [[], []],
     initialized: false,
+    unloadOverride: false,
   }),
   computed: {
     claim: function () {
@@ -109,8 +114,8 @@ export default {
   },
   methods: {
     beforeUnload: function (e) {
-      if (this.noChange) {
-        // Indicates not to warn.
+      if (this.unloadOverride || this.noChange) {
+        // Don't warn.
         return undefined;
       }
       (e || window.event).returnValue = BEFORE_UNLOAD_MESSAGE;
@@ -128,6 +133,7 @@ export default {
         payload.claim.baseRev = this.claim.revId;
       }
       this.$store.dispatch(action, payload).then((id) => {
+        this.unloadOverride = true;
         this.$router.push(this.claimUrl(id, this.trail));
       });
     },
@@ -136,6 +142,7 @@ export default {
         id: this.id,
         message,
       }).then(() => {
+        this.unloadOverride = true;
         this.$router.push('/claims');
       });
     },
