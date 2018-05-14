@@ -25,18 +25,11 @@
     <topic-link-modal :show.sync="showSubTopicModal"
                       @link="addSubTopicId"
                       @add="addNewSubTopic" />
-    <div v-for="(subTopic, i) in newSubTopics"
-         class="topic"
-         :key="subTopic.id">
-      <div class="bubble">
-        <div class="ins">{{ subTopic.title }}</div>
-      </div>
-      <div class="info">
-        <span class="id mono">{{ subTopic.id }}</span>
-        <span class="delete click fas fa-trash-alt"
-              @click="newSubTopics.splice(i, 1)"></span>
-      </div>
-    </div>
+    <topic-rev-and-edit-modal v-for="(subTopic, i) in newSubTopics"
+                              :key="'newSubTopic' + i"
+                              :topic="subTopic"
+                              @update="(t) => $set(newSubTopics, i, t)"
+                              @delete="newSubTopics.splice(i, 1)" />
     <div v-for="[subTopic, diffClass] in linkedSubTopics"
          class="topic"
          :key="subTopic.id">
@@ -111,6 +104,7 @@ import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import TopicEditBlock from '../TopicEditBlock.vue';
 import TopicLinkModal from '../TopicLinkModal.vue';
+import TopicRevAndEditModal from '../TopicRevAndEditModal.vue';
 import TopicRevContent from '../TopicRevContent.vue';
 import {
   authRedirect, diffIdLists, pipe, stableRandom, starCount, starred
@@ -145,6 +139,7 @@ export default {
     FixedBottom,
     TopicEditBlock,
     TopicLinkModal,
+    TopicRevAndEditModal,
     TopicRevContent,
   },
   props: {
@@ -264,7 +259,7 @@ export default {
       }
       this.$store.dispatch(action, payload).then((id) => {
         this.unloadOverride = true;
-        this.$router.push(this.topicUrl(id), this.trail);
+        this.$router.push(this.topicUrl(id, this.trail));
       });
     },
     remove: function (message) {

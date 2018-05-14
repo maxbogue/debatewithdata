@@ -95,7 +95,7 @@
 
 @mixin t1($primary-color, $accent-color) {
   margin-top: $block-spacing;
-  font-size: 1.25em;
+  font-size: 1.25rem;
 
   &.block {
     border-left: $accent-border-width solid $accent-color;

@@ -51,12 +51,10 @@ export default {
   computed: {
     newTopic: function () {
       let topic = {
+        id: this.oldId || this.id,
         title: this.title,
         text: this.text,
       };
-      if (!this.oldId) {
-        topic.id = this.id;
-      }
       return topic;
     },
   },
@@ -83,6 +81,7 @@ export default {
   methods: {
     initialize: function () {
       if (this.topic) {
+        this.id = this.topic.id || '';
         this.title = this.topic.title;
         this.text = this.topic.text;
       }
