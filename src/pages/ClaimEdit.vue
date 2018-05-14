@@ -21,7 +21,12 @@
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
-      <button :disabled="showEditBlock || noChange"
+      <button v-if="showEditBlock"
+              type="button"
+              class="dwd-btn blue-dark"
+              @click="showEditBlock = false">Review</button>
+      <button v-else
+              :disabled="noChange"
               type="button"
               class="dwd-btn blue-dark"
               @click="submit">Submit</button>
@@ -122,6 +127,7 @@ export default {
       return BEFORE_UNLOAD_MESSAGE;
     },
     updatePoints: function (points) {
+      this.showEditBlock = false;
       this.points = points;
     },
     submit: function () {

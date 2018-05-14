@@ -90,7 +90,12 @@
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
-      <button :disabled="showEditBlock || noChange"
+      <button v-if="showEditBlock"
+              type="button"
+              class="dwd-btn pink-dark"
+              @click="showEditBlock = false">Review</button>
+      <button v-else
+              :disabled="noChange"
               type="button"
               class="dwd-btn pink-dark"
               @click="submit">Submit</button>
@@ -185,13 +190,18 @@ export default {
     needsData: function () {
       return this.id && !this.topic;
     },
-    newTopic: function () {
+    newTopicLinks: function () {
       return {
-        ...this.newTopicPartial,
         subTopicIds: filter(this.subTopicIds, this.lookupTopic),
         claimIds: filter(this.claimIds, this.lookupClaim),
         newSubTopics: this.newSubTopics,
         newClaims: this.newClaims,
+      };
+    },
+    newTopic: function () {
+      return {
+        ...this.newTopicPartial,
+        ...this.newTopicLinks,
       };
     },
     noChange: function () {
@@ -204,6 +214,9 @@ export default {
   watch: {
     id: function () {
       this.checkLoaded();
+    },
+    newTopicLinks: function () {
+      this.showEditBlock = false;
     },
   },
   mounted: function () {
@@ -291,7 +304,10 @@ export default {
             [claimStarred, claimStarCount, stableRandom]);
       }
       if (!this.seed) {
-        this.showEditBlock = true;
+        // Done next tick so it comes after newTopicLinks watcher.
+        this.$nextTick(() => {
+          this.showEditBlock = true;
+        });
       }
     },
     checkLoaded: function () {

@@ -14,9 +14,15 @@
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
-      <button :disabled="showEditBlock || noChange"
-              type="submit"
-              class="dwd-btn green-dark">Submit</button>
+      <button v-if="showEditBlock"
+              type="button"
+              class="dwd-btn green-dark"
+              @click="showEditBlock = false">Review</button>
+      <button v-else
+              :disabled="noChange"
+              type="button"
+              class="dwd-btn green-dark"
+              @click="submit">Submit</button>
     </div>
     <div v-if="id" class="block no-pad center">
       <delete-button noun="Source" @delete="remove" />
