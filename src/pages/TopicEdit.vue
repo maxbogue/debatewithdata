@@ -59,18 +59,11 @@
     <claim-link-modal :show.sync="showClaimModal"
                       @link="addClaimId"
                       @add="addNewClaim" />
-    <div v-for="(claim, i) in newClaims"
-         class="claim"
-         :key="claim.id">
-      <div class="bubble">
-        <claim-content class="ins" :claim="claim" />
-      </div>
-      <div class="info">
-        <span class="id mono">new</span>
-        <span class="delete click fas fa-trash-alt"
-              @click="newClaims.splice(i, 1)"></span>
-      </div>
-    </div>
+    <claim-rev-and-modal-edit v-for="(claim, i) in newClaims"
+                              :key="claim.id"
+                              :claim="claim"
+                              @update="(c) => $set(newClaims, i, c)"
+                              @delete="newClaims.splice(i, 1)" />
     <div v-for="[claim, diffClass] in linkedClaims"
          class="claim"
          :key="claim.id">
@@ -112,6 +105,7 @@ import { mapState } from 'vuex';
 
 import ClaimContent from '../ClaimContent.vue';
 import ClaimLinkModal from '../ClaimLinkModal.vue';
+import ClaimRevAndModalEdit from '../ClaimRevAndModalEdit.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
@@ -145,6 +139,7 @@ export default {
   components: {
     ClaimContent,
     ClaimLinkModal,
+    ClaimRevAndModalEdit,
     DeleteButton,
     DwdLoader,
     FixedBottom,

@@ -14,7 +14,7 @@
       <dwd-flag v-if="text && flag && !isLink" :flag="flag" />
     </div>
     <div class="info">
-      <div v-if="!isLink" class="id mono">new</div>
+      <needs-data-edit v-if="!isLink" v-model="needsData" />
       <button type="button"
               class="dwd-btn white"
               @click="cancel">Cancel</button>
@@ -34,6 +34,7 @@ import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
+import NeedsDataEdit from './NeedsDataEdit.vue';
 import { validateClaim } from '../common/validate';
 import { ItemType } from '../common/constants';
 
@@ -44,6 +45,7 @@ export default {
     DwdInput,
     DwdModal,
     ItemLinkInput,
+    NeedsDataEdit,
   },
   props: {
     show: { type: Boolean, required: true },
@@ -51,6 +53,7 @@ export default {
   data: () => ({
     text: '',
     flag: '',
+    needsData: null,
     isLink: false,
     validate: validateClaim,
   }),
@@ -62,7 +65,7 @@ export default {
 
       let claim = {
         text: this.text,
-        points: [[], []],
+        needsData: this.needsData,
       };
 
       if (this.flag) {
@@ -77,6 +80,7 @@ export default {
       if (this.show) {
         this.text = '';
         this.flag = '';
+        this.needsData = null;
       }
     },
   },

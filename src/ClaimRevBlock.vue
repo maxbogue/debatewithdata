@@ -1,5 +1,6 @@
 <template>
 <div class="claim">
+  <slot></slot>
   <div class="bubble"
        :class="{ click: canEdit }"
        @click="$emit('start-editing')">
@@ -19,7 +20,10 @@
     </div>
     <claim-data-analysis v-else :claim="safeCurr" no-color />
     <span class="controls">
-      <icon-comment v-if="id"
+      <span v-if="canDelete"
+            class="delete click fas fa-trash-alt"
+            @click="$emit('delete')"></span>
+      <icon-comment v-else-if="id"
                     :count="commentCount"
                     @click.native="showComments = !showComments" />
     </span>
@@ -51,6 +55,7 @@ export default {
     curr: { type: Object, default: null },
     prev: { type: Object, default: null },
     canEdit: { type: Boolean, default: false },
+    canDelete: { type: Boolean, default: false },
   },
   data: () => ({
     showComments: false,
