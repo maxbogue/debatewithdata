@@ -89,7 +89,7 @@ describe('User', function () {
       let payload = jwt.decode(token);
       expect(payload.sub).to.equal(USERNAME);
       expect(payload.user.email).to.equal(EMAIL);
-      expect(payload.user.created).to.equal(user.created_at.toISOString());
+      expect(payload.user.createdAt).to.equal(user.created_at.toISOString());
     });
   });
 

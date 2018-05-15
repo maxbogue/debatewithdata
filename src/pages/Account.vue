@@ -1,7 +1,7 @@
 <template>
 <div :class="$style.account" class="center">
   <div><strong>user</strong><span>{{ user.username }}</span></div>
-  <div><strong>created</strong><span>{{ created }}</span></div>
+  <div><strong>created</strong><span>{{ createdAt }}</span></div>
   <div><strong>email</strong><span>{{ user.email }}</span></div>
 </div>
 </template>
@@ -13,8 +13,8 @@ import { mapState } from 'vuex';
 export default {
   computed: {
     ...mapState(['user']),
-    created: function () {
-      return dateFormat(this.user.created, 'yyyy-mm-dd');
+    createdAt: function () {
+      return dateFormat(this.user.createdAt, 'yyyy-mm-dd');
     },
   },
 };

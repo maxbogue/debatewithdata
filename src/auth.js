@@ -31,7 +31,7 @@ function getUserFromToken(authToken) {
   }
 
   let user = decoded.user;
-  user.created = new Date(user.created);
+  user.createdAt = new Date(user.createdAt);
   user.username = decoded.sub;
   return user;
 }

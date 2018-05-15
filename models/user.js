@@ -142,7 +142,7 @@ export default function (sequelize, DataTypes) {
         throw new AuthError('Email verification required.');
       }
       let user = {
-        created: this.created_at,
+        createdAt: this.created_at,
         email: this.email,
         admin: this.admin,
       };
