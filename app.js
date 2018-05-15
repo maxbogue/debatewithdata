@@ -50,6 +50,7 @@ app.get('/topic/:id', sendIndex);
 app.get('/topic/:id/edit', sendIndex);
 app.get('/topics', sendIndex);
 app.get('/topics/add', sendIndex);
+app.get('/user/:username', sendIndex);
 app.get('/verify-email', sendIndex);
 
 app.use('/api', api);

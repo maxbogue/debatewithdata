@@ -1,5 +1,6 @@
 import Router from 'express-promise-router';
-import map from 'lodash/map';
+import isArray from 'lodash/isArray';
+import mergeWith from 'lodash/mergeWith';
 import sortBy from 'lodash/sortBy';
 
 import { ClaimRev, Comment, SourceRev, TopicRev, User } from '../models';
@@ -7,21 +8,31 @@ import { ItemType } from '../common/constants';
 
 const router = Router();
 
-function itemToAction(item) {
-  if (item.deleted) {
+function merge (obj, other) {
+  return mergeWith(obj, other, (a, b) => {
+    if (isArray(a)) {
+      return a.concat(b);
+    }
+    return undefined;
+  });
+}
+
+function itemToAction(itemRev) {
+  if (itemRev.deleted) {
     return 'deleted';
   }
-  if (!item.parentId) {
+  if (!itemRev.parentId) {
     return 'added';
   }
   return 'edited';
 }
 
-function itemToEntry(item) {
+function itemToEntry(itemRev) {
   return {
-    timestamp: item.created_at,
-    username: item.user.username,
-    action: itemToAction(item),
+    timestamp: itemRev.created_at,
+    username: itemRev.user.username,
+    action: itemToAction(itemRev),
+    revId: itemRev.id,
   };
 }
 
@@ -56,51 +67,55 @@ function commentToEntry(comment) {
   };
 }
 
-router.get('/', async function (req, res) {
-  let topicRevs = await TopicRev.findAll({
-    attributes: ['deleted', 'topicId', 'parentId', 'created_at'],
+export async function getActivity({ user, limit }) {
+  let QUERY = {
     include: {
       model: User,
       attributes: ['username'],
     },
     order: [['created_at', 'DESC']],
-    limit: 100,
+    limit,
+  };
+  if (user) {
+    QUERY.where = { userId: user.id };
+  }
+
+  let ITEM_ATTRS = ['id', 'deleted', 'parentId', 'created_at'];
+  let topicRevs = await TopicRev.findAll({
+    ...QUERY,
+    attributes: [...ITEM_ATTRS, 'topicId'],
   });
   let claimRevs = await ClaimRev.findAll({
-    attributes: ['deleted', 'claimId', 'parentId', 'created_at'],
-    include: {
-      model: User,
-      attributes: ['username'],
-    },
-    order: [['created_at', 'DESC']],
-    limit: 100,
+    ...QUERY,
+    attributes: [...ITEM_ATTRS, 'claimId'],
   });
   let sourceRevs = await SourceRev.findAll({
-    attributes: ['deleted', 'sourceId', 'parentId', 'created_at'],
-    include: {
-      model: User,
-      attributes: ['username'],
-    },
-    order: [['created_at', 'DESC']],
-    limit: 100,
+    ...QUERY,
+    attributes: [...ITEM_ATTRS, 'sourceId'],
   });
-  let comments = await Comment.findAll({
+
+  let comments = await Comment.findAll(merge({
     attributes: ['commentable', 'commentableId', 'created_at'],
     where: { deleted: false },
-    include: {
-      model: User,
-      attributes: ['username'],
-    },
-    order: [['created_at', 'DESC']],
-    limit: 100,
-  });
-  let topicEntries = map(topicRevs, topicRevToEntry);
-  let claimEntries = map(claimRevs, claimRevToEntry);
-  let sourceEntries = map(sourceRevs, sourceRevToEntry);
-  let commentEntries = map(comments, commentToEntry);
+  }, QUERY));
+
+  let topicEntries = topicRevs.map(topicRevToEntry);
+  let claimEntries = claimRevs.map(claimRevToEntry);
+  let sourceEntries = sourceRevs.map(sourceRevToEntry);
+  let commentEntries = comments.map(commentToEntry);
+
   let activity = topicEntries.concat(
       claimEntries, sourceEntries, commentEntries);
-  res.json(sortBy(activity, (e) => -e.timestamp.getTime()).slice(0, 100));
+  activity = sortBy(activity, (e) => -e.timestamp.getTime());
+  if (limit) {
+    activity = activity.slice(0, limit);
+  }
+  return activity;
+}
+
+router.get('/', async function (req, res) {
+  let activity = await getActivity({ limit: 100 });
+  res.json({ activity });
 });
 
 export default router;

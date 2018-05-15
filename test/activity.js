@@ -16,7 +16,9 @@ describe('Activity', function () {
 
   describe('get activity', function () {
     it('none', async function () {
-      return request(app).get('/api/activity').expect(200, []);
+      return request(app).get('/api/activity').expect(200, {
+        activity: [],
+      });
     });
 
     it('variety', async function () {
@@ -26,31 +28,36 @@ describe('Activity', function () {
       let sourceRev = await TestSource.create(user);
       return request(app)
         .get('/api/activity')
-        .expect(200, [{
-          timestamp: sourceRev.created_at.toISOString(),
-          username: user.username,
-          action: 'added',
-          type: ItemType.SOURCE,
-          id: sourceRev.sourceId,
-        }, {
-          timestamp: comment.created_at.toISOString(),
-          username: user.username,
-          action: 'commented on',
-          type: ItemType.CLAIM,
-          id: claimRev.claimId,
-        }, {
-          timestamp: claimRev.created_at.toISOString(),
-          username: user.username,
-          action: 'added',
-          type: ItemType.CLAIM,
-          id: claimRev.claimId,
-        }, {
-          timestamp: topicRev.created_at.toISOString(),
-          username: user.username,
-          action: 'added',
-          type: ItemType.TOPIC,
-          id: topicRev.topicId,
-        }]);
+        .expect(200, {
+          activity: [{
+            timestamp: sourceRev.created_at.toISOString(),
+            username: user.username,
+            action: 'added',
+            type: ItemType.SOURCE,
+            id: sourceRev.sourceId,
+            revId: sourceRev.id,
+          }, {
+            timestamp: comment.created_at.toISOString(),
+            username: user.username,
+            action: 'commented on',
+            type: ItemType.CLAIM,
+            id: claimRev.claimId,
+          }, {
+            timestamp: claimRev.created_at.toISOString(),
+            username: user.username,
+            action: 'added',
+            type: ItemType.CLAIM,
+            id: claimRev.claimId,
+            revId: claimRev.id,
+          }, {
+            timestamp: topicRev.created_at.toISOString(),
+            username: user.username,
+            action: 'added',
+            type: ItemType.TOPIC,
+            id: topicRev.topicId,
+            revId: topicRev.id,
+          }],
+        });
     });
 
     it('lifecycle', async function () {
@@ -63,25 +70,30 @@ describe('Activity', function () {
       let r3 = await Claim.apiDelete(claimId, user, 'is for test');
       return request(app)
         .get('/api/activity')
-        .expect(200, [{
-          timestamp: r3.created_at.toISOString(),
-          username: user.username,
-          action: 'deleted',
-          type: ItemType.CLAIM,
-          id: claimId,
-        }, {
-          timestamp: r2.created_at.toISOString(),
-          username: user.username,
-          action: 'edited',
-          type: ItemType.CLAIM,
-          id: claimId,
-        }, {
-          timestamp: r1.created_at.toISOString(),
-          username: user.username,
-          action: 'added',
-          type: ItemType.CLAIM,
-          id: claimId,
-        }]);
+        .expect(200, {
+          activity: [{
+            timestamp: r3.created_at.toISOString(),
+            username: user.username,
+            action: 'deleted',
+            type: ItemType.CLAIM,
+            id: claimId,
+            revId: r3.id,
+          }, {
+            timestamp: r2.created_at.toISOString(),
+            username: user.username,
+            action: 'edited',
+            type: ItemType.CLAIM,
+            id: claimId,
+            revId: r2.id,
+          }, {
+            timestamp: r1.created_at.toISOString(),
+            username: user.username,
+            action: 'added',
+            type: ItemType.CLAIM,
+            id: claimId,
+            revId: r1.id,
+          }],
+        });
     });
   });
 });

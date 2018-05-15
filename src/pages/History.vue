@@ -8,7 +8,8 @@
     <ul class="mono" :class="$style.revs">
       <li v-for="rev in revs" :class="revClass" :key="rev.revId">
         <router-link :to="revUrl(rev)">{{ rev.revId }}</router-link>
-        <span :class="$style.username">{{ rev.username }}</span>
+        <router-link :to="'/user/' + rev.username"
+                     :class="$style.username">{{ rev.username }}</router-link>
         <span>{{ rev.createdAt | timestamp }}</span>
       </li>
     </ul>
@@ -156,6 +157,10 @@ export default {
     padding: 6px 8px;
     list-style: none;
     text-align: center;
+
+    a:hover {
+      text-decoration: underline;
+    }
 
     .username {
       flex: 1;

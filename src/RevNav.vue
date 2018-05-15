@@ -1,7 +1,11 @@
 <template>
 <div class="block no-pad center">
   <h3 class="mono">{{ curr.revId }}</h3>
-  <div><strong>by</strong> {{ curr.username }}</div>
+  <div :class="$style.meta">
+    <strong>by</strong>
+    <router-link :to="'/user/' + curr.username"
+                 >{{ curr.username }}</router-link>
+  </div>
   <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
   <div :class="$style.nav">
     <router-link :to="prevUrl"
@@ -68,6 +72,10 @@ export default {
 
 .hidden {
   visibility: hidden;
+}
+
+.meta a:hover {
+  text-decoration: underline;
 }
 
 .nav {
