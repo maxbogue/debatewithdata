@@ -6,6 +6,7 @@ import forOwn from 'lodash/forOwn';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import search from '../common/search';
 import { walk } from './utils';
 import { validateClaim, validateSource,
   validateTopic } from '../common/validate';
@@ -82,18 +83,21 @@ export default new Vuex.Store({
     setData: function (state, data) {
       if (data.topics) {
         forOwn(data.topics, (topic, id) => {
+          search.updateTopic(topic);
           Vue.set(state.topics, id, topic);
         });
       }
       if (data.claims) {
         forOwn(data.claims, (claim, id) => {
           if (shouldWriteClaim(id, data, state)) {
+            search.updateClaim(claim);
             Vue.set(state.claims, id, claim);
           }
         });
       }
       if (data.sources) {
         forOwn(data.sources, (source, id) => {
+          search.updateSource(source);
           Vue.set(state.sources, id, source);
         });
       }

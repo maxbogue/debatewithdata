@@ -30,15 +30,14 @@
 
 <script>
 import debounce from 'lodash/debounce';
-import forEach from 'lodash/forEach';
 
 import ClaimContent from './ClaimContent.vue';
 import DwdInput from './DwdInput.vue';
 import SourceContent from './SourceContent.vue';
 import TopicContent from './TopicContent.vue';
+import search from '../common/search';
 import { DEBOUNCE_DELAY_MS } from './constants';
 import { ItemType } from '../common/constants';
-import { Search } from '../common/search';
 
 // All IDs only use lowercase letters, numbers, and dashes.
 const ANY_ID_REGEX = /^[0-9a-z-]+$/;
@@ -63,7 +62,6 @@ export default {
     loading: false,
     highlighted: 0,
     items: [],
-    search: null,
   }),
   computed: {
     topic: function () {
@@ -85,11 +83,25 @@ export default {
       }
       return '';
     },
+    allowedTypes: function () {
+      let types = [];
+      if (this.allowTopic) {
+        types.push(ItemType.TOPIC);
+      }
+      if (this.allowClaim) {
+        types.push(ItemType.CLAIM);
+      }
+      if (this.allowSource) {
+        types.push(ItemType.SOURCE);
+      }
+      return types;
+    },
     results: function () {
-      if (!this.search || this.itemType) {
+      if (!search || this.itemType) {
         return [];
       }
-      return this.search.query(this.value).map(this.lookupItem);
+      let results = search.query(this.value, this.allowedTypes).slice(0, 5);
+      return results.map(this.lookupItem);
     },
     hasResults: function () {
       return this.results.length > 0;
@@ -131,27 +143,14 @@ export default {
   },
   mountedTriggersWatchers: true,
   mounted: function () {
-    this.search = new Search();
     if (this.allowClaim) {
-      this.$store.dispatch('getClaims', {}).then(() => {
-        forEach(this.$store.state.claims, (claim) => {
-          this.search.updateClaim(claim);
-        });
-      });
+      this.$store.dispatch('getClaims', {});
     }
     if (this.allowSource) {
-      this.$store.dispatch('getSources', {}).then(() => {
-        forEach(this.$store.state.sources, (source) => {
-          this.search.updateSource(source);
-        });
-      });
+      this.$store.dispatch('getSources', {});
     }
     if (this.allowTopic) {
-      this.$store.dispatch('getTopics', { mode: 'all' }).then(() => {
-        forEach(this.$store.state.topics, (topic) => {
-          this.search.updateTopic(topic);
-        });
-      });
+      this.$store.dispatch('getTopics', { mode: 'all' });
     }
   },
   methods: {

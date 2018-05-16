@@ -42,10 +42,16 @@ export class Search {
     });
   }
 
-  query(q, limit=5) {
-    return this.index.search(q, {
+  query(q, types) {
+    let items = this.index.search(q, {
       bool: 'AND',
       expand: true,
-    }).slice(0, limit).map(unwrapResult);
+    }).map(unwrapResult);
+    if (types) {
+      items = items.filter((item) => types.includes(item.type));
+    }
+    return items;
   }
 }
+
+export default new Search();
