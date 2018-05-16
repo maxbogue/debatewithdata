@@ -22,10 +22,12 @@
              :trail="trail" />
     <topic-rev v-if="itemType === ItemType.TOPIC"
                :curr="curr"
-               :prev="prev" />
+               :prev="prev"
+               :trail="newTrail" />
     <claim-rev v-else-if="itemType === ItemType.CLAIM"
                :curr="curr"
-               :prev="prev" />
+               :prev="prev"
+               :trail="newTrail" />
     <source-rev v-else-if="itemType === ItemType.SOURCE"
                 :curr="curr"
                 :prev="prev" />
@@ -65,7 +67,8 @@ export default {
   }),
   computed: {
     itemType: function () {
-      return this.$route.params.type;
+      let type = this.$route.params.type;
+      return type === 'data' ? ItemType.SOURCE : type;
     },
     itemId: function () {
       return this.$route.params.id;
@@ -112,6 +115,9 @@ export default {
     },
     trail: function () {
       return this.parseTrail(this.$route.query.trail);
+    },
+    newTrail: function () {
+      return this.trail.concat(this.itemId);
     },
     url: function () {
       return this.itemUrl(this.itemType, this.itemId);

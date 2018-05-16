@@ -3,20 +3,22 @@
   <claim-rev-block :curr="curr" :prev="prev" />
   <template v-if="$store.state.singleColumn">
     <point-rev v-for="[[pId, currP, prevP], side] in zippedPointDiffs"
+               :key="pId"
                :curr="currP"
                :prev="prevP"
                :is-for="!side"
-               :key="pId" />
+               :trail="trail" />
   </template>
   <template v-else>
     <div v-for="(sidePointDiffs, side) in pointDiffs"
          class="dwd-col"
          :key="'side-' + side">
       <point-rev v-for="[pointId, currPoint, prevPoint] in sidePointDiffs"
+                 :key="pointId"
                  :curr="currPoint"
                  :prev="prevPoint"
                  :is-for="!side"
-                 :key="pointId" />
+                 :trail="trail" />
     </div>
   </template>
 </div>
@@ -35,6 +37,7 @@ export default {
   props: {
     curr: { type: Object, required: true },
     prev: { type: Object, default: null },
+    trail: { type: Array, required: true },
   },
   computed: {
     pointDiffs: function () {

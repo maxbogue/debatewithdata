@@ -5,7 +5,7 @@
     <h3>Sub-Topics</h3>
     <router-link v-for="[subTopic, diffClass] in subTopics"
                  class="topic block"
-                 :to="topicUrl(subTopic.id)"
+                 :to="topicUrl(subTopic.id, trail)"
                  :key="subTopic.id">
       <div :class="diffClass">{{ subTopic.title }}</div>
     </router-link>
@@ -14,7 +14,7 @@
     <h3>Key Claims</h3>
     <router-link v-for="[claim, diffClass] in claims"
                  class="claim block"
-                 :to="claimUrl(claim.id)"
+                 :to="claimUrl(claim.id, trail)"
                  :key="claim.id">
       <claim-content :class="diffClass"
                      :claim="claim" />
@@ -36,6 +36,7 @@ export default {
   props: {
     curr: { type: Object, required: true },
     prev: { type: Object, default: null },
+    trail: { type: Array, required: true },
   },
   computed: {
     currHasContent: function () {

@@ -1,12 +1,8 @@
 <template>
 <div class="point" :class="isFor | toSideString">
-  <point-diff class="bubble click"
-              :curr="curr"
-              :prev="prev"
-              @click.native="showDrawer = !showDrawer" />
-  <div class="info">
-    <span class="id mono">{{ id }}</span>
-  </div>
+  <router-link :to="url" class="bubble click">
+    <point-diff :curr="curr" :prev="prev" />
+  </router-link>
 </div>
 </template>
 
@@ -22,10 +18,15 @@ export default {
     curr: { type: Object, default: null },
     prev: { type: Object, default: null },
     isFor: { type: Boolean, required: true },
+    trail: { type: Array, required: true },
   },
   computed: {
     id: function () {
       return this.curr ? this.curr.id : this.prev.id;
+    },
+    url: function () {
+      let type = this.curr ? this.curr.pointType : this.prev.pointType;
+      return this.itemUrl(type, this.id, this.trail);
     },
   },
 };
