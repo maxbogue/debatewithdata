@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import elasticlunr from 'elasticlunr';
 import debounce from 'lodash/debounce';
 import forEach from 'lodash/forEach';
 
@@ -37,9 +36,9 @@ import ClaimContent from './ClaimContent.vue';
 import DwdInput from './DwdInput.vue';
 import SourceContent from './SourceContent.vue';
 import TopicContent from './TopicContent.vue';
-
 import { DEBOUNCE_DELAY_MS } from './constants';
 import { ItemType } from '../common/constants';
+import { Search } from '../common/search';
 
 // All IDs only use lowercase letters, numbers, and dashes.
 const ANY_ID_REGEX = /^[0-9a-z-]+$/;
@@ -64,7 +63,7 @@ export default {
     loading: false,
     highlighted: 0,
     items: [],
-    index: null,
+    search: null,
   }),
   computed: {
     topic: function () {
@@ -87,13 +86,10 @@ export default {
       return '';
     },
     results: function () {
-      if (!this.index || this.itemType) {
+      if (!this.search || this.itemType) {
         return [];
       }
-      return this.index.search(this.value, {
-        bool: 'AND',
-        expand: true,
-      }).slice(0, 5).map(this.resultToItem);
+      return this.search.query(this.value).map(this.lookupItem);
     },
     hasResults: function () {
       return this.results.length > 0;
@@ -135,24 +131,26 @@ export default {
   },
   mountedTriggersWatchers: true,
   mounted: function () {
-    this.index = elasticlunr(function () {
-      /* eslint no-invalid-this: "off" */
-      this.addField('title');
-      this.addField('text');
-    });
+    this.search = new Search();
     if (this.allowClaim) {
       this.$store.dispatch('getClaims', {}).then(() => {
-        this.updateIndex(this.$store.state.claims);
+        forEach(this.$store.state.claims, (claim) => {
+          this.search.updateClaim(claim);
+        });
       });
     }
     if (this.allowSource) {
       this.$store.dispatch('getSources', {}).then(() => {
-        this.updateIndex(this.$store.state.sources);
+        forEach(this.$store.state.sources, (source) => {
+          this.search.updateSource(source);
+        });
       });
     }
     if (this.allowTopic) {
       this.$store.dispatch('getTopics', { mode: 'all' }).then(() => {
-        this.updateIndex(this.$store.state.topics);
+        forEach(this.$store.state.topics, (topic) => {
+          this.search.updateTopic(topic);
+        });
       });
     }
   },
@@ -193,34 +191,15 @@ export default {
         },
       };
     },
-    updateIndex: function (items) {
-      forEach(items, (item) => {
-        this.index.updateDoc(item);
-      });
-    },
-    resultToItem: function (result) {
-      let claim = this.lookupClaim(result.ref);
-      if (claim) {
-        return {
-          type: ItemType.CLAIM,
-          data: claim,
-        };
+    lookupItem: function ({ type, id }) {
+      if (type === ItemType.TOPIC) {
+        return { type, data: this.lookupTopic(id) };
+      } else if (type === ItemType.CLAIM) {
+        return { type, data: this.lookupClaim(id) };
+      } else if (type === ItemType.SOURCE) {
+        return { type, data: this.lookupSource(id) };
       }
-      let source = this.lookupSource(result.ref);
-      if (source) {
-        return {
-          type: ItemType.SOURCE,
-          data: source,
-        };
-      }
-      let topic = this.lookupTopic(result.ref);
-      if (topic) {
-        return {
-          type: ItemType.TOPIC,
-          data: topic,
-        };
-      }
-      console.warn('Broken item ref in index: ' + result.ref);
+      console.warn('Broken search result: ' + type);
       return null;
     },
     resultClass: function (result, i) {
