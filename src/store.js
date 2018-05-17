@@ -27,26 +27,21 @@ function shouldWriteClaim(claimId, s1, s2) {
   return !c2 || c1.revId !== c2.revId || c1.depth > c2.depth;
 }
 
-function hasFullClaim(state, id) {
-  let claim = state.claims[id];
-  return claim && claim.depth >= 3;
-}
-
 function copyClaim(claim) {
   let copy = cloneDeep(claim);
   walk(copy, (o) => delete o.tempId);
   return copy;
 }
 
-function addTrailToUrl(url, trail, state) {
+function paramsFromTrail(trail, state) {
   if (!trail) {
-    return url;
+    return {};
   }
-  trail = trail.filter((id) => !hasFullClaim(state, id) && !state.topics[id]);
+  trail = trail.filter((id) => !state.claims[id] && !state.topics[id]);
   if (trail.length > 0) {
-    url += '?trail=' + trail.join(',');
+    return { trail: trail.join(',') };
   }
-  return url;
+  return {};
 }
 
 function windowIsSingleColumn() {
@@ -144,14 +139,14 @@ export default new Vuex.Store({
   },
   actions: {
     getTopic: function ({ commit, state }, { id, trail, loader }) {
-      let url = addTrailToUrl('/api/topic/' + id, trail, state);
-      return axios.get(url, { loader }).then((res) => {
+      let params = paramsFromTrail(trail, state);
+      return axios.get(`/api/topic/${id}`, { params, loader }).then((res) => {
         commit('setData', res.data);
       });
     },
     getTopics: function ({ commit }, { mode, loader }) {
-      let url = mode ? `/api/topic?mode=${mode}` : '/api/topic';
-      return axios.get(url, { loader }).then((res) => {
+      let params = { mode };
+      return axios.get('/api/topic', { params, loader }).then((res) => {
         commit('setData', res.data);
         commit('setTopicsLoaded');
       });
@@ -177,13 +172,14 @@ export default new Vuex.Store({
       });
     },
     removeTopic: function ({ commit }, { id, message }) {
-      return axios.delete(`/api/topic/${id}?message=${message}`).then((res) => {
+      let params = { message };
+      return axios.delete(`/api/topic/${id}`, { params }).then((res) => {
         commit('setData', res.data);
       });
     },
     getClaim: function ({ commit, state }, { id, trail, loader }) {
-      let url = addTrailToUrl('/api/claim/' + id, trail, state);
-      return axios.get(url, { loader }).then((res) => {
+      let params = paramsFromTrail(trail, state);
+      return axios.get(`/api/claim/${id}`, { params, loader }).then((res) => {
         commit('setData', res.data);
       });
     },
@@ -214,13 +210,14 @@ export default new Vuex.Store({
       });
     },
     removeClaim: function ({ commit }, { id, message }) {
-      return axios.delete(`/api/claim/${id}?message=${message}`).then((res) => {
+      let params = { message };
+      return axios.delete(`/api/claim/${id}`, { params }).then((res) => {
         commit('setData', res.data);
       });
     },
     getSource: function ({ commit, state }, { id, trail, loader }) {
-      let url = addTrailToUrl('/api/data/' + id, trail, state);
-      return axios.get(url, { loader }).then((res) => {
+      let params = paramsFromTrail(trail, state);
+      return axios.get(`/api/data/${id}`, { params, loader }).then((res) => {
         commit('setData', res.data);
       });
     },
@@ -251,7 +248,8 @@ export default new Vuex.Store({
       });
     },
     removeSource: function ({ commit }, { id, message }) {
-      return axios.delete(`/api/data/${id}?message=${message}`)
+      let params = { message };
+      return axios.delete(`/api/data/${id}`, { params })
         .then((res) => {
           commit('setData', res.data);
         });
