@@ -47,7 +47,7 @@ export default {
   }),
   computed: {
     id: function () {
-      let pointId = this.point ? this.point.id || this.point.tempId : '';
+      let pointId = this.point ? this.point.id : '';
       let prevId = this.prev ? this.prev.id : '';
       return pointId || prevId;
     },
@@ -72,6 +72,13 @@ export default {
         this.isSubPoint ? 'sub-point' : 'point',
         this.$options.filters.toSideString(this.isFor),
       ];
+    },
+  },
+  watch: {
+    showModal: function () {
+      if (!this.showModal && !this.point.pointType) {
+        this.emitPoint({});
+      }
     },
   },
   beforeCreate: function () {
