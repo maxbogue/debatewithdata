@@ -1,4 +1,5 @@
 import graph, { Graph } from '../common/graph';
+import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
 import { ItemType } from '../common/constants';
 import { ValidationError, validateTopic } from '../common/validate';
@@ -293,6 +294,11 @@ export default function (sequelize, DataTypes) {
       let topicInfos = subTopics.map(Graph.toTopicInfo);
       let claimInfos = claims.map(Graph.toClaimInfo);
       graph.updateTopicChildren(this.id, [...topicInfos, ...claimInfos]);
+    };
+
+    Topic.prototype.updateIndex = function (data) {
+      data = data || this.head.toCoreData();
+      search.updateTopic(data);
     };
   };
 

@@ -134,6 +134,7 @@ export default function (sequelize, DataTypes) {
       await claim.setHead(claimRev, { transaction });
 
       claim.updateGraph(subClaimIds, sourceIds);
+      claim.updateIndex({ id: claim.id, text: data.text });
 
       return claimRev;
     };

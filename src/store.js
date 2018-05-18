@@ -21,10 +21,16 @@ const CONFLICT_ERROR_MESSAGE = 'Item was modified since you began editing.'
 //   - claimId doesn't exist in s2, or
 //   - s1 has a different revision than s2 (it's always newer), or
 //   - s1 has more depth loaded than s2.
-function shouldWriteClaim(claimId, s1, s2) {
+function shouldStoreClaim(claimId, s1, s2) {
   let c1 = s1.claims[claimId];
   let c2 = s2.claims[claimId];
   return !c2 || c1.revId !== c2.revId || c1.depth > c2.depth;
+}
+
+function shouldStoreTopic(topicId, s1, s2) {
+  let t1 = s1.topics[topicId];
+  let t2 = s2.topics[topicId];
+  return !t2 || t1.revId !== t2.revId || t1.depth > t2.depth;
 }
 
 function copyClaim(claim) {
@@ -78,13 +84,15 @@ export default new Vuex.Store({
     setData: function (state, data) {
       if (data.topics) {
         forOwn(data.topics, (topic, id) => {
-          search.updateTopic(topic);
-          Vue.set(state.topics, id, topic);
+          if (shouldStoreTopic(id, data, state)) {
+            search.updateTopic(topic);
+            Vue.set(state.topics, id, topic);
+          }
         });
       }
       if (data.claims) {
         forOwn(data.claims, (claim, id) => {
-          if (shouldWriteClaim(id, data, state)) {
+          if (shouldStoreClaim(id, data, state)) {
             search.updateClaim(claim);
             Vue.set(state.claims, id, claim);
           }
@@ -257,6 +265,13 @@ export default new Vuex.Store({
     getItem: function ({ commit }, { id, loader }) {
       return axios.get('/api/item/' + id, { loader }).then((res) => {
         commit('setData', res.data);
+      });
+    },
+    search: function ({ commit }, { query, types, limit, loader }) {
+      let params = { query, types, limit };
+      return axios.get('/api/search', { params, loader }).then((res) => {
+        commit('setData', res.data);
+        return res.data.results;
       });
     },
   },

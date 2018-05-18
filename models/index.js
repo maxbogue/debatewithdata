@@ -65,12 +65,25 @@ forOwn(models, (model) => {
 async function initGraph() {
   let topics = await Topic.findAll(Topic.INCLUDE(2));
   for (let topic of topics) {
-    topic.updateGraph();
+    if (!topic.head.deleted) {
+      topic.updateGraph();
+      topic.updateIndex();
+    }
   }
 
   let claims = await Claim.findAll(Claim.INCLUDE(2));
   for (let claim of claims) {
-    claim.updateGraph();
+    if (!claim.head.deleted) {
+      claim.updateGraph();
+      claim.updateIndex();
+    }
+  }
+
+  let sources = await Source.findAll(Source.INCLUDE());
+  for (let source of sources) {
+    if (!source.head.deleted) {
+      source.updateIndex();
+    }
   }
 }
 

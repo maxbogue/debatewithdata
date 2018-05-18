@@ -39,8 +39,7 @@ import search from '../common/search';
 import { DEBOUNCE_DELAY_MS } from './constants';
 import { ItemType } from '../common/constants';
 
-// All IDs only use lowercase letters, numbers, and dashes.
-const ANY_ID_REGEX = /^[0-9a-z-]+$/;
+const RESULT_LIMIT = 5;
 
 export default {
   components: {
@@ -61,7 +60,7 @@ export default {
   data: () => ({
     loading: false,
     highlighted: 0,
-    items: [],
+    results: [],
   }),
   computed: {
     topic: function () {
@@ -96,13 +95,6 @@ export default {
       }
       return types;
     },
-    results: function () {
-      if (!search || this.itemType) {
-        return [];
-      }
-      let results = search.query(this.value, this.allowedTypes).slice(0, 5);
-      return results.map(this.lookupItem);
-    },
     hasResults: function () {
       return this.results.length > 0;
     },
@@ -130,29 +122,19 @@ export default {
       this.highlighted = -1;
       this.loading = false;
 
-      if (!ANY_ID_REGEX.test(this.value)) {
-        // Don't bother going to the server if it can't be an ID.
+      if (!this.value || this.itemType) {
+        this.results = [];
         return;
       }
 
-      this.getItem();
+      this.queryLocal();
+      this.queryServer();
     },
     itemType: function () {
       this.$emit('itemType', this.itemType);
     },
   },
   mountedTriggersWatchers: true,
-  mounted: function () {
-    if (this.allowClaim) {
-      this.$store.dispatch('getClaims', {});
-    }
-    if (this.allowSource) {
-      this.$store.dispatch('getSources', {});
-    }
-    if (this.allowTopic) {
-      this.$store.dispatch('getTopics', { mode: 'all' });
-    }
-  },
   methods: {
     highlight: function (i) {
       if (this.hasResults) {
@@ -171,14 +153,29 @@ export default {
         e.stopPropagation();
       }
     },
-    getItem: debounce(function () {
+    queryLocal: function () {
+      let results = search.query(this.value, this.allowedTypes);
+      this.results = results.slice(0, RESULT_LIMIT).map(this.lookupItem);
+    },
+    queryServer: debounce(function () {
       /* eslint no-invalid-this: "off" */
-      if (this.value && !this.itemType) {
-        this.$store.dispatch('getItem', {
-          id: this.value,
-          loader: this.makeLoader(),
-        }).catch(() => {});
-      }
+      let query = this.value;
+      this.loading = true;
+      this.$store.dispatch('search', {
+        query,
+        types: this.allowedTypes,
+        limit: 5,
+        loader: this.makeLoader(),
+      }).then(() => {
+        // This function gets a results list but we ignore it and re-do a local
+        // query with the new data from the server to preserve ordering between
+        // local and remote results. This should obviously be changed when the
+        // server-side search engine is upgraded from elasticlunr.
+        if (query === this.value) {
+          this.queryLocal();
+          this.loading = false;
+        }
+      });
     }, DEBOUNCE_DELAY_MS),
     makeLoader: function () {
       return {

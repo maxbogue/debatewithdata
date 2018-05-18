@@ -123,6 +123,7 @@ export default function (sequelize, DataTypes) {
       }, { transaction });
 
       await source.setHead(rev, { transaction });
+      source.updateIndex({ id: source.id, text: data.text });
       return rev;
     };
 

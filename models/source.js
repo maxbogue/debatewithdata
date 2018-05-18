@@ -1,3 +1,4 @@
+import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
 import { ItemType } from '../common/constants';
 import { ValidationError, validateSource } from '../common/validate';
@@ -217,6 +218,11 @@ export default function (sequelize, DataTypes) {
         await source.addStarredByUser(user);
       }
       return await source.toStarData(user);
+    };
+
+    Source.prototype.updateIndex = function (data) {
+      data = data || this.head.toCoreData();
+      search.updateSource(data);
     };
   };
 

@@ -129,6 +129,7 @@ export default function (sequelize, DataTypes) {
       await topic.setHead(topicRev, { transaction });
 
       topic.updateGraph(subTopicIds, claimIds);
+      topic.updateIndex({ id: topic.id, text: data.text, title: data.title });
 
       return topicRev;
     };

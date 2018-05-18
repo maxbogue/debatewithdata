@@ -3,6 +3,7 @@ import partition from 'lodash/partition';
 import zipWith from 'lodash/zipWith';
 
 import graph, { Graph } from '../common/graph';
+import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
 import { ItemType } from '../common/constants';
 import { ValidationError, validateClaim } from '../common/validate';
@@ -297,6 +298,11 @@ export default function (sequelize, DataTypes) {
           (head, ...tail) => head.concat(...tail));
 
       graph.updateClaimPoints(this.id, pointInfos);
+    };
+
+    Claim.prototype.updateIndex = function (data) {
+      data = data || this.head.toCoreData();
+      search.updateClaim(data);
     };
   };
 

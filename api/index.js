@@ -6,7 +6,7 @@ import activity from './activity';
 import admin from './admin';
 import auth, { parseAuthHeader } from './auth';
 import claim from './claim';
-import item from './item';
+import search from './search';
 import source from './source';
 import topic from './topic';
 import user from './user';
@@ -20,8 +20,8 @@ router.use(auth);
 router.use('/activity', activity);
 router.use('/admin', admin);
 router.use('/claim', claim);
-router.use('/item', item);
 router.use('/data', source);
+router.use('/search', search);
 router.use('/topic', topic);
 router.use('/user', user);
 
