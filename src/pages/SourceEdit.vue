@@ -1,9 +1,13 @@
 <template>
 <div>
-  <form v-if="!needsData" @submit.prevent="commit">
-    <source-edit-block v-if="showEditBlock"
-                       :source.sync="newSource"
-                       @close="showEditBlock = false" />
+  <form-valid v-if="!needsData"
+              @submit="review"
+              @keydown.native.esc="revert">
+    <div v-if="showEditBlock" class="source">
+      <source-edit-content v-if="showEditBlock"
+                           class="bubble"
+                           :source.sync="newSource" />
+    </div>
     <div v-else class="source neutral">
       <source-rev-content class="bubble click"
                           :prev="source"
@@ -17,7 +21,7 @@
       <button v-if="showEditBlock"
               type="button"
               class="dwd-btn green-dark"
-              @click="showEditBlock = false">Review</button>
+              @click="review">Review</button>
       <button v-else
               :disabled="noChange"
               type="button"
@@ -27,15 +31,18 @@
     <div v-if="id" class="block no-pad center">
       <delete-button noun="Source" @delete="remove" />
     </div>
-  </form>
+  </form-valid>
   <dwd-loader ref="loader" />
 </div>
 </template>
 
 <script>
+import clone from 'lodash/clone';
+
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
-import SourceEditBlock from '../SourceEditBlock.vue';
+import FormValid from '../FormValid.vue';
+import SourceEditContent from '../SourceEditContent.vue';
 import SourceRevContent from '../SourceRevContent.vue';
 import { authRedirect } from '../utils';
 import { sourcesAreEqual } from '../../common/equality';
@@ -58,7 +65,8 @@ export default {
   components: {
     DeleteButton,
     DwdLoader,
-    SourceEditBlock,
+    FormValid,
+    SourceEditContent,
     SourceRevContent,
   },
   props: {
@@ -67,6 +75,7 @@ export default {
   },
   data: () => ({
     showEditBlock: false,
+    oldSource: null,
     newSource: null,
   }),
   computed: {
@@ -87,6 +96,11 @@ export default {
     id: function () {
       this.checkLoaded();
     },
+    showEditBlock: function () {
+      if (this.showEditBlock) {
+        this.oldSource = clone(this.newSource);
+      }
+    },
   },
   mounted: function () {
     this.checkLoaded();
@@ -104,7 +118,10 @@ export default {
       (e || window.event).returnValue = BEFORE_UNLOAD_MESSAGE;
       return BEFORE_UNLOAD_MESSAGE;
     },
-    commit: function () {
+    review: function () {
+      this.showEditBlock = false;
+    },
+    submit: function () {
       let action = 'addSource';
       let payload = { source: this.newSource };
       if (this.id) {
@@ -115,6 +132,10 @@ export default {
       this.$store.dispatch(action, payload).then((id) => {
         this.$router.push(this.sourceUrl(id, this.trail));
       });
+    },
+    revert: function () {
+      this.newSource = this.oldSource;
+      this.showEditBlock = false;
     },
     remove: function (message) {
       this.$store.dispatch('removeSource', {
