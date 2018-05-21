@@ -63,6 +63,7 @@ export default {
     isLink: { type: Boolean, default: false },
     abbreviated: { type: Boolean, default: false },
     mini: { type: Boolean, default: false },
+    half: { type: Boolean, default: false },
   },
   data: () => ({
     ItemType,
@@ -73,7 +74,10 @@ export default {
       return [
         this.type,
         this.$options.filters.toSideString(this.isFor),
-        { [this.$style.mini]: this.mini },
+        {
+          [this.$style.mini]: this.mini,
+          [this.$style.half]: this.half,
+        },
       ];
     },
     id: function () {
@@ -191,11 +195,18 @@ export default {
   margin-top: $block-content-spacing;
 }
 
-.mini {
+.half {
   &:global(.topic),
   &:global(.claim),
   &:global(.source) {
     width: 50%;
+  }
+}
+
+.mini {
+  &:global(.topic),
+  &:global(.claim),
+  &:global(.source) {
     margin: $mini-block-spacing auto 0;
     font-size: 0.8em;
 

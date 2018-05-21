@@ -175,6 +175,7 @@ a.dwd-btn {
   font-weight: inherit;
   text-align: center;
   text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
 
   &[disabled] {

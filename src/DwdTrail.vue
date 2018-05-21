@@ -8,7 +8,8 @@
               :is-for="isFor"
               is-link
               abbreviated
-              mini />
+              mini
+              half />
 </div>
 </template>
 

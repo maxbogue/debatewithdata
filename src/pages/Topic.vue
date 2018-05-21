@@ -9,7 +9,8 @@
                   type="topic"
                   abbreviated
                   is-link
-                  mini />
+                  mini
+                  half />
     </div>
     <item-block :item="topic"
                 :trail="trail"

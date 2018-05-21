@@ -9,7 +9,8 @@
                   :type="type"
                   abbreviated
                   is-link
-                  mini />
+                  mini
+                  half />
     </div>
     <item-block :item="claim"
                 :is-for="isFor"
