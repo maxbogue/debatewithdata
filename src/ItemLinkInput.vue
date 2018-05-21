@@ -35,11 +35,8 @@ import ClaimContent from './ClaimContent.vue';
 import DwdInput from './DwdInput.vue';
 import SourceContent from './SourceContent.vue';
 import TopicContent from './TopicContent.vue';
-import search from '../common/search';
 import { DEBOUNCE_DELAY_MS } from './constants';
 import { ItemType } from '../common/constants';
-
-const RESULT_LIMIT = 5;
 
 export default {
   components: {
@@ -127,7 +124,6 @@ export default {
         return;
       }
 
-      this.queryLocal();
       this.queryServer();
     },
     itemType: function () {
@@ -153,10 +149,6 @@ export default {
         e.stopPropagation();
       }
     },
-    queryLocal: function () {
-      let results = search.query(this.value, this.allowedTypes);
-      this.results = results.slice(0, RESULT_LIMIT).map(this.lookupItem);
-    },
     queryServer: debounce(function () {
       /* eslint no-invalid-this: "off" */
       let query = this.value;
@@ -166,13 +158,9 @@ export default {
         types: this.allowedTypes,
         limit: 5,
         loader: this.makeLoader(),
-      }).then(() => {
-        // This function gets a results list but we ignore it and re-do a local
-        // query with the new data from the server to preserve ordering between
-        // local and remote results. This should obviously be changed when the
-        // server-side search engine is upgraded from elasticlunr.
+      }).then((results) => {
         if (query === this.value) {
-          this.queryLocal();
+          this.results = results.map(this.lookupItem);
           this.loading = false;
         }
       });
