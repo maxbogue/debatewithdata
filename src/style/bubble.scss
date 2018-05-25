@@ -116,7 +116,6 @@
       a#{&}:hover,
       &.click:hover {
         background-color: $accent-color;
-        text-decoration: none;
       }
     }
   }
@@ -134,9 +133,11 @@
       background-color: $primary-color;
     }
 
-    .bubble.click:hover {
-      background-color: $accent-color;
-      color: $text-dark;
+    a.bubble,
+    .bubble.click {
+      &:hover {
+        background-color: $accent-color;
+      }
     }
   }
 }
@@ -165,7 +166,6 @@
   &.block.click:hover,
   > .bubble.click:hover {
     background-color: $purple-accent;
-    color: $text-dark;
   }
 }
 
@@ -181,7 +181,6 @@
   &.block.click:hover,
   > .bubble.click:hover {
     background-color: $amber-accent;
-    color: $text-dark;
   }
 }
 

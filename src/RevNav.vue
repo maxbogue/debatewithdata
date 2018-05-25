@@ -1,7 +1,7 @@
 <template>
 <div class="block no-pad center">
   <h3 class="mono">{{ curr.revId }}</h3>
-  <div :class="$style.meta">
+  <div>
     <strong>by</strong>
     <router-link :to="'/user/' + curr.username"
                  >{{ curr.username }}</router-link>
@@ -19,7 +19,6 @@
   </div>
   <div>
     <router-link v-if="revertTo"
-                 :class="$style.revert"
                  :to="revertTo">Revert To This Revision</router-link>
   </div>
 </div>
@@ -74,10 +73,6 @@ export default {
   visibility: hidden;
 }
 
-.meta a:hover {
-  text-decoration: underline;
-}
-
 .nav {
   display: flex;
   align-items: center;
@@ -86,9 +81,5 @@ export default {
   a {
     width: 7em;
   }
-}
-
-.revert:hover {
-  text-decoration: underline;
 }
 </style>

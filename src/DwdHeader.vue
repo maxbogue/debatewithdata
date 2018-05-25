@@ -144,7 +144,6 @@ $navbar-link-font-size: 14px;
     &:focus,
     &:global(.router-link-active) {
       color: $navbar-text-highlight;
-      text-decoration: none;
     }
   }
 
@@ -224,7 +223,6 @@ $navbar-link-font-size: 14px;
   &:focus {
     outline: none;
     background-color: $navbar-btn-accent;
-    text-decoration: none;
 
     .iconBar {
       background-color: $navbar-text-highlight;

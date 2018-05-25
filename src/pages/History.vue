@@ -164,10 +164,6 @@ export default {
     list-style: none;
     text-align: center;
 
-    a:hover {
-      text-decoration: underline;
-    }
-
     .username {
       flex: 1;
     }

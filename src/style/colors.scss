@@ -6,12 +6,16 @@
   color: if($is-light, $text-dark, $text-light);
 
   @at-root {
-    a#{&}:hover,
-    a#{&}:focus,
-    &.dwd-btn:hover,
-    &.click:hover {
-      background-color: $accent;
+    a#{&},
+    &.dwd-btn,
+    &.click {
+      background-color: $primary;
       color: if($is-light, $text-dark, $text-light);
+
+      &:hover,
+      &:focus {
+        background-color: $accent;
+      }
     }
   }
 }

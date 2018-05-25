@@ -95,26 +95,41 @@ input[type="password"] {
   }
 }
 
-a {
+/* .click and .click-text force other elements to look like links. */
+a,
+.click,
+.click-text {
+  cursor: pointer;
+}
+
+/* Hide the default coloring and underline of links. */
+a,
+.click {
   color: $text-dark;
   text-decoration: none;
 
-  @at-root p & {
-    color: $blue-dark-primary;
-
-    &:hover {
-      text-decoration: underline;
-    }
-
-    &:hover,
-    &:visited,
-    &:focus {
-      color: $blue-dark-primary;
-    }
+  &:hover,
+  &:visited,
+  &:focus {
+    color: $text-dark;
   }
+}
+
+/* When in a paragraph (or overridden by .click-text) use blue coloring and
+ * underline on hover. */
+.click-text,
+p a,
+p .click {
+  color: $blue-dark-primary;
 
   &:hover {
-    color: $text-dark;
+    text-decoration: underline;
+  }
+
+  &:hover,
+  &:visited,
+  &:focus {
+    color: $blue-dark-primary;
   }
 }
 
@@ -162,11 +177,6 @@ a {
 
 .mono {
   font-family: $font-family-mono;
-}
-
-.click:hover {
-  text-decoration: none;
-  cursor: pointer;
 }
 
 .dwd-btn,
