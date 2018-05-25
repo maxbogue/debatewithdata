@@ -7,7 +7,7 @@
                          @update:source="updateNewSource" />
     <div v-else class="bubble">
       <div v-if="isNewClaim" class="hint">This will create a new claim.</div>
-      <label v-if="!point.pointType" class="hint">
+      <label v-else-if="!pointType" class="hint">
         Add a point {{ isFor | toSideString }} the claim.
       </label>
       <item-link-input v-model="input"
@@ -16,7 +16,7 @@
                        placeholder="Text, URL, or ID"
                        :validate="validate"
                        @itemType="updateLinkType" />
-      <dwd-flag v-if="isNewClaim && point.flag" :flag="point.flag" />
+      <dwd-flag v-if="isNewClaim && flag" :flag="flag" />
     </div>
     <div class="info">
       <div class="id mono">{{ point.id || 'new' }}</div>
@@ -75,8 +75,18 @@ export default {
     isUrl: function () {
       return isValid(validateSource.url, this.input);
     },
+    pointType: function () {
+      if (this.linkType) {
+        return this.linkType;
+      } else if (this.isUrl) {
+        return PointType.NEW_SOURCE;
+      } else if (this.input) {
+        return PointType.NEW_CLAIM;
+      }
+      return null;
+    },
     isNewClaim: function () {
-      return this.point.pointType === PointType.NEW_CLAIM;
+      return this.pointType === PointType.NEW_CLAIM;
     },
   },
   watch: {
@@ -107,30 +117,16 @@ export default {
       this.$emit('update:show', false);
     },
     makePoint: function () {
-      if (this.linkType === PointType.SOURCE) {
-        return {
-          pointType: PointType.SOURCE,
-          ...this.lookupSource(this.input),
-        };
-      } else if (this.linkType === PointType.CLAIM) {
-        return {
-          pointType: PointType.CLAIM,
-          ...this.lookupClaim(this.input),
-        };
-      } else if (this.isUrl) {
-        return {
-          pointType: PointType.NEW_SOURCE,
-          ...this.source,
-        };
-      } else if (this.input) {
-        let newClaim = {
-          pointType: PointType.NEW_CLAIM,
-          text: this.input,
-        };
-        if (this.flag) {
-          newClaim.flag = this.flag;
-        }
-        return newClaim;
+      let pointType = this.pointType;
+      switch (pointType) {
+      case PointType.SOURCE:
+        return { pointType, ...this.lookupSource(this.input) };
+      case PointType.CLAIM:
+        return { pointType, ...this.lookupClaim(this.input) };
+      case PointType.NEW_SOURCE:
+        return { pointType, ...this.source };
+      case PointType.NEW_CLAIM:
+        return { pointType, text: this.input, flag: this.flag };
       }
       return null;
     },
@@ -160,7 +156,7 @@ export default {
       if (!input) {
         return;
       }
-      switch (this.point.pointType) {
+      switch (this.pointType) {
       case PointType.NEW_SOURCE:
         validateSource.url(input);
         break;
