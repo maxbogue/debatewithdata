@@ -8,7 +8,7 @@
     <template v-else>
       <child-count v-if="isLink" :item="topic" />
       <h2>{{ topic.title }}</h2>
-      <div>{{ topic.text }}</div>
+      <dwd-markdown :text="topic.text" />
     </template>
   </template>
   <em v-else class="error">{{ errorMessage }}</em>
@@ -17,11 +17,13 @@
 
 <script>
 import ChildCount from './ChildCount.vue';
+import DwdMarkdown from './DwdMarkdown.vue';
 import { itemErrorMessage } from './utils';
 
 export default {
   components: {
     ChildCount,
+    DwdMarkdown,
   },
   props: {
     topic: { type: Object, required: true },

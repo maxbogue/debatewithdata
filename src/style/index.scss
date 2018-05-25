@@ -102,6 +102,11 @@ a {
   @at-root p & {
     color: $blue-dark-primary;
 
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:hover,
     &:visited,
     &:focus {
       color: $blue-dark-primary;

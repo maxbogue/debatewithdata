@@ -24,6 +24,7 @@
   <dwd-input v-model="text"
              id="text"
              placeholder="description"
+             allow-newlines
              :validate="validate.text" />
 </div>
 </template>
@@ -33,6 +34,11 @@ import dashify from 'dashify';
 
 import DwdInput from './DwdInput.vue';
 import { validateTopic } from '../common/validate';
+
+function fixWhitespace(text) {
+  let paragraphs = text.split(/\s*\n\s*\n\s*/);
+  return paragraphs.map((p) => p.replace(/(\s)\s*/g, ' ')).join('\n\n');
+}
 
 export default {
   components: {
@@ -53,7 +59,7 @@ export default {
       let topic = {
         id: this.oldId || this.id,
         title: this.title,
-        text: this.text,
+        text: fixWhitespace(this.text),
       };
       return topic;
     },

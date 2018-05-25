@@ -5,12 +5,26 @@
     Must be an admin to add a root-level topic.
   </div>
   <template v-else-if="!needsData">
+    <div :class="$style.reviewMode">
+      <span :class="{ [$style.active]: reviewMode === PREVIEW }"
+            @click="reviewMode = PREVIEW"
+            >Preview</span>
+      |
+      <span :class="{ [$style.active]: reviewMode === DIFF }"
+            @click="reviewMode = DIFF"
+            >Diff</span>
+    </div>
     <topic-edit-block v-if="showEditBlock"
                       :topic.sync="newTopicPartial"
                       :old-id="id"
                       @close="showEditBlock = false" />
     <div v-else class="topic neutral">
-      <topic-rev-content class="bubble click"
+      <topic-content v-if="reviewMode === PREVIEW"
+                     class="bubble click"
+                     :topic="newTopicPartial"
+                     @click.native="showEditBlock = true" />
+      <topic-rev-content v-else
+                         class="bubble click"
                          :prev="topic"
                          :curr="newTopicPartial"
                          @click.native="showEditBlock = true" />
@@ -102,6 +116,7 @@ import ClaimRevAndModalEdit from '../ClaimRevAndModalEdit.vue';
 import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
+import TopicContent from '../TopicContent.vue';
 import TopicEditBlock from '../TopicEditBlock.vue';
 import TopicLinkModal from '../TopicLinkModal.vue';
 import TopicRevAndEditModal from '../TopicRevAndEditModal.vue';
@@ -112,6 +127,8 @@ import {
 import { topicsAreEqual } from '../../common/equality';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
+const PREVIEW = 'preview';
+const DIFF = 'diff';
 
 function confirmLeave(to, from, next) {
   /* eslint no-invalid-this: "off" */
@@ -137,6 +154,7 @@ export default {
     DeleteButton,
     DwdLoader,
     FixedBottom,
+    TopicContent,
     TopicEditBlock,
     TopicLinkModal,
     TopicRevAndEditModal,
@@ -147,6 +165,8 @@ export default {
     seed: { type: Object, default: null },
   },
   data: () => ({
+    PREVIEW,
+    DIFF,
     newTopicPartial: null,
     subTopicIds: [],
     newSubTopics: [],
@@ -156,6 +176,7 @@ export default {
     showSubTopicModal: false,
     showClaimModal: false,
     unloadOverride: false,
+    reviewMode: PREVIEW,
   }),
   computed: {
     ...mapState([
@@ -315,3 +336,23 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" module>
+@import "../style/constants";
+
+.reviewMode {
+  margin: $block-spacing 0 (-$block-spacing) 0;
+  cursor: default;
+
+  span {
+    &.active {
+      font-weight: $font-weight-bold;
+    }
+
+    &:not(.active):hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}
+</style>

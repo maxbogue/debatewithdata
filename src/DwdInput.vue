@@ -7,7 +7,7 @@
             :placeholder="placeholder"
             :class="inputClasses"
             @invalid="maskError = false"
-            @keydown.enter.prevent></textarea>
+            @keydown.enter="handleEnter"></textarea>
   <div v-if="showError"
        class="error"
        :class="$style.error">{{ innerError }}</div>
@@ -40,6 +40,7 @@ export default {
     focus: { type: Boolean, default: false },
     // Makes the input text a monospaced font.
     mono: { type: Boolean, default: false },
+    allowNewlines: { type: Boolean, default: false },
   },
   data: function () {
     return {
@@ -109,8 +110,12 @@ export default {
     },
     displayValue: function () {
       // Disallow pasted in tabs and newlines.
-      if (/\t|\n/.test(this.displayValue)) {
+      if (!this.allowNewlines && /\t|\n/.test(this.displayValue)) {
         this.displayValue = this.displayValue.replace(/\t|\n/g, ' ');
+        return;
+      }
+      if (this.allowNewlines && /\t/.test(this.displayValue)) {
+        this.displayValue = this.displayValue.replace(/\t/g, ' ');
         return;
       }
       this.$refs.input.style.height = 'auto';
@@ -130,6 +135,15 @@ export default {
     },
   },
   mountedTriggersWatchers: true,
+  methods: {
+    handleEnter: function (event) {
+      if (this.allowNewlines) {
+        event.stopPropagation();
+      } else {
+        event.preventDefault();
+      }
+    },
+  },
 };
 </script>
 
