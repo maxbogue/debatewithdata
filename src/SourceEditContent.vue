@@ -2,6 +2,9 @@
 <div>
   <label for="url" class="hint">
     Link a source that provides data about the world.
+    <span v-if="force"
+          class="click-text"
+          @click="$emit('update:force', false)">Convert to claim.</span>
   </label>
   <dwd-input v-model="url"
              id="url"
@@ -9,7 +12,7 @@
              :focus="true"
              :validate="validate.url" />
   <label for="text" class="hint">
-    Describe the data the link provides.
+    Describe the data the source provides.
   </label>
   <dwd-input v-model="text"
              id="text"
@@ -82,6 +85,9 @@ export default {
   },
   props: {
     source: { type: Object, default: null },
+    // Indicates whether this component was forced to show and should display a
+    // way to escape back to claim editing.
+    force: { type: Boolean, default: false },
   },
   data: () => ({
     SourceType,
@@ -143,7 +149,7 @@ export default {
   methods: {
     initialize: function () {
       if (this.source) {
-        this.url = this.source.url;
+        this.url = this.source.url || '';
         this.text = this.source.text || '';
         this.date = this.source.date || '';
         this.table = this.source.table;

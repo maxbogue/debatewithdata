@@ -1,12 +1,17 @@
 <template>
 <dwd-modal :show="show" @close="close" @cancel="cancel">
   <div class="point" :class="isFor | toSideString">
-    <source-edit-content v-if="isUrl"
+    <source-edit-content v-if="isNewSource"
                          class="bubble"
                          :source="source"
+                         :force.sync="forceSource"
                          @update:source="updateNewSource" />
     <div v-else class="bubble">
-      <div v-if="isNewClaim" class="hint">This will create a new claim.</div>
+      <div v-if="isNewClaim" class="hint">
+        This will create a new claim.
+        <span class="click-text"
+              @click="forceSource = true">Convert to data.</span>
+      </div>
       <label v-else-if="!pointType" class="hint">
         Add a point {{ isFor | toSideString }} the claim.
       </label>
@@ -60,6 +65,7 @@ export default {
     isFor: { type: Boolean, required: true },
   },
   data: () => ({
+    forceSource: false,
     flag: '',
     input: '',
     linkType: '',
@@ -78,7 +84,7 @@ export default {
     pointType: function () {
       if (this.linkType) {
         return this.linkType;
-      } else if (this.isUrl) {
+      } else if (this.isUrl || this.forceSource) {
         return PointType.NEW_SOURCE;
       } else if (this.input) {
         return PointType.NEW_CLAIM;
@@ -88,8 +94,18 @@ export default {
     isNewClaim: function () {
       return this.pointType === PointType.NEW_CLAIM;
     },
+    isNewSource: function () {
+      return this.pointType === PointType.NEW_SOURCE;
+    },
   },
   watch: {
+    forceSource: function () {
+      if (this.forceSource) {
+        this.source.text = this.input;
+      } else {
+        this.input = this.source.text;
+      }
+    },
     input: function () {
       this.linkType = '';
     },
