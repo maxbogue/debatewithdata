@@ -69,6 +69,10 @@ export default {
 
   a {
     color: $text-dark-accent;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   strong {
