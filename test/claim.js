@@ -298,10 +298,8 @@ describe('Claim', function () {
             id: rev.claimId,
             revId: rev.id,
             text: FOO,
-            star: {
-              count: 1,
-              starred: true,
-            },
+            starCount: 1,
+            starred: true,
           },
         },
         topics: {},
@@ -315,10 +313,8 @@ describe('Claim', function () {
             id: rev.claimId,
             revId: rev.id,
             text: FOO,
-            star: {
-              count: 1,
-              starred: false,
-            },
+            starCount: 1,
+            starred: false,
           },
         },
         topics: {},
@@ -480,10 +476,8 @@ describe('Claim', function () {
             id: c2r.claimId,
             revId: c2r.id,
             text: BAR,
-            star: {
-              count: 1,
-              starred: true,
-            },
+            starCount: 1,
+            starred: true,
           },
         },
         topics: {},
@@ -576,12 +570,12 @@ describe('Claim', function () {
       });
       let star = await Claim.apiToggleStar(rev.claimId, user);
       expect(star).to.deep.equal({
-        count: 1,
+        starCount: 1,
         starred: true,
       });
       star = await Claim.apiToggleStar(rev.claimId, user);
       expect(star).to.deep.equal({
-        count: 0,
+        starCount: 0,
         starred: false,
       });
     });

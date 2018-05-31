@@ -146,11 +146,11 @@ export function stableRandom(item) {
 }
 
 export function starCount(item) {
-  return item.star ? -item.star.count : 0;
+  return 'starCount' in item ? -item.starCount : 0;
 }
 
 export function starred(item) {
-  return item.star ? !item.star.starred : false;
+  return 'starred' in item ? !item.starred : false;
 }
 
 export function sortByStars(items) {

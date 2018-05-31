@@ -56,7 +56,7 @@ router.post('/:id/star', async function (req, res) {
     throw new AuthError();
   }
   let star = await Claim.apiToggleStar(req.params.id, req.user);
-  res.json({ star });
+  res.json(star);
 });
 
 router.get('/:id/comment', async function (req, res) {

@@ -19,7 +19,7 @@
       <claim-data-analysis v-if="type === ItemType.CLAIM" :claim="item" />
       <span v-else class="id mono">{{ id }}</span>
       <span class="controls">
-        <icon-star :star="item.star" :url="'/api' + url" />
+        <icon-star :item="item" :url="'/api' + url" />
         <icon-history :url="urlWithTrail" />
         <icon-edit :url="urlWithTrail" />
         <icon-comment @click.native="showComments = !showComments"

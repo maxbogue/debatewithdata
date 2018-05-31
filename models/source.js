@@ -131,7 +131,9 @@ export default function (sequelize, DataTypes) {
 
     Source.prototype.toData = async function (user) {
       let data = this.head.toCoreData();
-      data.star = await this.toStarData(user);
+      let star = await this.toStarData(user);
+      data.starCount = star.starCount;
+      data.starred = star.starred;
       data.commentCount = await this.countComments();
       return data;
     };
@@ -198,12 +200,12 @@ export default function (sequelize, DataTypes) {
     };
 
     Source.prototype.toStarData = async function (user) {
-      let count = await this.countStarredByUsers();
+      let starCount = await this.countStarredByUsers();
       let starred = false;
       if (user) {
         starred = await this.hasStarredByUser(user);
       }
-      return { count, starred };
+      return { starCount, starred };
     };
 
     Source.apiToggleStar = async function (sourceId, user) {

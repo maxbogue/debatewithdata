@@ -150,7 +150,9 @@ export default function (sequelize, DataTypes) {
 
       let thisData = this.head.toCoreData(depth > 1);
       thisData.depth = thisData.deleted ? 3 : depth;
-      thisData.star = await this.toStarData(user);
+      let star = await this.toStarData(user);
+      thisData.starCount = star.starCount;
+      thisData.starred = star.starred;
       thisData.commentCount = await this.countComments();
       thisData.childCount = graph.getCount(this.id);
       thisData.dataCounts = graph.getDataCounts(this.id);
@@ -259,12 +261,12 @@ export default function (sequelize, DataTypes) {
     };
 
     Claim.prototype.toStarData = async function (user) {
-      let count = await this.countStarredByUsers();
+      let starCount = await this.countStarredByUsers();
       let starred = false;
       if (user) {
         starred = await this.hasStarredByUser(user);
       }
-      return { count, starred };
+      return { starCount, starred };
     };
 
     Claim.apiToggleStar = async function (claimId, user) {

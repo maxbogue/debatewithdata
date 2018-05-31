@@ -1,11 +1,11 @@
 <template>
 <span :class="[$style.star, { click: user }]"
-      :title="star.count + ' stars'"
+      :title="item.starCount + ' stars'"
       @click="toggle">
   <span class="fa-star"
-        :class="star.starred ? 'fas' : 'far'"></span>
+        :class="item.starred ? 'fas' : 'far'"></span>
   <span class="mono"
-        :class="$style.count">{{ star.count }}</span>
+        :class="$style.count">{{ item.starCount }}</span>
 </span>
 </template>
 
@@ -14,7 +14,7 @@ import axios from 'axios';
 
 export default {
   props: {
-    star: { type: Object, required: true },
+    item: { type: Object, required: true },
     url: { type: String, required: true },
   },
   computed: {
@@ -28,8 +28,8 @@ export default {
         return;
       }
       axios.post(this.url + '/star').then((response) => {
-        this.star.count = response.data.star.count;
-        this.star.starred = response.data.star.starred;
+        this.item.starCount = response.data.starCount;
+        this.item.starred = response.data.starred;
       });
     },
   },

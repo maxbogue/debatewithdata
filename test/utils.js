@@ -10,10 +10,8 @@ const PASSWORD = 'testtest';
 const EMAIL = 'test@debatewithdata.org';
 
 export const STARS_AND_COMMENTS = {
-  star: {
-    count: 0,
-    starred: false,
-  },
+  starCount: 0,
+  starred: false,
   commentCount: 0,
 };
 

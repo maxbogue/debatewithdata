@@ -581,12 +581,12 @@ describe('Topic', function () {
       });
       let star = await Topic.apiToggleStar(ID, user);
       expect(star).to.deep.equal({
-        count: 1,
+        starCount: 1,
         starred: true,
       });
       star = await Topic.apiToggleStar(ID, user);
       expect(star).to.deep.equal({
-        count: 0,
+        starCount: 0,
         starred: false,
       });
     });
