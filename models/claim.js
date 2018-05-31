@@ -10,7 +10,7 @@ import { ValidationError, validateClaim } from '../common/validate';
 import { genId } from './utils';
 import { claimsAreEqual } from '../common/equality';
 
-export default function (sequelize, DataTypes) {
+export default function (sequelize, DataTypes, knex) {
   const Claim = sequelize.define('claim', {
     id: {
       type: DataTypes.TEXT,
@@ -219,21 +219,70 @@ export default function (sequelize, DataTypes) {
     };
 
     Claim.apiGetAll = async function (user, claimIds) {
-      let query = {};
-      let depth = 1;
+      // Join table query to extract starCount.
+      let starQuery = knex('claims')
+        .column({
+          id: 'claims.id',
+        })
+        .count({ count: 'stars.id' })
+        .leftOuterJoin('stars', function () {
+          this.on('claims.id', 'stars.starrable_id')
+            .andOn('stars.starrable', knex.raw('?', ['claim']));
+        })
+        .groupBy('claims.id');
+
+      // Join table query to extract commentCount.
+      let commentQuery = knex('claims')
+        .column({ id: 'claims.id' })
+        .count({ count: 'comments.id' })
+        .leftOuterJoin('comments', function () {
+          /* eslint no-invalid-this: "off" */
+          this.on('claims.id', 'comments.commentable_id')
+            .andOn('comments.commentable', knex.raw('?', ['claim']));
+        })
+        .groupBy('claims.id');
+
+      let query = knex(knex.raw('claims AS c'))
+        .column({
+          id: 'c.id',
+          revId: 'h.id',
+          text: 'b.text',
+          flag: 'h.flag',
+          needsData: 'h.needs_data',
+          commentCount: 'm.count',
+          starCount: 's.count',
+          starred: knex.raw(
+              knex('stars')
+                .select(knex.raw('null'))
+                .where({
+                  'stars.user_id': user ? user.id : null,
+                  'stars.starrable_id': knex.raw('??', ['c.id']),
+                  'stars.starrable': knex.raw('?', ['claim']),
+                })
+                .limit(1)
+          ).wrap('exists (', ')'),
+        })
+        .select()
+        .where('deleted', false)
+        .leftOuterJoin(knex.raw('claim_revs AS h'), 'c.head_id', 'h.id')
+        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
+        .leftOuterJoin(starQuery.as('s'), 'c.id', 's.id')
+        .leftOuterJoin(commentQuery.as('m'), 'c.id', 'm.id')
+        .orderBy('starCount', 'ASC');
+
       if (claimIds) {
-        query.where = { id: claimIds };
-        depth = 3;
+        query = query.whereIn('c.id', claimIds);
       }
-      let claims = await Claim.findAll({
-        ...query,
-        ...Claim.INCLUDE(depth),
-      });
+
+      let claims = await query;
       let data = { topics: {}, claims: {}, sources: {} };
       for (let claim of claims) {
-        if (!claim.head.deleted) {
-          await claim.fillData(data, depth, user);
-        }
+        claim.depth = 1;
+        claim.commentCount = Number(claim.commentCount);
+        claim.starCount = Number(claim.starCount);
+        claim.childCount = graph.getCount(claim.id);
+        claim.dataCounts = graph.getDataCounts(claim.id);
+        data.claims[claim.id] = claim;
       }
       return data;
     };

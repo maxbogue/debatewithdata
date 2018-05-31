@@ -12,6 +12,7 @@ const expect = chai.expect;
 const DELETE_MSG = 'Violates guidelines.';
 
 const CLAIM_DEPTH_1 = {
+  flag: null,
   needsData: null,
   depth: 1,
   childCount: 0,
@@ -20,6 +21,7 @@ const CLAIM_DEPTH_1 = {
 };
 
 const CLAIM_DEPTH_2 = {
+  flag: null,
   needsData: null,
   subClaimIds: {},
   sourceIds: {},
@@ -30,6 +32,7 @@ const CLAIM_DEPTH_2 = {
 };
 
 const CLAIM_DEPTH_3 = {
+  flag: null,
   needsData: null,
   subClaimIds: {},
   sourceIds: {},
@@ -507,6 +510,32 @@ describe('Claim', function () {
         sources: {},
       });
     });
+
+    it('by IDs', async function () {
+      let c1r = await Claim.apiCreate(user, { text: FOO });
+      let c2r = await Claim.apiCreate(user, { text: BAR });
+      await Claim.apiCreate(user, { text: BAZ });
+
+      let claimsData = await Claim.apiGetAll(user, [c1r.claimId, c2r.claim_id]);
+      expect(claimsData).to.deep.equal({
+        claims: {
+          [c1r.claimId]: {
+            ...CLAIM_DEPTH_1,
+            id: c1r.claimId,
+            revId: c1r.id,
+            text: FOO,
+          },
+          [c2r.claimId]: {
+            ...CLAIM_DEPTH_1,
+            id: c2r.claimId,
+            revId: c2r.id,
+            text: BAR,
+          },
+        },
+        topics: {},
+        sources: {},
+      });
+    });
   });
 
   describe('apiGetRevs', function () {
@@ -531,6 +560,7 @@ describe('Claim', function () {
           username: user.username,
           createdAt: r2.created_at,
           text: BAR,
+          flag: null,
           needsData: null,
           subClaimIds: {},
           sourceIds: {},
@@ -540,6 +570,7 @@ describe('Claim', function () {
           username: user.username,
           createdAt: r1.created_at,
           text: FOO,
+          flag: null,
           needsData: null,
           subClaimIds: {},
           sourceIds: {},

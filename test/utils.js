@@ -64,6 +64,7 @@ export const TestClaim = {
       id: claimRev.claimId,
       revId: claimRev.id,
       text: this.TEXT,
+      flag: null,
       needsData: null,
       subClaimIds: {},
       sourceIds: {},

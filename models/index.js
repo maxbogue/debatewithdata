@@ -1,3 +1,4 @@
+import Knex from 'knex';
 import Sequelize from 'sequelize';
 import config from 'config';
 import forOwn from 'lodash/forOwn';
@@ -18,6 +19,7 @@ import makeTopicRev from './topic_rev';
 import makeTopicTopic from './topic_topic';
 import makeUser from './user';
 
+export const knex = Knex({ client: 'pg', connection: config.get('db') });
 export const sequelize = new Sequelize(config.get('db'), {
   define: {
     underscored: true,
@@ -30,7 +32,7 @@ export const sequelize = new Sequelize(config.get('db'), {
 const models = {};
 
 function makeModel(name, makeFn) {
-  models[name] = makeFn(sequelize, Sequelize.DataTypes);
+  models[name] = makeFn(sequelize, Sequelize.DataTypes, knex);
   return models[name];
 }
 

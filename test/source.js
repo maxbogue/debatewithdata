@@ -345,6 +345,7 @@ describe('Source', function () {
             id: claimRev.claimId,
             revId: claimRev.id,
             text: TEXT2,
+            flag: null,
             needsData: null,
             depth: 1,
             childCount: 1,

@@ -152,11 +152,8 @@ export default function (sequelize, DataTypes) {
       }
 
       data.text = this.blob.text;
+      data.flag = this.flag;
       data.needsData = this.needsData;
-
-      if (this.flag) {
-        data.flag = this.flag;
-      }
 
       if (recurse) {
         data.subClaimIds = {};
