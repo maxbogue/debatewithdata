@@ -3,11 +3,18 @@ import Router from 'express-promise-router';
 import { AuthError } from './error';
 import { Claim, Comment } from '../models';
 import { addApiData, getTrailData } from '../models/utils';
+import { parseFilters, parseSort } from './utils';
 
 const router = Router();
 
 router.get('/', async function (req, res) {
-  let data = await Claim.apiGetAll(req.user);
+  let filters = parseFilters(req.query.filter);
+  let sort = parseSort(req.query.sort);
+  let data = await Claim.apiGetAll({
+    user: req.user,
+    filters,
+    sort,
+  });
   res.json(data);
 });
 

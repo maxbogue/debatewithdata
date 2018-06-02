@@ -64,6 +64,7 @@ export default {
     abbreviated: { type: Boolean, default: false },
     mini: { type: Boolean, default: false },
     half: { type: Boolean, default: false },
+    fadeOnly: { type: Boolean, default: false },
   },
   data: () => ({
     ItemType,
@@ -116,6 +117,11 @@ export default {
   },
   methods: {
     animate: function () {
+      if (this.fadeOnly) {
+        this.animateFade();
+        return;
+      }
+
       if (this.animateFrom) {
         this.animateSlide();
         return;

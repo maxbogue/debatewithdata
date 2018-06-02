@@ -64,7 +64,7 @@ export async function getTrailData(trail, user) {
     return {};
   }
   let data = await Topic.apiGetAll(user, ids);
-  let claimsData = await Claim.apiGetAll(user, ids);
+  let claimsData = await Claim.apiGetAll({ user, claimIds: ids });
   addApiData(data, claimsData);
   return data;
 }

@@ -5,7 +5,7 @@ import zipWith from 'lodash/zipWith';
 import graph, { Graph } from '../common/graph';
 import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
-import { ItemType } from '../common/constants';
+import { Filter, ItemType, Sort } from '../common/constants';
 import { ValidationError, validateClaim } from '../common/validate';
 import { genId } from './utils';
 import { claimsAreEqual } from '../common/equality';
@@ -218,11 +218,33 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Claim.apiGetAll = async function (user, claimIds) {
+    function addSortToQuery(query, sort) {
+      if (sort) {
+        let [sortType, dir] = sort;
+        if (sortType === Sort.STARS) {
+          return query.orderBy('starCount', dir ? 'desc' : 'asc');
+        } else if (sortType === Sort.UPDATED) {
+          return query.orderBy('h.created_at', dir ? 'desc' : 'asc');
+        }
+      }
+      return query.orderBy('starCount', 'desc');
+    }
+
+    Claim.apiGetAll = async function ({ user, claimIds, filters, sort }) {
       // Join table query to extract starCount.
       let starQuery = knex('claims')
         .column({
           id: 'claims.id',
+          starred: knex.raw(
+              knex('stars')
+                .select(knex.raw('null'))
+                .where({
+                  'stars.user_id': user ? user.id : null,
+                  'stars.starrable_id': knex.raw('??', ['claims.id']),
+                  'stars.starrable': knex.raw('?', ['claim']),
+                })
+                .limit(1)
+          ).wrap('exists (', ')'),
         })
         .count({ count: 'stars.id' })
         .leftOuterJoin('stars', function () {
@@ -251,31 +273,27 @@ export default function (sequelize, DataTypes, knex) {
           needsData: 'h.needs_data',
           commentCount: 'm.count',
           starCount: 's.count',
-          starred: knex.raw(
-              knex('stars')
-                .select(knex.raw('null'))
-                .where({
-                  'stars.user_id': user ? user.id : null,
-                  'stars.starrable_id': knex.raw('??', ['c.id']),
-                  'stars.starrable': knex.raw('?', ['claim']),
-                })
-                .limit(1)
-          ).wrap('exists (', ')'),
+          starred: 's.starred',
         })
         .select()
         .where('deleted', false)
         .leftOuterJoin(knex.raw('claim_revs AS h'), 'c.head_id', 'h.id')
         .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
         .leftOuterJoin(starQuery.as('s'), 'c.id', 's.id')
-        .leftOuterJoin(commentQuery.as('m'), 'c.id', 'm.id')
-        .orderBy('starCount', 'ASC');
+        .leftOuterJoin(commentQuery.as('m'), 'c.id', 'm.id');
 
       if (claimIds) {
         query = query.whereIn('c.id', claimIds);
       }
 
+      query = addSortToQuery(query, sort);
+
+      if (filters && Filter.STARRED in filters) {
+        query = query.where('s.starred', filters[Filter.STARRED]);
+      }
+
       let claims = await query;
-      let data = { topics: {}, claims: {}, sources: {} };
+      let data = { claims: {} };
       for (let claim of claims) {
         claim.depth = 1;
         claim.commentCount = Number(claim.commentCount);
@@ -284,6 +302,7 @@ export default function (sequelize, DataTypes, knex) {
         claim.dataCounts = graph.getDataCounts(claim.id);
         data.claims[claim.id] = claim;
       }
+      data.results = claims.map((claim) => claim.id);
       return data;
     };
 

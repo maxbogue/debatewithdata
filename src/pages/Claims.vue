@@ -3,7 +3,19 @@
   <h3 class="center">
     Claims are simple statements about the world.
   </h3>
-  <div class="flex-block">
+  <div class="flex-block" :class="$style.bar">
+    <template v-if="!query">
+      <select v-model="sortBy">
+        <option :value="Sort.STARS">Stars</option>
+        <option :value="Sort.UPDATED">Recent</option>
+      </select>
+      <span class="fas click"
+            :class="'fa-sort-alpha-' + (sortDesc ? 'down' : 'up')"
+            @click="sortDesc = !sortDesc"></span>
+      <span class="fa-star click"
+            :class="starFilterClasses"
+            @click="cycleStarFilter"></span>
+    </template>
     <input v-model="query" type="text" placeholder="search">
     <router-link :to="addUrl" class="dwd-btn blue-dark">New Claim</router-link>
   </div>
@@ -16,7 +28,8 @@
               type="claim"
               abbreviated
               is-link
-              mini />
+              mini
+              fade-only />
 </div>
 </template>
 
@@ -27,8 +40,7 @@ import { mapState } from 'vuex';
 import DwdLoader from '../DwdLoader.vue';
 import ItemBlock from '../ItemBlock.vue';
 import { DEBOUNCE_DELAY_MS } from '../constants';
-import { ItemType } from '../../common/constants';
-import { filterLiving, sortByStars } from '../utils';
+import { Filter, ItemType, Sort } from '../../common/constants';
 
 export default {
   components: {
@@ -36,19 +48,33 @@ export default {
     ItemBlock,
   },
   data: () => ({
+    Sort,
+    Filter,
+    sortBy: Sort.STARS,
+    sortDesc: true,
+    filterStarred: null,
     query: '',
     results: null,
   }),
   computed: {
     ...mapState([
-      'claimsLoaded',
       'user',
     ]),
-    claims: function () {
-      if (this.query) {
-        return this.results || [];
+    params: function () {
+      let filters = [];
+      if (this.filterStarred !== null) {
+        filters.push([Filter.STARRED, this.filterStarred]);
       }
-      return sortByStars(filterLiving(this.$store.state.claims));
+      return {
+        sort: [this.sortBy, this.sortDesc],
+        filters,
+      };
+    },
+    claims: function () {
+      if (!this.results) {
+        return [];
+      }
+      return this.results.map((result) => this.lookupClaim(result));
     },
     addUrl: function () {
       if (this.user) {
@@ -56,12 +82,24 @@ export default {
       }
       return '/login?next=/claims/add';
     },
+    starFilterClasses: function () {
+      return [this.filterStarred ? 'fas' : 'far', {
+        [this.$style.starFilterActive]: this.filterStarred !== null,
+      }];
+    },
   },
   watch: {
+    params: function () {
+      if (this.query) {
+        return;
+      }
+      this.getClaims();
+    },
     query: debounce(function () {
       /* eslint no-invalid-this: "off" */
       this.results = null;
       if (!this.query) {
+        this.getClaims();
         return;
       }
       let query = this.query;
@@ -73,15 +111,62 @@ export default {
         loader: this.$refs.loader,
       }).then((results) => {
         if (query === this.query) {
-          this.results = results.map((result) => this.lookupClaim(result.id));
+          this.results = results.map((result) => result.id);
         }
       });
     }, DEBOUNCE_DELAY_MS),
   },
   mounted: function () {
-    if (!this.claimsLoaded) {
-      this.$store.dispatch('getClaims', { loader: this.$refs.loader });
-    }
+    this.getClaims();
+  },
+  methods: {
+    getClaims: function () {
+      this.results = null;
+      this.$store.dispatch('getClaims', {
+        ...this.params,
+        loader: this.$refs.loader,
+      }).then((results) => {
+        if (!this.query) {
+          this.results = results;
+        }
+      });
+    },
+    cycleStarFilter: function () {
+      if (this.filterStarred === null) {
+        this.filterStarred = true;
+      } else if (this.filterStarred) {
+        this.filterStarred = false;
+      } else {
+        this.filterStarred = null;
+      }
+    },
   },
 };
 </script>
+
+<style lang="scss" module>
+@import "../style/constants";
+
+.bar {
+  :not(:first-child) {
+    margin-left: 8px;
+  }
+
+  :global(.click) {
+    color: $transparent-light;
+    font-size: 1.2em;
+
+    &:hover {
+      color: $transparent-dark;
+    }
+  }
+
+  :global(.click).starFilterActive {
+    color: $blue-dark-primary;
+
+    &:hover {
+      color: $blue-dark-accent;
+    }
+  }
+}
+</style>

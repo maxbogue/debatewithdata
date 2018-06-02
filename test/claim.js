@@ -1,6 +1,7 @@
 import chai from 'chai';
 
 import { Claim, ClaimRev } from '../models';
+import { Filter, Sort } from '../common/constants';
 import { Flag } from '../common/flag';
 import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError } from '../common/validate';
@@ -458,46 +459,103 @@ describe('Claim', function () {
 
   describe('.apiGetAll()', function () {
     it('two claims', async function () {
-      let c1r = await Claim.apiCreate(user, {
-        text: FOO,
-      });
-      let c2r = await Claim.apiCreate(user, {
-        text: BAR,
-      });
-      await Claim.apiToggleStar(c2r.claimId, user);
-      let claimsData = await Claim.apiGetAll(user);
-      expect(claimsData).to.deep.equal({
-        claims: {
-          [c1r.claimId]: {
-            ...CLAIM_DEPTH_1,
-            id: c1r.claimId,
-            revId: c1r.id,
-            text: FOO,
-          },
-          [c2r.claimId]: {
-            ...CLAIM_DEPTH_1,
-            id: c2r.claimId,
-            revId: c2r.id,
-            text: BAR,
-            starCount: 1,
-            starred: true,
-          },
+      let c1r = await Claim.apiCreate(user, { text: FOO });
+      let c2r = await Claim.apiCreate(user, { text: BAR });
+      let c1Id = c1r.claimId;
+      let c2Id = c2r.claimId;
+      await Claim.apiToggleStar(c2Id, user);
+
+      let c1Data = {
+        [c1Id]: {
+          ...CLAIM_DEPTH_1,
+          id: c1Id,
+          revId: c1r.id,
+          text: FOO,
         },
-        topics: {},
-        sources: {},
+      };
+      let c2Data = {
+        [c2Id]: {
+          ...CLAIM_DEPTH_1,
+          id: c2Id,
+          revId: c2r.id,
+          text: BAR,
+          starCount: 1,
+          starred: true,
+        },
+      };
+
+      let claimsData = await Claim.apiGetAll({ user });
+      expect(claimsData).to.deep.equal({
+        results: [c2Id, c1Id],
+        claims: { ...c1Data, ...c2Data },
+      });
+
+      claimsData = await Claim.apiGetAll({
+        user,
+        sort: [Sort.STARS, true],
+      });
+      expect(claimsData).to.deep.equal({
+        results: [c2Id, c1Id],
+        claims: { ...c1Data, ...c2Data },
+      });
+
+      claimsData = await Claim.apiGetAll({
+        user,
+        sort: [Sort.STARS, false],
+      });
+      expect(claimsData).to.deep.equal({
+        results: [c1Id, c2Id],
+        claims: { ...c1Data, ...c2Data },
+      });
+
+      claimsData = await Claim.apiGetAll({
+        user,
+        sort: [Sort.UPDATED, false],
+      });
+      expect(claimsData).to.deep.equal({
+        results: [c1Id, c2Id],
+        claims: { ...c1Data, ...c2Data },
+      });
+
+      claimsData = await Claim.apiGetAll({
+        user,
+        sort: [Sort.UPDATED, true],
+      });
+      expect(claimsData).to.deep.equal({
+        results: [c2Id, c1Id],
+        claims: { ...c1Data, ...c2Data },
+      });
+
+      claimsData = await Claim.apiGetAll({
+        user,
+        filters: {
+          [Filter.STARRED]: true,
+        },
+      });
+      expect(claimsData).to.deep.equal({
+        results: [c2Id],
+        claims: { ...c2Data },
+      });
+
+      claimsData = await Claim.apiGetAll({
+        user,
+        filters: {
+          [Filter.STARRED]: false,
+        },
+      });
+      expect(claimsData).to.deep.equal({
+        results: [c1Id],
+        claims: { ...c1Data },
       });
     });
 
     it('excludes deleted', async function () {
-      let c1r = await Claim.apiCreate(user, {
-        text: FOO,
-      });
-      let c2r = await Claim.apiCreate(user, {
-        text: BAR,
-      });
+      let c1r = await Claim.apiCreate(user, { text: FOO });
+      let c2r = await Claim.apiCreate(user, { text: BAR });
       await Claim.apiDelete(c2r.claimId, user, DELETE_MSG);
-      let claimsData = await Claim.apiGetAll(user);
+      let claimsData = await Claim.apiGetAll({ user });
       expect(claimsData).to.deep.equal({
+        results: [c1r.claimId],
         claims: {
           [c1r.claimId]: {
             ...CLAIM_DEPTH_1,
@@ -506,8 +564,6 @@ describe('Claim', function () {
             text: FOO,
           },
         },
-        topics: {},
-        sources: {},
       });
     });
 
@@ -516,8 +572,14 @@ describe('Claim', function () {
       let c2r = await Claim.apiCreate(user, { text: BAR });
       await Claim.apiCreate(user, { text: BAZ });
 
-      let claimsData = await Claim.apiGetAll(user, [c1r.claimId, c2r.claim_id]);
+      let claimIds = [c1r.claimId, c2r.claim_id];
+      let claimsData = await Claim.apiGetAll({
+        user,
+        claimIds,
+        sort: [Sort.UPDATED, false],
+      });
       expect(claimsData).to.deep.equal({
+        results: [c1r.claimId, c2r.claimId],
         claims: {
           [c1r.claimId]: {
             ...CLAIM_DEPTH_1,
@@ -532,8 +594,6 @@ describe('Claim', function () {
             text: BAR,
           },
         },
-        topics: {},
-        sources: {},
       });
     });
   });

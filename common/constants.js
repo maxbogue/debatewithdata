@@ -32,3 +32,12 @@ export const POINT_TYPES = [
   PointType.NEW_CLAIM,
   PointType.NEW_SOURCE,
 ];
+
+export const Filter = {
+  STARRED: 'starred',
+};
+
+export const Sort = {
+  STARS: 'stars',
+  UPDATED: 'updated',
+};

@@ -49,6 +49,10 @@ function paramsFromTrail(trail, state) {
   return {};
 }
 
+function sortFilterParam([s, b]) {
+  return (b ? '+' : '-') + s;
+}
+
 function windowIsSingleColumn() {
   return window.innerWidth < 768;
 }
@@ -187,10 +191,15 @@ export default new Vuex.Store({
         commit('setData', res.data);
       });
     },
-    getClaims: function ({ commit }, { loader }) {
-      return axios.get('/api/claim', { loader }).then((res) => {
+    getClaims: function ({ commit }, { sort, filters, loader }) {
+      let params = {
+        sort: sortFilterParam(sort),
+        filter: filters.map(sortFilterParam).join(','),
+      };
+      return axios.get('/api/claim', { params, loader }).then((res) => {
         commit('setData', res.data);
         commit('setClaimsLoaded');
+        return res.data.results;
       });
     },
     updateClaim: function ({ commit }, { id, claim }) {
