@@ -8,12 +8,10 @@ import { parseFilters, parseSort } from './utils';
 const router = Router();
 
 router.get('/', async function (req, res) {
-  let filters = parseFilters(req.query.filter);
-  let sort = parseSort(req.query.sort);
   let data = await Claim.apiGetAll({
     user: req.user,
-    filters,
-    sort,
+    filters: parseFilters(req.query.filter),
+    sort: parseSort(req.query.sort),
   });
   res.json(data);
 });

@@ -69,8 +69,6 @@ export default new Vuex.Store({
     claims: {},
     sources: {},
     topicsLoaded: false,
-    claimsLoaded: false,
-    sourcesLoaded: false,
     user: null,
     errorMessage: '',
     singleColumn: windowIsSingleColumn(),
@@ -107,12 +105,6 @@ export default new Vuex.Store({
     },
     setTopicsLoaded: function (state) {
       state.topicsLoaded = true;
-    },
-    setClaimsLoaded: function (state) {
-      state.claimsLoaded = true;
-    },
-    setSourcesLoaded: function (state) {
-      state.sourcesLoaded = true;
     },
     setUser: function (state, user) {
       state.user = user;
@@ -191,14 +183,13 @@ export default new Vuex.Store({
         commit('setData', res.data);
       });
     },
-    getClaims: function ({ commit }, { sort, filters, loader }) {
+    getItems: function ({ commit }, { type, sort, filters, loader }) {
       let params = {
         sort: sortFilterParam(sort),
         filter: filters.map(sortFilterParam).join(','),
       };
-      return axios.get('/api/claim', { params, loader }).then((res) => {
+      return axios.get('/api/' + type, { params, loader }).then((res) => {
         commit('setData', res.data);
-        commit('setClaimsLoaded');
         return res.data.results;
       });
     },
@@ -230,19 +221,18 @@ export default new Vuex.Store({
     },
     getSource: function ({ commit, state }, { id, trail, loader }) {
       let params = paramsFromTrail(trail, state);
-      return axios.get(`/api/data/${id}`, { params, loader }).then((res) => {
+      return axios.get(`/api/source/${id}`, { params, loader }).then((res) => {
         commit('setData', res.data);
       });
     },
     getSources: function ({ commit }, { loader }) {
-      return axios.get('/api/data', { loader }).then((res) => {
-        commit('setData', { sources: res.data });
-        commit('setSourcesLoaded');
+      return axios.get('/api/source', { loader }).then((res) => {
+        commit('setData', res.data);
       });
     },
     updateSource: function ({ commit }, { id, source }) {
       validateSource(source);
-      return axios.put('/api/data/' + id, source).then((res) => {
+      return axios.put('/api/source/' + id, source).then((res) => {
         commit('setData', res.data);
         return id;
       }).catch((err) => {
@@ -255,14 +245,14 @@ export default new Vuex.Store({
     },
     addSource: function ({ commit }, { source }) {
       validateSource(source);
-      return axios.post('/api/data', source).then((res) => {
+      return axios.post('/api/source', source).then((res) => {
         commit('setData', res.data);
         return res.data.id;
       });
     },
     removeSource: function ({ commit }, { id, message }) {
       let params = { message };
-      return axios.delete(`/api/data/${id}`, { params })
+      return axios.delete(`/api/source/${id}`, { params })
         .then((res) => {
           commit('setData', res.data);
         });

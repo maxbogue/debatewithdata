@@ -20,7 +20,7 @@ router.use(auth);
 router.use('/activity', activity);
 router.use('/admin', admin);
 router.use('/claim', claim);
-router.use('/data', source);
+router.use('/source', source);
 router.use('/search', search);
 router.use('/topic', topic);
 router.use('/user', user);

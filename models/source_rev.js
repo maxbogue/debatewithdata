@@ -142,16 +142,11 @@ export default function (sequelize, DataTypes) {
       data.url = this.url;
       data.text = this.blob.text;
       data.type = this.type;
-
-      if (this.date) {
-        data.date = this.date;
-      }
-      if (this.tableBlob) {
-        data.table = this.tableBlob.text;
-      }
-      if (this.chart) {
-        data.chart = JSON.parse(this.chart);
-      }
+      data.date = this.date || null;
+      data.table = this.tableBlob ? this.tableBlob.text : null;
+      data.chart = this.chart ? JSON.parse(this.chart) : null;
+      data.institution = null;
+      data.publication = null;
 
       switch (this.type) {
       case SourceType.RESEARCH:
@@ -160,7 +155,6 @@ export default function (sequelize, DataTypes) {
         break;
       case SourceType.ARTICLE:
         data.publication = this.publication;
-        data.firstHand = this.firstHand;
         break;
       case SourceType.AUTHORITY:
         data.institution = this.institution;

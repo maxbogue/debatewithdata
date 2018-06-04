@@ -1,8 +1,9 @@
 import crypto from 'crypto';
 import forOwn from 'lodash/forOwn';
 
-import { FlagData } from '../common/flag';
 import { Claim, Topic } from '../models';
+import { Filter, Sort } from '../common/constants';
+import { FlagData } from '../common/flag';
 
 export function randomHexString(n) {
   if (n % 2 !== 0) {
@@ -26,6 +27,29 @@ export function isValidFlag(flag) {
   if (!FlagData[flag]) {
     throw new Error('Invalid flag: ' + flag);
   }
+}
+
+function sortQuery(query, sort) {
+  if (sort) {
+    let [sortType, dir] = sort;
+    if (sortType === Sort.STARS) {
+      return query.orderBy('starCount', dir ? 'desc' : 'asc');
+    } else if (sortType === Sort.RECENT) {
+      return query.orderBy('h.created_at', dir ? 'desc' : 'asc');
+    }
+  }
+  return query.orderBy('starCount', 'desc');
+}
+
+function filterQuery(query, filters) {
+  if (filters && Filter.STARRED in filters) {
+    return query.where('s.starred', filters[Filter.STARRED]);
+  }
+  return query;
+}
+
+export function sortAndFilterQuery(query, sort, filters) {
+  return filterQuery(sortQuery(query, sort), filters);
 }
 
 // Modifies |data| by adding all data in |otherData| to it.

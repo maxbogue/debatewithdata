@@ -140,7 +140,7 @@ export default {
     },
     loadData: function () {
       this.data = null;
-      axios.get('/api' + this.url + '/rev', {
+      axios.get(this.apiUrl(this.itemType, this.itemId) + '/rev', {
         loader: this.$refs.loader,
       }).then((res) => {
         this.$store.commit('setData', res.data);

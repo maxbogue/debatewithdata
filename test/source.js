@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { STARS_AND_COMMENTS, registerAndVerifyUser } from './utils';
 import { Claim, Source, SourceRev } from '../models';
 import { ConflictError, NotFoundError } from '../api/error';
-import { SourceType } from '../common/constants';
+import { Sort, SourceType } from '../common/constants';
 import { ValidationError } from '../common/validate';
 import { randomHexString } from '../models/utils';
 import { serializeTable } from '../common/utils';
@@ -22,17 +22,29 @@ const PUBLICATION = 'publication';
 const MISC = {
   url: URL,
   text: TEXT,
+  date: null,
+  table: null,
+  chart: null,
   type: SourceType.MISC,
+  institution: null,
+  publication: null,
 };
 const MISC2 = {
   url: URL2,
   text: TEXT2,
   date: DATE,
+  table: null,
+  chart: null,
   type: SourceType.MISC,
+  institution: null,
+  publication: null,
 };
 const RESEARCH = {
   url: URL,
   text: TEXT,
+  date: null,
+  table: null,
+  chart: null,
   type: SourceType.RESEARCH,
   institution: INSTITUTION,
   publication: PUBLICATION,
@@ -40,15 +52,22 @@ const RESEARCH = {
 const ARTICLE = {
   url: URL,
   text: TEXT,
+  date: null,
+  table: null,
+  chart: null,
   type: SourceType.ARTICLE,
+  institution: null,
   publication: PUBLICATION,
-  firstHand: true,
 };
 const AUTHORITY = {
   url: URL,
   text: TEXT,
+  date: null,
+  table: null,
+  chart: null,
   type: SourceType.AUTHORITY,
   institution: INSTITUTION,
+  publication: null,
 };
 
 const DELETE_MSG = 'Violates guidelines.';
@@ -73,7 +92,6 @@ describe('Source', function () {
       expect(rev.type).to.equal(SourceType.MISC);
       expect(rev.institution).to.be.null;
       expect(rev.publication).to.be.null;
-      expect(rev.firstHand).to.be.null;
       expect(rev.parentId).to.be.null;
 
       let source = await Source.findById(rev.sourceId);
@@ -108,7 +126,6 @@ describe('Source', function () {
       expect(rev.type).to.equal(SourceType.RESEARCH);
       expect(rev.institution).to.equal(INSTITUTION);
       expect(rev.publication).to.equal(PUBLICATION);
-      expect(rev.firstHand).to.be.null;
       expect(rev.parentId).to.be.null;
 
       let source = await Source.findById(rev.sourceId);
@@ -125,7 +142,6 @@ describe('Source', function () {
       expect(rev.type).to.equal(SourceType.ARTICLE);
       expect(rev.institution).to.be.null;
       expect(rev.publication).to.equal(PUBLICATION);
-      expect(rev.firstHand).to.be.true;
       expect(rev.parentId).to.be.null;
 
       let source = await Source.findById(rev.sourceId);
@@ -142,7 +158,6 @@ describe('Source', function () {
       expect(rev.type).to.equal(SourceType.AUTHORITY);
       expect(rev.institution).to.equal(INSTITUTION);
       expect(rev.publication).to.be.null;
-      expect(rev.firstHand).to.be.null;
       expect(rev.parentId).to.be.null;
 
       let source = await Source.findById(rev.sourceId);
@@ -225,7 +240,6 @@ describe('Source', function () {
       expect(rev2.type).to.be.null;
       expect(rev2.institution).to.be.null;
       expect(rev2.publication).to.be.null;
-      expect(rev2.firstHand).to.be.null;
       expect(rev2.parentId).to.equal(rev1.id);
 
       await source.reload();
@@ -361,19 +375,24 @@ describe('Source', function () {
     it('two sources', async function () {
       let s1r = await Source.apiCreate(user, RESEARCH);
       let s2r = await Source.apiCreate(user, ARTICLE);
-      let sourcesData = await Source.apiGetAll();
+      let sourcesData = await Source.apiGetAll({
+        sort: [Sort.RECENT, false],
+      });
       expect(sourcesData).to.deep.equal({
-        [s1r.sourceId]: {
-          id: s1r.sourceId,
-          revId: s1r.id,
-          ...RESEARCH,
-          ...STARS_AND_COMMENTS,
-        },
-        [s2r.sourceId]: {
-          id: s2r.sourceId,
-          revId: s2r.id,
-          ...ARTICLE,
-          ...STARS_AND_COMMENTS,
+        results: [s1r.sourceId, s2r.sourceId],
+        sources: {
+          [s1r.sourceId]: {
+            id: s1r.sourceId,
+            revId: s1r.id,
+            ...RESEARCH,
+            ...STARS_AND_COMMENTS,
+          },
+          [s2r.sourceId]: {
+            id: s2r.sourceId,
+            revId: s2r.id,
+            ...ARTICLE,
+            ...STARS_AND_COMMENTS,
+          },
         },
       });
     });
@@ -384,12 +403,15 @@ describe('Source', function () {
       await Source.apiDelete(s2r.sourceId, user, DELETE_MSG);
       let sourcesData = await Source.apiGetAll();
       expect(sourcesData).to.deep.equal({
-        [s1r.sourceId]: {
-          id: s1r.sourceId,
-          revId: s1r.id,
-          ...RESEARCH,
-          ...STARS_AND_COMMENTS,
-        }
+        results: [s1r.sourceId],
+        sources: {
+          [s1r.sourceId]: {
+            id: s1r.sourceId,
+            revId: s1r.id,
+            ...RESEARCH,
+            ...STARS_AND_COMMENTS,
+          },
+        },
       });
     });
   });

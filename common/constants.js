@@ -39,5 +39,5 @@ export const Filter = {
 
 export const Sort = {
   STARS: 'stars',
-  UPDATED: 'updated',
+  RECENT: 'recent',
 };

@@ -5,9 +5,9 @@ import zipWith from 'lodash/zipWith';
 import graph, { Graph } from '../common/graph';
 import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
-import { Filter, ItemType, Sort } from '../common/constants';
+import { ItemType } from '../common/constants';
 import { ValidationError, validateClaim } from '../common/validate';
-import { genId } from './utils';
+import { genId, sortAndFilterQuery } from './utils';
 import { claimsAreEqual } from '../common/equality';
 
 export default function (sequelize, DataTypes, knex) {
@@ -218,18 +218,6 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    function addSortToQuery(query, sort) {
-      if (sort) {
-        let [sortType, dir] = sort;
-        if (sortType === Sort.STARS) {
-          return query.orderBy('starCount', dir ? 'desc' : 'asc');
-        } else if (sortType === Sort.UPDATED) {
-          return query.orderBy('h.created_at', dir ? 'desc' : 'asc');
-        }
-      }
-      return query.orderBy('starCount', 'desc');
-    }
-
     Claim.apiGetAll = async function ({ user, claimIds, filters, sort }) {
       // Join table query to extract starCount.
       let starQuery = knex('claims')
@@ -286,11 +274,7 @@ export default function (sequelize, DataTypes, knex) {
         query = query.whereIn('c.id', claimIds);
       }
 
-      query = addSortToQuery(query, sort);
-
-      if (filters && Filter.STARRED in filters) {
-        query = query.where('s.starred', filters[Filter.STARRED]);
-      }
+      query = sortAndFilterQuery(query, sort, filters);
 
       let claims = await query;
       let data = { claims: {} };

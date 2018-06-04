@@ -2,10 +2,10 @@ import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
 import { ItemType } from '../common/constants';
 import { ValidationError, validateSource } from '../common/validate';
-import { genId } from './utils';
+import { genId, sortAndFilterQuery } from './utils';
 import { sourcesAreEqual } from '../common/equality';
 
-export default function (sequelize, DataTypes) {
+export default function (sequelize, DataTypes, knex) {
   const Source = sequelize.define('source', {
     id: {
       type: DataTypes.TEXT,
@@ -173,15 +173,76 @@ export default function (sequelize, DataTypes) {
       return data;
     };
 
-    Source.apiGetAll = async function (user) {
-      let sources = await Source.findAll(Source.INCLUDE());
-      let ret = {};
+    Source.apiGetAll = async function ({ user, filters, sort } = {}) {
+      // Join table query to extract starCount.
+      let starQuery = knex('sources')
+        .column({
+          id: 'sources.id',
+          starred: knex.raw(
+              knex('stars')
+                .select(knex.raw('null'))
+                .where({
+                  'stars.user_id': user ? user.id : null,
+                  'stars.starrable_id': knex.raw('??', ['sources.id']),
+                  'stars.starrable': knex.raw('?', ['source']),
+                })
+                .limit(1)
+          ).wrap('exists (', ')'),
+        })
+        .count({ count: 'stars.id' })
+        .leftOuterJoin('stars', function () {
+          this.on('sources.id', 'stars.starrable_id')
+            .andOn('stars.starrable', knex.raw('?', ['source']));
+        })
+        .groupBy('sources.id');
+
+      // Join table query to extract commentCount.
+      let commentQuery = knex('sources')
+        .column({ id: 'sources.id' })
+        .count({ count: 'comments.id' })
+        .leftOuterJoin('comments', function () {
+          /* eslint no-invalid-this: "off" */
+          this.on('sources.id', 'comments.commentable_id')
+            .andOn('comments.commentable', knex.raw('?', ['source']));
+        })
+        .groupBy('sources.id');
+
+      let query = knex(knex.raw('sources AS i'))
+        .column({
+          id: 'i.id',
+          revId: 'h.id',
+          text: 'b.text',
+          url: 'h.url',
+          date: 'h.date',
+          table: 't.text',
+          chart: 'h.chart',
+          type: 'h.type',
+          institution: 'h.institution',
+          publication: 'h.publication',
+          commentCount: 'm.count',
+          starCount: 's.count',
+          starred: 's.starred',
+        })
+        .select()
+        .where('deleted', false)
+        .leftOuterJoin(knex.raw('source_revs AS h'), 'i.head_id', 'h.id')
+        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
+        .leftOuterJoin(knex.raw('blobs AS t'), 'h.table_hash', 'b.hash')
+        .leftOuterJoin(starQuery.as('s'), 'i.id', 's.id')
+        .leftOuterJoin(commentQuery.as('m'), 'i.id', 'm.id');
+
+      query = sortAndFilterQuery(query, sort, filters);
+
+      let sources = await query;
+      let data = { sources: {} };
       for (let source of sources) {
-        if (!source.head.deleted) {
-          ret[source.id] = await source.toData(user);
-        }
+        source.chart = JSON.parse(source.chart);
+        source.commentCount = Number(source.commentCount);
+        source.starCount = Number(source.starCount);
+        data.sources[source.id] = source;
       }
-      return ret;
+      data.results = sources.map((source) => source.id);
+      return data;
     };
 
     Source.apiGetRevs = async function (sourceId) {

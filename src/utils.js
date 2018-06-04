@@ -278,6 +278,17 @@ export var DwdUtilsMixin = {
       }
       return this.$store.state.topics[topicId] || null;
     },
+    lookupItem: function (type, id) {
+      switch (type) {
+      case ItemType.TOPIC:
+        return this.lookupTopic(id);
+      case ItemType.CLAIM:
+        return this.lookupClaim(id);
+      case ItemType.SOURCE:
+        return this.lookupSource(id);
+      }
+      throw new Error(`Invalid item type: ${type}`);
+    },
     parseTrail: function (queryTrail) {
       return queryTrail ? queryTrail.split(',') : [];
     },
@@ -303,14 +314,22 @@ export var DwdUtilsMixin = {
       return url;
     },
     itemUrl: function (type, id, trail) {
-      if (type === ItemType.TOPIC) {
+      switch (type) {
+      case ItemType.TOPIC:
         return this.topicUrl(id, trail);
-      } else if (type === ItemType.CLAIM) {
+      case ItemType.CLAIM:
         return this.claimUrl(id, trail);
-      } else if (type === ItemType.SOURCE) {
+      case ItemType.SOURCE:
         return this.sourceUrl(id, trail);
       }
-      return '';
+      throw new Error(`Invalid item type: ${type}`);
+    },
+    apiUrl: function (type, id) {
+      let url = '/api/' + type;
+      if (id) {
+        url += '/' + id;
+      }
+      return url;
     },
     appendToUrl: function (url, path) {
       if (url.includes('?')) {

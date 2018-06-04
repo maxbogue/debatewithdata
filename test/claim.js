@@ -510,7 +510,7 @@ describe('Claim', function () {
 
       claimsData = await Claim.apiGetAll({
         user,
-        sort: [Sort.UPDATED, false],
+        sort: [Sort.RECENT, false],
       });
       expect(claimsData).to.deep.equal({
         results: [c1Id, c2Id],
@@ -519,7 +519,7 @@ describe('Claim', function () {
 
       claimsData = await Claim.apiGetAll({
         user,
-        sort: [Sort.UPDATED, true],
+        sort: [Sort.RECENT, true],
       });
       expect(claimsData).to.deep.equal({
         results: [c2Id, c1Id],
@@ -576,7 +576,7 @@ describe('Claim', function () {
       let claimsData = await Claim.apiGetAll({
         user,
         claimIds,
-        sort: [Sort.UPDATED, false],
+        sort: [Sort.RECENT, false],
       });
       expect(claimsData).to.deep.equal({
         results: [c1r.claimId, c2r.claimId],

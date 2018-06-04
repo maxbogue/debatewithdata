@@ -6,18 +6,17 @@ import Activity from './pages/Activity.vue';
 import Admin from './pages/Admin.vue';
 import Claim from './pages/Claim.vue';
 import ClaimEdit from './pages/ClaimEdit.vue';
-import Claims from './pages/Claims.vue';
 import ForgotPassword from './pages/ForgotPassword.vue';
 import Guide from './pages/Guide.vue';
 import History from './pages/History.vue';
 import Home from './pages/Home.vue';
+import Items from './pages/Items.vue';
 import Login from './pages/Login.vue';
 import Logout from './pages/Logout.vue';
 import Register from './pages/Register.vue';
 import ResetPassword from './pages/ResetPassword.vue';
 import Source from './pages/Source.vue';
 import SourceEdit from './pages/SourceEdit.vue';
-import Sources from './pages/Sources.vue';
 import Status from './pages/Status.vue';
 import Topic from './pages/Topic.vue';
 import TopicEdit from './pages/TopicEdit.vue';
@@ -25,6 +24,7 @@ import Topics from './pages/Topics.vue';
 import User from './pages/User.vue';
 import VerifyEmail from './pages/VerifyEmail.vue';
 import store from './store';
+import { ItemType } from '../common/constants';
 
 Vue.use(VueRouter);
 
@@ -44,7 +44,7 @@ const router = new VueRouter({
       component: ClaimEdit,
       props: true,
     },
-    { path: '/claims', component: Claims },
+    { path: '/claims', component: Items, props: { type: ItemType.CLAIM } },
     { path: '/claims/add', component: ClaimEdit },
     { path: '/forgot-password', component: ForgotPassword },
     { path: '/guide', component: Guide },
@@ -59,7 +59,7 @@ const router = new VueRouter({
       component: SourceEdit,
       props: true,
     },
-    { path: '/datas', component: Sources },
+    { path: '/datas', component: Items, props: { type: ItemType.SOURCE } },
     { path: '/datas/add', component: SourceEdit },
     { path: '/status', component: Status },
     { path: '/topic/:id', component: Topic },

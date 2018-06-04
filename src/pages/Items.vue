@@ -1,13 +1,11 @@
 <template>
 <div>
-  <h3 class="center">
-    Claims are simple statements about the world.
-  </h3>
+  <h3 class="center">{{ headerText }}</h3>
   <div class="flex-block" :class="$style.bar">
     <template v-if="!query">
       <select v-model="sortBy">
         <option :value="Sort.STARS">Stars</option>
-        <option :value="Sort.UPDATED">Recent</option>
+        <option :value="Sort.RECENT">Recent</option>
       </select>
       <span class="fas click"
             :class="'fa-sort-alpha-' + (sortDesc ? 'down' : 'up')"
@@ -17,15 +15,20 @@
             @click="cycleStarFilter"></span>
     </template>
     <input v-model="query" type="text" placeholder="search">
-    <router-link :to="addUrl" class="dwd-btn blue-dark">New Claim</router-link>
+    <router-link v-if="type === ItemType.CLAIM"
+                 to="/claims/add"
+                 class="dwd-btn blue-dark">New Claim</router-link>
+    <router-link v-else-if="type === ItemType.SOURCE"
+                 to="/sources/add"
+                 class="dwd-btn green-dark">New Data</router-link>
   </div>
   <dwd-loader ref="loader" />
   <div v-if="results && results.length === 0"
        class="block no-pad">No results.</div>
-  <item-block v-for="claim in claims"
-              :key="claim.id"
-              :item="claim"
-              type="claim"
+  <item-block v-for="item in items"
+              :key="item.id"
+              :item="item"
+              :type="type"
               abbreviated
               is-link
               mini
@@ -35,7 +38,6 @@
 
 <script>
 import debounce from 'lodash/debounce';
-import { mapState } from 'vuex';
 
 import DwdLoader from '../DwdLoader.vue';
 import ItemBlock from '../ItemBlock.vue';
@@ -47,7 +49,11 @@ export default {
     DwdLoader,
     ItemBlock,
   },
+  props: {
+    type: { type: String, required: true },
+  },
   data: () => ({
+    ItemType,
     Sort,
     Filter,
     sortBy: Sort.STARS,
@@ -57,30 +63,31 @@ export default {
     results: null,
   }),
   computed: {
-    ...mapState([
-      'user',
-    ]),
+    headerText: function () {
+      switch (this.type) {
+      case ItemType.CLAIM:
+        return 'Claims are simple statements about the world.';
+      case ItemType.SOURCE:
+        return 'Data are external sources of data used to support claims.';
+      }
+      return '';
+    },
     params: function () {
       let filters = [];
       if (this.filterStarred !== null) {
         filters.push([Filter.STARRED, this.filterStarred]);
       }
       return {
+        type: this.type,
         sort: [this.sortBy, this.sortDesc],
         filters,
       };
     },
-    claims: function () {
+    items: function () {
       if (!this.results) {
         return [];
       }
-      return this.results.map((result) => this.lookupClaim(result));
-    },
-    addUrl: function () {
-      if (this.user) {
-        return '/claims/add';
-      }
-      return '/login?next=/claims/add';
+      return this.results.map((result) => this.lookupItem(this.type, result));
     },
     starFilterClasses: function () {
       return [this.filterStarred ? 'fas' : 'far', {
@@ -93,20 +100,20 @@ export default {
       if (this.query) {
         return;
       }
-      this.getClaims();
+      this.getItems();
     },
     query: debounce(function () {
       /* eslint no-invalid-this: "off" */
       this.results = null;
       if (!this.query) {
-        this.getClaims();
+        this.getItems();
         return;
       }
       let query = this.query;
       this.loading = true;
       this.$store.dispatch('search', {
         query,
-        types: [ItemType.CLAIM],
+        types: [this.type],
         limit: 20,
         loader: this.$refs.loader,
       }).then((results) => {
@@ -117,12 +124,12 @@ export default {
     }, DEBOUNCE_DELAY_MS),
   },
   mounted: function () {
-    this.getClaims();
+    this.getItems();
   },
   methods: {
-    getClaims: function () {
+    getItems: function () {
       this.results = null;
-      this.$store.dispatch('getClaims', {
+      this.$store.dispatch('getItems', {
         ...this.params,
         loader: this.$refs.loader,
       }).then((results) => {
