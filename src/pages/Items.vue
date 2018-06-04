@@ -15,7 +15,10 @@
             @click="cycleStarFilter"></span>
     </template>
     <input v-model="query" type="text" placeholder="search">
-    <router-link v-if="type === ItemType.CLAIM"
+    <router-link v-if="type === ItemType.TOPIC && user && user.admin"
+                 to="/topics/add"
+                 class="dwd-btn pink-dark">New Topic</router-link>
+    <router-link v-else-if="type === ItemType.CLAIM"
                  to="/claims/add"
                  class="dwd-btn blue-dark">New Claim</router-link>
     <router-link v-else-if="type === ItemType.SOURCE"
@@ -38,6 +41,7 @@
 
 <script>
 import debounce from 'lodash/debounce';
+import { mapState } from 'vuex';
 
 import DwdLoader from '../DwdLoader.vue';
 import ItemBlock from '../ItemBlock.vue';
@@ -63,14 +67,17 @@ export default {
     results: null,
   }),
   computed: {
+    ...mapState(['user']),
     headerText: function () {
       switch (this.type) {
+      case ItemType.TOPIC:
+        return 'Topics represent common topics of debate.';
       case ItemType.CLAIM:
         return 'Claims are simple statements about the world.';
       case ItemType.SOURCE:
         return 'Data are external sources of data used to support claims.';
       }
-      return '';
+      throw new Error(`Invalid item type: ${this.type}`);
     },
     params: function () {
       let filters = [];

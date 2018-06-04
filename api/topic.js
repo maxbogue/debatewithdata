@@ -3,18 +3,17 @@ import Router from 'express-promise-router';
 import { AuthError } from './error';
 import { Comment, Topic } from '../models';
 import { addApiData, getTrailData } from '../models/utils';
+import { parseFilters, parseSort } from './utils';
 
 const router = Router();
 
 router.get('/', async function (req, res) {
-  let mode = req.query.mode;
-  if (!mode || mode !== 'all') {
-    let data = await Topic.apiGetRoots(req.user);
-    res.json(data);
-  } else {
-    let data = await Topic.apiGetAll(req.user);
-    res.json(data);
-  }
+  let data = await Topic.apiGetRoots({
+    user: req.user,
+    filters: parseFilters(req.query.filter),
+    sort: parseSort(req.query.sort),
+  });
+  res.json(data);
 });
 
 router.post('/', async function (req, res) {

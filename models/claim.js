@@ -218,7 +218,7 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Claim.apiGetAll = async function ({ user, claimIds, filters, sort }) {
+    Claim.apiGetAll = async function ({ user, claimIds, filters, sort } = {}) {
       // Join table query to extract starCount.
       let starQuery = knex('claims')
         .column({

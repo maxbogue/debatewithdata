@@ -2,8 +2,7 @@
 
 This document describes the fields present in the API data format for items.
 Fields with a `?` after their name are optional. If a condition appears in
-parenthesis after the type, it is present iff that condition is met. `??` means
-they are still optional even if the condition is met.
+parenthesis after the type, it is present iff that condition is met.
 
 ## Data Bundle
 
@@ -21,6 +20,7 @@ only set based on the specific request.
     sourceRevs: [SourceRev]
 
     id: String      // Present for add operations.
+    results: [id]   // Present for getAll or search.
 
 ## Metadata
 
@@ -41,10 +41,8 @@ Always present.
 Present for whole items (not revisions).
 
     commentCount: Integer
-    star: {
-      count: Integer
-      starred: Boolean
-    }  // Not present for sources.
+    starCount: Integer
+    starred: Boolean
 
 ### Revisons
 
@@ -69,6 +67,7 @@ diffs and equality checks. None of these are set for deleted items.
 
     text: String
     flag?: String
+    needsData?: Boolean
     // Optional when sending to server.
     subClaimIds: { id: Boolean }
     sourceIds: { id: Boolean }
@@ -82,6 +81,8 @@ diffs and equality checks. None of these are set for deleted items.
     text: String
     type: String (misc, article, research, authority)
     date?: Date
+    table?: String
+    chart?: Object
     institution?: String (type = research|authority)
     publication?: String (type = research|article)
 

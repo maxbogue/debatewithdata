@@ -3,9 +3,10 @@ import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
 import { ItemType } from '../common/constants';
 import { ValidationError, validateTopic } from '../common/validate';
+import { sortAndFilterQuery } from './utils';
 import { topicsAreEqual } from '../common/equality';
 
-export default function (sequelize, DataTypes) {
+export default function (sequelize, DataTypes, knex) {
   const Topic = sequelize.define('topic', {
     id: {
       type: DataTypes.TEXT,
@@ -157,7 +158,6 @@ export default function (sequelize, DataTypes) {
       }
 
       let thisData = this.head.toCoreData();
-      thisData.isRoot = this.isRoot;
       thisData.depth = this.head.deleted ? 3 : depth;
       let star = await this.toStarData(user);
       thisData.starCount = star.starCount;
@@ -211,17 +211,70 @@ export default function (sequelize, DataTypes) {
       await topic.update({ isRoot });
     };
 
-    Topic.apiGetRoots = async function (user) {
-      let topics = await Topic.findAll({
-        query: { isRoot: true },
-        ...Topic.INCLUDE(2),
-      });
-      let data = { topics: {}, claims: {}, sources: {} };
+    Topic.apiGetRoots = async function ({ user, filters, sort } = {}) {
+      // Join table query to extract starCount.
+      let starQuery = knex('topics')
+        .column({
+          id: 'topics.id',
+          starred: knex.raw(
+              knex('stars')
+                .select(knex.raw('null'))
+                .where({
+                  'stars.user_id': user ? user.id : null,
+                  'stars.starrable_id': knex.raw('??', ['topics.id']),
+                  'stars.starrable': knex.raw('?', ['topic']),
+                })
+                .limit(1)
+          ).wrap('exists (', ')'),
+        })
+        .count({ count: 'stars.id' })
+        .leftOuterJoin('stars', function () {
+          this.on('topics.id', 'stars.starrable_id')
+            .andOn('stars.starrable', knex.raw('?', ['topic']));
+        })
+        .groupBy('topics.id');
+
+      // Join table query to extract commentCount.
+      let commentQuery = knex('topics')
+        .column({ id: 'topics.id' })
+        .count({ count: 'comments.id' })
+        .leftOuterJoin('comments', function () {
+          /* eslint no-invalid-this: "off" */
+          this.on('topics.id', 'comments.commentable_id')
+            .andOn('comments.commentable', knex.raw('?', ['topic']));
+        })
+        .groupBy('topics.id');
+
+      let query = knex(knex.raw('topics AS i'))
+        .column({
+          id: 'i.id',
+          revId: 'h.id',
+          title: 'h.title',
+          text: 'b.text',
+          commentCount: 'm.count',
+          starCount: 's.count',
+          starred: 's.starred',
+        })
+        .select()
+        .where('is_root', true)
+        .where('deleted', false)
+        .leftOuterJoin(knex.raw('topic_revs AS h'), 'i.head_id', 'h.id')
+        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
+        .leftOuterJoin(starQuery.as('s'), 'i.id', 's.id')
+        .leftOuterJoin(commentQuery.as('m'), 'i.id', 'm.id');
+
+      query = sortAndFilterQuery(query, sort, filters);
+
+      let topics = await query;
+      let data = { topics: {} };
       for (let topic of topics) {
-        if (!topic.head.deleted) {
-          await topic.fillData(data, 2, user);
-        }
+        topic.depth = 1;
+        topic.commentCount = Number(topic.commentCount);
+        topic.starCount = Number(topic.starCount);
+        topic.childCount = graph.getCount(topic.id);
+        data.topics[topic.id] = topic;
       }
+      data.results = topics.map((topic) => topic.id);
       return data;
     };
 

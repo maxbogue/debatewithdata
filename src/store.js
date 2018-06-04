@@ -1,6 +1,5 @@
 import axios from 'axios';
 import cloneDeep from 'lodash/cloneDeep';
-import filter from 'lodash/filter';
 import forEach from 'lodash/forEach';
 import forOwn from 'lodash/forOwn';
 import Vue from 'vue';
@@ -68,18 +67,12 @@ export default new Vuex.Store({
     topics: {},
     claims: {},
     sources: {},
-    topicsLoaded: false,
     user: null,
     errorMessage: '',
     singleColumn: windowIsSingleColumn(),
     itemBlocks: [],
     itemLocations: {},
     itemBlockSliding: false,
-  },
-  getters: {
-    rootTopics: function (state) {
-      return filter(state.topics, (topic) => topic.isRoot);
-    },
   },
   mutations: {
     setData: function (state, data) {
@@ -102,9 +95,6 @@ export default new Vuex.Store({
           Vue.set(state.sources, id, source);
         });
       }
-    },
-    setTopicsLoaded: function (state) {
-      state.topicsLoaded = true;
     },
     setUser: function (state, user) {
       state.user = user;
@@ -138,17 +128,25 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    getItem: function ({ commit }, { id, loader }) {
+      return axios.get('/api/item/' + id, { loader }).then((res) => {
+        commit('setData', res.data);
+      });
+    },
+    getItems: function ({ commit }, { type, sort, filters, loader }) {
+      let params = {
+        sort: sortFilterParam(sort),
+        filter: filters.map(sortFilterParam).join(','),
+      };
+      return axios.get('/api/' + type, { params, loader }).then((res) => {
+        commit('setData', res.data);
+        return res.data.results;
+      });
+    },
     getTopic: function ({ commit, state }, { id, trail, loader }) {
       let params = paramsFromTrail(trail, state);
       return axios.get(`/api/topic/${id}`, { params, loader }).then((res) => {
         commit('setData', res.data);
-      });
-    },
-    getTopics: function ({ commit }, { mode, loader }) {
-      let params = { mode };
-      return axios.get('/api/topic', { params, loader }).then((res) => {
-        commit('setData', res.data);
-        commit('setTopicsLoaded');
       });
     },
     updateTopic: function ({ commit }, { id, topic }) {
@@ -181,16 +179,6 @@ export default new Vuex.Store({
       let params = paramsFromTrail(trail, state);
       return axios.get(`/api/claim/${id}`, { params, loader }).then((res) => {
         commit('setData', res.data);
-      });
-    },
-    getItems: function ({ commit }, { type, sort, filters, loader }) {
-      let params = {
-        sort: sortFilterParam(sort),
-        filter: filters.map(sortFilterParam).join(','),
-      };
-      return axios.get('/api/' + type, { params, loader }).then((res) => {
-        commit('setData', res.data);
-        return res.data.results;
       });
     },
     updateClaim: function ({ commit }, { id, claim }) {
@@ -256,11 +244,6 @@ export default new Vuex.Store({
         .then((res) => {
           commit('setData', res.data);
         });
-    },
-    getItem: function ({ commit }, { id, loader }) {
-      return axios.get('/api/item/' + id, { loader }).then((res) => {
-        commit('setData', res.data);
-      });
     },
     search: function ({ commit }, { query, types, limit, loader }) {
       let params = { query, types, limit };

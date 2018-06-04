@@ -2,6 +2,7 @@ import chai from 'chai';
 
 import { Claim, Topic, TopicRev } from '../models';
 import { ConflictError, NotFoundError } from '../api/error';
+import { Sort } from '../common/constants';
 import { ValidationError } from '../common/validate';
 import { FOO, BAR, BAZ, STARS_AND_COMMENTS,
   registerAndVerifyUser } from './utils';
@@ -18,7 +19,6 @@ const DELETE_MSG = 'Violates guidelines.';
 
 const TOPIC_DEPTH_1 = {
   id: ID,
-  isRoot: false,
   title: TITLE,
   text: FOO,
   depth: 1,
@@ -28,7 +28,6 @@ const TOPIC_DEPTH_1 = {
 
 const TOPIC_DEPTH_2 = {
   id: ID,
-  isRoot: false,
   title: TITLE,
   text: FOO,
   claimIds: [],
@@ -40,7 +39,6 @@ const TOPIC_DEPTH_2 = {
 
 const TOPIC_DEPTH_3 = {
   id: ID,
-  isRoot: false,
   title: TITLE,
   text: FOO,
   claimIds: [],
@@ -422,7 +420,6 @@ describe('Topic', function () {
         topics: {
           [ID]: {
             id: ID,
-            isRoot: false,
             revId: r2.id,
             deleted: true,
             deleteMessage: DELETE_MSG,
@@ -434,6 +431,88 @@ describe('Topic', function () {
         },
         claims: {},
         sources: {},
+      });
+    });
+  });
+
+  describe('.apiGetRoots()', function () {
+    it('two topics', async function () {
+      let t1r = await Topic.apiCreate(user, {
+        id: ID,
+        title: TITLE,
+        text: FOO,
+      }, true);
+      let t2r = await Topic.apiCreate(user, {
+        id: ID2,
+        title: TITLE2,
+        text: BAR,
+      }, true);
+      let data = await Topic.apiGetRoots({
+        sort: [Sort.RECENT, false],
+      });
+      expect(data).to.deep.equal({
+        results: [ID, ID2],
+        topics: {
+          [ID]: {
+            ...TOPIC_DEPTH_1,
+            revId: t1r.id,
+          },
+          [ID2]: {
+            ...TOPIC_DEPTH_1,
+            id: ID2,
+            revId: t2r.id,
+            title: TITLE2,
+            text: BAR,
+          },
+        },
+      });
+    });
+
+    it('roots only', async function () {
+      let t1r = await Topic.apiCreate(user, {
+        id: ID,
+        title: TITLE,
+        text: FOO,
+      }, true);
+      // Not a root topic.
+      await Topic.apiCreate(user, {
+        id: ID2,
+        title: TITLE2,
+        text: BAR,
+      });
+      let data = await Topic.apiGetRoots();
+      expect(data).to.deep.equal({
+        results: [ID],
+        topics: {
+          [ID]: {
+            ...TOPIC_DEPTH_1,
+            revId: t1r.id,
+          },
+        },
+      });
+    });
+
+    it('excludes deleted', async function () {
+      let t1r = await Topic.apiCreate(user, {
+        id: ID,
+        title: TITLE,
+        text: FOO,
+      }, true);
+      await Topic.apiCreate(user, {
+        id: ID2,
+        title: TITLE,
+        text: BAR,
+      }, true);
+      await Topic.apiDelete(ID2, user, DELETE_MSG);
+      let data = await Topic.apiGetRoots();
+      expect(data).to.deep.equal({
+        results: [ID],
+        topics: {
+          [ID]: {
+            ...TOPIC_DEPTH_1,
+            revId: t1r.id,
+          },
+        },
       });
     });
   });

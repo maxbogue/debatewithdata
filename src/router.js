@@ -20,7 +20,6 @@ import SourceEdit from './pages/SourceEdit.vue';
 import Status from './pages/Status.vue';
 import Topic from './pages/Topic.vue';
 import TopicEdit from './pages/TopicEdit.vue';
-import Topics from './pages/Topics.vue';
 import User from './pages/User.vue';
 import VerifyEmail from './pages/VerifyEmail.vue';
 import store from './store';
@@ -69,7 +68,7 @@ const router = new VueRouter({
       component: TopicEdit,
       props: true,
     },
-    { path: '/topics', component: Topics },
+    { path: '/topics', component: Items, props: { type: ItemType.TOPIC } },
     { path: '/topics/add', component: TopicEdit },
     { path: '/user/:username', component: User, props: true },
     { path: '/verify-email', component: VerifyEmail },
