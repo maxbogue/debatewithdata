@@ -10,7 +10,8 @@
       <span class="fas click"
             :class="'fa-sort-alpha-' + (sortDesc ? 'down' : 'up')"
             @click="sortDesc = !sortDesc"></span>
-      <span class="fa-star click"
+      <span v-if="user"
+            class="fa-star click"
             :class="starFilterClasses"
             @click="cycleStarFilter"></span>
     </template>
