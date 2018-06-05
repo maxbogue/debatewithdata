@@ -380,6 +380,7 @@ describe('Source', function () {
       });
       expect(sourcesData).to.deep.equal({
         results: [s1r.sourceId, s2r.sourceId],
+        numPages: 1,
         sources: {
           [s1r.sourceId]: {
             id: s1r.sourceId,
@@ -404,6 +405,7 @@ describe('Source', function () {
       let sourcesData = await Source.apiGetAll();
       expect(sourcesData).to.deep.equal({
         results: [s1r.sourceId],
+        numPages: 1,
         sources: {
           [s1r.sourceId]: {
             id: s1r.sourceId,

@@ -3,7 +3,7 @@ import Router from 'express-promise-router';
 import search from '../common/search';
 import { Claim, Source, Topic } from '../models';
 import { ClientError } from './error';
-import { ItemType } from '../common/constants';
+import { PAGE_SIZE, ItemType } from '../common/constants';
 
 const router = Router();
 
@@ -17,12 +17,12 @@ router.get('/', async function (req, res) {
   }
 
   let results = search.query(query, req.query.types);
-  let limit = Number(req.query.limit);
-  if (limit) {
-    results = results.slice(0, limit);
-  }
+  let numPages = Math.ceil(results.length / PAGE_SIZE);
+  let page = parseInt(req.query.page) || 1;
+  let start = PAGE_SIZE * (page - 1);
+  results = results.slice(start, start + PAGE_SIZE);
 
-  let data = { results, topics: {}, claims: {}, sources: {} };
+  let data = { results, numPages, topics: {}, claims: {}, sources: {} };
   let maybeId = ANY_ID_REGEX.test(query);
 
   let topicItems = results.filter((item) => item.type === ItemType.TOPIC);

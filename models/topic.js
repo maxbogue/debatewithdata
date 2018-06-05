@@ -1,7 +1,7 @@
 import graph, { Graph } from '../common/graph';
 import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
-import { ItemType } from '../common/constants';
+import { PAGE_SIZE, ItemType } from '../common/constants';
 import { ValidationError, validateTopic } from '../common/validate';
 import { sortAndFilterQuery } from './utils';
 import { topicsAreEqual } from '../common/equality';
@@ -211,7 +211,8 @@ export default function (sequelize, DataTypes, knex) {
       await topic.update({ isRoot });
     };
 
-    Topic.apiGetRoots = async function ({ user, filters, sort } = {}) {
+    Topic.apiGetRoots = async function ({ user, filters, sort, page } = {}) {
+      page = page || 1;
       // Join table query to extract starCount.
       let starQuery = knex('topics')
         .column({
@@ -256,25 +257,28 @@ export default function (sequelize, DataTypes, knex) {
           starred: 's.starred',
         })
         .select()
-        .where('is_root', true)
-        .where('deleted', false)
+        .where({
+          is_root: true,
+          deleted: false,
+        })
         .leftOuterJoin(knex.raw('topic_revs AS h'), 'i.head_id', 'h.id')
         .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
         .leftOuterJoin(starQuery.as('s'), 'i.id', 's.id')
         .leftOuterJoin(commentQuery.as('m'), 'i.id', 'm.id');
 
-      query = sortAndFilterQuery(query, sort, filters);
+      sortAndFilterQuery(query, sort, filters);
+      let countQuery = query.clone().clearSelect().clearOrder().count('*');
+      query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
 
-      let topics = await query;
+      let [topics, [{ count }]] = await Promise.all([query, countQuery]);
       let data = { topics: {} };
       for (let topic of topics) {
         topic.depth = 1;
-        topic.commentCount = Number(topic.commentCount);
-        topic.starCount = Number(topic.starCount);
         topic.childCount = graph.getCount(topic.id);
         data.topics[topic.id] = topic;
       }
       data.results = topics.map((topic) => topic.id);
+      data.numPages = Math.ceil(count / PAGE_SIZE);
       return data;
     };
 

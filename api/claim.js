@@ -12,6 +12,7 @@ router.get('/', async function (req, res) {
     user: req.user,
     filters: parseFilters(req.query.filter),
     sort: parseSort(req.query.sort),
+    page: parseInt(req.query.page),
   });
   res.json(data);
 });

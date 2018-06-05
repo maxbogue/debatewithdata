@@ -36,6 +36,13 @@
               is-link
               mini
               fade-only />
+  <div v-if="numPages" class="block no-pad mono" :class="$style.pages">
+    <span v-for="p in numPages"
+          :key="`page-${p}`"
+          class="click"
+          :class="{ [$style.active]: p === page }"
+          @click="page = p">{{ p }}</span>
+  </div>
 </div>
 </template>
 
@@ -65,6 +72,8 @@ export default {
     filterStarred: null,
     query: '',
     results: null,
+    numPages: 0,
+    page: 1,
   }),
   computed: {
     ...mapState(['user']),
@@ -79,7 +88,7 @@ export default {
       }
       throw new Error(`Invalid item type: ${this.type}`);
     },
-    params: function () {
+    paramsWithoutPage: function () {
       let filters = [];
       if (this.filterStarred !== null) {
         filters.push([Filter.STARRED, this.filterStarred]);
@@ -88,6 +97,22 @@ export default {
         type: this.type,
         sort: [this.sortBy, this.sortDesc],
         filters,
+      };
+    },
+    params: function () {
+      return {
+        ...this.paramsWithoutPage,
+        page: this.page,
+      };
+    },
+    queryParams: function () {
+      if (!this.query) {
+        return null;
+      }
+      return {
+        types: [this.type],
+        query: this.query,
+        page: this.page,
       };
     },
     items: function () {
@@ -103,29 +128,43 @@ export default {
     },
   },
   watch: {
+    type: function () {
+      this.sortBy = Sort.STARS;
+      this.sortDesc = true;
+      this.filterStarred = null;
+      this.query = '';
+      this.results = null;
+      this.numPages = 0;
+      this.page = 1;
+    },
+    paramsWithoutPage: function () {
+      this.page = 1;
+    },
     params: function () {
       if (this.query) {
         return;
       }
       this.getItems();
     },
-    query: debounce(function () {
+    query: function () {
+      this.page = 1;
+    },
+    queryParams: debounce(function () {
       /* eslint no-invalid-this: "off" */
       this.results = null;
-      if (!this.query) {
+      if (!this.queryParams) {
         this.getItems();
         return;
       }
       let query = this.query;
       this.loading = true;
       this.$store.dispatch('search', {
-        query,
-        types: [this.type],
-        limit: 20,
+        ...this.queryParams,
         loader: this.$refs.loader,
-      }).then((results) => {
+      }).then(({ results, numPages }) => {
         if (query === this.query) {
           this.results = results.map((result) => result.id);
+          this.numPages = numPages;
         }
       });
     }, DEBOUNCE_DELAY_MS),
@@ -138,10 +177,12 @@ export default {
       this.results = null;
       this.$store.dispatch('getItems', {
         ...this.params,
+        page: this.page,
         loader: this.$refs.loader,
-      }).then((results) => {
+      }).then(({ results, numPages }) => {
         if (!this.query) {
           this.results = results;
+          this.numPages = numPages;
         }
       });
     },
@@ -181,6 +222,22 @@ export default {
     &:hover {
       color: $blue-dark-accent;
     }
+  }
+}
+
+.pages {
+  text-align: center;
+
+  span:not(:first-child) {
+    margin-left: 4px;
+  }
+
+  span:hover {
+    text-decoration: underline;
+  }
+
+  .active {
+    font-weight: bold;
   }
 }
 </style>

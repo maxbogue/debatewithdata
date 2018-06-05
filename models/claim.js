@@ -5,7 +5,7 @@ import zipWith from 'lodash/zipWith';
 import graph, { Graph } from '../common/graph';
 import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
-import { ItemType } from '../common/constants';
+import { PAGE_SIZE, ItemType } from '../common/constants';
 import { ValidationError, validateClaim } from '../common/validate';
 import { genId, sortAndFilterQuery } from './utils';
 import { claimsAreEqual } from '../common/equality';
@@ -218,7 +218,9 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Claim.apiGetAll = async function ({ user, claimIds, filters, sort } = {}) {
+    Claim.apiGetAll = async function (
+      { user, claimIds, filters, sort, page } = {}) {
+      page = page || 1;
       // Join table query to extract starCount.
       let starQuery = knex('claims')
         .column({
@@ -271,22 +273,23 @@ export default function (sequelize, DataTypes, knex) {
         .leftOuterJoin(commentQuery.as('m'), 'c.id', 'm.id');
 
       if (claimIds) {
-        query = query.whereIn('c.id', claimIds);
+        query.whereIn('c.id', claimIds);
       }
 
-      query = sortAndFilterQuery(query, sort, filters);
+      sortAndFilterQuery(query, sort, filters);
+      let countQuery = query.clone().clearSelect().clearOrder().count('*');
+      query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
 
-      let claims = await query;
+      let [claims, [{ count }]] = await Promise.all([query, countQuery]);
       let data = { claims: {} };
       for (let claim of claims) {
         claim.depth = 1;
-        claim.commentCount = Number(claim.commentCount);
-        claim.starCount = Number(claim.starCount);
         claim.childCount = graph.getCount(claim.id);
         claim.dataCounts = graph.getDataCounts(claim.id);
         data.claims[claim.id] = claim;
       }
       data.results = claims.map((claim) => claim.id);
+      data.numPages = Math.ceil(count / PAGE_SIZE);
       return data;
     };
 

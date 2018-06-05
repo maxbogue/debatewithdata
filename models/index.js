@@ -1,3 +1,7 @@
+// Make postgres counts return as integers instead of strings.
+import pg from 'pg';
+pg.types.setTypeParser(20, 'text', parseInt);
+
 import Knex from 'knex';
 import Sequelize from 'sequelize';
 import config from 'config';

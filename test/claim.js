@@ -487,6 +487,7 @@ describe('Claim', function () {
       let claimsData = await Claim.apiGetAll({ user });
       expect(claimsData).to.deep.equal({
         results: [c2Id, c1Id],
+        numPages: 1,
         claims: { ...c1Data, ...c2Data },
       });
 
@@ -496,6 +497,7 @@ describe('Claim', function () {
       });
       expect(claimsData).to.deep.equal({
         results: [c2Id, c1Id],
+        numPages: 1,
         claims: { ...c1Data, ...c2Data },
       });
 
@@ -505,6 +507,7 @@ describe('Claim', function () {
       });
       expect(claimsData).to.deep.equal({
         results: [c1Id, c2Id],
+        numPages: 1,
         claims: { ...c1Data, ...c2Data },
       });
 
@@ -514,6 +517,7 @@ describe('Claim', function () {
       });
       expect(claimsData).to.deep.equal({
         results: [c1Id, c2Id],
+        numPages: 1,
         claims: { ...c1Data, ...c2Data },
       });
 
@@ -523,6 +527,7 @@ describe('Claim', function () {
       });
       expect(claimsData).to.deep.equal({
         results: [c2Id, c1Id],
+        numPages: 1,
         claims: { ...c1Data, ...c2Data },
       });
 
@@ -534,6 +539,7 @@ describe('Claim', function () {
       });
       expect(claimsData).to.deep.equal({
         results: [c2Id],
+        numPages: 1,
         claims: { ...c2Data },
       });
 
@@ -545,6 +551,7 @@ describe('Claim', function () {
       });
       expect(claimsData).to.deep.equal({
         results: [c1Id],
+        numPages: 1,
         claims: { ...c1Data },
       });
     });
@@ -556,6 +563,7 @@ describe('Claim', function () {
       let claimsData = await Claim.apiGetAll({ user });
       expect(claimsData).to.deep.equal({
         results: [c1r.claimId],
+        numPages: 1,
         claims: {
           [c1r.claimId]: {
             ...CLAIM_DEPTH_1,
@@ -580,6 +588,7 @@ describe('Claim', function () {
       });
       expect(claimsData).to.deep.equal({
         results: [c1r.claimId, c2r.claimId],
+        numPages: 1,
         claims: {
           [c1r.claimId]: {
             ...CLAIM_DEPTH_1,

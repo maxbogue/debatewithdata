@@ -33,23 +33,25 @@ function sortQuery(query, sort) {
   if (sort) {
     let [sortType, dir] = sort;
     if (sortType === Sort.STARS) {
-      return query.orderBy('starCount', dir ? 'desc' : 'asc');
+      query.orderBy('starCount', dir ? 'desc' : 'asc');
+      return;
     } else if (sortType === Sort.RECENT) {
-      return query.orderBy('h.created_at', dir ? 'desc' : 'asc');
+      query.orderBy('h.created_at', dir ? 'desc' : 'asc');
+      return;
     }
   }
-  return query.orderBy('starCount', 'desc');
+  query.orderBy('starCount', 'desc');
 }
 
 function filterQuery(query, filters) {
   if (filters && Filter.STARRED in filters) {
-    return query.where('s.starred', filters[Filter.STARRED]);
+    query.where('s.starred', filters[Filter.STARRED]);
   }
-  return query;
 }
 
 export function sortAndFilterQuery(query, sort, filters) {
-  return filterQuery(sortQuery(query, sort), filters);
+  sortQuery(query, sort);
+  filterQuery(query, filters);
 }
 
 // Modifies |data| by adding all data in |otherData| to it.

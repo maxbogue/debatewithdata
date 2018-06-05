@@ -41,3 +41,5 @@ export const Sort = {
   STARS: 'stars',
   RECENT: 'recent',
 };
+
+export const PAGE_SIZE = 20;

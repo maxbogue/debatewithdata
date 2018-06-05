@@ -452,6 +452,7 @@ describe('Topic', function () {
       });
       expect(data).to.deep.equal({
         results: [ID, ID2],
+        numPages: 1,
         topics: {
           [ID]: {
             ...TOPIC_DEPTH_1,
@@ -483,6 +484,7 @@ describe('Topic', function () {
       let data = await Topic.apiGetRoots();
       expect(data).to.deep.equal({
         results: [ID],
+        numPages: 1,
         topics: {
           [ID]: {
             ...TOPIC_DEPTH_1,
@@ -507,6 +509,7 @@ describe('Topic', function () {
       let data = await Topic.apiGetRoots();
       expect(data).to.deep.equal({
         results: [ID],
+        numPages: 1,
         topics: {
           [ID]: {
             ...TOPIC_DEPTH_1,

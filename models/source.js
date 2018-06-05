@@ -1,6 +1,6 @@
 import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
-import { ItemType } from '../common/constants';
+import { PAGE_SIZE, ItemType } from '../common/constants';
 import { ValidationError, validateSource } from '../common/validate';
 import { genId, sortAndFilterQuery } from './utils';
 import { sourcesAreEqual } from '../common/equality';
@@ -173,7 +173,8 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Source.apiGetAll = async function ({ user, filters, sort } = {}) {
+    Source.apiGetAll = async function ({ user, filters, sort, page } = {}) {
+      page = page || 1;
       // Join table query to extract starCount.
       let starQuery = knex('sources')
         .column({
@@ -231,17 +232,18 @@ export default function (sequelize, DataTypes, knex) {
         .leftOuterJoin(starQuery.as('s'), 'i.id', 's.id')
         .leftOuterJoin(commentQuery.as('m'), 'i.id', 'm.id');
 
-      query = sortAndFilterQuery(query, sort, filters);
+      sortAndFilterQuery(query, sort, filters);
+      let countQuery = query.clone().clearSelect().clearOrder().count('*');
+      query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
 
-      let sources = await query;
+      let [sources, [{ count }]] = await Promise.all([query, countQuery]);
       let data = { sources: {} };
       for (let source of sources) {
         source.chart = JSON.parse(source.chart);
-        source.commentCount = Number(source.commentCount);
-        source.starCount = Number(source.starCount);
         data.sources[source.id] = source;
       }
       data.results = sources.map((source) => source.id);
+      data.numPages = Math.ceil(count / PAGE_SIZE);
       return data;
     };
 

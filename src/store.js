@@ -133,14 +133,15 @@ export default new Vuex.Store({
         commit('setData', res.data);
       });
     },
-    getItems: function ({ commit }, { type, sort, filters, loader }) {
+    getItems: function ({ commit }, { type, sort, filters, page, loader }) {
       let params = {
         sort: sortFilterParam(sort),
         filter: filters.map(sortFilterParam).join(','),
+        page,
       };
       return axios.get('/api/' + type, { params, loader }).then((res) => {
         commit('setData', res.data);
-        return res.data.results;
+        return res.data;
       });
     },
     getTopic: function ({ commit, state }, { id, trail, loader }) {
@@ -245,11 +246,11 @@ export default new Vuex.Store({
           commit('setData', res.data);
         });
     },
-    search: function ({ commit }, { query, types, limit, loader }) {
-      let params = { query, types, limit };
+    search: function ({ commit }, { query, types, page, loader }) {
+      let params = { query, types, page };
       return axios.get('/api/search', { params, loader }).then((res) => {
         commit('setData', res.data);
-        return res.data.results;
+        return res.data;
       });
     },
   },
