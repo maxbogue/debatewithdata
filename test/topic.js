@@ -375,7 +375,7 @@ describe('Topic', function () {
         text: FOO,
         claimIds: [c1r.claimId],
       });
-      let data = await Topic.apiGet(ID);
+      let data = await Topic.apiGet(ID, user);
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
@@ -415,7 +415,7 @@ describe('Topic', function () {
         text: FOO,
       });
       let r2 = await Topic.apiDelete(ID, user, DELETE_MSG);
-      let data = await Topic.apiGet(ID);
+      let data = await Topic.apiGet(ID, user);
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
@@ -448,6 +448,7 @@ describe('Topic', function () {
         text: BAR,
       }, true);
       let data = await Topic.apiGetRoots({
+        user,
         sort: [Sort.RECENT, false],
       });
       expect(data).to.deep.equal({
@@ -481,7 +482,7 @@ describe('Topic', function () {
         title: TITLE2,
         text: BAR,
       });
-      let data = await Topic.apiGetRoots();
+      let data = await Topic.apiGetRoots({ user });
       expect(data).to.deep.equal({
         results: [ID],
         numPages: 1,
@@ -506,7 +507,7 @@ describe('Topic', function () {
         text: BAR,
       }, true);
       await Topic.apiDelete(ID2, user, DELETE_MSG);
-      let data = await Topic.apiGetRoots();
+      let data = await Topic.apiGetRoots({ user });
       expect(data).to.deep.equal({
         results: [ID],
         numPages: 1,
@@ -532,7 +533,7 @@ describe('Topic', function () {
         title: TITLE2,
         text: BAR,
       });
-      let data = await Topic.apiGetAll();
+      let data = await Topic.apiGetAll(user);
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
@@ -564,7 +565,7 @@ describe('Topic', function () {
         text: BAR,
       });
       await Topic.apiDelete(ID2, user, DELETE_MSG);
-      let data = await Topic.apiGetAll();
+      let data = await Topic.apiGetAll(user);
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
@@ -604,7 +605,7 @@ describe('Topic', function () {
       let claim = r2.claims[0];
       let subTopic = r2.subTopics[0];
 
-      let data = await Topic.apiGetRevs(ID);
+      let data = await Topic.apiGetRevs(ID, user);
       expect(data).to.deep.equal({
         topicRevs: [{
           id: ID,
@@ -667,11 +668,13 @@ describe('Topic', function () {
       expect(star).to.deep.equal({
         starCount: 1,
         starred: true,
+        watched: true,
       });
       star = await Topic.apiToggleStar(ID, user);
       expect(star).to.deep.equal({
         starCount: 0,
         starred: false,
+        watched: true,
       });
     });
   });

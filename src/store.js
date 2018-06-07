@@ -98,6 +98,9 @@ export default new Vuex.Store({
     },
     setUser: function (state, user) {
       state.user = user;
+      state.topics = {};
+      state.claims = {};
+      state.source = {};
     },
     setErrorMessage: function (state, errorMessage) {
       state.errorMessage = errorMessage;
@@ -211,11 +214,6 @@ export default new Vuex.Store({
     getSource: function ({ commit, state }, { id, trail, loader }) {
       let params = paramsFromTrail(trail, state);
       return axios.get(`/api/source/${id}`, { params, loader }).then((res) => {
-        commit('setData', res.data);
-      });
-    },
-    getSources: function ({ commit }, { loader }) {
-      return axios.get('/api/source', { loader }).then((res) => {
         commit('setData', res.data);
       });
     },

@@ -12,6 +12,7 @@ const EMAIL = 'test@debatewithdata.org';
 export const STARS_AND_COMMENTS = {
   starCount: 0,
   starred: false,
+  watched: true,
   commentCount: 0,
 };
 

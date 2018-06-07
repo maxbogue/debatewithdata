@@ -65,6 +65,14 @@ router.post('/:id/star', async function (req, res) {
   res.json(star);
 });
 
+router.post('/:id/watch', async function (req, res) {
+  if (!req.user) {
+    throw new AuthError();
+  }
+  let metadata = await Topic.apiToggleWatch(req.params.id, req.user);
+  res.json(metadata);
+});
+
 router.get('/:id/comment', async function (req, res) {
   let data = await Comment.apiGetAll(Topic, req.params.id);
   res.json(data);

@@ -319,6 +319,7 @@ describe('Claim', function () {
             text: FOO,
             starCount: 1,
             starred: false,
+            watched: false,
           },
         },
         topics: {},
@@ -435,7 +436,7 @@ describe('Claim', function () {
         text: FOO,
       });
       let r2 = await Claim.apiDelete(r1.claimId, user, DELETE_MSG);
-      let claimData = await Claim.apiGet(r1.claimId);
+      let claimData = await Claim.apiGet(r1.claimId, user);
       expect(claimData).to.deep.equal({
         claims: {
           [r2.claimId]: {
@@ -621,7 +622,7 @@ describe('Claim', function () {
       });
       await r2.reload(ClaimRev.INCLUDE(2));
 
-      let data = await Claim.apiGetRevs(claimId);
+      let data = await Claim.apiGetRevs(claimId, user);
       expect(data).to.deep.equal({
         claimRevs: [{
           id: claimId,
@@ -672,11 +673,13 @@ describe('Claim', function () {
       expect(star).to.deep.equal({
         starCount: 1,
         starred: true,
+        watched: true,
       });
       star = await Claim.apiToggleStar(rev.claimId, user);
       expect(star).to.deep.equal({
         starCount: 0,
         starred: false,
+        watched: true,
       });
     });
   });

@@ -6,6 +6,8 @@ import { ValidationError, validateTopic } from '../common/validate';
 import { sortAndFilterQuery } from './utils';
 import { topicsAreEqual } from '../common/equality';
 
+const TOPIC = ItemType.TOPIC;
+
 export default function (sequelize, DataTypes, knex) {
   const Topic = sequelize.define('topic', {
     id: {
@@ -40,17 +42,29 @@ export default function (sequelize, DataTypes, knex) {
         model: models.Star,
         unique: false,
         scope: {
-          starrable: ItemType.TOPIC,
+          starrable: TOPIC,
         }
       },
       foreignKey: 'starrableId',
+      constraints: false,
+    });
+    Topic.belongsToMany(models.User, {
+      as: 'watchedByUsers',
+      through: {
+        model: models.Watch,
+        unique: false,
+        scope: {
+          watchable: TOPIC,
+        }
+      },
+      foreignKey: 'watchableId',
       constraints: false,
     });
     Topic.hasMany(models.Comment, {
       foreignKey: 'commentableId',
       constraints: false,
       scope: {
-        commentable: ItemType.TOPIC,
+        commentable: TOPIC,
       },
     });
   };
@@ -162,6 +176,7 @@ export default function (sequelize, DataTypes, knex) {
       let star = await this.toStarData(user);
       thisData.starCount = star.starCount;
       thisData.starred = star.starred;
+      thisData.watched = star.watched;
       thisData.commentCount = await this.countComments();
       thisData.childCount = graph.getCount(this.id);
 
@@ -217,21 +232,18 @@ export default function (sequelize, DataTypes, knex) {
       let starQuery = knex('topics')
         .column({
           id: 'topics.id',
-          starred: knex.raw(
-              knex('stars')
-                .select(knex.raw('null'))
-                .where({
-                  'stars.user_id': user ? user.id : null,
-                  'stars.starrable_id': knex.raw('??', ['topics.id']),
-                  'stars.starrable': knex.raw('?', ['topic']),
-                })
-                .limit(1)
-          ).wrap('exists (', ')'),
+        })
+        .exists({
+          starred: knex('stars').where({
+            'stars.user_id': user ? user.id : null,
+            'stars.starrable_id': knex.raw('??', ['topics.id']),
+            'stars.starrable': knex.raw('?', [TOPIC]),
+          }),
         })
         .count({ count: 'stars.id' })
         .leftOuterJoin('stars', function () {
           this.on('topics.id', 'stars.starrable_id')
-            .andOn('stars.starrable', knex.raw('?', ['topic']));
+            .andOn('stars.starrable', knex.raw('?', [TOPIC]));
         })
         .groupBy('topics.id');
 
@@ -242,11 +254,12 @@ export default function (sequelize, DataTypes, knex) {
         .leftOuterJoin('comments', function () {
           /* eslint no-invalid-this: "off" */
           this.on('topics.id', 'comments.commentable_id')
-            .andOn('comments.commentable', knex.raw('?', ['topic']));
+            .andOn('comments.commentable', knex.raw('?', [TOPIC]));
         })
         .groupBy('topics.id');
 
       let query = knex(knex.raw('topics AS i'))
+        .select()
         .column({
           id: 'i.id',
           revId: 'h.id',
@@ -256,7 +269,13 @@ export default function (sequelize, DataTypes, knex) {
           starCount: 's.count',
           starred: 's.starred',
         })
-        .select()
+        .exists({
+          watched: knex('watches').where({
+            'watches.user_id': user ? user.id : null,
+            'watches.watchable_id': knex.raw('??', ['i.id']),
+            'watches.watchable': knex.raw('?', [TOPIC]),
+          }),
+        })
         .where({
           is_root: true,
           deleted: false,
@@ -302,7 +321,7 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Topic.apiGetRevs = async function (topicId) {
+    Topic.apiGetRevs = async function (topicId, user) {
       let topicRevs = await models.TopicRev.findAll({
         where: { topicId },
         order: [['created_at', 'DESC']],
@@ -319,7 +338,7 @@ export default function (sequelize, DataTypes, knex) {
         claims: {},
       };
       for (let topicRev of topicRevs) {
-        await topicRev.fillData(data);
+        await topicRev.fillData(data, user);
       }
       return data;
     };
@@ -327,10 +346,12 @@ export default function (sequelize, DataTypes, knex) {
     Topic.prototype.toStarData = async function (user) {
       let starCount = await this.countStarredByUsers();
       let starred = false;
+      let watched = false;
       if (user) {
         starred = await this.hasStarredByUser(user);
+        watched = await this.hasWatchedByUser(user);
       }
-      return { starCount, starred };
+      return { starCount, starred, watched };
     };
 
     Topic.apiToggleStar = async function (id, user) {
@@ -343,8 +364,23 @@ export default function (sequelize, DataTypes, knex) {
         await topic.removeStarredByUser(user);
       } else {
         await topic.addStarredByUser(user);
+        await topic.addWatchedByUser(user);
       }
       return await topic.toStarData(user);
+    };
+
+    Topic.apiToggleWatch = async function (topicId, user) {
+      let topic = await Topic.findById(topicId);
+      if (!topic) {
+        throw new NotFoundError('Topic not found: ' + topicId);
+      }
+      let isWatched = await topic.hasWatchedByUser(user);
+      if (isWatched) {
+        await topic.removeWatchedByUser(user);
+      } else {
+        await topic.addWatchedByUser(user);
+      }
+      return { watched: !isWatched };
     };
 
     Topic.prototype.updateGraph = function (subTopics, claims) {

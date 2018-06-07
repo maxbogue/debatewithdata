@@ -44,6 +44,18 @@ export default function (sequelize, DataTypes, knex) {
       foreignKey: 'starrableId',
       constraints: false,
     });
+    Claim.belongsToMany(models.User, {
+      as: 'watchedByUsers',
+      through: {
+        model: models.Watch,
+        unique: false,
+        scope: {
+          watchable: ItemType.CLAIM,
+        }
+      },
+      foreignKey: 'watchableId',
+      constraints: false,
+    });
     Claim.hasMany(models.Comment, {
       foreignKey: 'commentableId',
       constraints: false,
@@ -153,6 +165,7 @@ export default function (sequelize, DataTypes, knex) {
       let star = await this.toStarData(user);
       thisData.starCount = star.starCount;
       thisData.starred = star.starred;
+      thisData.watched = star.watched;
       thisData.commentCount = await this.countComments();
       thisData.childCount = graph.getCount(this.id);
       thisData.dataCounts = graph.getDataCounts(this.id);
@@ -207,34 +220,30 @@ export default function (sequelize, DataTypes, knex) {
       data.claims[this.id] = thisData;
     };
 
-    Claim.apiGet = async function (claimId, user) {
-      let claim = await Claim.findById(claimId, Claim.INCLUDE(3));
-      if (!claim) {
-        throw new NotFoundError('Claim not found: ' + claimId);
-      }
-      let data = { topics: {}, claims: {}, sources: {} };
-      await claim.fillData(data, 3, user);
-
-      return data;
+    Claim.baseQuery = function () {
+      return knex(knex.raw('claims AS i'))
+        .column({
+          id: 'i.id',
+          revId: 'h.id',
+          text: 'b.text',
+          flag: 'h.flag',
+          needsData: 'h.needs_data',
+        })
+        .select()
+        .leftOuterJoin(knex.raw('claim_revs AS h'), 'i.head_id', 'h.id')
+        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash');
     };
 
-    Claim.apiGetAll = async function (
-      { user, claimIds, filters, sort, page } = {}) {
-      page = page || 1;
+    Claim.itemQuery = function (user) {
       // Join table query to extract starCount.
       let starQuery = knex('claims')
-        .column({
-          id: 'claims.id',
-          starred: knex.raw(
-              knex('stars')
-                .select(knex.raw('null'))
-                .where({
-                  'stars.user_id': user ? user.id : null,
-                  'stars.starrable_id': knex.raw('??', ['claims.id']),
-                  'stars.starrable': knex.raw('?', ['claim']),
-                })
-                .limit(1)
-          ).wrap('exists (', ')'),
+        .column({ id: 'claims.id' })
+        .exists({
+          starred: knex('stars').where({
+            'stars.user_id': user ? user.id : null,
+            'stars.starrable_id': knex.raw('??', ['claims.id']),
+            'stars.starrable': knex.raw('?', ['claim']),
+          }),
         })
         .count({ count: 'stars.id' })
         .leftOuterJoin('stars', function () {
@@ -254,33 +263,24 @@ export default function (sequelize, DataTypes, knex) {
         })
         .groupBy('claims.id');
 
-      let query = knex(knex.raw('claims AS c'))
+      return this.baseQuery()
         .column({
-          id: 'c.id',
-          revId: 'h.id',
-          text: 'b.text',
-          flag: 'h.flag',
-          needsData: 'h.needs_data',
           commentCount: 'm.count',
           starCount: 's.count',
           starred: 's.starred',
         })
-        .select()
-        .where('deleted', false)
-        .leftOuterJoin(knex.raw('claim_revs AS h'), 'c.head_id', 'h.id')
-        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
-        .leftOuterJoin(starQuery.as('s'), 'c.id', 's.id')
-        .leftOuterJoin(commentQuery.as('m'), 'c.id', 'm.id');
+        .exists({
+          watched: knex('watches').where({
+            'watches.user_id': user ? user.id : null,
+            'watches.watchable_id': knex.raw('??', ['i.id']),
+            'watches.watchable': knex.raw('?', ['claim']),
+          }),
+        })
+        .leftOuterJoin(starQuery.as('s'), 'i.id', 's.id')
+        .leftOuterJoin(commentQuery.as('m'), 'i.id', 'm.id');
+    };
 
-      if (claimIds) {
-        query.whereIn('c.id', claimIds);
-      }
-
-      sortAndFilterQuery(query, sort, filters);
-      let countQuery = query.clone().clearSelect().clearOrder().count('*');
-      query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
-
-      let [claims, [{ count }]] = await Promise.all([query, countQuery]);
+    Claim.queryResultsToData = function (claims) {
       let data = { claims: {} };
       for (let claim of claims) {
         claim.depth = 1;
@@ -288,6 +288,35 @@ export default function (sequelize, DataTypes, knex) {
         claim.dataCounts = graph.getDataCounts(claim.id);
         data.claims[claim.id] = claim;
       }
+      return data;
+    };
+
+    Claim.apiGet = async function (claimId, user) {
+      let claim = await Claim.findById(claimId, Claim.INCLUDE(3));
+      if (!claim) {
+        throw new NotFoundError('Claim not found: ' + claimId);
+      }
+      let data = { topics: {}, claims: {}, sources: {} };
+      await claim.fillData(data, 3, user);
+      return data;
+    };
+
+    Claim.apiGetAll = async function ({
+      user, claimIds, filters, sort, page
+    } = {}) {
+      page = page || 1;
+      let query = Claim.itemQuery(user).where('deleted', false);
+
+      if (claimIds) {
+        query.whereIn('i.id', claimIds);
+      }
+
+      sortAndFilterQuery(query, sort, filters);
+      let countQuery = query.clone().clearSelect().clearOrder().count('*');
+      query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
+
+      let [claims, [{ count }]] = await Promise.all([query, countQuery]);
+      let data = Claim.queryResultsToData(claims);
       data.results = claims.map((claim) => claim.id);
       data.numPages = Math.ceil(count / PAGE_SIZE);
       return data;
@@ -318,10 +347,12 @@ export default function (sequelize, DataTypes, knex) {
     Claim.prototype.toStarData = async function (user) {
       let starCount = await this.countStarredByUsers();
       let starred = false;
+      let watched = false;
       if (user) {
         starred = await this.hasStarredByUser(user);
+        watched = await this.hasWatchedByUser(user);
       }
-      return { starCount, starred };
+      return { starCount, starred, watched };
     };
 
     Claim.apiToggleStar = async function (claimId, user) {
@@ -334,8 +365,23 @@ export default function (sequelize, DataTypes, knex) {
         await claim.removeStarredByUser(user);
       } else {
         await claim.addStarredByUser(user);
+        await claim.addWatchedByUser(user);
       }
       return await claim.toStarData(user);
+    };
+
+    Claim.apiToggleWatch = async function (claimId, user) {
+      let claim = await Claim.findById(claimId);
+      if (!claim) {
+        throw new NotFoundError('Claim not found: ' + claimId);
+      }
+      let isWatched = await claim.hasWatchedByUser(user);
+      if (isWatched) {
+        await claim.removeWatchedByUser(user);
+      } else {
+        await claim.addWatchedByUser(user);
+      }
+      return { watched: !isWatched };
     };
 
     Claim.prototype.updateGraph = function (subClaims, sources) {

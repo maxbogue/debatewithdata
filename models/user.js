@@ -72,6 +72,12 @@ export default function (sequelize, DataTypes) {
       allowNull: false,
       defaultValue: false,
     },
+    caughtUpAt: {
+      field: 'caught_up_at',
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: sequelize.fn('NOW'),
+    },
   });
 
   User.associate = function (models) {

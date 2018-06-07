@@ -61,8 +61,16 @@ router.post('/:id/star', async function (req, res) {
   if (!req.user) {
     throw new AuthError();
   }
-  let star = await Claim.apiToggleStar(req.params.id, req.user);
-  res.json(star);
+  let metadata = await Claim.apiToggleStar(req.params.id, req.user);
+  res.json(metadata);
+});
+
+router.post('/:id/watch', async function (req, res) {
+  if (!req.user) {
+    throw new AuthError();
+  }
+  let metadata = await Claim.apiToggleWatch(req.params.id, req.user);
+  res.json(metadata);
 });
 
 router.get('/:id/comment', async function (req, res) {

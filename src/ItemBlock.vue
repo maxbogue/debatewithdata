@@ -1,3 +1,5 @@
+<!-- Renders blocks for all item types. -->
+
 <template>
 <div :class="blockClasses">
   <router-link v-if="isLink"
@@ -19,11 +21,14 @@
       <claim-data-analysis v-if="type === ItemType.CLAIM" :claim="item" />
       <span v-else class="id mono">{{ id }}</span>
       <span class="controls">
-        <icon-star :item="item" :url="'/api' + url" />
-        <icon-history :url="urlWithTrail" />
-        <icon-edit :url="urlWithTrail" />
+        <icon-star :item="item" :url="apiUrl(type, id)" />
+        <icon-watch v-if="$store.state.user"
+                    :item="item"
+                    :url="apiUrl(type, id)" />
         <icon-comment @click.native="showComments = !showComments"
                       :count="item.commentCount" />
+        <icon-history :url="urlWithTrail" />
+        <icon-edit :url="urlWithTrail" />
       </span>
     </div>
     <dwd-comments :url="'/api' + url"
@@ -39,6 +44,7 @@ import IconComment from './IconComment.vue';
 import IconEdit from './IconEdit.vue';
 import IconHistory from './IconHistory.vue';
 import IconStar from './IconStar.vue';
+import IconWatch from './IconWatch.vue';
 import ItemContent from './ItemContent.vue';
 import { ItemType } from '../common/constants';
 
@@ -53,17 +59,24 @@ export default {
     IconEdit,
     IconHistory,
     IconStar,
+    IconWatch,
     ItemContent,
   },
   props: {
     item: { type: Object, required: true },
     type: { type: String, required: true },
     trail: { type: Array, default: () => [] },
+    // Style as a point for/against (if non-null).
     isFor: { type: Boolean, default: null },
+    // Display as a link to the item.
     isLink: { type: Boolean, default: false },
+    // Reduce content and hide the controls bar.
     abbreviated: { type: Boolean, default: false },
+    // Display with a smaller font.
     mini: { type: Boolean, default: false },
+    // Display half-width.
     half: { type: Boolean, default: false },
+    // Always use a fade in animation.
     fadeOnly: { type: Boolean, default: false },
   },
   data: () => ({

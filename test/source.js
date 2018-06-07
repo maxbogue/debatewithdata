@@ -266,7 +266,7 @@ describe('Source', function () {
   describe('.apiGet()', function () {
     it('source exists', async function () {
       let rev = await Source.apiCreate(user, MISC);
-      let sourceData = await Source.apiGet(rev.sourceId);
+      let sourceData = await Source.apiGet(rev.sourceId, user);
 
       expect(sourceData).to.deep.equal({
         sources: {
@@ -289,7 +289,7 @@ describe('Source', function () {
     it('source deleted', async function () {
       let r1 = await Source.apiCreate(user, MISC);
       let r2 = await Source.apiDelete(r1.sourceId, user, DELETE_MSG);
-      let sourceData = await Source.apiGet(r1.sourceId);
+      let sourceData = await Source.apiGet(r1.sourceId, user);
       expect(sourceData).to.deep.equal({
         sources: {
           [r2.sourceId]: {
@@ -317,7 +317,7 @@ describe('Source', function () {
       });
       let sourceId = sourceRev.sourceId;
 
-      let sourceData = await Source.apiGet(sourceId);
+      let sourceData = await Source.apiGet(sourceId, user);
       expect(sourceData).to.deep.equal({
         sources: {
           [sourceId]: {
@@ -343,7 +343,7 @@ describe('Source', function () {
         }
       });
 
-      let sourceData = await Source.apiGet(sourceId);
+      let sourceData = await Source.apiGet(sourceId, user);
       expect(sourceData).to.deep.equal({
         sources: {
           [sourceId]: {
@@ -376,6 +376,7 @@ describe('Source', function () {
       let s1r = await Source.apiCreate(user, RESEARCH);
       let s2r = await Source.apiCreate(user, ARTICLE);
       let sourcesData = await Source.apiGetAll({
+        user,
         sort: [Sort.RECENT, false],
       });
       expect(sourcesData).to.deep.equal({
@@ -402,7 +403,7 @@ describe('Source', function () {
       let s1r = await Source.apiCreate(user, RESEARCH);
       let s2r = await Source.apiCreate(user, ARTICLE);
       await Source.apiDelete(s2r.sourceId, user, DELETE_MSG);
-      let sourcesData = await Source.apiGetAll();
+      let sourcesData = await Source.apiGetAll({ user });
       expect(sourcesData).to.deep.equal({
         results: [s1r.sourceId],
         numPages: 1,
@@ -448,6 +449,24 @@ describe('Source', function () {
     it('bad id', async function () {
       await expect(Source.apiGetRevs('bad id')).to.be.rejectedWith(
           NotFoundError);
+    });
+  });
+
+  describe('.apiToggleStar()', function () {
+    it('happy', async function () {
+      let r1 = await Source.apiCreate(user, MISC);
+      let star = await Source.apiToggleStar(r1.sourceId, user);
+      expect(star).to.deep.equal({
+        starCount: 1,
+        starred: true,
+        watched: true,
+      });
+      star = await Source.apiToggleStar(r1.sourceId, user);
+      expect(star).to.deep.equal({
+        starCount: 0,
+        starred: false,
+        watched: true,
+      });
     });
   });
 });

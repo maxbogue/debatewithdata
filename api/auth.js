@@ -25,8 +25,7 @@ export async function parseAuthHeader(req, res, next) {
     if (!match) {
       throw new AuthError('Malformed auth token.');
     }
-    let user = await User.verifyToken(match[1]);
-    req.user = user;
+    req.user = await User.verifyToken(match[1]);
   }
   next();
 }

@@ -5,6 +5,8 @@ import { ValidationError, validateSource } from '../common/validate';
 import { genId, sortAndFilterQuery } from './utils';
 import { sourcesAreEqual } from '../common/equality';
 
+const SOURCE = ItemType.SOURCE;
+
 export default function (sequelize, DataTypes, knex) {
   const Source = sequelize.define('source', {
     id: {
@@ -31,17 +33,29 @@ export default function (sequelize, DataTypes, knex) {
         model: models.Star,
         unique: false,
         scope: {
-          starrable: ItemType.SOURCE,
+          starrable: SOURCE,
         }
       },
       foreignKey: 'starrableId',
+      constraints: false,
+    });
+    Source.belongsToMany(models.User, {
+      as: 'watchedByUsers',
+      through: {
+        model: models.Watch,
+        unique: false,
+        scope: {
+          watchable: SOURCE,
+        }
+      },
+      foreignKey: 'watchableId',
       constraints: false,
     });
     Source.hasMany(models.Comment, {
       foreignKey: 'commentableId',
       constraints: false,
       scope: {
-        commentable: ItemType.SOURCE,
+        commentable: SOURCE,
       },
     });
   };
@@ -134,6 +148,7 @@ export default function (sequelize, DataTypes, knex) {
       let star = await this.toStarData(user);
       data.starCount = star.starCount;
       data.starred = star.starred;
+      data.watched = star.watched;
       data.commentCount = await this.countComments();
       return data;
     };
@@ -167,7 +182,7 @@ export default function (sequelize, DataTypes, knex) {
       };
 
       for (let claim of claims) {
-        await claim.fillData(data, 1);
+        await claim.fillData(data, 1, user);
       }
 
       return data;
@@ -177,23 +192,18 @@ export default function (sequelize, DataTypes, knex) {
       page = page || 1;
       // Join table query to extract starCount.
       let starQuery = knex('sources')
-        .column({
-          id: 'sources.id',
-          starred: knex.raw(
-              knex('stars')
-                .select(knex.raw('null'))
-                .where({
-                  'stars.user_id': user ? user.id : null,
-                  'stars.starrable_id': knex.raw('??', ['sources.id']),
-                  'stars.starrable': knex.raw('?', ['source']),
-                })
-                .limit(1)
-          ).wrap('exists (', ')'),
+        .column({ id: 'sources.id' })
+        .exists({
+          starred: knex('stars').where({
+            'stars.user_id': user ? user.id : null,
+            'stars.starrable_id': knex.raw('??', ['sources.id']),
+            'stars.starrable': knex.raw('?', [SOURCE]),
+          }),
         })
         .count({ count: 'stars.id' })
         .leftOuterJoin('stars', function () {
           this.on('sources.id', 'stars.starrable_id')
-            .andOn('stars.starrable', knex.raw('?', ['source']));
+            .andOn('stars.starrable', knex.raw('?', [SOURCE]));
         })
         .groupBy('sources.id');
 
@@ -204,11 +214,12 @@ export default function (sequelize, DataTypes, knex) {
         .leftOuterJoin('comments', function () {
           /* eslint no-invalid-this: "off" */
           this.on('sources.id', 'comments.commentable_id')
-            .andOn('comments.commentable', knex.raw('?', ['source']));
+            .andOn('comments.commentable', knex.raw('?', [SOURCE]));
         })
         .groupBy('sources.id');
 
       let query = knex(knex.raw('sources AS i'))
+        .select()
         .column({
           id: 'i.id',
           revId: 'h.id',
@@ -224,7 +235,13 @@ export default function (sequelize, DataTypes, knex) {
           starCount: 's.count',
           starred: 's.starred',
         })
-        .select()
+        .exists({
+          watched: knex('watches').where({
+            'watches.user_id': user ? user.id : null,
+            'watches.watchable_id': knex.raw('??', ['i.id']),
+            'watches.watchable': knex.raw('?', [SOURCE]),
+          }),
+        })
         .where('deleted', false)
         .leftOuterJoin(knex.raw('source_revs AS h'), 'i.head_id', 'h.id')
         .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
@@ -265,10 +282,12 @@ export default function (sequelize, DataTypes, knex) {
     Source.prototype.toStarData = async function (user) {
       let starCount = await this.countStarredByUsers();
       let starred = false;
+      let watched = false;
       if (user) {
         starred = await this.hasStarredByUser(user);
+        watched = await this.hasWatchedByUser(user);
       }
-      return { starCount, starred };
+      return { starCount, starred, watched };
     };
 
     Source.apiToggleStar = async function (sourceId, user) {
@@ -281,8 +300,23 @@ export default function (sequelize, DataTypes, knex) {
         await source.removeStarredByUser(user);
       } else {
         await source.addStarredByUser(user);
+        await source.addWatchedByUser(user);
       }
       return await source.toStarData(user);
+    };
+
+    Source.apiToggleWatch = async function (sourceId, user) {
+      let source = await Source.findById(sourceId);
+      if (!source) {
+        throw new NotFoundError('Source not found: ' + sourceId);
+      }
+      let isWatched = await source.hasWatchedByUser(user);
+      if (isWatched) {
+        await source.removeWatchedByUser(user);
+      } else {
+        await source.addWatchedByUser(user);
+      }
+      return { watched: !isWatched };
     };
 
     Source.prototype.updateIndex = function (data) {

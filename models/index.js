@@ -3,9 +3,11 @@ import pg from 'pg';
 pg.types.setTypeParser(20, 'text', parseInt);
 
 import Knex from 'knex';
+import KnexQueryBuilder from 'knex/lib/query/builder';
 import Sequelize from 'sequelize';
 import config from 'config';
 import forOwn from 'lodash/forOwn';
+import mapValues from 'lodash/mapValues';
 
 import makeBlob from './blob';
 import makeClaim from './claim';
@@ -22,6 +24,14 @@ import makeTopicClaim from './topic_claim';
 import makeTopicRev from './topic_rev';
 import makeTopicTopic from './topic_topic';
 import makeUser from './user';
+import makeWatch from './watch';
+
+KnexQueryBuilder.prototype.exists = function(obj) {
+  const raw = this.client.raw;
+  this.column(mapValues(obj, (q) =>
+    raw(q.select(raw('null')).limit(1)).wrap('exists (', ')')));
+  return this;
+};
 
 export const knex = Knex({ client: 'pg', connection: config.get('db') });
 export const sequelize = new Sequelize(config.get('db'), {
@@ -55,6 +65,7 @@ export const TopicClaim = makeModel('TopicClaim', makeTopicClaim);
 export const TopicRev = makeModel('TopicRev', makeTopicRev);
 export const TopicTopic = makeModel('TopicTopic', makeTopicTopic);
 export const User = makeModel('User', makeUser);
+export const Watch = makeModel('Watch', makeWatch);
 
 forOwn(models, (model) => {
   if ('associate' in model) {

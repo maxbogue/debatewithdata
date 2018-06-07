@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="editUrl" class="fas fa-edit click" />
+<router-link :to="editUrl" class="fas fa-edit click" />
 </template>
 
 <script>

@@ -30,6 +30,7 @@ export default {
       axios.post(this.url + '/star').then((response) => {
         this.item.starCount = response.data.starCount;
         this.item.starred = response.data.starred;
+        this.item.watched = response.data.watched;
       });
     },
   },

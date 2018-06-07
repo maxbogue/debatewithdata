@@ -132,6 +132,7 @@ export default function (sequelize, DataTypes) {
           transaction,
         }));
       await claim.setHead(claimRev, { transaction });
+      await claim.addWatchedByUser(user);
 
       claim.updateGraph(subClaimIds, sourceIds);
       claim.updateIndex({ id: claim.id, text: data.text });

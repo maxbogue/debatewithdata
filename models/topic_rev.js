@@ -127,6 +127,7 @@ export default function (sequelize, DataTypes) {
       await topicRev.addClaims(claimIds, { transaction });
       await topicRev.addSubTopics(subTopicIds, { transaction });
       await topic.setHead(topicRev, { transaction });
+      await topic.addWatchedByUser(user);
 
       topic.updateGraph(subTopicIds, claimIds);
       topic.updateIndex({ id: topic.id, text: data.text, title: data.title });
@@ -158,17 +159,17 @@ export default function (sequelize, DataTypes) {
     };
 
     // Only called for apiGetRevs.
-    TopicRev.prototype.fillData = async function (data) {
+    TopicRev.prototype.fillData = async function (data, user) {
       let thisData = this.toCoreData();
       thisData.username = this.user.username;
       thisData.createdAt = this.created_at;
 
       if (!this.deleted) {
         for (let subTopic of this.subTopics) {
-          await subTopic.fillData(data, 1);
+          await subTopic.fillData(data, 1, user);
         }
         for (let claim of this.claims) {
-          await claim.fillData(data, 1);
+          await claim.fillData(data, 1, user);
         }
       }
 
