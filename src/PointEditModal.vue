@@ -66,7 +66,7 @@ export default {
   },
   data: () => ({
     forceSource: false,
-    flag: '',
+    flag: null,
     input: '',
     linkType: '',
     source: {},
@@ -159,7 +159,7 @@ export default {
         switch (this.point.pointType) {
         case PointType.NEW_CLAIM:
           this.input = this.point.text;
-          this.flag = this.point.flag || '';
+          this.flag = this.point.flag || null;
           break;
         case PointType.NEW_SOURCE:
           this.input = this.point.url;

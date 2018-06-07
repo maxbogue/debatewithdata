@@ -289,6 +289,9 @@ export var DwdUtilsMixin = {
       }
       throw new Error(`Invalid item type: ${type}`);
     },
+    displayItemType: function (type) {
+      return type === ItemType.SOURCE ? 'data' : type;
+    },
     parseTrail: function (queryTrail) {
       return queryTrail ? queryTrail.split(',') : [];
     },

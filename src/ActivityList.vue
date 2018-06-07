@@ -8,15 +8,15 @@
                  >{{ item.username }}</router-link>
     <router-link
       v-if="item.revId"
-      :to="'/' + item.type + '/' + item.id + '/rev/' + item.revId"
+      :to="itemUrl(item.type, item.id) + '/rev/' + item.revId"
       :class="{ [$style.bold]: hideUsername }"
       >{{ item.action }}</router-link>
     <span v-else
           :class="{ [$style.bold]: hideUsername }"
           >{{ item.action }}</span>
-    <router-link :to="'/' + item.type + '/' + item.id"
+    <router-link :to="itemUrl(item.type, item.id)"
                  :class="{ [$style.bold]: !hideUsername }"
-                 >{{ item.type }} {{ item.id }}</router-link>
+                 >{{ displayItemType(item.type) }} {{ item.id }}</router-link>
   </li>
   <li v-if="activity.length === 0">None yet.</li>
 </ul>

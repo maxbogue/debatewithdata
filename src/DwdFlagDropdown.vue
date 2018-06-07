@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     selectFlag: function (flag) {
-      this.$emit('input', flag === this.value ? '' : flag);
+      this.$emit('input', flag === this.value ? null : flag);
     },
   },
 };

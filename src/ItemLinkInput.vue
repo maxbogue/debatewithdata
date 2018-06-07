@@ -158,7 +158,7 @@ export default {
         types: this.allowedTypes,
         limit: 5,
         loader: this.makeLoader(),
-      }).then((results) => {
+      }).then(({ results }) => {
         if (query === this.value) {
           this.results = results.map(this.lookupItem);
           this.loading = false;
