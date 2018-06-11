@@ -2,40 +2,27 @@
 <div class="narrow">
   <h1>Guide</h1>
   <p>
-    The goal of DebateWithData is to create a reference for the debates that
-    people have. Debates are represented by <strong>claims</strong>, which have
-    points for and against them. Points are links to either other claims or to
-    <strong>data</strong> objects. Finally, <strong>topics</strong> facilitate
+    The goal of DebateWithData is to create a crowd-sourced reference for the
+    debates that people have. Debates are represented by
+    <strong>claims</strong>, which have points for and against them. Points are
+    links to either other claims or to <strong>data</strong> objects, which
+    represent specific data from a source. <strong>Topics</strong> facilitate
     discovery of the key claims for an area of debate.
   </p>
 
-  <h2>Alpha</h2>
   <p>
-    Please keep in mind that this site is in an <strong>early alpha</strong>
-    phase. The two biggest things I need from alpha users are
-    <strong>feedback</strong> on any aspect of the site (looks, behavior, data
-    structure, etc) and <strong>content</strong> to help me explore how things
-    can be improved.
-  </p>
-  <p>
-    Please add and edit content on any topic you'd like, and email
-    <a href="mailto:feedback@debatewithdata.org"
-       target="_blank">feedback@debatewithdata.org</a> with any feedback that
-    occurs to you. Things will undoubtedly break in various fun ways; please
-    email <a href="mailto:bugs@debatewithdata.org"
-             target="_blank">bugs@debatewithdata.org</a> if something seems
-    broken. Also feel free to ping me directly with bugs or feedback if you
-    know me and find that preferable.
+    Please explore, add and edit content, and email <a
+     href="mailto:feedback@debatewithdata.org"
+     target="_blank">feedback@debatewithdata.org</a> with any feedback, bugs,
+   features requests, or other suggestions that you have.
   </p>
 
   <h2>Data<a href="#data"></a></h2>
   <p>
-    A data object consists of a URL, a short description of the data that URL
-    provides, some other optional metadata, and optionally a table of the raw
-    data. In the future it will be possible to use the tabular data to generate
-    graphs to support claims. The closer to the origin of the data the URL is,
-    the better. Primary sources like research papers or firsthand news
-    articles are best.
+    A data object consists of a source URL, a short description of the data
+    that source provides, and other optional metadata. It can also contain a
+    table of raw data and generate basic graphs from that data. The closer to
+    the origin of the data the source is, the better.
   </p>
 
   <h2>Claims<a href="#claims"></a></h2>

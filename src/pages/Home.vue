@@ -8,25 +8,24 @@
   <div class="block blue">
     <h3>Learn</h3>
     <ul>
-      <li>Find a claim you want to know more about.</li>
-      <li>Read the points for that claim to understand both sides of it.</li>
-      <li>Dive into the data behind each side.</li>
+      <li>Find a topic you want to know more about.</li>
+      <li>Read key claims and their points to understand both sides.</li>
+      <li>See what data supports each side.</li>
     </ul>
   </div>
   <div class="block pink">
     <h3>Talk</h3>
     <ul>
-      <li>If you find yourself in a discussion, find the claim that best
-        represents the disagreement you're having.</li>
-      <li>Try to stay on the topic of that specific claim.</li>
-      <li>Use what you learn from the claim page to strengthen your points with
-        data and call out the weaknesses in theirs.</li>
+      <li>Find the claim(s) that best represents the disagreement you're
+        having.</li>
+      <li>Try to stay on the topic of one claim at a time.</li>
+      <li>Use what you learn from DWD to strengthen your points with data.</li>
     </ul>
   </div>
   <div class="block green">
     <h3>Contribute</h3>
     <ul>
-      <li>Link in data that contributes to a discussion.</li>
+      <li>Add data that contributes to a discussion.</li>
       <li>Add claims you've encountered people making, regardless of whether
         you agree with them personally.</li>
       <li>Star any claims and points that you think are relevant, compelling,

@@ -46,7 +46,6 @@ app.get('/data/:id', sendIndex);
 app.get('/data/:id/edit', sendIndex);
 app.get('/datas', sendIndex);
 app.get('/datas/add', sendIndex);
-app.get('/status', sendIndex);
 app.get('/topic/:id', sendIndex);
 app.get('/topic/:id/edit', sendIndex);
 app.get('/topics', sendIndex);

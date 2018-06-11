@@ -18,7 +18,6 @@ import Register from './pages/Register.vue';
 import ResetPassword from './pages/ResetPassword.vue';
 import Source from './pages/Source.vue';
 import SourceEdit from './pages/SourceEdit.vue';
-import Status from './pages/Status.vue';
 import Topic from './pages/Topic.vue';
 import TopicEdit from './pages/TopicEdit.vue';
 import User from './pages/User.vue';
@@ -62,7 +61,6 @@ const router = new VueRouter({
     },
     { path: '/datas', component: Items, props: { type: ItemType.SOURCE } },
     { path: '/datas/add', component: SourceEdit },
-    { path: '/status', component: Status },
     { path: '/topic/:id', component: Topic },
     {
       path: '/topic/:id/edit',
