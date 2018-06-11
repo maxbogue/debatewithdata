@@ -19,7 +19,7 @@ import { FlagData } from '../common/flag';
 
 export default {
   props: {
-    value: { type: String, required: true },
+    value: { type: String, default: null },
   },
   data: () => ({
     showFlags: false,
