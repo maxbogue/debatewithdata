@@ -73,6 +73,7 @@ export default new Vuex.Store({
     itemBlocks: [],
     itemLocations: {},
     itemBlockSliding: false,
+    notificationCount: 0,
   },
   mutations: {
     setData: function (state, data) {
@@ -128,6 +129,9 @@ export default new Vuex.Store({
     },
     itemBlockSliding: function (state) {
       state.itemBlockSliding = true;
+    },
+    setNotificationCount: function (state, notificationCount) {
+      state.notificationCount = notificationCount;
     },
   },
   actions: {
@@ -249,6 +253,18 @@ export default new Vuex.Store({
       return axios.get('/api/search', { params, loader }).then((res) => {
         commit('setData', res.data);
         return res.data;
+      });
+    },
+    getNotifications: function ({ commit }, { loader }) {
+      return axios.get('/api/notifications', { loader }).then((res) => {
+        commit('setData', res.data);
+        commit('setNotificationCount', 0);
+        return res.data.results;
+      });
+    },
+    updateNotificationCount: function ({ commit }) {
+      return axios.get('/api/notifications/count').then((res) => {
+        commit('setNotificationCount', res.data);
       });
     },
   },

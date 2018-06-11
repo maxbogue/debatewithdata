@@ -39,6 +39,7 @@ app.get('/forgot-password', sendIndex);
 app.get('/guide', sendIndex);
 app.get('/login', sendIndex);
 app.get('/logout', sendIndex);
+app.get('/notifications', sendIndex);
 app.get('/register', sendIndex);
 app.get('/reset-password', sendIndex);
 app.get('/data/:id', sendIndex);

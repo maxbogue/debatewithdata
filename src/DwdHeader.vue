@@ -48,6 +48,15 @@
               </router-link>
             </li>
             <li>
+              <router-link to="/notifications"
+                           title="Notifications">
+                <span class="fas fa-bell" :class="$style.alertBadge">
+                  <span v-if="notificationCount > 0"></span>
+                </span>
+                <span v-if="!collapsed">Notifications</span>
+              </router-link>
+            </li>
+            <li>
               <router-link :to="logoutUrl" title="Logout">Logout</router-link>
             </li>
           </template>
@@ -84,6 +93,7 @@ export default {
   computed: {
     ...mapState([
       'user',
+      'notificationCount',
     ]),
     loginUrl: function () {
       let path = this.$route.fullPath;
@@ -105,6 +115,9 @@ export default {
       this.collapse();
     },
   },
+  mounted: function () {
+    this.$store.dispatch('updateNotificationCount');
+  },
   methods: {
     collapse: function () {
       this.collapsed = true;
@@ -123,6 +136,8 @@ $navbar-text-color: #aaa;
 $navbar-text-highlight: #fff;
 $navbar-brand-font-size: 20px;
 $navbar-link-font-size: 14px;
+
+$badge-radius: 3px;
 
 .navbar {
   position: relative;
@@ -258,5 +273,19 @@ $navbar-link-font-size: 14px;
   @extend .navbarNav;
 
   margin-left: auto !important;
+}
+
+.alertBadge {
+  position: relative;
+
+  span {
+    position: absolute;
+    top: -$badge-radius;
+    right: -$badge-radius;
+    height: $badge-radius * 2;
+    width: $badge-radius * 2;
+    background-color: $pink-dark-primary;
+    border-radius: 100%;
+  }
 }
 </style>

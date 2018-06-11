@@ -15,11 +15,11 @@
     <ul v-if="!itemType" :class="$style.results">
       <li v-for="(result, i) in results"
           :class="resultClass(result, i)"
-          :key="result.data.id"
+          :key="result.item.id"
           @click="select(i)"
           @mousemove="highlight(i)"
           @mouseleave="highlighted = -1"
-          >{{ result.data.title || result.data.text }}</li>
+          >{{ result.item.title || result.item.text }}</li>
     </ul>
   </div>
   <topic-content v-if="topic" :topic="topic" />
@@ -140,7 +140,7 @@ export default {
     select: function (i) {
       let result = this.results[i];
       if (result) {
-        this.$emit('input', result.data.id);
+        this.$emit('input', result.item.id);
       }
     },
     onEnter: function (e) {
@@ -160,7 +160,7 @@ export default {
         loader: this.makeLoader(),
       }).then(({ results }) => {
         if (query === this.value) {
-          this.results = results.map(this.lookupItem);
+          this.results = results.map(this.lookupItemWithType);
           this.loading = false;
         }
       });
@@ -174,17 +174,6 @@ export default {
           this.loading = false;
         },
       };
-    },
-    lookupItem: function ({ type, id }) {
-      if (type === ItemType.TOPIC) {
-        return { type, data: this.lookupTopic(id) };
-      } else if (type === ItemType.CLAIM) {
-        return { type, data: this.lookupClaim(id) };
-      } else if (type === ItemType.SOURCE) {
-        return { type, data: this.lookupSource(id) };
-      }
-      console.warn('Broken search result: ' + type);
-      return null;
     },
     resultClass: function (result, i) {
       return [

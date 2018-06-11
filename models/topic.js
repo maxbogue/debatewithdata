@@ -1,9 +1,9 @@
 import graph, { Graph } from '../common/graph';
+import q from './query';
 import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
 import { PAGE_SIZE, ItemType } from '../common/constants';
 import { ValidationError, validateTopic } from '../common/validate';
-import { sortAndFilterQuery } from './utils';
 import { topicsAreEqual } from '../common/equality';
 
 const TOPIC = ItemType.TOPIC;
@@ -211,6 +211,29 @@ export default function (sequelize, DataTypes, knex) {
       data.topics[this.id] = thisData;
     };
 
+    function addTopicFields(query) {
+      query
+        .column({
+          title: 'h.title',
+          text: 'b.text',
+        })
+        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash');
+    }
+
+    Topic.itemQuery = function (user) {
+      return q.item(TOPIC, user).modify(addTopicFields);
+    };
+
+    Topic.processQueryResults = function (topics) {
+      let data = {};
+      for (let topic of topics) {
+        topic.depth = 1;
+        topic.childCount = graph.getCount(topic.id);
+        data[topic.id] = topic;
+      }
+      return data;
+    };
+
     Topic.apiGet = async function (id, user) {
       let topic = await Topic.findById(id, Topic.INCLUDE(3));
       if (!topic) {
@@ -228,77 +251,23 @@ export default function (sequelize, DataTypes, knex) {
 
     Topic.apiGetRoots = async function ({ user, filters, sort, page } = {}) {
       page = page || 1;
-      // Join table query to extract starCount.
-      let starQuery = knex('topics')
-        .column({
-          id: 'topics.id',
-        })
-        .exists({
-          starred: knex('stars').where({
-            'stars.user_id': user ? user.id : null,
-            'stars.starrable_id': knex.raw('??', ['topics.id']),
-            'stars.starrable': knex.raw('?', [TOPIC]),
-          }),
-        })
-        .count({ count: 'stars.id' })
-        .leftOuterJoin('stars', function () {
-          this.on('topics.id', 'stars.starrable_id')
-            .andOn('stars.starrable', knex.raw('?', [TOPIC]));
-        })
-        .groupBy('topics.id');
 
-      // Join table query to extract commentCount.
-      let commentQuery = knex('topics')
-        .column({ id: 'topics.id' })
-        .count({ count: 'comments.id' })
-        .leftOuterJoin('comments', function () {
-          /* eslint no-invalid-this: "off" */
-          this.on('topics.id', 'comments.commentable_id')
-            .andOn('comments.commentable', knex.raw('?', [TOPIC]));
-        })
-        .groupBy('topics.id');
-
-      let query = knex(knex.raw('topics AS i'))
-        .select()
-        .column({
-          id: 'i.id',
-          revId: 'h.id',
-          title: 'h.title',
-          text: 'b.text',
-          commentCount: 'm.count',
-          starCount: 's.count',
-          starred: 's.starred',
-        })
-        .exists({
-          watched: knex('watches').where({
-            'watches.user_id': user ? user.id : null,
-            'watches.watchable_id': knex.raw('??', ['i.id']),
-            'watches.watchable': knex.raw('?', [TOPIC]),
-          }),
-        })
+      let query = Topic.itemQuery(user)
         .where({
           is_root: true,
           deleted: false,
         })
-        .leftOuterJoin(knex.raw('topic_revs AS h'), 'i.head_id', 'h.id')
-        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
-        .leftOuterJoin(starQuery.as('s'), 'i.id', 's.id')
-        .leftOuterJoin(commentQuery.as('m'), 'i.id', 'm.id');
+        .modify(q.sortAndFilter, sort, filters);
 
-      sortAndFilterQuery(query, sort, filters);
       let countQuery = query.clone().clearSelect().clearOrder().count('*');
       query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
 
       let [topics, [{ count }]] = await Promise.all([query, countQuery]);
-      let data = { topics: {} };
-      for (let topic of topics) {
-        topic.depth = 1;
-        topic.childCount = graph.getCount(topic.id);
-        data.topics[topic.id] = topic;
-      }
-      data.results = topics.map((topic) => topic.id);
-      data.numPages = Math.ceil(count / PAGE_SIZE);
-      return data;
+      return {
+        topics: Topic.processQueryResults(topics),
+        results: topics.map((topic) => topic.id),
+        numPages: Math.ceil(count / PAGE_SIZE),
+      };
     };
 
     Topic.apiGetAll = async function (user, topicIds) {

@@ -1,8 +1,9 @@
+import q from './query';
 import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
 import { PAGE_SIZE, ItemType } from '../common/constants';
 import { ValidationError, validateSource } from '../common/validate';
-import { genId, sortAndFilterQuery } from './utils';
+import { genId } from './utils';
 import { sourcesAreEqual } from '../common/equality';
 
 const SOURCE = ItemType.SOURCE;
@@ -153,6 +154,35 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
+    function addSourceFields(query) {
+      query
+        .column({
+          text: 'b.text',
+          url: 'h.url',
+          date: 'h.date',
+          table: 't.text',
+          chart: 'h.chart',
+          type: 'h.type',
+          institution: 'h.institution',
+          publication: 'h.publication',
+        })
+        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
+        .leftOuterJoin(knex.raw('blobs AS t'), 'h.table_hash', 'b.hash');
+    }
+
+    Source.itemQuery = function (user) {
+      return q.item(SOURCE, user).modify(addSourceFields);
+    };
+
+    Source.processQueryResults = function (sources) {
+      let data = {};
+      for (let source of sources) {
+        source.chart = JSON.parse(source.chart);
+        data[source.id] = source;
+      }
+      return data;
+    };
+
     Source.apiGet = async function (sourceId, user) {
       let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
@@ -190,78 +220,20 @@ export default function (sequelize, DataTypes, knex) {
 
     Source.apiGetAll = async function ({ user, filters, sort, page } = {}) {
       page = page || 1;
-      // Join table query to extract starCount.
-      let starQuery = knex('sources')
-        .column({ id: 'sources.id' })
-        .exists({
-          starred: knex('stars').where({
-            'stars.user_id': user ? user.id : null,
-            'stars.starrable_id': knex.raw('??', ['sources.id']),
-            'stars.starrable': knex.raw('?', [SOURCE]),
-          }),
-        })
-        .count({ count: 'stars.id' })
-        .leftOuterJoin('stars', function () {
-          this.on('sources.id', 'stars.starrable_id')
-            .andOn('stars.starrable', knex.raw('?', [SOURCE]));
-        })
-        .groupBy('sources.id');
 
-      // Join table query to extract commentCount.
-      let commentQuery = knex('sources')
-        .column({ id: 'sources.id' })
-        .count({ count: 'comments.id' })
-        .leftOuterJoin('comments', function () {
-          /* eslint no-invalid-this: "off" */
-          this.on('sources.id', 'comments.commentable_id')
-            .andOn('comments.commentable', knex.raw('?', [SOURCE]));
-        })
-        .groupBy('sources.id');
-
-      let query = knex(knex.raw('sources AS i'))
-        .select()
-        .column({
-          id: 'i.id',
-          revId: 'h.id',
-          text: 'b.text',
-          url: 'h.url',
-          date: 'h.date',
-          table: 't.text',
-          chart: 'h.chart',
-          type: 'h.type',
-          institution: 'h.institution',
-          publication: 'h.publication',
-          commentCount: 'm.count',
-          starCount: 's.count',
-          starred: 's.starred',
-        })
-        .exists({
-          watched: knex('watches').where({
-            'watches.user_id': user ? user.id : null,
-            'watches.watchable_id': knex.raw('??', ['i.id']),
-            'watches.watchable': knex.raw('?', [SOURCE]),
-          }),
-        })
+      let query = Source.itemQuery(user)
         .where('deleted', false)
-        .leftOuterJoin(knex.raw('source_revs AS h'), 'i.head_id', 'h.id')
-        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
-        .leftOuterJoin(knex.raw('blobs AS t'), 'h.table_hash', 'b.hash')
-        .leftOuterJoin(starQuery.as('s'), 'i.id', 's.id')
-        .leftOuterJoin(commentQuery.as('m'), 'i.id', 'm.id');
+        .modify(q.sortAndFilter, sort, filters);
 
-      sortAndFilterQuery(query, sort, filters);
       let countQuery = query.clone().clearSelect().clearOrder().count('*');
       query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
 
       let [sources, [{ count }]] = await Promise.all([query, countQuery]);
-      let data = { sources: {} };
-      for (let source of sources) {
-        source.chart = JSON.parse(source.chart);
-        data.sources[source.id] = source;
-      }
-      data.results = sources.map((source) => source.id);
-      data.numPages = Math.ceil(count / PAGE_SIZE);
-      return data;
+      return {
+        sources: Source.processQueryResults(sources),
+        results: sources.map((source) => source.id),
+        numPages: Math.ceil(count / PAGE_SIZE),
+      };
     };
 
     Source.apiGetRevs = async function (sourceId) {

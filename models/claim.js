@@ -3,12 +3,15 @@ import partition from 'lodash/partition';
 import zipWith from 'lodash/zipWith';
 
 import graph, { Graph } from '../common/graph';
+import q from './query';
 import search from '../common/search';
 import { ConflictError, NotFoundError } from '../api/error';
 import { PAGE_SIZE, ItemType } from '../common/constants';
 import { ValidationError, validateClaim } from '../common/validate';
-import { genId, sortAndFilterQuery } from './utils';
+import { genId } from './utils';
 import { claimsAreEqual } from '../common/equality';
+
+const CLAIM = ItemType.CLAIM;
 
 export default function (sequelize, DataTypes, knex) {
   const Claim = sequelize.define('claim', {
@@ -38,7 +41,7 @@ export default function (sequelize, DataTypes, knex) {
         model: models.Star,
         unique: false,
         scope: {
-          starrable: ItemType.CLAIM,
+          starrable: CLAIM,
         }
       },
       foreignKey: 'starrableId',
@@ -50,7 +53,7 @@ export default function (sequelize, DataTypes, knex) {
         model: models.Watch,
         unique: false,
         scope: {
-          watchable: ItemType.CLAIM,
+          watchable: CLAIM,
         }
       },
       foreignKey: 'watchableId',
@@ -60,7 +63,7 @@ export default function (sequelize, DataTypes, knex) {
       foreignKey: 'commentableId',
       constraints: false,
       scope: {
-        commentable: ItemType.CLAIM,
+        commentable: CLAIM,
       },
     });
   };
@@ -220,73 +223,27 @@ export default function (sequelize, DataTypes, knex) {
       data.claims[this.id] = thisData;
     };
 
-    Claim.baseQuery = function () {
-      return knex(knex.raw('claims AS i'))
+    function addClaimFields(query) {
+      query
         .column({
-          id: 'i.id',
-          revId: 'h.id',
           text: 'b.text',
           flag: 'h.flag',
           needsData: 'h.needs_data',
         })
-        .select()
-        .leftOuterJoin(knex.raw('claim_revs AS h'), 'i.head_id', 'h.id')
         .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash');
-    };
+    }
 
     Claim.itemQuery = function (user) {
-      // Join table query to extract starCount.
-      let starQuery = knex('claims')
-        .column({ id: 'claims.id' })
-        .exists({
-          starred: knex('stars').where({
-            'stars.user_id': user ? user.id : null,
-            'stars.starrable_id': knex.raw('??', ['claims.id']),
-            'stars.starrable': knex.raw('?', ['claim']),
-          }),
-        })
-        .count({ count: 'stars.id' })
-        .leftOuterJoin('stars', function () {
-          this.on('claims.id', 'stars.starrable_id')
-            .andOn('stars.starrable', knex.raw('?', ['claim']));
-        })
-        .groupBy('claims.id');
-
-      // Join table query to extract commentCount.
-      let commentQuery = knex('claims')
-        .column({ id: 'claims.id' })
-        .count({ count: 'comments.id' })
-        .leftOuterJoin('comments', function () {
-          /* eslint no-invalid-this: "off" */
-          this.on('claims.id', 'comments.commentable_id')
-            .andOn('comments.commentable', knex.raw('?', ['claim']));
-        })
-        .groupBy('claims.id');
-
-      return this.baseQuery()
-        .column({
-          commentCount: 'm.count',
-          starCount: 's.count',
-          starred: 's.starred',
-        })
-        .exists({
-          watched: knex('watches').where({
-            'watches.user_id': user ? user.id : null,
-            'watches.watchable_id': knex.raw('??', ['i.id']),
-            'watches.watchable': knex.raw('?', ['claim']),
-          }),
-        })
-        .leftOuterJoin(starQuery.as('s'), 'i.id', 's.id')
-        .leftOuterJoin(commentQuery.as('m'), 'i.id', 'm.id');
+      return q.item(CLAIM, user).modify(addClaimFields);
     };
 
-    Claim.queryResultsToData = function (claims) {
-      let data = { claims: {} };
+    Claim.processQueryResults = function (claims) {
+      let data = {};
       for (let claim of claims) {
         claim.depth = 1;
         claim.childCount = graph.getCount(claim.id);
         claim.dataCounts = graph.getDataCounts(claim.id);
-        data.claims[claim.id] = claim;
+        data[claim.id] = claim;
       }
       return data;
     };
@@ -305,21 +262,24 @@ export default function (sequelize, DataTypes, knex) {
       user, claimIds, filters, sort, page
     } = {}) {
       page = page || 1;
-      let query = Claim.itemQuery(user).where('deleted', false);
+
+      let query = Claim.itemQuery(user)
+        .where('deleted', false)
+        .modify(q.sortAndFilter, sort, filters);
 
       if (claimIds) {
         query.whereIn('i.id', claimIds);
       }
 
-      sortAndFilterQuery(query, sort, filters);
       let countQuery = query.clone().clearSelect().clearOrder().count('*');
       query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
 
       let [claims, [{ count }]] = await Promise.all([query, countQuery]);
-      let data = Claim.queryResultsToData(claims);
-      data.results = claims.map((claim) => claim.id);
-      data.numPages = Math.ceil(count / PAGE_SIZE);
-      return data;
+      return {
+        claims: Claim.processQueryResults(claims),
+        results: claims.map((claim) => claim.id),
+        numPages: Math.ceil(count / PAGE_SIZE),
+      };
     };
 
     Claim.apiGetRevs = async function (claimId, user) {
