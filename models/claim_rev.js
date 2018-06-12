@@ -140,6 +140,10 @@ export default function (sequelize, DataTypes) {
       return claimRev;
     };
 
+    ClaimRev.prototype.getItemId = function () {
+      return this.claimId;
+    };
+
     ClaimRev.prototype.toCoreData = function (recurse=true) {
       let data = {
         id: this.claimId,

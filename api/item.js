@@ -1,14 +1,14 @@
 import Router from 'express-promise-router';
 
 import { AuthError } from './error';
-import { Comment, Topic } from '../models';
+import { Comment } from '../models';
 import { addApiData, getTrailData } from '../models/utils';
 import { parseFilters, parseSort } from './utils';
 
 const router = Router();
 
 router.get('/', async function (req, res) {
-  let data = await Topic.apiGetRoots({
+  let data = await req.Item.apiGetAll({
     user: req.user,
     filters: parseFilters(req.query.filter),
     sort: parseSort(req.query.sort),
@@ -18,19 +18,19 @@ router.get('/', async function (req, res) {
 });
 
 router.post('/', async function (req, res) {
-  if (!req.user || !req.user.admin) {
-    throw new AuthError('Must be authenticated as an admin user.');
+  if (!req.user) {
+    throw new AuthError();
   }
-  let rev = await Topic.apiCreate(req.user, req.body, true);
-  let data = await Topic.apiGet(rev.topicId, req.user);
-  data.id = rev.topicId;
+  let rev = await req.Item.apiCreate(req.user, req.body);
+  let data = await req.Item.apiGet(rev.getItemId(), req.user);
+  data.id = rev.getItemId();
   res.json(data);
 });
 
 router.get('/:id', async function (req, res) {
   let data = await getTrailData(req.query.trail, req.user);
-  let topicData = await Topic.apiGet(req.params.id, req.user);
-  addApiData(data, topicData);
+  let itemData = await req.Item.apiGet(req.params.id, req.user);
+  addApiData(data, itemData);
   res.json(data);
 });
 
@@ -38,8 +38,8 @@ router.put('/:id', async function (req, res) {
   if (!req.user) {
     throw new AuthError();
   }
-  let rev = await Topic.apiUpdate(req.params.id, req.user, req.body);
-  let data = await Topic.apiGet(rev.topicId, req.user);
+  let rev = await req.Item.apiUpdate(req.params.id, req.user, req.body);
+  let data = await req.Item.apiGet(req.params.id, req.user);
   res.json(data);
 });
 
@@ -47,13 +47,13 @@ router.delete('/:id', async function (req, res) {
   if (!req.user) {
     throw new AuthError();
   }
-  let rev = await Topic.apiDelete(req.params.id, req.user, req.query.message);
-  let data = await Topic.apiGet(rev.topicId, req.user);
+  let rev = await req.Item.apiDelete(req.params.id, req.user, req.query.message);
+  let data = await req.Item.apiGet(req.params.id, req.user);
   res.json(data);
 });
 
 router.get('/:id/rev', async function (req, res) {
-  let data = await Topic.apiGetRevs(req.params.id);
+  let data = await req.Item.apiGetRevs(req.params.id, req.user);
   res.json(data);
 });
 
@@ -61,20 +61,20 @@ router.post('/:id/star', async function (req, res) {
   if (!req.user) {
     throw new AuthError();
   }
-  let star = await Topic.apiToggleStar(req.params.id, req.user);
-  res.json(star);
+  let data = await req.Item.apiToggleStar(req.params.id, req.user);
+  res.json(data);
 });
 
 router.post('/:id/watch', async function (req, res) {
   if (!req.user) {
     throw new AuthError();
   }
-  let metadata = await Topic.apiToggleWatch(req.params.id, req.user);
-  res.json(metadata);
+  let data = await req.Item.apiToggleWatch(req.params.id, req.user);
+  res.json(data);
 });
 
 router.get('/:id/comment', async function (req, res) {
-  let data = await Comment.apiGetAll(Topic, req.params.id);
+  let data = await Comment.apiGetAll(req.Item, req.params.id);
   res.json(data);
 });
 
@@ -83,7 +83,7 @@ router.post('/:id/comment', async function (req, res) {
     throw new AuthError();
   }
   let comment = await Comment.apiAdd(
-      Topic, req.params.id, req.user, req.body.text);
+      req.Item, req.params.id, req.user, req.body.text);
   let data = await Comment.apiGet(comment.id);
   res.json({ comment: data });
 });
@@ -93,7 +93,7 @@ router.delete('/:id/comment/:commentId', async function (req, res) {
     throw new AuthError();
   }
   await Comment.apiDelete(
-      Topic, req.params.id, req.user, req.params.commentId);
+      req.Item, req.params.id, req.user, req.params.commentId);
   res.json({ message: 'success' });
 });
 

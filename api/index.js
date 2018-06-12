@@ -1,30 +1,36 @@
 import Router from 'express-promise-router';
 import bodyParser from 'body-parser';
 
-import { apiErrorHandler } from './error';
 import activity from './activity';
 import admin from './admin';
 import auth, { parseAuthHeader } from './auth';
-import claim from './claim';
+import item from './item';
 import notifications from './notifications';
 import search from './search';
-import source from './source';
-import topic from './topic';
 import user from './user';
+import { Claim, Source, Topic } from '../models';
+import { apiErrorHandler } from './error';
 
 const router = Router();
 
 router.use(bodyParser.json());
 router.use(parseAuthHeader);
 
+function setItem(Item) {
+  return (req, res, next) => {
+    req.Item = Item;
+    next();
+  };
+}
+
 router.use(auth);
 router.use('/activity', activity);
 router.use('/admin', admin);
-router.use('/claim', claim);
+router.use('/claim', setItem(Claim), item);
 router.use('/notifications', notifications);
-router.use('/source', source);
 router.use('/search', search);
-router.use('/topic', topic);
+router.use('/source', setItem(Source), item);
+router.use('/topic', setItem(Topic), item);
 router.use('/user', user);
 
 router.use(apiErrorHandler);

@@ -135,6 +135,10 @@ export default function (sequelize, DataTypes) {
       return topicRev;
     };
 
+    TopicRev.prototype.getItemId = function () {
+      return this.topicId;
+    };
+
     TopicRev.prototype.toCoreData = function () {
       let data = {
         id: this.topicId,

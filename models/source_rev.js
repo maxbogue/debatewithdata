@@ -128,6 +128,10 @@ export default function (sequelize, DataTypes) {
       return rev;
     };
 
+    SourceRev.prototype.getItemId = function () {
+      return this.sourceId;
+    };
+
     SourceRev.prototype.toCoreData = function () {
       let data = {
         id: this.sourceId,
