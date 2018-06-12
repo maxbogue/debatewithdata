@@ -23,7 +23,7 @@
                  to="/claims/add"
                  class="dwd-btn blue-dark">New Claim</router-link>
     <router-link v-else-if="type === ItemType.SOURCE"
-                 to="/sources/add"
+                 to="/datas/add"
                  class="dwd-btn green-dark">New Data</router-link>
   </div>
   <dwd-loader ref="loader" />

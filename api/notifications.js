@@ -10,7 +10,11 @@ const router = Router();
 
 function getUpdated(query, user, timestamp) {
   query
-    .column({ updatedAt: 'h.created_at' })
+    .column({
+      updatedAt: 'h.created_at',
+      deleted: 'h.deleted',
+      deleteMessage: 'h.delete_message',
+    })
     .where('h.created_at', '>', user.caughtUpAt)
     .where('h.created_at', '<', timestamp)
     .where('w.watched', true);

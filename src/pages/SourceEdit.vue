@@ -51,7 +51,11 @@ const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
 
 function confirmLeave(to, from, next) {
   /* eslint no-invalid-this: "off" */
-  if (!this.noChange && !window.confirm(BEFORE_UNLOAD_MESSAGE)) {
+  if (this.unloadOverride || this.noChange) {
+    next();
+    return;
+  }
+  if (!window.confirm(BEFORE_UNLOAD_MESSAGE)) {
     next(false);
   } else {
     next();
@@ -77,6 +81,7 @@ export default {
     showEditBlock: false,
     oldSource: null,
     newSource: null,
+    unloadOverride: false,
   }),
   computed: {
     source: function () {
@@ -111,7 +116,7 @@ export default {
   },
   methods: {
     beforeUnload: function (e) {
-      if (this.noChange) {
+      if (this.unloadOverride || this.noChange) {
         // Indicates not to warn.
         return undefined;
       }
@@ -130,6 +135,7 @@ export default {
         payload.source.baseRev = this.source.revId;
       }
       this.$store.dispatch(action, payload).then((id) => {
+        this.unloadOverride = true;
         this.$router.push(this.sourceUrl(id, this.trail));
       });
     },
@@ -142,6 +148,7 @@ export default {
         id: this.id,
         message,
       }).then(() => {
+        this.unloadOverride = true;
         this.$router.push('/datas');
       });
     },
