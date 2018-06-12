@@ -25,6 +25,7 @@ import map from 'lodash/map';
 import DwdLoader from '../DwdLoader.vue';
 import DwdTrail from '../DwdTrail.vue';
 import ItemBlock from '../ItemBlock.vue';
+import { ItemType } from '../../common/constants';
 
 export default {
   components: {
@@ -66,7 +67,8 @@ export default {
   methods: {
     checkLoaded: function () {
       if (!this.source || !this.source.claimIds) {
-        this.$store.dispatch('getSource', {
+        this.$store.dispatch('getItem', {
+          type: ItemType.SOURCE,
           id: this.id,
           trail: this.trail,
           loader: this.$refs.loader,

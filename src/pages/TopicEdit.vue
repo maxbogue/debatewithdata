@@ -121,6 +121,7 @@ import TopicEditBlock from '../TopicEditBlock.vue';
 import TopicLinkModal from '../TopicLinkModal.vue';
 import TopicRevAndEditModal from '../TopicRevAndEditModal.vue';
 import TopicRevContent from '../TopicRevContent.vue';
+import { ItemType } from '../../common/constants';
 import {
   authRedirect, diffIdLists, pipe, stableRandom, starCount, starred
 } from '../utils';
@@ -271,12 +272,15 @@ export default {
       }
     },
     submit: function () {
-      let action = 'addTopic';
-      let payload = { topic: this.newTopic };
+      let action = 'addItem';
+      let payload = {
+        type: ItemType.TOPIC,
+        item: this.newTopic,
+      };
       if (this.id) {
-        action = 'updateTopic';
-        payload.id = this.topic.id;
-        payload.topic.baseRev = this.topic.revId;
+        action = 'updateItem';
+        payload.item.id = this.topic.id;
+        payload.item.baseRev = this.topic.revId;
       }
       this.$store.dispatch(action, payload).then((id) => {
         this.unloadOverride = true;
@@ -284,7 +288,8 @@ export default {
       });
     },
     remove: function (message) {
-      this.$store.dispatch('removeTopic', {
+      this.$store.dispatch('removeItem', {
+        type: ItemType.TOPIC,
         id: this.topic.id,
         message,
       }).then(() => {
@@ -323,7 +328,8 @@ export default {
     },
     checkLoaded: function () {
       if (this.needsData) {
-        this.$store.dispatch('getTopic', {
+        this.$store.dispatch('getItem', {
+          type: ItemType.TOPIC,
           id: this.id,
           loader: this.$refs.loader,
         }).then(() => {

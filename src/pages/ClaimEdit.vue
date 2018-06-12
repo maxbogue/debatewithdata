@@ -43,6 +43,7 @@ import DeleteButton from '../DeleteButton.vue';
 import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import PointsEdit from '../PointsEdit.vue';
+import { ItemType } from '../../common/constants';
 import { authRedirect, combineAndSortPoints, splitPoints } from '../utils';
 import { claimsAreEqual } from '../../common/equality';
 
@@ -131,12 +132,15 @@ export default {
       this.points = points;
     },
     submit: function () {
-      let action = 'addClaim';
-      let payload = { claim: this.newClaim };
+      let action = 'addItem';
+      let payload = {
+        type: ItemType.CLAIM,
+        item: this.newClaim,
+      };
       if (this.id) {
-        action = 'updateClaim';
-        payload.id = this.id;
-        payload.claim.baseRev = this.claim.revId;
+        action = 'updateItem';
+        payload.item.id = this.id;
+        payload.item.baseRev = this.claim.revId;
       }
       this.$store.dispatch(action, payload).then((id) => {
         this.unloadOverride = true;
@@ -144,7 +148,8 @@ export default {
       });
     },
     remove: function (message) {
-      this.$store.dispatch('removeClaim', {
+      this.$store.dispatch('removeItem', {
+        type: ItemType.CLAIM,
         id: this.id,
         message,
       }).then(() => {
@@ -169,7 +174,8 @@ export default {
     },
     checkLoaded: function () {
       if (this.needsData) {
-        this.$store.dispatch('getClaim', {
+        this.$store.dispatch('getItem', {
+          type: ItemType.CLAIM,
           id: this.id,
           trail: this.trail,
           loader: this.$refs.loader,

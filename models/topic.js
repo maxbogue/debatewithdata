@@ -249,7 +249,7 @@ export default function (sequelize, DataTypes, knex) {
       await topic.update({ isRoot });
     };
 
-    Topic.apiGetRoots = async function ({ user, filters, sort, page } = {}) {
+    Topic.apiGetAll = async function ({ user, filters, sort, page } = {}) {
       page = page || 1;
 
       let query = Topic.itemQuery(user)
@@ -268,26 +268,6 @@ export default function (sequelize, DataTypes, knex) {
         results: topics.map((topic) => topic.id),
         numPages: Math.ceil(count / PAGE_SIZE),
       };
-    };
-
-    Topic.apiGetAll = async function (user, topicIds) {
-      let query = {};
-      let depth = 2;
-      if (topicIds) {
-        query.where = { id: topicIds };
-        depth = 3;
-      }
-      let topics = await Topic.findAll({
-        ...query,
-        ...Topic.INCLUDE(depth),
-      });
-      let data = { topics: {}, claims: {}, sources: {} };
-      for (let topic of topics) {
-        if (!topic.head.deleted) {
-          await topic.fillData(data, depth, user);
-        }
-      }
-      return data;
     };
 
     Topic.apiGetRevs = async function (topicId, user) {

@@ -6,8 +6,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { walk } from './utils';
-import { validateClaim, validateSource,
-  validateTopic } from '../common/validate';
+import { validateItem } from '../common/validate';
 
 Vue.use(Vuex);
 
@@ -31,8 +30,8 @@ function shouldStoreTopic(topicId, s1, s2) {
   return !t2 || t1.revId !== t2.revId || t1.depth > t2.depth;
 }
 
-function copyClaim(claim) {
-  let copy = cloneDeep(claim);
+function cleanItem(item) {
+  let copy = cloneDeep(item);
   walk(copy, (o) => delete o.tempId);
   return copy;
 }
@@ -135,8 +134,9 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    getItem: function ({ commit }, { id, loader }) {
-      return axios.get('/api/item/' + id, { loader }).then((res) => {
+    getItem: function ({ commit, state }, { type, id, trail, loader }) {
+      let params = paramsFromTrail(trail, state);
+      return axios.get(`/api/${type}/${id}`, { params, loader }).then((res) => {
         commit('setData', res.data);
       });
     },
@@ -151,17 +151,20 @@ export default new Vuex.Store({
         return res.data;
       });
     },
-    getTopic: function ({ commit, state }, { id, trail, loader }) {
-      let params = paramsFromTrail(trail, state);
-      return axios.get(`/api/topic/${id}`, { params, loader }).then((res) => {
+    addItem: function ({ commit }, { type, item }) {
+      item = cleanItem(item);
+      validateItem(type, item);
+      return axios.post(`/api/${type}`, item).then((res) => {
         commit('setData', res.data);
+        return res.data.id;
       });
     },
-    updateTopic: function ({ commit }, { id, topic }) {
-      validateTopic(topic);
-      return axios.put('/api/topic/' + id, topic).then((res) => {
+    updateItem: function ({ commit }, { type, item }) {
+      item = cleanItem(item);
+      validateItem(type, item);
+      return axios.put(`/api/${type}/${item.id}`, item).then((res) => {
         commit('setData', res.data);
-        return id;
+        return item.id;
       }).catch((err) => {
         if (err.response.status === 409) {
           commit('setData', err.response.data.data);
@@ -170,83 +173,11 @@ export default new Vuex.Store({
         throw err;
       });
     },
-    addTopic: function ({ commit }, { topic }) {
-      validateTopic(topic);
-      return axios.post('/api/topic', topic).then((res) => {
-        commit('setData', res.data);
-        return res.data.id;
-      });
-    },
-    removeTopic: function ({ commit }, { id, message }) {
+    removeItem: function ({ commit }, { type, id, message }) {
       let params = { message };
-      return axios.delete(`/api/topic/${id}`, { params }).then((res) => {
+      return axios.delete(`/api/${type}/${id}`, { params }).then((res) => {
         commit('setData', res.data);
       });
-    },
-    getClaim: function ({ commit, state }, { id, trail, loader }) {
-      let params = paramsFromTrail(trail, state);
-      return axios.get(`/api/claim/${id}`, { params, loader }).then((res) => {
-        commit('setData', res.data);
-      });
-    },
-    updateClaim: function ({ commit }, { id, claim }) {
-      validateClaim(claim);
-      return axios.put('/api/claim/' + id, copyClaim(claim)).then((res) => {
-        commit('setData', res.data);
-        return id;
-      }).catch((err) => {
-        if (err.response.status === 409) {
-          commit('setData', err.response.data.data);
-          commit('setErrorMessage', CONFLICT_ERROR_MESSAGE);
-        }
-        throw err;
-      });
-    },
-    addClaim: function ({ commit }, { claim }) {
-      validateClaim(claim);
-      return axios.post('/api/claim', copyClaim(claim)).then((res) => {
-        commit('setData', res.data);
-        return res.data.id;
-      });
-    },
-    removeClaim: function ({ commit }, { id, message }) {
-      let params = { message };
-      return axios.delete(`/api/claim/${id}`, { params }).then((res) => {
-        commit('setData', res.data);
-      });
-    },
-    getSource: function ({ commit, state }, { id, trail, loader }) {
-      let params = paramsFromTrail(trail, state);
-      return axios.get(`/api/source/${id}`, { params, loader }).then((res) => {
-        commit('setData', res.data);
-      });
-    },
-    updateSource: function ({ commit }, { id, source }) {
-      validateSource(source);
-      return axios.put('/api/source/' + id, source).then((res) => {
-        commit('setData', res.data);
-        return id;
-      }).catch((err) => {
-        if (err.response.status === 409) {
-          commit('setData', err.response.data.data);
-          commit('setErrorMessage', CONFLICT_ERROR_MESSAGE);
-        }
-        throw err;
-      });
-    },
-    addSource: function ({ commit }, { source }) {
-      validateSource(source);
-      return axios.post('/api/source', source).then((res) => {
-        commit('setData', res.data);
-        return res.data.id;
-      });
-    },
-    removeSource: function ({ commit }, { id, message }) {
-      let params = { message };
-      return axios.delete(`/api/source/${id}`, { params })
-        .then((res) => {
-          commit('setData', res.data);
-        });
     },
     search: function ({ commit }, { query, types, page, loader }) {
       let params = { query, types, page };

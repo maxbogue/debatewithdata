@@ -132,7 +132,8 @@ export default {
     checkLoaded: function () {
       let claim = this.claim;
       if (!claim || claim.depth < 3) {
-        this.$store.dispatch('getClaim', {
+        this.$store.dispatch('getItem', {
+          type: ItemType.CLAIM,
           id: this.id,
           trail: this.trail,
           loader: !claim || claim.depth < 2 ? this.$refs.loader : null,

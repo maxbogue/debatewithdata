@@ -44,6 +44,7 @@ import DwdLoader from '../DwdLoader.vue';
 import FormValid from '../FormValid.vue';
 import SourceEditContent from '../SourceEditContent.vue';
 import SourceRevContent from '../SourceRevContent.vue';
+import { ItemType } from '../../common/constants';
 import { authRedirect } from '../utils';
 import { sourcesAreEqual } from '../../common/equality';
 
@@ -127,12 +128,15 @@ export default {
       this.showEditBlock = false;
     },
     submit: function () {
-      let action = 'addSource';
-      let payload = { source: this.newSource };
+      let action = 'addItem';
+      let payload = {
+        type: ItemType.SOURCE,
+        item: this.newSource,
+      };
       if (this.id) {
-        action = 'updateSource';
-        payload.id = this.id;
-        payload.source.baseRev = this.source.revId;
+        action = 'updateItem';
+        payload.item.id = this.id;
+        payload.item.baseRev = this.source.revId;
       }
       this.$store.dispatch(action, payload).then((id) => {
         this.unloadOverride = true;
@@ -144,7 +148,8 @@ export default {
       this.showEditBlock = false;
     },
     remove: function (message) {
-      this.$store.dispatch('removeSource', {
+      this.$store.dispatch('removeItem', {
+        type: ItemType.SOURCE,
         id: this.id,
         message,
       }).then(() => {
@@ -167,7 +172,8 @@ export default {
     },
     checkLoaded: function () {
       if (this.needsData) {
-        this.$store.dispatch('getSource', {
+        this.$store.dispatch('getItem', {
+          type: ItemType.SOURCE,
           id: this.id,
           loader: this.$refs.loader,
         }).then(() => {

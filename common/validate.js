@@ -9,7 +9,7 @@ import omit from 'lodash/omit';
 import validate from 'validate.js';
 
 import { FlagData } from './flag';
-import { SourceType, SOURCE_TYPES } from './constants';
+import { ItemType, SourceType, SOURCE_TYPES } from './constants';
 import { deserializeTable } from './utils';
 
 validate.validators.format.message = 'has invalid format: "%{value}"';
@@ -353,3 +353,18 @@ export function validateTopic(topic) {
   forOwn(topicValidators, (f, k) => f(topic[k], topic));
 }
 validate.extend(validateTopic, topicValidators);
+
+export function validateItem(type, item) {
+  switch (type) {
+  case ItemType.TOPIC:
+    validateTopic(item);
+    return;
+  case ItemType.CLAIM:
+    validateClaim(item);
+    return;
+  case ItemType.SOURCE:
+    validateSource(item);
+    return;
+  }
+  throw new Error('Invalid item type: ' + type);
+}

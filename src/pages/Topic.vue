@@ -47,6 +47,7 @@ import map from 'lodash/map';
 import DwdLoader from '../DwdLoader.vue';
 import DwdTrail from '../DwdTrail.vue';
 import ItemBlock from '../ItemBlock.vue';
+import { ItemType } from '../../common/constants';
 import { sortByStars } from '../utils';
 
 export default {
@@ -101,7 +102,8 @@ export default {
   methods: {
     checkLoaded: function () {
       if (!this.topic || this.topic.depth < 3) {
-        this.$store.dispatch('getTopic', {
+        this.$store.dispatch('getItem', {
+          type: ItemType.TOPIC,
           id: this.id,
           trail: this.trail,
           loader: this.$refs.loader,

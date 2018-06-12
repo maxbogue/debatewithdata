@@ -26,17 +26,6 @@ const TOPIC_DEPTH_1 = {
   ...STARS_AND_COMMENTS,
 };
 
-const TOPIC_DEPTH_2 = {
-  id: ID,
-  title: TITLE,
-  text: FOO,
-  claimIds: [],
-  subTopicIds: [],
-  depth: 2,
-  childCount: 0,
-  ...STARS_AND_COMMENTS,
-};
-
 const TOPIC_DEPTH_3 = {
   id: ID,
   title: TITLE,
@@ -435,7 +424,7 @@ describe('Topic', function () {
     });
   });
 
-  describe('.apiGetRoots()', function () {
+  describe('.apiGetAll()', function () {
     it('two topics', async function () {
       let t1r = await Topic.apiCreate(user, {
         id: ID,
@@ -447,7 +436,7 @@ describe('Topic', function () {
         title: TITLE2,
         text: BAR,
       }, true);
-      let data = await Topic.apiGetRoots({
+      let data = await Topic.apiGetAll({
         user,
         sort: [Sort.RECENT, false],
       });
@@ -482,7 +471,7 @@ describe('Topic', function () {
         title: TITLE2,
         text: BAR,
       });
-      let data = await Topic.apiGetRoots({ user });
+      let data = await Topic.apiGetAll({ user });
       expect(data).to.deep.equal({
         results: [ID],
         numPages: 1,
@@ -507,7 +496,7 @@ describe('Topic', function () {
         text: BAR,
       }, true);
       await Topic.apiDelete(ID2, user, DELETE_MSG);
-      let data = await Topic.apiGetRoots({ user });
+      let data = await Topic.apiGetAll({ user });
       expect(data).to.deep.equal({
         results: [ID],
         numPages: 1,
@@ -517,64 +506,6 @@ describe('Topic', function () {
             revId: t1r.id,
           },
         },
-      });
-    });
-  });
-
-  describe('.apiGetAll()', function () {
-    it('two topics', async function () {
-      let t1r = await Topic.apiCreate(user, {
-        id: ID,
-        title: TITLE,
-        text: FOO,
-      });
-      let t2r = await Topic.apiCreate(user, {
-        id: ID2,
-        title: TITLE2,
-        text: BAR,
-      });
-      let data = await Topic.apiGetAll(user);
-      expect(data).to.deep.equal({
-        topics: {
-          [ID]: {
-            ...TOPIC_DEPTH_2,
-            revId: t1r.id,
-          },
-          [ID2]: {
-            ...TOPIC_DEPTH_2,
-            id: ID2,
-            revId: t2r.id,
-            title: TITLE2,
-            text: BAR,
-          },
-        },
-        claims: {},
-        sources: {},
-      });
-    });
-
-    it('excludes deleted', async function () {
-      let t1r = await Topic.apiCreate(user, {
-        id: ID,
-        title: TITLE,
-        text: FOO,
-      });
-      await Topic.apiCreate(user, {
-        id: ID2,
-        title: TITLE,
-        text: BAR,
-      });
-      await Topic.apiDelete(ID2, user, DELETE_MSG);
-      let data = await Topic.apiGetAll(user);
-      expect(data).to.deep.equal({
-        topics: {
-          [ID]: {
-            ...TOPIC_DEPTH_2,
-            revId: t1r.id,
-          },
-        },
-        claims: {},
-        sources: {},
       });
     });
   });
