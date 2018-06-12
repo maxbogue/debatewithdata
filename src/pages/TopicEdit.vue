@@ -168,7 +168,10 @@ export default {
   data: () => ({
     PREVIEW,
     DIFF,
-    newTopicPartial: null,
+    newTopicPartial:  {
+      title: '',
+      text: '',
+    },
     subTopicIds: [],
     newSubTopics: [],
     claimIds: [],
