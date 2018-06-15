@@ -142,7 +142,7 @@ export default {
         payload.item.id = this.id;
         payload.item.baseRev = this.claim.revId;
       }
-      this.$store.dispatch(action, payload).then((id) => {
+      return this.$store.dispatch(action, payload).then((id) => {
         this.unloadOverride = true;
         this.$router.push(this.claimUrl(id, this.trail));
       });

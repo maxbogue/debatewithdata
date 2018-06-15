@@ -9,7 +9,7 @@
     "dev": "backpack",
     "build": "webpack -p --progress --hide-modules && backpack build",
     "prod": "NODE_ENV=production node build/main.js",
-    "test": "mocha --forbid-only",
+    "test": "mocha-webpack --opts test/mocha-webpack.opts \"test/**/*.js\"",
     "lint": "./bin/lint; exit 0;",
     "lint-all": "./bin/lint all; exit 0;",
     "lint-precommit": "./bin/lint staged"
@@ -74,13 +74,18 @@
     "webpack-cli": "^3.0.3"
   },
   "devDependencies": {
+    "@vue/test-utils": "^1.0.0-beta.18",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "env-test": "^1.0.0",
     "eslint": "^4.19.1",
     "eslint-plugin-vue": "^4.5.0",
+    "jsdom": "^11.11.0",
+    "jsdom-global": "^3.0.2",
     "mocha": "^5.2.0",
+    "mocha-webpack": "https://github.com/thomasmichaelwallace/mocha-webpack#build",
     "pre-commit": "^1.2.2",
+    "sinon": "^6.0.0",
     "stylelint": "^9.2.1",
     "stylelint-config-property-sort-order-smacss": "^4.0.0",
     "stylelint-config-recommended-scss": "^3.2.0",
