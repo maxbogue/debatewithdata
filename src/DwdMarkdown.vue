@@ -18,8 +18,8 @@
 </template>
 
 <script>
-const MD_LINK_WHOLE = /(\[.*\]\(http[s]?:\/\/.*\))/;
-const MD_LINK_PARTS = /\[(.*)\]\((http[s]?:\/\/.*)\)/;
+const MD_LINK_WHOLE = /(\[.*?\]\(http[s]?:\/\/.*?\))/;
+const MD_LINK_PARTS = /\[(.*?)\]\((http[s]?:\/\/.*?)\)/;
 
 function splitLinks(p) {
   return p.split(MD_LINK_WHOLE).map((s) => {
