@@ -1,9 +1,11 @@
 import 'systemd';
 import config from 'config';
 import express from 'express';
+import morgan from 'morgan';
 import path from 'path';
 
 import api from './api';
+import logger from './models/logger';
 
 const DIRNAME = path.resolve(__dirname, '..');
 const INDEX_PATH = path.resolve(DIRNAME, 'index.html');
@@ -12,6 +14,14 @@ const JS_PATH = path.resolve(DIRNAME, 'build', JS_FILE);
 const JS_MAP_PATH = JS_PATH + '.map';
 
 const app = express();
+
+app.use(morgan('tiny', {
+  stream: {
+    write: function (message) {
+      logger.info(message.trim());
+    },
+  },
+}));
 
 const sendIndex = function (req, res) {
   res.sendFile(INDEX_PATH);
