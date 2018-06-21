@@ -198,7 +198,7 @@ export class Graph {
   updateClaimPoints(id, pointInfos) {
     let node = getOrCreate(this.nodes, { id, type: ItemType.CLAIM });
     let points = pointInfos.map(
-        (sideInfos) => infosToNodes(this.nodes, sideInfos));
+      (sideInfos) => infosToNodes(this.nodes, sideInfos));
     node.setChildren(points);
   }
 

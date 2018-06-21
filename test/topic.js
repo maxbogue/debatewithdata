@@ -584,7 +584,7 @@ describe('Topic', function () {
 
     it('bad id', async function () {
       await expect(Topic.apiGetRevs('bad id')).to.be.rejectedWith(
-          NotFoundError);
+        NotFoundError);
     });
   });
 

@@ -18,5 +18,5 @@ export function deserializeTable(tableString) {
 
 export function serializeTable(title, rows) {
   return [stripTabs(title)].concat(rows.map(
-      (row) => row.map(stripTabs).join('\t'))).join('\n');
+    (row) => row.map(stripTabs).join('\t'))).join('\n');
 }

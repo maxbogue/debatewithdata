@@ -9,17 +9,17 @@ export default createLogger({
       maxsize: 2 ** 20 * 5, // 5mb
       maxFiles: 5,
       format: format.combine(
-          format.timestamp(),
-          format.json(),
+        format.timestamp(),
+        format.json(),
       ),
     }),
     new transports.Console({
       level: 'debug',
       handleExceptions: true,
       format: format.combine(
-          format.timestamp(),
-          format.colorize(),
-          format.simple(),
+        format.timestamp(),
+        format.colorize(),
+        format.simple(),
       ),
     })
   ],

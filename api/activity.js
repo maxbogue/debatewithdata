@@ -105,7 +105,7 @@ export async function getActivity({ user, limit }) {
   let commentEntries = comments.map(commentToEntry);
 
   let activity = topicEntries.concat(
-      claimEntries, sourceEntries, commentEntries);
+    claimEntries, sourceEntries, commentEntries);
   activity = sortBy(activity, (e) => -e.timestamp.getTime());
   if (limit) {
     activity = activity.slice(0, limit);

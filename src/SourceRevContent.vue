@@ -114,11 +114,11 @@ export default {
     },
     publicationDiff: function () {
       return diff(this.safePrev.publication || '',
-          this.safeCurr.publication || '');
+                  this.safeCurr.publication || '');
     },
     institutionDiff: function () {
       return diff(this.safePrev.institution || '',
-          this.safeCurr.institution || '');
+                  this.safeCurr.institution || '');
     },
   },
 };

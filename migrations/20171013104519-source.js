@@ -11,7 +11,7 @@ module.exports = {
     })).then(() => queryInterface.addColumn('source_revs', 'first_hand', {
       type: DataTypes.BOOLEAN,
     })).then(() => queryInterface.sequelize.query(
-        'UPDATE source_revs SET type = \'misc\' WHERE deleted = false;'
+      'UPDATE source_revs SET type = \'misc\' WHERE deleted = false;'
     )).then(() => queryInterface.removeColumn('source_revs', 'ary'));
   },
 

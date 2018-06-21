@@ -358,7 +358,7 @@ export default function (sequelize, DataTypes, knex) {
 
       // Merge together the claim and source nested arrays.
       let pointInfos = zipWith(claimInfos, sourceInfos,
-          (head, ...tail) => head.concat(...tail));
+                               (head, ...tail) => head.concat(...tail));
 
       graph.updateClaimPoints(this.id, pointInfos);
     };

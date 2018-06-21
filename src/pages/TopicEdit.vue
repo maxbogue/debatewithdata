@@ -159,12 +159,12 @@ export default {
     linkedSubTopics: function () {
       let oldSubTopicIds = this.topic ? this.topic.subTopicIds : [];
       return diffIdLists(this.subTopicIds, oldSubTopicIds,
-          this.$store.state.topics);
+                         this.$store.state.topics);
     },
     linkedClaims: function () {
       let oldClaimIds = this.topic ? this.topic.claimIds : [];
       return diffIdLists(this.claimIds, oldClaimIds,
-          this.$store.state.claims);
+                         this.$store.state.claims);
     },
     needsData: function () {
       return this.id && !this.topic;
@@ -279,12 +279,12 @@ export default {
         let topicStarred = pipe(this.lookupTopic, starred);
         let topicStarCount = pipe(this.lookupTopic, starCount);
         this.subTopicIds = sortBy(seed.subTopicIds,
-            [topicStarred, topicStarCount, stableRandom]);
+                                  [topicStarred, topicStarCount, stableRandom]);
 
         let claimStarred = pipe(this.lookupClaim, starred);
         let claimStarCount = pipe(this.lookupClaim, starCount);
         this.claimIds = sortBy(seed.claimIds,
-            [claimStarred, claimStarCount, stableRandom]);
+                               [claimStarred, claimStarCount, stableRandom]);
       }
       if (!this.seed) {
         // Done next tick so it comes after newTopicLinks watcher.

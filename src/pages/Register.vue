@@ -54,7 +54,7 @@ export default {
   methods: {
     submit: function () {
       auth.register(this.invite, this.username, this.password, this.email,
-          this.$refs.loader).then(() => {
+                    this.$refs.loader).then(() => {
         this.success = true;
       });
     }

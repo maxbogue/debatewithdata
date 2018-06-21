@@ -279,10 +279,10 @@ $badge-radius: 3px;
     position: absolute;
     top: -$badge-radius;
     right: -$badge-radius;
-    height: $badge-radius * 2;
     width: $badge-radius * 2;
-    background-color: $pink-dark-primary;
+    height: $badge-radius * 2;
     border-radius: 100%;
+    background-color: $pink-dark-primary;
   }
 }
 </style>

@@ -69,16 +69,16 @@ describe('User', function () {
 
     it('fails with bad creds', async function () {
       await expect(User.login(USERNAME, PASSWORD)).to.be.rejectedWith(
-          AuthError, /Invalid user/, 'missing user');
+        AuthError, /Invalid user/, 'missing user');
       let invite = await Invite.create({ note: 'test' });
       let user = await User.register(USERNAME, PASSWORD, EMAIL, invite.code);
       await expect(User.login(USERNAME, PASSWORD)).to.be.rejectedWith(
-          AuthError, /Email verification required/, 'email verify');
+        AuthError, /Email verification required/, 'email verify');
       await User.verifyEmail(user.emailVerificationToken);
       await expect(User.login('other user', PASSWORD)).to.be.rejectedWith(
-          AuthError, /Invalid user/, 'other missing user');
+        AuthError, /Invalid user/, 'other missing user');
       await expect(User.login(USERNAME, 'wrong')).to.be.rejectedWith(
-          AuthError, /Invalid password/, 'bad password');
+        AuthError, /Invalid password/, 'bad password');
     });
   });
 
@@ -107,12 +107,12 @@ describe('User', function () {
       let user = await registerAndVerifyUser();
       let token = user.genAuthToken(-1);
       await expect(User.verifyToken(token)).to.be.rejectedWith(
-          AuthError, /Expired auth token/);
+        AuthError, /Expired auth token/);
     });
 
     it('fails for malformed token', async function () {
       await expect(User.verifyToken('garbage')).to.be.rejectedWith(
-          AuthError, /Malformed auth token/);
+        AuthError, /Malformed auth token/);
     });
   });
 

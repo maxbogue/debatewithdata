@@ -36,9 +36,9 @@ export default {
 @import "style/constants";
 
 .block {
-  background-color: $background-light;
   padding: $block-padding;
   border-radius: 3px;
+  background-color: $background-light;
   text-align: center;
 }
 

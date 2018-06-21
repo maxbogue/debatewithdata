@@ -49,7 +49,7 @@ export default {
       let currSubTopicIds = this.currHasContent ? this.curr.subTopicIds : [];
       let prevSubTopicIds = this.prevHasContent ? this.prev.subTopicIds : [];
       return diffIdLists(currSubTopicIds, prevSubTopicIds,
-          this.$store.state.topics);
+                         this.$store.state.topics);
     },
     claims: function () {
       let currClaimIds = this.currHasContent ? this.curr.claimIds : [];

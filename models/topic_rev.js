@@ -107,7 +107,7 @@ export default function (sequelize, DataTypes) {
 
       if (rootSubTopics.length > 0) {
         throw new ValidationError(`subTopicIds[${rootSubTopics[0].id}]`,
-            'root topics cannot be sub-topics.');
+                                  'root topics cannot be sub-topics.');
       }
 
       if (data.newSubTopics) {

@@ -114,9 +114,9 @@ export default {
       }
 
       let superTopics = map(this.claim.superTopicIds || [],
-          (id) => [this.lookupTopic(id), ItemType.TOPIC]);
+                            (id) => [this.lookupTopic(id), ItemType.TOPIC]);
       let superClaims = map(this.claim.superClaimIds || [],
-          (id) => [this.lookupClaim(id), ItemType.CLAIM]);
+                            (id) => [this.lookupClaim(id), ItemType.CLAIM]);
       return superTopics.concat(superClaims);
     },
   },

@@ -660,7 +660,7 @@ describe('Claim', function () {
 
     it('bad id', async function () {
       await expect(Claim.apiGetRevs('bad id')).to.be.rejectedWith(
-          NotFoundError);
+        NotFoundError);
     });
   });
 

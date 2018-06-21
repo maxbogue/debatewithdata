@@ -448,7 +448,7 @@ describe('Source', function () {
 
     it('bad id', async function () {
       await expect(Source.apiGetRevs('bad id')).to.be.rejectedWith(
-          NotFoundError);
+        NotFoundError);
     });
   });
 

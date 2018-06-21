@@ -69,7 +69,7 @@ export default {
     },
     columnUnits: function () {
       return this.rows[0].slice(1).map(
-          (s) => extractUnit(s, this.defaultUnit) || s);
+        (s) => extractUnit(s, this.defaultUnit) || s);
     },
     uniqueUnits: function () {
       let units = new Set();
@@ -183,7 +183,7 @@ export default {
         this.chartObj.destroy();
       }
       this.chartObj = new Chart(
-          this.$refs.chart.getContext('2d'), this.chartOptions);
+        this.$refs.chart.getContext('2d'), this.chartOptions);
     },
   },
 };

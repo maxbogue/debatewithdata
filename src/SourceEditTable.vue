@@ -144,7 +144,7 @@ export default {
     },
     emitTable: function () {
       this.$emit('update:table', serializeTable(
-          this.title, this.rows.slice(0, -1)));
+        this.title, this.rows.slice(0, -1)));
     },
   },
 };

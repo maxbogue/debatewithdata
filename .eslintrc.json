@@ -51,7 +51,7 @@
         "indent": ["error", 2, {
             "FunctionDeclaration": { "parameters": "first" },
             "FunctionExpression": { "parameters": "first" },
-            "CallExpression": { "arguments": 2 }
+            "CallExpression": { "arguments": "first" }
         }],
         "max-len": ["error"],
         "max-depth": ["error", 5],

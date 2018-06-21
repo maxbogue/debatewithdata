@@ -52,7 +52,7 @@ export default {
         return [];
       }
       let notInTrail = filter(
-          this.source.claimIds, (id) => !this.trail.includes(id));
+        this.source.claimIds, (id) => !this.trail.includes(id));
       return map(notInTrail, this.lookupClaim);
     },
   },

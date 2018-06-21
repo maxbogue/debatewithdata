@@ -65,7 +65,7 @@ export default {
     },
     numCols: function () {
       return Math.max(this.prevRows.length > 0 ? this.prevRows[0].length : 0,
-          this.currRows.length > 0 ? this.currRows[0].length : 0);
+                      this.currRows.length > 0 ? this.currRows[0].length : 0);
     },
     diffRows: function () {
       let diffs = [];

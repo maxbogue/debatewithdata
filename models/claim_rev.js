@@ -116,7 +116,7 @@ export default function (sequelize, DataTypes) {
       if (data.newSources) {
         for (let sourceData of data.newSources) {
           let rev = await models.Source.apiCreate(
-              user, sourceData, transaction);
+            user, sourceData, transaction);
           sourceIds[rev.sourceId] = sourceData.isFor;
         }
       }

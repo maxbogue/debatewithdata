@@ -118,7 +118,7 @@ function constraintToValidator(constraint, key) {
       }
       forEach(value, (e, i) => {
         let elementValidator = constraintToValidator(
-            constraint.arrayOf, `${key}[${i}]`);
+          constraint.arrayOf, `${key}[${i}]`);
         elementValidator(e, item);
       });
     }
@@ -129,12 +129,12 @@ function constraintToValidator(constraint, key) {
       forEach(value, (v, k) => {
         if (constraint.objectOf.key) {
           let keyValidator = constraintToValidator(
-              constraint.objectOf.key, `${key}.${k}`);
+            constraint.objectOf.key, `${key}.${k}`);
           keyValidator(k, item);
         }
         if (constraint.objectOf.value) {
           let valueValidator = constraintToValidator(
-              constraint.objectOf.value, `${key}.${k}`);
+            constraint.objectOf.value, `${key}.${k}`);
           valueValidator(v, item);
         }
       });

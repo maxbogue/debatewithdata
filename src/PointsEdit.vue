@@ -79,7 +79,7 @@ export default {
     },
     pointDiffs: function () {
       let pointDiffs = diffPoints(
-          { points: this.points }, this.prev, this.$store.state);
+        { points: this.points }, this.prev, this.$store.state);
       if (this.pointOrder) {
         // Sort by the point order.
         pointDiffs = map(pointDiffs, (ps, si) =>
