@@ -10,6 +10,6 @@ module.exports = extendBaseConfig({
   plugins: [
     new EnvironmentPlugin({ NODE_ENV: 'test' }),
   ],
-  externals: [nodeExternals()],
+  externals: nodeExternals(),
   devtool: 'inline-cheap-module-source-map',
 });

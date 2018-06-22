@@ -7,10 +7,9 @@ import path from 'path';
 import api from './api';
 import logger from './models/logger';
 
-const DIRNAME = path.resolve(__dirname, '..');
-const INDEX_PATH = path.resolve(DIRNAME, 'index.html');
+const INDEX_PATH = path.resolve(__dirname, 'index.html');
 const JS_FILE = 'index.js';
-const JS_PATH = path.resolve(DIRNAME, 'build', JS_FILE);
+const JS_PATH = path.resolve(__dirname, 'build', JS_FILE);
 const JS_MAP_PATH = JS_PATH + '.map';
 
 const app = express();
