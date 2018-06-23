@@ -33,7 +33,7 @@ export default {
   }),
   computed: {
     nextUrl: function () {
-      return this.$route.query.next || '/status';
+      return this.$route.query.next || '/';
     },
   },
   methods: {
