@@ -111,10 +111,13 @@ export default {
     $route: function () {
       this.collapse();
     },
+    user: function () {
+      if (this.user) {
+        this.$store.dispatch('updateNotificationCount');
+      }
+    },
   },
-  mounted: function () {
-    this.$store.dispatch('updateNotificationCount');
-  },
+  mountedTriggersWatchers: true,
   methods: {
     collapse: function () {
       this.collapsed = true;
