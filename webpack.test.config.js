@@ -7,6 +7,7 @@ const { extendBaseConfig } = require('./webpack.config.base.js');
 
 module.exports = extendBaseConfig({
   mode: 'development',
+  target: 'node',
   plugins: [
     new EnvironmentPlugin({ NODE_ENV: 'test' }),
   ],

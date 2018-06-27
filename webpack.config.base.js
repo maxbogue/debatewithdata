@@ -6,7 +6,10 @@ const baseConfig = {
     rules: [
       {
         test: /\.vue$/,
-        use: 'vue-loader',
+        loader: 'vue-loader',
+        options: {
+          optimizeSSR: false,
+        },
       },
       {
         test: /\.js$/,
