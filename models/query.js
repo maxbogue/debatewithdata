@@ -10,6 +10,26 @@ function baseQuery(type) {
     .leftOuterJoin(knex.raw(type + '_revs AS h'), 'i.head_id', 'h.id');
 }
 
+function joinWatched(query, type, user) {
+  let table = type + 's';
+  let idField = table + '.id';
+
+  // Join table query to extract watched.
+  let watchQuery = knex(table)
+    .column({ id: idField })
+    .exists({
+      watched: knex('watches').where({
+        'watches.user_id': user ? user.id : null,
+        'watches.watchable_id': knex.raw('??', [idField]),
+        'watches.watchable': knex.raw('?', [type]),
+      }),
+    });
+
+  query
+    .column({ watched: 'w.watched' })
+    .leftOuterJoin(watchQuery.as('w'), 'i.id', 'w.id');
+}
+
 function itemQuery(type, user) {
   let table = type + 's';
   let idField = table + '.id';
@@ -30,17 +50,6 @@ function itemQuery(type, user) {
     })
     .groupBy(idField);
 
-  // Join table query to extract watched.
-  let watchQuery = knex(table)
-    .column({ id: idField })
-    .exists({
-      watched: knex('watches').where({
-        'watches.user_id': user ? user.id : null,
-        'watches.watchable_id': knex.raw('??', [idField]),
-        'watches.watchable': knex.raw('?', [type]),
-      }),
-    });
-
   // Join table query to extract commentCount.
   let commentQuery = knex(table)
     .column({ id: idField })
@@ -57,11 +66,10 @@ function itemQuery(type, user) {
       commentCount: 'm.count',
       starCount: 's.count',
       starred: 's.starred',
-      watched: 'w.watched',
     })
     .leftOuterJoin(starQuery.as('s'), 'i.id', 's.id')
-    .leftOuterJoin(watchQuery.as('w'), 'i.id', 'w.id')
-    .leftOuterJoin(commentQuery.as('m'), 'i.id', 'm.id');
+    .leftOuterJoin(commentQuery.as('m'), 'i.id', 'm.id')
+    .modify(joinWatched, type, user);
 }
 
 function sortQuery(query, sort) {
@@ -98,4 +106,5 @@ export default {
   item: itemQuery,
   sortAndFilter: sortAndFilterQuery,
   count: countQuery,
+  joinWatched,
 };

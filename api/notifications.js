@@ -60,10 +60,11 @@ router.get('/count', async function (req, res) {
 
   let timestamp = new Date();
 
-  let queries = [Topic, Claim, Source].map((Item) => Item
-    .itemQuery(user)
-    .modify(getUpdated, user, timestamp)
-    .modify(q.count));
+  let queries = [ItemType.TOPIC, ItemType.CLAIM, ItemType.SOURCE]
+    .map((type) => q.base(type)
+      .modify(q.joinWatched, type, user)
+      .modify(getUpdated, user, timestamp)
+      .modify(q.count));
 
   let results = await Promise.all(queries);
   let totalCount = results.reduce((acc, [{ count }]) => acc + count, 0);
