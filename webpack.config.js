@@ -3,7 +3,7 @@
 const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 
-const { extendBaseConfig } = require('./webpack.config.base.js');
+const { extendBaseConfig } = require('./webpack.base.config.js');
 
 module.exports = [
   extendBaseConfig({
