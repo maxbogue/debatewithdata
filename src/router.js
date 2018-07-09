@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import dropWhile from 'lodash/dropWhile';
 
 import Account from './pages/Account.vue';
 import Activity from './pages/Activity.vue';
@@ -78,6 +79,49 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   store.commit('storeItemBlockLocations');
   next();
+});
+
+router.beforeResolve((to, from, next) => {
+  const matched = router.getMatchedComponents(to);
+  const prevMatched = router.getMatchedComponents(from);
+  const activated = dropWhile(matched, (c, i) => c === prevMatched[i]);
+
+  let promises = [];
+
+  for (let c of activated) {
+    if (c.asyncData) {
+      let promise = c.asyncData({ store, route: to });
+      if (promise) {
+        promises.push(promise);
+      }
+    }
+  }
+
+  if (promises.length === 0) {
+    next();
+    return;
+  }
+
+  store.commit('setSuppressRoutes', true);
+
+  Promise.all(promises).then(() => {
+    next();
+    store.commit('setSuppressRoutes', false);
+  }).catch(next);
+});
+
+Vue.mixin({
+  beforeRouteUpdate(to, from, next) {
+    const { asyncData } = this.$options;
+    if (asyncData) {
+      asyncData({
+        store: this.$store,
+        route: to,
+      }).then(next).catch(next);
+    } else {
+      next();
+    }
+  }
 });
 
 export default router;

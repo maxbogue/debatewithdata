@@ -1,7 +1,7 @@
 <template>
-<dwd-modal :show="Boolean(errorMessage)" max-width="350px">
+<dwd-modal :show="Boolean(modalError)" max-width="350px">
   <div :class="$style.block">
-    <div :class="$style.error">{{ errorMessage }}</div>
+    <div :class="$style.error">{{ modalError }}</div>
     <div>
       <button type="button"
               class="dwd-btn red-dark"
@@ -22,11 +22,11 @@ export default {
     DwdModal,
   },
   computed: {
-    ...mapState(['errorMessage']),
+    ...mapState(['modalError']),
   },
   methods: {
     clearError: function () {
-      this.$store.commit('setErrorMessage', '');
+      this.$store.commit('setModalError', '');
     },
   },
 };

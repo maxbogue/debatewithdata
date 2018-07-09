@@ -7,24 +7,15 @@ import AppLayout from './AppLayout.vue';
 import auth from './auth';
 import router from './router';
 import store from './store';
-import { DwdUtilsMixin } from './utils';
+import { DwdUtilsMixin, axiosErrorToString } from './utils';
 
 Vue.mixin(DwdUtilsMixin);
 
 store.commit('setUser', auth.getUser());
 
-function httpErrorToString(error) {
-  if (!error.response) {
-    return 'Server not responding';
-  } else if (error.response.status >= 500) {
-    return 'Server error';
-  }
-  return error.response.data.message;
-}
-
 function axiosError(err) {
   if (err.config && err.config.loader) {
-    err.config.loader.setError(httpErrorToString(err));
+    err.config.loader.setError(axiosErrorToString(err));
   }
   return Promise.reject(err);
 }

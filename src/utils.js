@@ -242,6 +242,19 @@ export function itemErrorMessage(item) {
   return '';
 }
 
+export function parseTrail(queryTrail) {
+  return queryTrail ? queryTrail.split(',') : [];
+}
+
+export function axiosErrorToString(error) {
+  if (!error.response) {
+    return 'Server not responding';
+  } else if (error.response.status >= 500) {
+    return 'Server error';
+  }
+  return error.response.data.message;
+}
+
 export var DwdUtilsMixin = {
   filters: {
     toSideString: function (isFor) {
@@ -260,6 +273,7 @@ export var DwdUtilsMixin = {
     },
   },
   methods: {
+    parseTrail,
     lookupSource: function (sourceId) {
       if (!sourceId) {
         return null;
@@ -294,9 +308,6 @@ export var DwdUtilsMixin = {
     },
     displayItemType: function (type) {
       return type === ItemType.SOURCE ? 'data' : type;
-    },
-    parseTrail: function (queryTrail) {
-      return queryTrail ? queryTrail.split(',') : [];
     },
     topicUrl: function (topicId, trail) {
       let url = '/topic/' + topicId;

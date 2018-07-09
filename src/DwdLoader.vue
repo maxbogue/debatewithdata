@@ -1,9 +1,9 @@
 <template>
-<div v-if="loading" :class="$style.loader">
+<div v-if="innerLoading" :class="$style.loader">
   <loading-animation />
 </div>
-<div v-else-if="error" :class="[$style.loader, $style.error]">
-  {{ error }}
+<div v-else-if="innerError" :class="[$style.loader, $style.error]">
+  {{ innerError }}
 </div>
 <div v-else></div>
 </template>
@@ -15,18 +15,30 @@ export default {
   components: {
     LoadingAnimation,
   },
+  props: {
+    loading: { type: Boolean, default: false },
+    error: { type: String, default: '' },
+  },
   data: () => ({
-    loading: false,
-    error: '',
+    loadingOverride: false,
+    errorOverride: '',
   }),
+  computed: {
+    innerLoading: function () {
+      return this.loadingOverride || this.loading;
+    },
+    innerError: function () {
+      return this.errorOverride || this.error;
+    },
+  },
   methods: {
     setLoading: function (loading) {
-      this.loading = loading;
-      this.error = '';
+      this.loadingOverride = loading;
+      this.errorOverride = '';
     },
     setError: function (error) {
-      this.error = error;
-      this.loading = false;
+      this.errorOverride = error;
+      this.loadingOverride = false;
     },
   },
 };

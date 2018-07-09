@@ -5,7 +5,7 @@ import forOwn from 'lodash/forOwn';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { walk } from './utils';
+import { axiosErrorToString, walk } from './utils';
 import { validateItem } from '../common/validate';
 
 Vue.use(Vuex);
@@ -67,7 +67,10 @@ export default new Vuex.Store({
     claims: {},
     sources: {},
     user: null,
-    errorMessage: '',
+    suppressRoutes: false,
+    loading: false,
+    loadingError: '',
+    modalError: '',
     singleColumn: windowIsSingleColumn(),
     itemBlocks: [],
     itemLocations: {},
@@ -102,8 +105,17 @@ export default new Vuex.Store({
       state.claims = {};
       state.source = {};
     },
-    setErrorMessage: function (state, errorMessage) {
-      state.errorMessage = errorMessage;
+    setSuppressRoutes: function (state, suppressRoutes) {
+      state.suppressRoutes = suppressRoutes;
+    },
+    setLoading: function (state, loading) {
+      state.loading = loading;
+    },
+    setLoadingError: function (state, err) {
+      state.loadingError = axiosErrorToString(err);
+    },
+    setModalError: function (state, modalError) {
+      state.modalError = modalError;
     },
     setSingleColumn: function (state, isSingleColumn) {
       state.singleColumn = isSingleColumn;
@@ -134,10 +146,16 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    getItem: function ({ commit, state }, { type, id, trail, loader }) {
+    getItem: function ({ commit, state }, { type, id, trail }) {
       let params = paramsFromTrail(trail, state);
-      return axios.get(`/api/${type}/${id}`, { params, loader }).then((res) => {
+      commit('setLoading', true);
+      return axios.get(`/api/${type}/${id}`, { params }).then((res) => {
+        commit('setLoading', false);
         commit('setData', res.data);
+      }).catch((err) => {
+        commit('setLoading', false);
+        commit('setLoadingError', err);
+        throw err;
       });
     },
     getItems: function ({ commit }, { type, sort, filters, page, loader }) {
