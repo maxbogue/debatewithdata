@@ -1,15 +1,13 @@
-import keys from 'lodash/keys';
-import partition from 'lodash/partition';
-import zipWith from 'lodash/zipWith';
+import _ from 'lodash';
 
 import graph, { Graph } from '../common/graph';
 import q from './query';
 import search from '../common/search';
-import { ConflictError, NotFoundError } from '../api/error';
 import { PAGE_SIZE, ItemType } from '../common/constants';
+import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError, validateClaim } from '../common/validate';
-import { genId } from './utils';
 import { claimsAreEqual } from '../common/equality';
+import { genId } from './utils';
 
 const CLAIM = ItemType.CLAIM;
 
@@ -258,18 +256,12 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Claim.apiGetAll = async function ({
-      user, claimIds, filters, sort, page
-    } = {}) {
+    Claim.apiGetAll = async function ({ user, filters, sort, page } = {}) {
       page = page || 1;
 
       let query = Claim.itemQuery(user)
         .where('deleted', false)
         .modify(q.sortAndFilter, sort, filters);
-
-      if (claimIds) {
-        query.whereIn('i.id', claimIds);
-      }
 
       let countQuery = query.clone().clearSelect().clearOrder().count('*');
       query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
@@ -279,6 +271,45 @@ export default function (sequelize, DataTypes, knex) {
         claims: Claim.processQueryResults(claims),
         results: claims.map((claim) => claim.id),
         numPages: Math.ceil(count / PAGE_SIZE),
+      };
+    };
+
+    Claim.apiGetForTrail = async function (ids, user) {
+      let flatClaims = await Claim.itemQuery(user)
+        .column({
+          subClaimId: 'claim_claims.claim_id',
+          subClaimIsFor: 'claim_claims.is_for',
+          sourceId: 'claim_sources.source_id',
+          sourceIsFor: 'claim_sources.is_for',
+        })
+        .whereIn('i.id', ids)
+        .leftOuterJoin(
+          'claim_claims', 'i.head_id', 'claim_claims.claim_rev_id')
+        .leftOuterJoin(
+          'claim_sources', 'i.head_id', 'claim_sources.claim_rev_id');
+
+      let claims = _.chain(flatClaims).groupBy('id').map((groupedClaims) => {
+        let claim = _.omit(groupedClaims[0], [
+          'subClaimId',
+          'subClaimIsFor',
+          'sourceId',
+          'sourceIsFor',
+        ]);
+        claim.subClaimIds = {};
+        claim.sourceIds = {};
+        for (let c of groupedClaims) {
+          if (c.subClaimId) {
+            claim.subClaimIds[c.subClaimId] = c.subClaimIsFor;
+          }
+          if (c.sourceId) {
+            claim.sourceIds[c.sourceId] = c.sourceIsFor;
+          }
+        }
+        return claim;
+      }).value();
+
+      return {
+        claims: Claim.processQueryResults(claims),
       };
     };
 
@@ -346,19 +377,19 @@ export default function (sequelize, DataTypes, knex) {
 
     Claim.prototype.updateGraph = function (subClaims, sources) {
       let partedSubClaims = subClaims
-        ? partition(keys(subClaims), (id) => subClaims[id])
-        : partition(this.head.subClaims, (c) => c.claimClaim.isFor);
+        ? _.partition(_.keys(subClaims), (id) => subClaims[id])
+        : _.partition(this.head.subClaims, (c) => c.claimClaim.isFor);
 
       let partedSources = sources
-        ? partition(keys(sources), (id) => sources[id])
-        : partition(this.head.sources, (s) => s.claimSource.isFor);
+        ? _.partition(_.keys(sources), (id) => sources[id])
+        : _.partition(this.head.sources, (s) => s.claimSource.isFor);
 
       let claimInfos = partedSubClaims.map((ls) => ls.map(Graph.toClaimInfo));
       let sourceInfos = partedSources.map((ls) => ls.map(Graph.toSourceInfo));
 
       // Merge together the claim and source nested arrays.
-      let pointInfos = zipWith(claimInfos, sourceInfos,
-                               (head, ...tail) => head.concat(...tail));
+      let pointInfos = _.zipWith(claimInfos, sourceInfos,
+                                 (head, ...tail) => head.concat(...tail));
 
       graph.updateClaimPoints(this.id, pointInfos);
     };

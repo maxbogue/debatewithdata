@@ -5,7 +5,7 @@ import { ConflictError, NotFoundError } from '../api/error';
 import { Sort } from '../common/constants';
 import { ValidationError } from '../common/validate';
 import { FOO, BAR, BAZ, STARS_AND_COMMENTS,
-  registerAndVerifyUser } from './utils';
+  TestClaim, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
@@ -504,6 +504,80 @@ describe('Topic', function () {
           [ID]: {
             ...TOPIC_DEPTH_1,
             revId: t1r.id,
+          },
+        },
+      });
+    });
+  });
+
+  describe('.apiGetForTrail()', function () {
+    it('happy', async function () {
+      let claimRev = await TestClaim.create(user);
+      // Not a root topic.
+      let t2r = await Topic.apiCreate(user, {
+        id: ID2,
+        title: TITLE2,
+        text: BAR,
+        claimIds: [claimRev.claimId],
+      });
+      let t1r = await Topic.apiCreate(user, {
+        id: ID,
+        title: TITLE,
+        text: FOO,
+        subTopicIds: [ID2],
+      }, true);
+
+      // Extra topic to make sure they're selected by ID.
+      await Topic.apiCreate(user, {
+        id: 'not-used',
+        title: TITLE,
+        text: FOO,
+      });
+
+      let data = await Topic.apiGetForTrail([ID, ID2], user);
+      expect(data).to.deep.equal({
+        topics: {
+          [ID]: {
+            ...TOPIC_DEPTH_1,
+            revId: t1r.id,
+            childCount: 2,
+            subTopicIds: [ID2],
+            claimIds: [],
+          },
+          [ID2]: {
+            ...TOPIC_DEPTH_1,
+            id: ID2,
+            revId: t2r.id,
+            childCount: 1,
+            title: TITLE2,
+            text: BAR,
+            subTopicIds: [],
+            claimIds: [claimRev.claimId],
+          },
+        },
+      });
+
+      let noUserData = await Topic.apiGetForTrail([ID, ID2]);
+      expect(noUserData).to.deep.equal({
+        topics: {
+          [ID]: {
+            ...TOPIC_DEPTH_1,
+            revId: t1r.id,
+            childCount: 2,
+            subTopicIds: [ID2],
+            claimIds: [],
+            watched: false,
+          },
+          [ID2]: {
+            ...TOPIC_DEPTH_1,
+            id: ID2,
+            revId: t2r.id,
+            childCount: 1,
+            title: TITLE2,
+            text: BAR,
+            subTopicIds: [],
+            claimIds: [claimRev.claimId],
+            watched: false,
           },
         },
       });

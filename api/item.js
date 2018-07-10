@@ -28,8 +28,9 @@ router.post('/', async function (req, res) {
 });
 
 router.get('/:id', async function (req, res) {
-  let data = await getTrailData(req.query.trail, req.user);
-  let itemData = await req.Item.apiGet(req.params.id, req.user);
+  let trail = req.query.trail;
+  let data = await getTrailData(trail, req.user);
+  let itemData = await req.Item.apiGet(req.params.id, req.user, Boolean(trail));
   addApiData(data, itemData);
   res.json(data);
 });

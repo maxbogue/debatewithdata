@@ -1,12 +1,18 @@
+import _ from 'lodash';
+
 import graph, { Graph } from '../common/graph';
 import q from './query';
 import search from '../common/search';
-import { ConflictError, NotFoundError } from '../api/error';
 import { PAGE_SIZE, ItemType } from '../common/constants';
+import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError, validateTopic } from '../common/validate';
 import { topicsAreEqual } from '../common/equality';
 
 const TOPIC = ItemType.TOPIC;
+
+function notNull(thing) {
+  return thing !== null;
+}
 
 export default function (sequelize, DataTypes, knex) {
   const Topic = sequelize.define('topic', {
@@ -267,6 +273,30 @@ export default function (sequelize, DataTypes, knex) {
         topics: Topic.processQueryResults(topics),
         results: topics.map((topic) => topic.id),
         numPages: Math.ceil(count / PAGE_SIZE),
+      };
+    };
+
+    Topic.apiGetForTrail = async function (ids, user) {
+      let flatTopics = await Topic.itemQuery(user)
+        .column({
+          subTopicId: 'topic_topics.sub_topic_id',
+          claimId: 'topic_claims.claim_id',
+        })
+        .whereIn('i.id', ids)
+        .leftOuterJoin(
+          'topic_topics', 'i.head_id', 'topic_topics.topic_rev_id')
+        .leftOuterJoin(
+          'topic_claims', 'i.head_id', 'topic_claims.topic_rev_id');
+
+      let topics = _.chain(flatTopics).groupBy('id').map((grouped) => {
+        let topic = _.omit(grouped[0], ['subTopicId', 'claimId']);
+        topic.subTopicIds = grouped.map((t) => t.subTopicId).filter(notNull);
+        topic.claimIds = grouped.map((t) => t.claimId).filter(notNull);
+        return topic;
+      }).value();
+
+      return {
+        topics: Topic.processQueryResults(topics),
       };
     };
 

@@ -6,7 +6,7 @@ import { Flag } from '../common/flag';
 import { ConflictError, NotFoundError } from '../api/error';
 import { ValidationError } from '../common/validate';
 import { FOO, BAR, BAZ, STARS_AND_COMMENTS,
-  registerAndVerifyUser } from './utils';
+  TestSource, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
@@ -575,33 +575,75 @@ describe('Claim', function () {
         },
       });
     });
+  });
 
-    it('by IDs', async function () {
-      let c1r = await Claim.apiCreate(user, { text: FOO });
-      let c2r = await Claim.apiCreate(user, { text: BAR });
+  describe('.apiGetForTrail()', function () {
+    it('happy', async function () {
+      let sourceRev = await TestSource.create(user);
+      let c2r = await Claim.apiCreate(user, {
+        text: BAR,
+        sourceIds: { [sourceRev.sourceId]: false },
+      });
+      let c1r = await Claim.apiCreate(user, {
+        text: FOO,
+        subClaimIds: { [c2r.claimId]: true },
+      });
+
+      // Extra claim to make sure they're selected by ID.
       await Claim.apiCreate(user, { text: BAZ });
 
-      let claimIds = [c1r.claimId, c2r.claim_id];
-      let claimsData = await Claim.apiGetAll({
-        user,
-        claimIds,
-        sort: [Sort.RECENT, false],
-      });
-      expect(claimsData).to.deep.equal({
-        results: [c1r.claimId, c2r.claimId],
-        numPages: 1,
+      let data = await Claim.apiGetForTrail(
+        [c1r.claimId, c2r.claim_id], user);
+      expect(data).to.deep.equal({
         claims: {
           [c1r.claimId]: {
             ...CLAIM_DEPTH_1,
             id: c1r.claimId,
             revId: c1r.id,
+            childCount: 2,
+            dataCounts: [0, 1],
             text: FOO,
+            subClaimIds: { [c2r.claimId]: true },
+            sourceIds: {},
           },
           [c2r.claimId]: {
             ...CLAIM_DEPTH_1,
             id: c2r.claimId,
             revId: c2r.id,
+            childCount: 1,
+            dataCounts: [0, 1],
             text: BAR,
+            subClaimIds: {},
+            sourceIds: { [sourceRev.sourceId]: false },
+          },
+        },
+      });
+
+      let noUserData = await Claim.apiGetForTrail(
+        [c1r.claimId, c2r.claim_id]);
+      expect(noUserData).to.deep.equal({
+        claims: {
+          [c1r.claimId]: {
+            ...CLAIM_DEPTH_1,
+            id: c1r.claimId,
+            revId: c1r.id,
+            childCount: 2,
+            dataCounts: [0, 1],
+            text: FOO,
+            subClaimIds: { [c2r.claimId]: true },
+            sourceIds: {},
+            watched: false,
+          },
+          [c2r.claimId]: {
+            ...CLAIM_DEPTH_1,
+            id: c2r.claimId,
+            revId: c2r.id,
+            childCount: 1,
+            dataCounts: [0, 1],
+            text: BAR,
+            subClaimIds: {},
+            sourceIds: { [sourceRev.sourceId]: false },
+            watched: false,
           },
         },
       });

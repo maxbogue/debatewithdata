@@ -183,27 +183,13 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Source.apiGet = async function (sourceId, user) {
+    Source.apiGet = async function (sourceId, user, hasTrail) {
       let source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
       }
 
-      // Referenced by claims.
-      let claims = await models.Claim.findAll({
-        include: [{
-          association: models.Claim.Head,
-          required: true,
-          include: [models.Blob, {
-            association: models.ClaimRev.Sources,
-            where: { id: sourceId },
-          }],
-        }],
-      });
-
       let sourceData = await source.toData(user);
-      sourceData.claimIds = claims.map((claim) => claim.id);
-
       let data = {
         sources: {
           [sourceId]: sourceData,
@@ -211,8 +197,22 @@ export default function (sequelize, DataTypes, knex) {
         claims: {},
       };
 
-      for (let claim of claims) {
-        await claim.fillData(data, 1, user);
+      if (!hasTrail) {
+        // Referenced by claims.
+        let claims = await models.Claim.findAll({
+          include: [{
+            association: models.Claim.Head,
+            required: true,
+            include: [models.Blob, {
+              association: models.ClaimRev.Sources,
+              where: { id: sourceId },
+            }],
+          }],
+        });
+        sourceData.claimIds = claims.map((claim) => claim.id);
+        for (let claim of claims) {
+          await claim.fillData(data, 1, user);
+        }
       }
 
       return data;
