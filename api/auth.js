@@ -39,7 +39,7 @@ router.post('/login', async function (req, res) {
 
 router.post('/register', async function (req, res) {
   let user = await User.register(
-    req.body.username, req.body.password, req.body.email, req.body.invite);
+    req.body.username, req.body.password, req.body.email);
   await user.sendVerificationEmail(SMTP_TRANSPORT);
   res.json({ message: 'Email verification required.' });
 });

@@ -1,9 +1,8 @@
 import Router from 'express-promise-router';
 import clone from 'lodash/clone';
 import forOwn from 'lodash/forOwn';
-import map from 'lodash/map';
 
-import { Invite, Topic } from '../models';
+import { Topic } from '../models';
 import { AuthError } from './error';
 import { asyncForOwn } from '../common/utils';
 
@@ -14,16 +13,6 @@ router.use(function (req, res, next) {
     throw new AuthError('Must be authenticated as an admin user.');
   }
   next();
-});
-
-router.get('/invite', async function (req, res) {
-  let invites = await Invite.findAll(Invite.INCLUDE_USER);
-  res.json(map(invites, (i) => i.toData()));
-});
-
-router.post('/invite', async function (req, res) {
-  let invite = await Invite.create({ note: req.body.note });
-  res.json(invite.toData());
 });
 
 function getRootTopics(topics) {

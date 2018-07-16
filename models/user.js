@@ -94,21 +94,14 @@ export default function (sequelize, DataTypes) {
     });
   };
 
-  User.postAssociate = function (models) {
-    User.register = async function (username, password, email, inviteCode) {
-      let invite = await models.Invite.findById(inviteCode);
-      if (!invite) {
-        throw new AuthError('Invalid invite code.');
-      } else if (invite.user_id) {
-        throw new AuthError('Invite code already used.');
-      }
+  User.postAssociate = function () {
+    User.register = async function (username, password, email) {
       username = validateUsername(username);
       let passwordHash = await hashPassword(password);
       return sequelize.transaction(async function(transaction) {
         let user = await User.create({ username, passwordHash, email }, {
           transaction,
         });
-        await invite.setUser(user, { transaction });
         return user;
       });
     };

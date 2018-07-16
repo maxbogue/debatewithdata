@@ -1,4 +1,4 @@
-import { Claim, Invite, Source, Topic, User } from '../models';
+import { Claim, Source, Topic, User } from '../models';
 import { SourceType } from '../common/constants';
 
 export const FOO = 'foo is too short';
@@ -17,9 +17,8 @@ export const STARS_AND_COMMENTS = {
 };
 
 export async function registerAndVerifyUser(n) {
-  let invite = await Invite.create({ note: 'test' });
   let username = USERNAME + (n ? n : '');
-  let user = await User.register(username, PASSWORD, EMAIL, invite.code);
+  let user = await User.register(username, PASSWORD, EMAIL);
   return User.verifyEmail(user.emailVerificationToken);
 }
 
