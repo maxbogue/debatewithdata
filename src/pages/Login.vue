@@ -3,15 +3,16 @@
   <h2>Login</h2>
   <form class="auth" @submit.prevent="submit">
     <input type="text"
-           label="User name"
-           autocomplete="off"
+           autocomplete="username"
            placeholder="username"
            autofocus
            v-model="username">
     <input type="password"
+           autocomplete="current-password"
            placeholder="password"
            v-model="password">
-    <router-link to="/forgot-password">Forgot password?</router-link>
+    <router-link to="/forgot-password"
+                 class="click-text">Forgot password?</router-link>
     <dwd-loader ref="loader" />
     <button type="submit" class="dwd-btn dwd-btn-primary">Submit</button>
   </form>

@@ -6,15 +6,16 @@
   </div>
   <form v-else class="auth" @submit.prevent="submit">
     <input type="text"
-           label="User name"
-           autocomplete="off"
+           autocomplete="username"
            placeholder="username"
            autofocus
            v-model="username">
     <input type="password"
+           autocomplete="new-password"
            placeholder="password"
            v-model="password">
     <input type="text"
+           autocomplete="email"
            placeholder="email address"
            v-model="email">
     <dwd-loader ref="loader" />
