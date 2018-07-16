@@ -4,79 +4,76 @@
        class="block no-pad">
     Must be an admin to add a root-level topic.
   </div>
-  <template v-else-if="!needsData">
-    <topic-edit-and-review-block :topic.sync="newTopicPartial"
-                                 :prev="topic"
-                                 :show-edit-block.sync="showEditBlock" />
-    <h3>Sub-Topics</h3>
-    <div class="topic">
-      <div class="bubble click"
-           @click="showSubTopicModal = true">
-        <strong>Add or link a sub-topic.</strong>
-      </div>
+  <topic-edit-and-review-block :topic.sync="newTopicPartial"
+                               :prev="topic"
+                               :show-edit-block.sync="showEditBlock" />
+  <h3>Sub-Topics</h3>
+  <div class="topic">
+    <div class="bubble click"
+         @click="showSubTopicModal = true">
+      <strong>Add or link a sub-topic.</strong>
     </div>
-    <topic-link-modal :show.sync="showSubTopicModal"
-                      @link="addSubTopicId"
-                      @add="addNewSubTopic" />
-    <topic-edit-and-review-block v-for="(subTopic, i) in newSubTopics"
-                                 :key="'newSubTopic' + i"
-                                 :topic="subTopic"
-                                 use-modal
-                                 @update:topic="(t) => $set(newSubTopics, i, t)"
-                                 @delete="newSubTopics.splice(i, 1)" />
-    <div v-for="[subTopic, diffClass] in linkedSubTopics"
-         class="topic"
-         :key="subTopic.id">
-      <div class="bubble">
-        <div :class="diffClass">{{ subTopic.title }}</div>
-      </div>
-      <div class="info">
-        <span class="id mono">{{ subTopic.id }}</span>
-        <span class="delete click fas fa-trash-alt"
-              @click="toggleDeleted(subTopicIds, subTopic.id)"></span>
-      </div>
+  </div>
+  <topic-link-modal :show.sync="showSubTopicModal"
+                    @link="addSubTopicId"
+                    @add="addNewSubTopic" />
+  <topic-edit-and-review-block v-for="(subTopic, i) in newSubTopics"
+                               :key="'newSubTopic' + i"
+                               :topic="subTopic"
+                               use-modal
+                               @update:topic="(t) => $set(newSubTopics, i, t)"
+                               @delete="newSubTopics.splice(i, 1)" />
+  <div v-for="[subTopic, diffClass] in linkedSubTopics"
+       class="topic"
+       :key="subTopic.id">
+    <div class="bubble">
+      <div :class="diffClass">{{ subTopic.title }}</div>
     </div>
-    <h3>Key Claims</h3>
-    <div class="claim">
-      <div class="bubble click"
-           @click="showClaimModal = true">
-        <strong>Add or link a claim.</strong>
-      </div>
+    <div class="info">
+      <span class="id mono">{{ subTopic.id }}</span>
+      <span class="delete click fas fa-trash-alt"
+            @click="toggleDeleted(subTopicIds, subTopic.id)"></span>
     </div>
-    <claim-link-modal :show.sync="showClaimModal"
-                      @link="addClaimId"
-                      @add="addNewClaim" />
-    <claim-rev-and-modal-edit v-for="(claim, i) in newClaims"
-                              :key="claim.id"
-                              :claim="claim"
-                              @update="(c) => $set(newClaims, i, c)"
-                              @delete="newClaims.splice(i, 1)" />
-    <div v-for="[claim, diffClass] in linkedClaims"
-         class="claim"
-         :key="claim.id">
-      <div class="bubble">
-        <claim-content :class="diffClass" :claim="claim" />
-      </div>
-      <div class="info">
-        <span class="id mono">{{ claim.id }}</span>
-        <span class="delete click fas fa-trash-alt"
-              @click="toggleDeleted(claimIds, claim.id)"></span>
-      </div>
+  </div>
+  <h3>Key Claims</h3>
+  <div class="claim">
+    <div class="bubble click"
+         @click="showClaimModal = true">
+      <strong>Add or link a claim.</strong>
     </div>
-    <div v-if="topic" class="block no-pad center">
-      <delete-button noun="Topic" @delete="remove" />
+  </div>
+  <claim-link-modal :show.sync="showClaimModal"
+                    @link="addClaimId"
+                    @add="addNewClaim" />
+  <claim-rev-and-modal-edit v-for="(claim, i) in newClaims"
+                            :key="claim.id"
+                            :claim="claim"
+                            @update="(c) => $set(newClaims, i, c)"
+                            @delete="newClaims.splice(i, 1)" />
+  <div v-for="[claim, diffClass] in linkedClaims"
+       class="claim"
+       :key="claim.id">
+    <div class="bubble">
+      <claim-content :class="diffClass" :claim="claim" />
     </div>
-    <fixed-bottom class="center pink">
-      <button type="button"
-              class="dwd-btn white"
-              @click="cancel">Cancel</button>
-      <button :disabled="noChange || showEditBlock"
-              type="button"
-              class="dwd-btn pink-dark"
-              @click="submit">Submit</button>
-    </fixed-bottom>
-  </template>
-  <dwd-loader ref="loader" />
+    <div class="info">
+      <span class="id mono">{{ claim.id }}</span>
+      <span class="delete click fas fa-trash-alt"
+            @click="toggleDeleted(claimIds, claim.id)"></span>
+    </div>
+  </div>
+  <div v-if="topic" class="block no-pad center">
+    <delete-button noun="Topic" @delete="remove" />
+  </div>
+  <fixed-bottom class="center pink">
+    <button type="button"
+            class="dwd-btn white"
+            @click="cancel">Cancel</button>
+    <button :disabled="noChange || showEditBlock"
+            type="button"
+            class="dwd-btn pink-dark"
+            @click="submit">Submit</button>
+  </fixed-bottom>
 </div>
 </template>
 
@@ -89,13 +86,12 @@ import ClaimContent from '../ClaimContent.vue';
 import ClaimLinkModal from '../ClaimLinkModal.vue';
 import ClaimRevAndModalEdit from '../ClaimRevAndModalEdit.vue';
 import DeleteButton from '../DeleteButton.vue';
-import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import TopicEditAndReviewBlock from '../TopicEditAndReviewBlock.vue';
 import TopicLinkModal from '../TopicLinkModal.vue';
 import { ItemType } from '../../common/constants';
 import {
-  authRedirect, diffIdLists, pipe, stableRandom, starCount, starred
+  authRedirect, diffIdLists, parseTrail, pipe, stableRandom, starCount, starred
 } from '../utils';
 import { topicsAreEqual } from '../../common/equality';
 
@@ -123,10 +119,20 @@ export default {
     ClaimLinkModal,
     ClaimRevAndModalEdit,
     DeleteButton,
-    DwdLoader,
     FixedBottom,
     TopicEditAndReviewBlock,
     TopicLinkModal,
+  },
+  asyncData: async function ({ store, route }) {
+    let id = route.params.id;
+    let topic = store.state.topics[id];
+    if (id && (!topic || topic.depth < 2)) {
+      await store.dispatch('getItem', {
+        type: ItemType.TOPIC,
+        id,
+        trail: parseTrail(route.query.trail),
+      });
+    }
   },
   props: {
     id: { type: String, default: '' },
@@ -166,9 +172,6 @@ export default {
       return diffIdLists(this.claimIds, oldClaimIds,
                          this.$store.state.claims);
     },
-    needsData: function () {
-      return this.id && !this.topic;
-    },
     newTopicLinks: function () {
       return {
         subTopicIds: filter(this.subTopicIds, this.lookupTopic),
@@ -192,14 +195,14 @@ export default {
   },
   watch: {
     id: function () {
-      this.checkLoaded();
+      this.initialize();
     },
     newTopicLinks: function () {
       this.showEditBlock = false;
     },
   },
   mounted: function () {
-    this.checkLoaded();
+    this.initialize();
     window.addEventListener('beforeunload', this.beforeUnload);
   },
   beforeDestroy: function () {
@@ -291,19 +294,6 @@ export default {
         this.$nextTick(() => {
           this.showEditBlock = true;
         });
-      }
-    },
-    checkLoaded: function () {
-      if (this.needsData) {
-        this.$store.dispatch('getItem', {
-          type: ItemType.TOPIC,
-          id: this.id,
-          loader: this.$refs.loader,
-        }).then(() => {
-          this.initialize();
-        });
-      } else {
-        this.initialize();
       }
     },
   },

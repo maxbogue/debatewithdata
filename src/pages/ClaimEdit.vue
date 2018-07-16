@@ -1,38 +1,35 @@
 <template>
 <div>
-  <template v-if="!needsData">
-    <claim-edit-block v-if="showEditBlock"
-                      :claim.sync="newClaimPartial"
-                      @close="showEditBlock = false" />
-    <claim-rev-block v-else
-                     :prev="claim"
-                     :curr="newClaimPartial"
-                     can-edit
-                     @start-editing="showEditBlock = true" />
-    <points-edit v-if="initialized"
-                 :curr="newClaim"
-                 :prev="claim"
-                 :init-add-point="initAddPoint"
-                 @update="updatePoints" />
-    <div v-if="id" class="block center">
-      <delete-button noun="Claim" @delete="remove" />
-    </div>
-    <fixed-bottom class="center blue">
-      <button type="button"
-              class="dwd-btn white"
-              @click="cancel">Cancel</button>
-      <button v-if="showEditBlock"
-              type="button"
-              class="dwd-btn blue-dark"
-              @click="showEditBlock = false">Review</button>
-      <button v-else
-              :disabled="noChange"
-              type="button"
-              class="dwd-btn blue-dark"
-              @click="submit">Submit</button>
-    </fixed-bottom>
-  </template>
-  <dwd-loader ref="loader" />
+  <claim-edit-block v-if="showEditBlock"
+                    :claim.sync="newClaimPartial"
+                    @close="showEditBlock = false" />
+  <claim-rev-block v-else
+                   :prev="claim"
+                   :curr="newClaimPartial"
+                   can-edit
+                   @start-editing="showEditBlock = true" />
+  <points-edit v-if="initialized"
+               :curr="newClaim"
+               :prev="claim"
+               :init-add-point="initAddPoint"
+               @update="updatePoints" />
+  <div v-if="id" class="block center">
+    <delete-button noun="Claim" @delete="remove" />
+  </div>
+  <fixed-bottom class="center blue">
+    <button type="button"
+            class="dwd-btn white"
+            @click="cancel">Cancel</button>
+    <button v-if="showEditBlock"
+            type="button"
+            class="dwd-btn blue-dark"
+            @click="showEditBlock = false">Review</button>
+    <button v-else
+            :disabled="noChange"
+            type="button"
+            class="dwd-btn blue-dark"
+            @click="submit">Submit</button>
+  </fixed-bottom>
 </div>
 </template>
 
@@ -44,7 +41,8 @@ import DwdLoader from '../DwdLoader.vue';
 import FixedBottom from '../FixedBottom.vue';
 import PointsEdit from '../PointsEdit.vue';
 import { ItemType } from '../../common/constants';
-import { authRedirect, combineAndSortPoints, splitPoints } from '../utils';
+import { authRedirect, combineAndSortPoints, parseTrail,
+  splitPoints } from '../utils';
 import { claimsAreEqual } from '../../common/equality';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
@@ -74,6 +72,17 @@ export default {
     FixedBottom,
     PointsEdit,
   },
+  asyncData: async function ({ store, route }) {
+    let id = route.params.id;
+    let claim = store.state.claims[id];
+    if (id && (!claim || claim.depth < 2)) {
+      await store.dispatch('getItem', {
+        type: ItemType.CLAIM,
+        id,
+        trail: parseTrail(route.query.trail),
+      });
+    }
+  },
   props: {
     id: { type: String, default: '' },
     seed: { type: Object, default: null },
@@ -90,9 +99,6 @@ export default {
     claim: function () {
       return this.$store.state.claims[this.id];
     },
-    needsData: function () {
-      return this.id && (!this.claim || this.claim.depth < 3);
-    },
     newClaim: function () {
       return {
         ...this.newClaimPartial,
@@ -108,11 +114,11 @@ export default {
   },
   watch: {
     id: function () {
-      this.checkLoaded();
+      this.initialize();
     },
   },
   mounted: function () {
-    this.checkLoaded();
+    this.initialize();
     window.addEventListener('beforeunload', this.beforeUnload);
   },
   beforeDestroy: function () {
@@ -171,20 +177,6 @@ export default {
         this.showEditBlock = true;
       }
       this.initialized = true;
-    },
-    checkLoaded: function () {
-      if (this.needsData) {
-        this.$store.dispatch('getItem', {
-          type: ItemType.CLAIM,
-          id: this.id,
-          trail: this.trail,
-          loader: this.$refs.loader,
-        }).then(() => {
-          this.initialize();
-        });
-      } else {
-        this.initialize();
-      }
     },
   },
 };

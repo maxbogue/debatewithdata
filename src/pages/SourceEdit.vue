@@ -1,51 +1,46 @@
 <template>
-<div>
-  <form-valid v-if="!needsData"
-              @submit="review"
-              @keydown.native.esc="revert">
-    <div v-if="showEditBlock" class="source">
-      <source-edit-content v-if="showEditBlock"
-                           class="bubble"
-                           :source.sync="newSource" />
-    </div>
-    <div v-else class="source neutral">
-      <source-rev-content class="bubble click"
-                          :prev="source"
-                          :curr="newSource"
-                          @click.native="showEditBlock = true" />
-    </div>
-    <div class="block no-pad center">
-      <button type="button"
-              class="dwd-btn white"
-              @click="cancel">Cancel</button>
-      <button v-if="showEditBlock"
-              type="button"
-              class="dwd-btn green-dark"
-              @click="review">Review</button>
-      <button v-else
-              :disabled="noChange"
-              type="button"
-              class="dwd-btn green-dark"
-              @click="submit">Submit</button>
-    </div>
-    <div v-if="id" class="block no-pad center">
-      <delete-button noun="Source" @delete="remove" />
-    </div>
-  </form-valid>
-  <dwd-loader ref="loader" />
-</div>
+<form-valid @submit="review"
+            @keydown.native.esc="revert">
+  <div v-if="showEditBlock" class="source">
+    <source-edit-content v-if="showEditBlock"
+                         class="bubble"
+                         :source.sync="newSource" />
+  </div>
+  <div v-else class="source neutral">
+    <source-rev-content class="bubble click"
+                        :prev="source"
+                        :curr="newSource"
+                        @click.native="showEditBlock = true" />
+  </div>
+  <div class="block no-pad center">
+    <button type="button"
+            class="dwd-btn white"
+            @click="cancel">Cancel</button>
+    <button v-if="showEditBlock"
+            type="button"
+            class="dwd-btn green-dark"
+            @click="review">Review</button>
+    <button v-else
+            :disabled="noChange"
+            type="button"
+            class="dwd-btn green-dark"
+            @click="submit">Submit</button>
+  </div>
+  <div v-if="id" class="block no-pad center">
+    <delete-button noun="Source" @delete="remove" />
+  </div>
+</form-valid>
 </template>
 
 <script>
 import clone from 'lodash/clone';
 
 import DeleteButton from '../DeleteButton.vue';
-import DwdLoader from '../DwdLoader.vue';
 import FormValid from '../FormValid.vue';
 import SourceEditContent from '../SourceEditContent.vue';
 import SourceRevContent from '../SourceRevContent.vue';
 import { ItemType } from '../../common/constants';
-import { authRedirect } from '../utils';
+import { authRedirect, parseTrail } from '../utils';
 import { sourcesAreEqual } from '../../common/equality';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
@@ -69,10 +64,20 @@ export default {
   beforeRouteLeave: confirmLeave,
   components: {
     DeleteButton,
-    DwdLoader,
     FormValid,
     SourceEditContent,
     SourceRevContent,
+  },
+  asyncData: async function ({ store, route }) {
+    let id = route.params.id;
+    let source = store.state.sources[id];
+    if (id && !source) {
+      await store.dispatch('getItem', {
+        type: ItemType.SOURCE,
+        id,
+        trail: parseTrail(route.query.trail),
+      });
+    }
   },
   props: {
     id: { type: String, default: '' },
@@ -88,9 +93,6 @@ export default {
     source: function () {
       return this.lookupSource(this.id);
     },
-    needsData: function () {
-      return this.id && !this.source;
-    },
     noChange: function () {
       return sourcesAreEqual(this.source, this.newSource);
     },
@@ -100,7 +102,7 @@ export default {
   },
   watch: {
     id: function () {
-      this.checkLoaded();
+      this.initialize();
     },
     showEditBlock: function () {
       if (this.showEditBlock) {
@@ -109,7 +111,7 @@ export default {
     },
   },
   mounted: function () {
-    this.checkLoaded();
+    this.initialize();
     window.addEventListener('beforeunload', this.beforeUnload);
   },
   beforeDestroy: function () {
@@ -168,19 +170,6 @@ export default {
       }
       if (!this.seed) {
         this.showEditBlock = true;
-      }
-    },
-    checkLoaded: function () {
-      if (this.needsData) {
-        this.$store.dispatch('getItem', {
-          type: ItemType.SOURCE,
-          id: this.id,
-          loader: this.$refs.loader,
-        }).then(() => {
-          this.initialize();
-        });
-      } else {
-        this.initialize();
       }
     },
   },
