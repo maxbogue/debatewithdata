@@ -99,10 +99,18 @@ export default function (sequelize, DataTypes) {
       username = validateUsername(username);
       let passwordHash = await hashPassword(password);
       return sequelize.transaction(async function(transaction) {
-        let user = await User.create({ username, passwordHash, email }, {
-          transaction,
-        });
-        return user;
+        try {
+          return await User.create({ username, passwordHash, email }, {
+            transaction,
+          });
+        } catch (err) {
+          if (err instanceof sequelize.UniqueConstraintError
+              && err.fields.username) {
+            throw new ClientError(
+              `Username '${err.fields.username}' already exists.`);
+          }
+          throw err;
+        }
       });
     };
 

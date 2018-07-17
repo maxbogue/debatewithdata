@@ -26,6 +26,12 @@ describe('User', function () {
       expect(user.passwordResetExpiration).to.be.null;
     });
 
+    it('fails with duplicate username', async function () {
+      await User.register(USERNAME, PASSWORD, EMAIL);
+      await expect(User.register(USERNAME, PASSWORD, EMAIL)).to.be
+        .rejectedWith(ClientError);
+    });
+
     it('fails with bad args', async function () {
       await expect(User.register('ab', PASSWORD, EMAIL)).to.be
         .rejectedWith(ClientError, /at least 3/, 'short username');
