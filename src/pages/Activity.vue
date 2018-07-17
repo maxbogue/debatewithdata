@@ -7,8 +7,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import ActivityList from '../ActivityList.vue';
 import DwdLoader from '../DwdLoader.vue';
 
@@ -20,12 +18,11 @@ export default {
   data: () => ({
     activity: null,
   }),
-  mounted: function () {
+  mounted: async function () {
     if (!this.activity) {
       let loader = this.$refs.loader;
-      axios.get('/api/activity', { loader }).then((res) => {
-        this.activity = res.data.activity;
-      });
+      let res = await this.$http.get('/api/activity', { loader });
+      this.activity = res.data.activity;
     }
   },
 };

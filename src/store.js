@@ -1,4 +1,3 @@
-import axios from 'axios';
 import cloneDeep from 'lodash/cloneDeep';
 import forEach from 'lodash/forEach';
 import forOwn from 'lodash/forOwn';
@@ -62,7 +61,7 @@ function singleColumnPlugin(store) {
   });
 }
 
-const storeOptions = {
+const makeStoreOptions = ($http) => ({
   state: {
     topics: {},
     claims: {},
@@ -100,13 +99,12 @@ const storeOptions = {
         });
       }
     },
-    setUser: function (state, user) {
-      state.user = user;
-      state.topics = {};
-      state.claims = {};
-      state.source = {};
-    },
     setUserFromToken: function (state, authToken) {
+      if (authToken) {
+        $http.defaults.headers.common.Authorization = 'Bearer ' + authToken;
+      } else {
+        delete $http.defaults.headers.common.Authorization;
+      }
       auth.setAuthToken(authToken);
       state.user = auth.getUser();
       state.topics = {};
@@ -156,102 +154,101 @@ const storeOptions = {
   actions: {
     register: async function (_, { username, password, email, loader }) {
       let payload = { username, password, email };
-      await axios.post('/api/register', payload, { loader });
+      await $http.post('/api/register', payload, { loader });
     },
     verifyEmail: async function ({ commit }, { token, loader }) {
-      let res = await axios.post('/api/verify-email', { token }, { loader });
+      let res = await $http.post('/api/verify-email', { token }, { loader });
       commit('setUserFromToken', res.data.authToken);
     },
     login: async function ({ commit }, { username, password, loader }) {
       let payload = { username, password };
-      let res = await axios.post('/api/login', payload, { loader });
+      let res = await $http.post('/api/login', payload, { loader });
       commit('setUserFromToken', res.data.authToken);
     },
     logout: async function ({ commit }) {
       commit('setUserFromToken', null);
     },
     forgotPassword: async function (_, { email, loader }) {
-      await axios.post('/api/forgot-password', { email }, { loader });
+      await $http.post('/api/forgot-password', { email }, { loader });
     },
     resetPassword: async function ({ commit }, { token, password, loader }) {
       let payload = { token, password };
-      let res = await axios.post('/api/reset-password', payload, { loader });
+      let res = await $http.post('/api/reset-password', payload, { loader });
       commit('setUserFromToken', res.data.authToken);
     },
-    getItem: function ({ commit, state }, { type, id, trail }) {
+    getItem: async function ({ commit, state }, { type, id, trail }) {
       let params = paramsFromTrail(trail, state);
       commit('setLoading', true);
-      return axios.get(`/api/${type}/${id}`, { params }).then((res) => {
+      try {
+        let res = await $http.get(`/api/${type}/${id}`, { params });
         commit('setLoading', false);
         commit('setData', res.data);
-      }).catch((err) => {
+      } catch (err) {
         commit('setLoading', false);
         commit('setLoadingError', err);
         throw err;
-      });
+      }
     },
-    getItems: function ({ commit }, { type, sort, filters, page, loader }) {
+    getItems: async function ({ commit },
+                              { type, sort, filters, page, loader }) {
       let params = {
         sort: sortFilterParam(sort),
         filter: filters.map(sortFilterParam).join(','),
         page,
       };
-      return axios.get('/api/' + type, { params, loader }).then((res) => {
-        commit('setData', res.data);
-        return res.data;
-      });
+      let res = await $http.get('/api/' + type, { params, loader });
+      commit('setData', res.data);
+      return res.data;
     },
-    addItem: function ({ commit }, { type, item }) {
+    addItem: async function ({ commit }, { type, item }) {
       item = cleanItem(item);
       validateItem(type, item);
-      return axios.post(`/api/${type}`, item).then((res) => {
-        commit('setData', res.data);
-        return res.data.id;
-      });
+      let res = await $http.post(`/api/${type}`, item);
+      commit('setData', res.data);
+      return res.data.id;
     },
-    updateItem: function ({ commit }, { type, item }) {
+    updateItem: async function ({ commit }, { type, item }) {
       item = cleanItem(item);
       validateItem(type, item);
-      return axios.put(`/api/${type}/${item.id}`, item).then((res) => {
+      try {
+        let res = await $http.put(`/api/${type}/${item.id}`, item);
         commit('setData', res.data);
         return item.id;
-      }).catch((err) => {
+      } catch (err) {
         if (err.response.status === 409) {
           commit('setData', err.response.data.data);
           commit('setErrorMessage', CONFLICT_ERROR_MESSAGE);
         }
         throw err;
-      });
+      }
     },
-    removeItem: function ({ commit }, { type, id, message }) {
+    removeItem: async function ({ commit }, { type, id, message }) {
       let params = { message };
-      return axios.delete(`/api/${type}/${id}`, { params }).then((res) => {
-        commit('setData', res.data);
-      });
+      let res = await $http.delete(`/api/${type}/${id}`, { params });
+      commit('setData', res.data);
     },
-    search: function ({ commit }, { query, types, page, loader }) {
+    search: async function ({ commit }, { query, types, page, loader }) {
       let params = { query, types, page };
-      return axios.get('/api/search', { params, loader }).then((res) => {
-        commit('setData', res.data);
-        return res.data;
-      });
+      let res = await $http.get('/api/search', { params, loader });
+      commit('setData', res.data);
+      return res.data;
     },
-    getNotifications: function ({ commit }, { loader }) {
-      return axios.get('/api/notifications', { loader }).then((res) => {
-        commit('setData', res.data);
-        commit('setNotificationCount', 0);
-        return res.data.results;
-      });
+    getNotifications: async function ({ commit }, { loader }) {
+      let res = await $http.get('/api/notifications', { loader });
+      commit('setData', res.data);
+      commit('setNotificationCount', 0);
+      return res.data.results;
     },
-    updateNotificationCount: function ({ commit }) {
-      return axios.get('/api/notifications/count').then((res) => {
-        commit('setNotificationCount', res.data);
-      });
+    updateNotificationCount: async function ({ commit }) {
+      let res = await $http.get('/api/notifications/count');
+      commit('setNotificationCount', res.data);
     },
   },
   plugins: [singleColumnPlugin],
-};
+});
 
-export function createStore() {
-  return new Vuex.Store(storeOptions);
+export function createStore($http) {
+  let store = new Vuex.Store(makeStoreOptions($http));
+  store.commit('setUserFromToken', auth.getAuthToken());
+  return store;
 }

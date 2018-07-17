@@ -37,7 +37,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import dateFormat from 'dateformat';
 
 import ClaimRev from '../ClaimRev.vue';
@@ -138,14 +137,12 @@ export default {
     revUrl: function (rev) {
       return this.appendToUrl(this.urlWithTrail, '/rev/' + rev.revId);
     },
-    loadData: function () {
+    loadData: async function () {
       this.data = null;
-      axios.get(this.apiUrl(this.itemType, this.itemId) + '/rev', {
-        loader: this.$refs.loader,
-      }).then((res) => {
-        this.$store.commit('setData', res.data);
-        this.data = res.data;
-      });
+      let url = this.apiUrl(this.itemType, this.itemId) + '/rev';
+      let res = await this.$http.get(url, { loader: this.$refs.loader });
+      this.$store.commit('setData', res.data);
+      this.data = res.data;
     },
   },
 };

@@ -44,8 +44,8 @@
       <div class="block no-pad"
            :class="[$style.pointHeader, sideClass(side)]"
            :key="id + 'side-text-' + side">
-          <span>{{ !side ? 'For' : 'Against' }}</span>
-          <icon-add :id="id" :extras="{ initAddPoint: side }" type="claim" />
+        <span>{{ !side ? 'For' : 'Against' }}</span>
+        <icon-add :id="id" :extras="{ initAddPoint: side }" type="claim" />
       </div>
       <item-block v-for="point in sidePoints"
                   :item="point"
@@ -84,6 +84,7 @@ export default {
         trail: parseTrail(route.query.trail),
       });
       if (!claim) {
+        // Only block if there's nothing to display.
         await promise;
       }
     }

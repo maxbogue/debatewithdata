@@ -4,7 +4,6 @@ import Vue from 'vue';
 
 import './style/index.scss';
 import App from './App.vue';
-import auth from './auth';
 import { DwdUtilsMixin, axiosErrorToString } from './utils';
 import { createRouter } from './router';
 import { createStore } from './store';
@@ -19,23 +18,23 @@ function axiosError(err) {
 }
 
 export function createApp() {
-  const store = createStore();
-  store.commit('setUser', auth.getUser());
-
+  const $http = axios.create();
+  const store = createStore($http);
   const router = createRouter(store);
-
   const app = new Vue({
     store,
     router,
+    // Axios is exposed as $axios on the root element so it can be accessed by
+    // all Vue instances via the $http computed property in DwdUtilsMixin.
+    computed: { $axios: () => $http },
     created: function () {
-      auth.updateHeader();
-      axios.interceptors.request.use((config) => {
+      $http.interceptors.request.use((config) => {
         if (config.loader) {
           config.loader.setLoading(true);
         }
         return config;
       }, axiosError);
-      axios.interceptors.response.use((res) => {
+      $http.interceptors.response.use((res) => {
         if (res.config.loader) {
           res.config.loader.setLoading(false);
         }
@@ -44,5 +43,6 @@ export function createApp() {
     },
     render: (h) => h(App),
   });
-  return { app };
+
+  return { app, store, router };
 }

@@ -25,8 +25,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import DwdDrawer from './DwdDrawer.vue';
 import DwdInput from './DwdInput.vue';
 
@@ -71,17 +69,16 @@ export default {
     },
   },
   methods: {
-    load: function () {
+    load: async function () {
       if (!this.canLoad) {
         return;
       }
       this.canLoad = false;
-      axios.get(this.commentsUrl).then((response) => {
-        this.loaded = true;
-        this.comments = response.data;
-      });
+      let res = await this.$http.get(this.commentsUrl);
+      this.loaded = true;
+      this.comments = res.data;
     },
-    submit: function () {
+    submit: async function () {
       if (!this.newComment) {
         return;
       }
@@ -89,18 +86,16 @@ export default {
       let payload = {
         text: this.newComment,
       };
-      axios.post(this.commentsUrl, payload).then((response) => {
-        this.newComment = '';
-        this.comments.push(response.data.comment);
-      });
+      let res = await this.$http.post(this.commentsUrl, payload);
+      this.newComment = '';
+      this.comments.push(res.data.comment);
     },
-    deleteComment: function (id) {
-      axios.delete(this.commentsUrl + '/' + id).then(() => {
-        let i = this.comments.findIndex((c) => c.id === id);
-        if (i >= 0) {
-          this.comments.splice(i, 1);
-        }
-      });
+    deleteComment: async function (id) {
+      await this.$http.delete(this.commentsUrl + '/' + id);
+      let i = this.comments.findIndex((c) => c.id === id);
+      if (i >= 0) {
+        this.comments.splice(i, 1);
+      }
     },
   },
 };

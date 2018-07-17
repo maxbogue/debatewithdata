@@ -11,8 +11,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import ActivityList from '../ActivityList.vue';
 import DwdLoader from '../DwdLoader.vue';
 
@@ -36,15 +34,14 @@ export default {
     this.loadUser();
   },
   methods: {
-    loadUser: function () {
+    loadUser: async function () {
       if (!this.username) {
         return;
       }
       this.user = null;
       let loader = this.$refs.loader;
-      axios.get('/api/user/' + this.username, { loader }).then((res) => {
-        this.user = res.data;
-      });
+      let res = await this.$http.get('/api/user/' + this.username, { loader });
+      this.user = res.data;
     },
   },
 };

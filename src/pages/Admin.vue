@@ -8,15 +8,12 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   methods: {
-    topicRoots: function () {
+    topicRoots: async function () {
       if (window.confirm('Are you sure?')) {
-        axios.post('/api/admin/fix/topic-roots').then((res) => {
-          window.alert(res.data.count + ' topics made root.');
-        });
+        let res = await this.$http.post('/api/admin/fix/topic-roots');
+        window.alert(res.data.count + ' topics made root.');
       }
     },
   },

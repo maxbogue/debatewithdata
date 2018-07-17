@@ -10,8 +10,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   props: {
     item: { type: Object, required: true },
@@ -23,15 +21,14 @@ export default {
     },
   },
   methods: {
-    toggle: function () {
+    toggle: async function () {
       if (!this.user) {
         return;
       }
-      axios.post(this.url + '/star').then((response) => {
-        this.item.starCount = response.data.starCount;
-        this.item.starred = response.data.starred;
-        this.item.watched = response.data.watched;
-      });
+      let res = await this.$http.post(this.url + '/star');
+      this.item.starCount = res.data.starCount;
+      this.item.starred = res.data.starred;
+      this.item.watched = res.data.watched;
     },
   },
 };

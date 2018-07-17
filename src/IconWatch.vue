@@ -5,18 +5,15 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   props: {
     item: { type: Object, required: true },
     url: { type: String, required: true },
   },
   methods: {
-    toggle: function () {
-      axios.post(this.url + '/watch').then((response) => {
-        this.item.watched = response.data.watched;
-      });
+    toggle: async function () {
+      let res = await this.$http.post(this.url + '/watch');
+      this.item.watched = res.data.watched;
     },
   },
 };

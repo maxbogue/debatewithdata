@@ -1,19 +1,14 @@
-import axios from 'axios';
+/**
+ * This module handles getting and setting of authentication tokens and user
+ * data from localStorage.
+ */
+
 import jwtDecode from 'jwt-decode';
 
 const TOKEN_STORAGE_KEY = 'authToken';
 
 function getAuthToken() {
   return window.localStorage.getItem(TOKEN_STORAGE_KEY);
-}
-
-function updateHeader() {
-  let token = getAuthToken();
-  if (token) {
-    axios.defaults.headers.common.Authorization = 'Bearer ' + token;
-  } else {
-    delete axios.defaults.headers.common.Authorization;
-  }
 }
 
 function getUserFromToken(authToken) {
@@ -40,7 +35,6 @@ function setAuthToken(authToken) {
   } else {
     window.localStorage.removeItem(TOKEN_STORAGE_KEY);
   }
-  updateHeader();
 }
 
 function getUser() {
@@ -53,4 +47,4 @@ function getUser() {
   return user;
 }
 
-export default { getUser, setAuthToken, updateHeader };
+export default { getAuthToken, getUser, setAuthToken };
