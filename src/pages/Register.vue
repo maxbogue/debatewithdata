@@ -27,7 +27,6 @@
 <script>
 import '../style/auth.scss';
 import DwdLoader from '../DwdLoader.vue';
-import auth from '../auth';
 
 export default {
   components: {
@@ -41,8 +40,12 @@ export default {
   }),
   methods: {
     submit: function () {
-      auth.register(this.username, this.password, this.email,
-                    this.$refs.loader).then(() => {
+      this.$store.dispatch('register', {
+        username: this.username,
+        password: this.password,
+        email: this.email,
+        loader: this.$refs.loader,
+      }).then(() => {
         this.success = true;
       });
     }

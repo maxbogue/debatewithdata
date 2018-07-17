@@ -3,16 +3,14 @@
 </template>
 
 <script>
-import auth from '../auth';
-
 export default {
   computed: {
     nextUrl: function () {
       return this.$route.query.next || '/';
     },
   },
-  created: function () {
-    auth.logout();
+  created: async function () {
+    await this.$store.dispatch('logout');
     this.$router.replace(this.nextUrl);
   },
 };

@@ -19,7 +19,6 @@
 <script>
 import '../style/auth.scss';
 import DwdLoader from '../DwdLoader.vue';
-import auth from '../auth';
 
 export default {
   components: {
@@ -30,11 +29,12 @@ export default {
     email: '',
   }),
   methods: {
-    submit: function () {
-      auth.forgotPassword(this.email, this.$refs.loader)
-        .then(() => {
-          this.success = true;
-        });
+    submit: async function () {
+      await this.$store.dispatch('forgotPassword', {
+        email: this.email,
+        loader: this.$refs.loader,
+      });
+      this.success = true;
     },
   },
 };

@@ -23,12 +23,11 @@ import Topic from './pages/Topic.vue';
 import TopicEdit from './pages/TopicEdit.vue';
 import User from './pages/User.vue';
 import VerifyEmail from './pages/VerifyEmail.vue';
-import store from './store';
 import { ItemType } from '../common/constants';
 
 Vue.use(VueRouter);
 
-const router = new VueRouter({
+const routerOptions = {
   mode: 'history',
   routes: [
     { path: '/', component: Home },
@@ -74,41 +73,7 @@ const router = new VueRouter({
     { path: '/user/:username', component: User, props: true },
     { path: '/verify-email', component: VerifyEmail },
   ],
-});
-
-router.beforeEach((to, from, next) => {
-  store.commit('storeItemBlockLocations');
-  next();
-});
-
-router.beforeResolve((to, from, next) => {
-  const matched = router.getMatchedComponents(to);
-  const prevMatched = router.getMatchedComponents(from);
-  const activated = dropWhile(matched, (c, i) => c === prevMatched[i]);
-
-  let promises = [];
-
-  for (let c of activated) {
-    if (c.asyncData) {
-      let promise = c.asyncData({ store, route: to });
-      if (promise) {
-        promises.push(promise);
-      }
-    }
-  }
-
-  if (promises.length === 0) {
-    next();
-    return;
-  }
-
-  store.commit('setSuppressRoutes', true);
-
-  Promise.all(promises).then(() => {
-    next();
-    store.commit('setSuppressRoutes', false);
-  }).catch(next);
-});
+};
 
 Vue.mixin({
   beforeRouteUpdate(to, from, next) {
@@ -124,4 +89,42 @@ Vue.mixin({
   }
 });
 
-export default router;
+export function createRouter(store) {
+  const router = new VueRouter(routerOptions);
+
+  router.beforeEach((to, from, next) => {
+    store.commit('storeItemBlockLocations');
+    next();
+  });
+
+  router.beforeResolve((to, from, next) => {
+    const matched = router.getMatchedComponents(to);
+    const prevMatched = router.getMatchedComponents(from);
+    const activated = dropWhile(matched, (c, i) => c === prevMatched[i]);
+
+    let promises = [];
+
+    for (let c of activated) {
+      if (c.asyncData) {
+        let promise = c.asyncData({ store, route: to });
+        if (promise) {
+          promises.push(promise);
+        }
+      }
+    }
+
+    if (promises.length === 0) {
+      next();
+      return;
+    }
+
+    store.commit('setSuppressRoutes', true);
+
+    Promise.all(promises).then(() => {
+      next();
+      store.commit('setSuppressRoutes', false);
+    }).catch(next);
+  });
+
+  return router;
+}

@@ -7,7 +7,6 @@
 
 <script>
 import DwdLoader from '../DwdLoader.vue';
-import auth from '../auth';
 
 export default {
   components: {
@@ -22,7 +21,10 @@ export default {
     },
   },
   mounted: function () {
-    auth.verifyEmail(this.token, this.$refs.loader).then(() => {
+    this.$store.dispatch('verifyEmail', {
+      token: this.token,
+      loader: this.$refs.loader,
+    }).then(() => {
       this.text = 'Success!';
       setTimeout(() => {
         this.$router.push('/guide');

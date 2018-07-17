@@ -1,8 +1,6 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
-import store from './store';
-
 const TOKEN_STORAGE_KEY = 'authToken';
 
 function getAuthToken() {
@@ -43,47 +41,16 @@ function setAuthToken(authToken) {
     window.localStorage.removeItem(TOKEN_STORAGE_KEY);
   }
   updateHeader();
-  store.commit('setUser', getUserFromToken(authToken));
 }
 
-export default {
-  register: function (username, password, email, loader) {
-    let payload = { username, password, email };
-    return axios.post('/api/register', payload, { loader });
-  },
-  verifyEmail: function (token, loader) {
-    return axios.post('/api/verify-email', { token }, { loader })
-      .then((res) => {
-        setAuthToken(res.data.authToken);
-      });
-  },
-  login: function (username, password, loader) {
-    let payload = { username, password };
-    return axios.post('/api/login', payload, { loader }).then((res) => {
-      setAuthToken(res.data.authToken);
-    });
-  },
-  logout: function () {
+function getUser() {
+  let token = getAuthToken();
+  let user = getUserFromToken(token);
+  if (token && !user) {
+    // Token must be expired.
     setAuthToken(null);
-  },
-  forgotPassword: function (email, loader) {
-    return axios.post('/api/forgot-password', { email }, { loader });
-  },
-  resetPassword: function (token, password, loader) {
-    let payload = { token, password };
-    return axios.post('/api/reset-password', payload, { loader })
-      .then((res) => {
-        setAuthToken(res.data.authToken);
-      });
-  },
-  getUser: function () {
-    let token = getAuthToken();
-    let user = getUserFromToken(token);
-    if (token && !user) {
-      // Token must be expired.
-      setAuthToken(null);
-    }
-    return user;
-  },
-  updateHeader,
-};
+  }
+  return user;
+}
+
+export default { getUser, setAuthToken, updateHeader };

@@ -11,14 +11,14 @@ import omit from 'lodash/omit';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
 
-import store from './store';
+import auth from './auth';
 import { ItemType, PointType } from '../common/constants';
 
 const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 const textDiff = new Diff();
 
 export function authRedirect(to, from, next) {
-  if (!store.state.user) {
+  if (!auth.getUser()) {
     next({ path: '/login', query: { next: to.fullPath } });
   } else {
     next();

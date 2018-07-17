@@ -22,7 +22,6 @@
 <script>
 import '../style/auth.scss';
 import DwdLoader from '../DwdLoader.vue';
-import auth from '../auth';
 
 export default {
   components: {
@@ -39,7 +38,11 @@ export default {
   },
   methods: {
     submit: function () {
-      auth.login(this.username, this.password, this.$refs.loader).then(() => {
+      this.$store.dispatch('login', {
+        username: this.username,
+        password: this.password,
+        loader: this.$refs.loader,
+      }).then(() => {
         this.$router.push(this.nextUrl);
       });
     },

@@ -15,7 +15,6 @@
 <script>
 import '../style/auth.scss';
 import DwdLoader from '../DwdLoader.vue';
-import auth from '../auth';
 
 export default {
   components: {
@@ -31,10 +30,13 @@ export default {
   },
   methods: {
     submit: function () {
-      auth.resetPassword(this.token, this.password, this.$refs.loader)
-        .then(() => {
-          this.$router.push('/');
-        });
+      this.$store.dispatch('resetPassword', {
+        token: this.token,
+        password: this.password,
+        loader: this.$refs.loader,
+      }).then(() => {
+        this.$router.push('/');
+      });
     },
   },
 };

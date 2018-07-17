@@ -5,6 +5,7 @@ import forOwn from 'lodash/forOwn';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import auth from './auth';
 import { axiosErrorToString, walk } from './utils';
 import { validateItem } from '../common/validate';
 
@@ -61,7 +62,7 @@ function singleColumnPlugin(store) {
   });
 }
 
-export default new Vuex.Store({
+const storeOptions = {
   state: {
     topics: {},
     claims: {},
@@ -101,6 +102,13 @@ export default new Vuex.Store({
     },
     setUser: function (state, user) {
       state.user = user;
+      state.topics = {};
+      state.claims = {};
+      state.source = {};
+    },
+    setUserFromToken: function (state, authToken) {
+      auth.setAuthToken(authToken);
+      state.user = auth.getUser();
       state.topics = {};
       state.claims = {};
       state.source = {};
@@ -146,6 +154,30 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    register: async function (_, { username, password, email, loader }) {
+      let payload = { username, password, email };
+      await axios.post('/api/register', payload, { loader });
+    },
+    verifyEmail: async function ({ commit }, { token, loader }) {
+      let res = await axios.post('/api/verify-email', { token }, { loader });
+      commit('setUserFromToken', res.data.authToken);
+    },
+    login: async function ({ commit }, { username, password, loader }) {
+      let payload = { username, password };
+      let res = await axios.post('/api/login', payload, { loader });
+      commit('setUserFromToken', res.data.authToken);
+    },
+    logout: async function ({ commit }) {
+      commit('setUserFromToken', null);
+    },
+    forgotPassword: async function (_, { email, loader }) {
+      await axios.post('/api/forgot-password', { email }, { loader });
+    },
+    resetPassword: async function ({ commit }, { token, password, loader }) {
+      let payload = { token, password };
+      let res = await axios.post('/api/reset-password', payload, { loader });
+      commit('setUserFromToken', res.data.authToken);
+    },
     getItem: function ({ commit, state }, { type, id, trail }) {
       let params = paramsFromTrail(trail, state);
       commit('setLoading', true);
@@ -218,4 +250,8 @@ export default new Vuex.Store({
     },
   },
   plugins: [singleColumnPlugin],
-});
+};
+
+export function createStore() {
+  return new Vuex.Store(storeOptions);
+}
