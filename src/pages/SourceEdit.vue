@@ -35,10 +35,10 @@
 <script>
 import clone from 'lodash/clone';
 
-import DeleteButton from '../DeleteButton.vue';
-import FormValid from '../FormValid.vue';
-import SourceEditContent from '../SourceEditContent.vue';
-import SourceRevContent from '../SourceRevContent.vue';
+import DeleteButton from '../components/DeleteButton.vue';
+import FormValid from '../components/FormValid.vue';
+import SourceEditContent from '../components/SourceEditContent.vue';
+import SourceRevContent from '../components/SourceRevContent.vue';
 import { ItemType } from '../../common/constants';
 import { authRedirect, parseTrail } from '../utils';
 import { sourcesAreEqual } from '../../common/equality';

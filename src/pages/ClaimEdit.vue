@@ -34,12 +34,12 @@
 </template>
 
 <script>
-import ClaimEditBlock from '../ClaimEditBlock.vue';
-import ClaimRevBlock from '../ClaimRevBlock.vue';
-import DeleteButton from '../DeleteButton.vue';
-import DwdLoader from '../DwdLoader.vue';
-import FixedBottom from '../FixedBottom.vue';
-import PointsEdit from '../PointsEdit.vue';
+import ClaimEditBlock from '../components/ClaimEditBlock.vue';
+import ClaimRevBlock from '../components/ClaimRevBlock.vue';
+import DeleteButton from '../components/DeleteButton.vue';
+import DwdLoader from '../components/DwdLoader.vue';
+import FixedBottom from '../components/FixedBottom.vue';
+import PointsEdit from '../components/PointsEdit.vue';
 import { ItemType } from '../../common/constants';
 import { authRedirect, combineAndSortPoints, parseTrail,
   splitPoints } from '../utils';

@@ -62,9 +62,9 @@
 <script>
 import map from 'lodash/map';
 
-import DwdTrail from '../DwdTrail.vue';
-import IconAdd from '../IconAdd.vue';
-import ItemBlock from '../ItemBlock.vue';
+import DwdTrail from '../components/DwdTrail.vue';
+import IconAdd from '../components/IconAdd.vue';
+import ItemBlock from '../components/ItemBlock.vue';
 import { combineAndSortPoints, rotateWithIndexes, parseTrail } from '../utils';
 import { ItemType } from '../../common/constants';
 

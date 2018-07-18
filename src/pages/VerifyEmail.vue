@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import DwdLoader from '../DwdLoader.vue';
+import DwdLoader from '../components/DwdLoader.vue';
 
 export default {
   components: {

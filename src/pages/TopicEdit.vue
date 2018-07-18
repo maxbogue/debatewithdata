@@ -82,13 +82,13 @@ import filter from 'lodash/filter';
 import sortBy from 'lodash/sortBy';
 import { mapState } from 'vuex';
 
-import ClaimContent from '../ClaimContent.vue';
-import ClaimLinkModal from '../ClaimLinkModal.vue';
-import ClaimRevAndModalEdit from '../ClaimRevAndModalEdit.vue';
-import DeleteButton from '../DeleteButton.vue';
-import FixedBottom from '../FixedBottom.vue';
-import TopicEditAndReviewBlock from '../TopicEditAndReviewBlock.vue';
-import TopicLinkModal from '../TopicLinkModal.vue';
+import ClaimContent from '../components/ClaimContent.vue';
+import ClaimLinkModal from '../components/ClaimLinkModal.vue';
+import ClaimRevAndModalEdit from '../components/ClaimRevAndModalEdit.vue';
+import DeleteButton from '../components/DeleteButton.vue';
+import FixedBottom from '../components/FixedBottom.vue';
+import TopicEditAndReviewBlock from '../components/TopicEditAndReviewBlock.vue';
+import TopicLinkModal from '../components/TopicLinkModal.vue';
 import { ItemType } from '../../common/constants';
 import {
   authRedirect, diffIdLists, parseTrail, pipe, stableRandom, starCount, starred

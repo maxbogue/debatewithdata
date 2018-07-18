@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import ActivityList from '../ActivityList.vue';
-import DwdLoader from '../DwdLoader.vue';
+import ActivityList from '../components/ActivityList.vue';
+import DwdLoader from '../components/DwdLoader.vue';
 
 export default {
   components: {

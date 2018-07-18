@@ -19,9 +19,9 @@
 import filter from 'lodash/filter';
 import map from 'lodash/map';
 
-import DwdLoader from '../DwdLoader.vue';
-import DwdTrail from '../DwdTrail.vue';
-import ItemBlock from '../ItemBlock.vue';
+import DwdLoader from '../components/DwdLoader.vue';
+import DwdTrail from '../components/DwdTrail.vue';
+import ItemBlock from '../components/ItemBlock.vue';
 import { parseTrail } from '../utils';
 import { ItemType } from '../../common/constants';
 

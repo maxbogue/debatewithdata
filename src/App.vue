@@ -10,9 +10,9 @@
 <script>
 import { mapState } from 'vuex';
 
-import DwdHeader from './DwdHeader.vue';
-import DwdLoader from './DwdLoader.vue';
-import ErrorModal from './ErrorModal.vue';
+import DwdHeader from './components/DwdHeader.vue';
+import DwdLoader from './components/DwdLoader.vue';
+import ErrorModal from './components/ErrorModal.vue';
 
 export default {
   components: {

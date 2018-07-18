@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import DwdLoader from '../DwdLoader.vue';
-import ItemBlock from '../ItemBlock.vue';
+import DwdLoader from '../components/DwdLoader.vue';
+import ItemBlock from '../components/ItemBlock.vue';
 
 export default {
   components: {

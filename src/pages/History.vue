@@ -39,11 +39,11 @@
 <script>
 import dateFormat from 'dateformat';
 
-import ClaimRev from '../ClaimRev.vue';
-import RevNav from '../RevNav.vue';
-import SourceRev from '../SourceRev.vue';
-import TopicRev from '../TopicRev.vue';
-import DwdLoader from '../DwdLoader.vue';
+import ClaimRev from '../components/ClaimRev.vue';
+import RevNav from '../components/RevNav.vue';
+import SourceRev from '../components/SourceRev.vue';
+import TopicRev from '../components/TopicRev.vue';
+import DwdLoader from '../components/DwdLoader.vue';
 import { ItemType } from '../../common/constants';
 
 export default {
