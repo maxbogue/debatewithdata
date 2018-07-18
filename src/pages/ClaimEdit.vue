@@ -137,7 +137,7 @@ export default {
       this.showEditBlock = false;
       this.points = points;
     },
-    submit: function () {
+    submit: async function () {
       let action = 'addItem';
       let payload = {
         type: ItemType.CLAIM,
@@ -148,20 +148,18 @@ export default {
         payload.item.id = this.id;
         payload.item.baseRev = this.claim.revId;
       }
-      return this.$store.dispatch(action, payload).then((id) => {
-        this.unloadOverride = true;
-        this.$router.push(this.claimUrl(id, this.trail));
-      });
+      let id = await this.$store.dispatch(action, payload);
+      this.unloadOverride = true;
+      this.$router.push(this.claimUrl(id, this.trail));
     },
-    remove: function (message) {
-      this.$store.dispatch('removeItem', {
+    remove: async function (message) {
+      await this.$store.dispatch('removeItem', {
         type: ItemType.CLAIM,
         id: this.id,
         message,
-      }).then(() => {
-        this.unloadOverride = true;
-        this.$router.push('/claims');
       });
+      this.unloadOverride = true;
+      this.$router.push('/claims');
     },
     cancel: function () {
       let url = this.id ? this.claimUrl(this.id, this.trail) : '/claims';

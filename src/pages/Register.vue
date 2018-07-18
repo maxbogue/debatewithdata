@@ -39,15 +39,14 @@ export default {
     email: '',
   }),
   methods: {
-    submit: function () {
-      this.$store.dispatch('register', {
+    submit: async function () {
+      await this.$store.dispatch('register', {
         username: this.username,
         password: this.password,
         email: this.email,
         loader: this.$refs.loader,
-      }).then(() => {
-        this.success = true;
       });
+      this.success = true;
     }
   },
 };

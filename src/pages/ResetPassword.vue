@@ -29,14 +29,13 @@ export default {
     },
   },
   methods: {
-    submit: function () {
-      this.$store.dispatch('resetPassword', {
+    submit: async function () {
+      await this.$store.dispatch('resetPassword', {
         token: this.token,
         password: this.password,
         loader: this.$refs.loader,
-      }).then(() => {
-        this.$router.push('/');
       });
+      this.$router.push('/');
     },
   },
 };

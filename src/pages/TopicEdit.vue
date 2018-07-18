@@ -241,7 +241,7 @@ export default {
         ids.splice(i, 1);
       }
     },
-    submit: function () {
+    submit: async function () {
       let action = 'addItem';
       let payload = {
         type: ItemType.TOPIC,
@@ -252,20 +252,18 @@ export default {
         payload.item.id = this.topic.id;
         payload.item.baseRev = this.topic.revId;
       }
-      this.$store.dispatch(action, payload).then((id) => {
-        this.unloadOverride = true;
-        this.$router.push(this.topicUrl(id, this.trail));
-      });
+      let id = await this.$store.dispatch(action, payload);
+      this.unloadOverride = true;
+      this.$router.push(this.topicUrl(id, this.trail));
     },
-    remove: function (message) {
-      this.$store.dispatch('removeItem', {
+    remove: async function (message) {
+      await this.$store.dispatch('removeItem', {
         type: ItemType.TOPIC,
         id: this.topic.id,
         message,
-      }).then(() => {
-        this.unloadOverride = true;
-        this.$router.push('/topics');
       });
+      this.unloadOverride = true;
+      this.$router.push('/topics');
     },
     cancel: function () {
       let url = this.topic ? this.topicUrl(this.id, this.trail) : '/topics';

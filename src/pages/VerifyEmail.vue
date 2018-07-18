@@ -20,16 +20,15 @@ export default {
       return this.$route.query.token;
     },
   },
-  mounted: function () {
-    this.$store.dispatch('verifyEmail', {
+  mounted: async function () {
+    await this.$store.dispatch('verifyEmail', {
       token: this.token,
       loader: this.$refs.loader,
-    }).then(() => {
-      this.text = 'Success!';
-      setTimeout(() => {
-        this.$router.push('/guide');
-      }, 1500);
     });
+    this.text = 'Success!';
+    setTimeout(() => {
+      this.$router.push('/guide');
+    }, 1500);
   },
 };
 </script>

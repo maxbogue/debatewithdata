@@ -129,7 +129,7 @@ export default {
     review: function () {
       this.showEditBlock = false;
     },
-    submit: function () {
+    submit: async function () {
       let action = 'addItem';
       let payload = {
         type: ItemType.SOURCE,
@@ -140,24 +140,22 @@ export default {
         payload.item.id = this.id;
         payload.item.baseRev = this.source.revId;
       }
-      this.$store.dispatch(action, payload).then((id) => {
-        this.unloadOverride = true;
-        this.$router.push(this.sourceUrl(id, this.trail));
-      });
+      let id = await this.$store.dispatch(action, payload);
+      this.unloadOverride = true;
+      this.$router.push(this.sourceUrl(id, this.trail));
     },
     revert: function () {
       this.newSource = this.oldSource;
       this.showEditBlock = false;
     },
-    remove: function (message) {
-      this.$store.dispatch('removeItem', {
+    remove: async function (message) {
+      await this.$store.dispatch('removeItem', {
         type: ItemType.SOURCE,
         id: this.id,
         message,
-      }).then(() => {
-        this.unloadOverride = true;
-        this.$router.push('/datas');
       });
+      this.unloadOverride = true;
+      this.$router.push('/datas');
     },
     cancel: function () {
       let url = this.id ? this.sourceUrl(this.id, this.trail) : '/datas';

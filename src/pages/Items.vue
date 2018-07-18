@@ -150,7 +150,7 @@ export default {
     query: function () {
       this.page = 1;
     },
-    queryParams: debounce(function () {
+    queryParams: debounce(async function () {
       /* eslint no-invalid-this: "off" */
       this.results = null;
       if (!this.queryParams) {
@@ -159,33 +159,31 @@ export default {
       }
       let query = this.query;
       this.loading = true;
-      this.$store.dispatch('search', {
+      let { results, numPages } = await this.$store.dispatch('search', {
         ...this.queryParams,
         loader: this.$refs.loader,
-      }).then(({ results, numPages }) => {
-        if (query === this.query) {
-          this.results = results.map((result) => result.id);
-          this.numPages = numPages;
-        }
       });
+      if (query === this.query) {
+        this.results = results.map((result) => result.id);
+        this.numPages = numPages;
+      }
     }, DEBOUNCE_DELAY_MS),
   },
   mounted: function () {
     this.getItems();
   },
   methods: {
-    getItems: function () {
+    getItems: async function () {
       this.results = null;
-      this.$store.dispatch('getItems', {
+      let { results, numPages } = await this.$store.dispatch('getItems', {
         ...this.params,
         page: this.page,
         loader: this.$refs.loader,
-      }).then(({ results, numPages }) => {
-        if (!this.query) {
-          this.results = results;
-          this.numPages = numPages;
-        }
       });
+      if (!this.query) {
+        this.results = results;
+        this.numPages = numPages;
+      }
     },
     cycleStarFilter: function () {
       if (this.filterStarred === null) {

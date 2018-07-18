@@ -28,11 +28,10 @@ export default {
   data: () => ({
     results: null,
   }),
-  mounted: function () {
+  mounted: async function () {
     let loader = this.$refs.loader;
-    this.$store.dispatch('getNotifications', { loader }).then((results) => {
-      this.results = results.map(this.lookupItemWithType);
-    });
+    let results = await this.$store.dispatch('getNotifications', { loader });
+    this.results = results.map(this.lookupItemWithType);
   },
 };
 </script>

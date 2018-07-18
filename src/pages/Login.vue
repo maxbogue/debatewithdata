@@ -37,14 +37,13 @@ export default {
     },
   },
   methods: {
-    submit: function () {
-      this.$store.dispatch('login', {
+    submit: async function () {
+      await this.$store.dispatch('login', {
         username: this.username,
         password: this.password,
         loader: this.$refs.loader,
-      }).then(() => {
-        this.$router.push(this.nextUrl);
       });
+      this.$router.push(this.nextUrl);
     },
   },
 };

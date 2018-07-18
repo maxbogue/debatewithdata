@@ -149,21 +149,20 @@ export default {
         e.stopPropagation();
       }
     },
-    queryServer: debounce(function () {
+    queryServer: debounce(async function () {
       /* eslint no-invalid-this: "off" */
       let query = this.value;
       this.loading = true;
-      this.$store.dispatch('search', {
+      let { results } = await this.$store.dispatch('search', {
         query,
         types: this.allowedTypes,
         limit: 5,
         loader: this.makeLoader(),
-      }).then(({ results }) => {
-        if (query === this.value) {
-          this.results = results.map(this.lookupItemWithType);
-          this.loading = false;
-        }
       });
+      if (query === this.value) {
+        this.results = results.map(this.lookupItemWithType);
+        this.loading = false;
+      }
     }, DEBOUNCE_DELAY_MS),
     makeLoader: function () {
       return {
