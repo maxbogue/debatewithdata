@@ -2,11 +2,13 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import dropWhile from 'lodash/dropWhile';
 
+import About from './pages/About.vue';
 import Account from './pages/Account.vue';
 import Activity from './pages/Activity.vue';
 import Admin from './pages/Admin.vue';
 import Claim from './pages/Claim.vue';
 import ClaimEdit from './pages/ClaimEdit.vue';
+import Contact from './pages/Contact.vue';
 import ForgotPassword from './pages/ForgotPassword.vue';
 import Guide from './pages/Guide.vue';
 import History from './pages/History.vue';
@@ -33,6 +35,7 @@ const routerOptions = {
     { path: '/', component: Home },
     { path: '/:type/:id/history', component: History },
     { path: '/:type/:id/rev/:revId', component: History },
+    { path: '/about', component: About },
     { path: '/account', component: Account },
     { path: '/activity', component: Activity },
     { path: '/admin', component: Admin },
@@ -45,6 +48,7 @@ const routerOptions = {
     },
     { path: '/claims', component: Items, props: { type: ItemType.CLAIM } },
     { path: '/claims/add', component: ClaimEdit },
+    { path: '/contact', component: Contact },
     { path: '/forgot-password', component: ForgotPassword },
     { path: '/guide', component: Guide },
     { path: '/login', component: Login },

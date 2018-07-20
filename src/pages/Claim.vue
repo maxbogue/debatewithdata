@@ -37,7 +37,7 @@
                 :key="point.id"
                 is-link />
   </template>
-  <template v-else>
+  <div v-else class="dwd-cols">
     <div v-for="(sidePoints, side) in points"
          class="dwd-col"
          :key="'side-' + side">
@@ -55,7 +55,7 @@
                   :key="point.id"
                   is-link />
     </div>
-  </template>
+  </div>
 </div>
 </template>
 

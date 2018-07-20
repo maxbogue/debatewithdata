@@ -30,6 +30,7 @@ app.get('/index.js.map', function (req, res) {
 app.get('/', sendIndex);
 app.get('/:type/:id/history', sendIndex);
 app.get('/:type/:id/rev/:revId', sendIndex);
+app.get('/about', sendIndex);
 app.get('/account', sendIndex);
 app.get('/activity', sendIndex);
 app.get('/admin', sendIndex);
@@ -37,6 +38,7 @@ app.get('/claim/:id', sendIndex);
 app.get('/claim/:id/edit', sendIndex);
 app.get('/claims', sendIndex);
 app.get('/claims/add', sendIndex);
+app.get('/contact', sendIndex);
 app.get('/forgot-password', sendIndex);
 app.get('/guide', sendIndex);
 app.get('/login', sendIndex);

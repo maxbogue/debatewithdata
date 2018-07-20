@@ -6,7 +6,6 @@
 }
 
 body {
-  margin-bottom: 75px;
   overflow: scroll;
   font-family: Roboto, Helvetica, Arial, sans-serif;
   font-weight: $font-weight-normal;
@@ -164,6 +163,12 @@ p .click {
     @media (min-width: $screen-lg-min) {
       width: $container-sm;
     }
+  }
+
+  .dwd-cols::after {
+    content: "";
+    display: table;
+    clear: both;
   }
 
   .dwd-col {

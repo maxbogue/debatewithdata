@@ -21,7 +21,7 @@
               @update="(p) => updatePoint(side, p)"
               @delete="deletePoint(side, point || prev)" />
 </div>
-<div v-else>
+<div v-else class="dwd-cols">
   <div v-for="(sidePoints, side) in pointDiffs"
        class="dwd-col"
        :key="'side-' + side">

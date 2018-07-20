@@ -1,5 +1,5 @@
 <template>
-  <nav :class="$style.navbar" v-on-clickaway="collapse">
+  <header :class="$style.navbar" v-on-clickaway="collapse">
     <div class="dwd-container">
       <router-link to="/"
                    title="Home"
@@ -14,7 +14,7 @@
         <span :class="$style.iconBar"></span>
         <span :class="$style.iconBar"></span>
       </button>
-      <div :class="[$style.navbarCollapse, {[$style.collapse]:collapsed}]">
+      <nav :class="[$style.navbarCollapse, {[$style.collapse]:collapsed}]">
         <ul :class="$style.navbarNav">
           <li>
             <router-link to="/topics" title="Topics">Topics</router-link>
@@ -66,16 +66,10 @@
                            title="Register">Register</router-link>
             </li>
           </template>
-          <li>
-            <a href="https://github.com/maxbogue/debatewithdata"
-               title="GitHub Repo"
-               target="_blank"
-               class="fab fa-github"></a>
-          </li>
         </ul>
-      </div>
+      </nav>
     </div>
-  </nav>
+  </header>
 </template>
 
 <script>
@@ -129,14 +123,7 @@ export default {
 <style lang="scss" module>
 @import "../style/constants";
 
-$navbar-bg-color: #333;
-$navbar-btn-accent: #666;
-$navbar-spacing: $block-spacing;
-$navbar-text-color: #aaa;
-$navbar-text-highlight: #fff;
-$navbar-brand-font-size: 20px;
-$navbar-link-font-size: 14px;
-
+$toggler-accent: #666;
 $badge-radius: 3px;
 
 .navbar {
@@ -164,10 +151,6 @@ $badge-radius: 3px;
 
   ul {
     margin: 0;
-  }
-
-  :global(.fa-github) {
-    font-size: 1.4em;
   }
 
   @media (max-width: $screen-sm-min - 0.02px) {
@@ -206,7 +189,7 @@ $badge-radius: 3px;
 
 .navbarBrand {
   display: inline-block;
-  padding: $navbar-spacing;
+  padding: $block-spacing;
   font-size: $navbar-brand-font-size;
   white-space: nowrap;
 }
@@ -218,7 +201,7 @@ $badge-radius: 3px;
   margin-bottom: 8px;
   padding: 9px 10px;
   float: right;
-  border: 1px solid $navbar-btn-accent;
+  border: 1px solid $toggler-accent;
   border-radius: 4px;
   background: none;
 
@@ -237,7 +220,7 @@ $badge-radius: 3px;
   &:hover,
   &:focus {
     outline: none;
-    background-color: $navbar-btn-accent;
+    background-color: $toggler-accent;
 
     .iconBar {
       background-color: $navbar-text-highlight;

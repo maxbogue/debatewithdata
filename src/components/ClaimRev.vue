@@ -9,7 +9,7 @@
                :is-for="!side"
                :trail="trail" />
   </template>
-  <template v-else>
+  <div v-else class="dwd-cols">
     <div v-for="(sidePointDiffs, side) in pointDiffs"
          class="dwd-col"
          :key="'side-' + side">
@@ -20,7 +20,7 @@
                  :is-for="!side"
                  :trail="trail" />
     </div>
-  </template>
+  </div>
 </div>
 </template>
 
