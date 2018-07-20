@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="historyUrl" class="fas fa-clock click" />
+<router-link :to="historyUrl" class="far fa-clock click" />
 </template>
 
 <script>

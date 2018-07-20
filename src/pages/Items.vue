@@ -81,11 +81,12 @@ export default {
     headerText: function () {
       switch (this.type) {
       case ItemType.TOPIC:
-        return 'Topics represent common topics of debate.';
+        return 'Topics represent common areas of debate.';
       case ItemType.CLAIM:
         return 'Claims are simple statements about the world.';
       case ItemType.SOURCE:
-        return 'Data are external sources of data used to support claims.';
+        return 'Data are external sources of information used to support '
+          + 'claims.';
       }
       throw new Error(`Invalid item type: ${this.type}`);
     },
