@@ -1,16 +1,26 @@
 <template>
-<div :class="{ narrow: data && !revId }">
+<div :class="historyClasses">
   <template v-if="data && !revId">
     <h3 class="center">
-      History for
-      <router-link :to="urlWithTrail" class="mono">{{ itemId }}</router-link>
+      History for {{ $route.params.type }}
+      <router-link :to="urlWithTrail"
+                   class="mono click-text">{{ itemId }}</router-link>
     </h3>
-    <ul class="mono" :class="$style.revs">
-      <li v-for="rev in revs" :class="revClass" :key="rev.revId">
-        <router-link :to="revUrl(rev)">{{ rev.revId }}</router-link>
-        <router-link :to="'/user/' + rev.username"
-                     :class="$style.username">{{ rev.username }}</router-link>
-        <span>{{ rev.createdAt | timestamp }}</span>
+    <ul class="mono">
+      <li v-for="rev in revs" :key="rev.revId">
+        <router-link :to="revUrl(rev)"
+                     class="click-text">{{ rev.revId }}</router-link>
+        <span>
+          at
+          <span :class="$style.timestamp">{{ rev.createdAt | timestamp }}</span>
+        </span>
+        <span>
+          by
+          <router-link :to="'/user/' + rev.username"
+                       :class="$style.username"
+                       class="click-text"
+                       >{{ rev.username }}</router-link>
+        </span>
       </li>
     </ul>
   </template>
@@ -89,16 +99,17 @@ export default {
       }
       return [];
     },
-    revClass: function () {
-      switch (this.itemType) {
-      case ItemType.TOPIC:
-        return this.$style.topicRev;
-      case ItemType.CLAIM:
-        return this.$style.claimRev;
-      case ItemType.SOURCE:
-        return this.$style.sourceRev;
-      }
-      return '';
+    historyClasses: function () {
+      let itemTypeClass = {
+        [ItemType.TOPIC]: this.$style.topicHistory,
+        [ItemType.CLAIM]: this.$style.claimHistory,
+        [ItemType.SOURCE]: this.$style.sourceHistory,
+      }[this.itemType];
+      return [
+        this.$style.history,
+        itemTypeClass,
+        { narrow: this.data && !this.revId },
+      ];
     },
     revIndex: function () {
       return this.revs.findIndex((r) => r.revId === this.revId);
@@ -151,63 +162,54 @@ export default {
 <style lang="scss" module>
 @import "../style/constants";
 
-.revs {
-  margin: 20px auto;
-  padding: 0;
+.timestamp {
+  color: $text-light-accent;
+  font-size: 0.75em;
+}
 
-  li {
-    display: flex;
-    padding: 6px 8px;
-    list-style: none;
-    text-align: center;
-
-    .username {
-      flex: 1;
-    }
+.history {
+  ul {
+    margin: 1rem 0;
+    padding: 0;
   }
 
-  li:nth-child(even) {
-    &.topicRev {
-      background-color: $pink-primary;
-    }
+  li {
+    padding: 6px 8px;
+    list-style: none;
 
-    &.claimRev {
-      background-color: $blue-primary;
+    > * {
+      white-space: nowrap;
     }
+  }
+}
 
-    &.sourceRev {
-      background-color: $green-primary;
-    }
-
-    &.forRev {
-      background-color: $purple-primary;
-    }
-
-    &.againstRev {
-      background-color: $amber-primary;
-    }
+.topicHistory {
+  :global(.click-text) {
+    color: $pink-dark-primary;
   }
 
   li:nth-child(odd) {
-    &.topicRev {
-      background-color: $pink-accent;
-    }
+    background-color: $pink-primary;
+  }
+}
 
-    &.claimRev {
-      background-color: $blue-accent;
-    }
+.claimHistory {
+  :global(.click-text) {
+    color: $blue-dark-primary;
+  }
 
-    &.sourceRev {
-      background-color: $green-accent;
-    }
+  li:nth-child(odd) {
+    background-color: $blue-primary;
+  }
+}
 
-    &.forRev {
-      background-color: $purple-accent;
-    }
+.sourceHistory {
+  :global(.click-text) {
+    color: $green-dark-primary;
+  }
 
-    &.againstRev {
-      background-color: $amber-accent;
-    }
+  li:nth-child(odd) {
+    background-color: $green-primary;
   }
 }
 </style>
