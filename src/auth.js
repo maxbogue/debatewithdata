@@ -7,6 +7,14 @@ import jwtDecode from 'jwt-decode';
 
 const TOKEN_STORAGE_KEY = 'authToken';
 
+function setAuthToken(authToken) {
+  if (authToken) {
+    window.localStorage.setItem(TOKEN_STORAGE_KEY, authToken);
+  } else {
+    window.localStorage.removeItem(TOKEN_STORAGE_KEY);
+  }
+}
+
 function getAuthToken() {
   return window.localStorage.getItem(TOKEN_STORAGE_KEY);
 }
@@ -27,14 +35,6 @@ function getUserFromToken(authToken) {
   user.createdAt = new Date(user.createdAt);
   user.username = decoded.sub;
   return user;
-}
-
-function setAuthToken(authToken) {
-  if (authToken) {
-    window.localStorage.setItem(TOKEN_STORAGE_KEY, authToken);
-  } else {
-    window.localStorage.removeItem(TOKEN_STORAGE_KEY);
-  }
 }
 
 function getUser() {

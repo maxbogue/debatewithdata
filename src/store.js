@@ -100,13 +100,15 @@ const makeStoreOptions = ($http) => ({
       }
     },
     setUserFromToken: function (state, authToken) {
-      if (authToken) {
+      auth.setAuthToken(authToken);
+      // User will be null here if the auth token has expired.
+      let user = auth.getUser();
+      if (user) {
         $http.defaults.headers.common.Authorization = 'Bearer ' + authToken;
       } else {
         delete $http.defaults.headers.common.Authorization;
       }
-      auth.setAuthToken(authToken);
-      state.user = auth.getUser();
+      state.user = user;
       state.topics = {};
       state.claims = {};
       state.source = {};
