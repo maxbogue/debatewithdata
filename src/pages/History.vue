@@ -163,8 +163,8 @@ export default {
 @import "../style/constants";
 
 .timestamp {
-  color: $text-light-accent;
-  font-size: 0.75em;
+  color: $text-dark-accent;
+  font-size: 0.8em;
 }
 
 .history {
