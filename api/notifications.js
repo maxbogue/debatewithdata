@@ -3,20 +3,19 @@ import sortBy from 'lodash/sortBy';
 
 import q from '../models/query';
 import { ItemType } from '../common/constants';
-import { AuthError } from './error';
-import { Claim, Source, Topic } from '../models';
+import { AuthError, ClientError } from './error';
+import { knex, Claim, Source, Topic } from '../models';
 
 const router = Router();
 
-function getUpdated(query, user, timestamp) {
+function getUpdated(query, until) {
   query
     .column({
       updatedAt: 'h.created_at',
       deleted: 'h.deleted',
       deleteMessage: 'h.delete_message',
     })
-    .where('h.created_at', '>', user.caughtUpAt)
-    .where('h.created_at', '<', timestamp)
+    .where('h.created_at', '<', until)
     .where('w.watched', true);
 }
 
@@ -26,49 +25,71 @@ router.get('/', async function (req, res) {
     throw new AuthError();
   }
 
-  let timestamp = new Date();
+  let until = req.query.until;
+  if (!until) {
+    throw new ClientError('"until" query parameter is required.');
+  }
 
-  let topicQuery = Topic.itemQuery(user).modify(getUpdated, user, timestamp);
-  let claimQuery = Claim.itemQuery(user).modify(getUpdated, user, timestamp);
-  let sourceQuery = Source.itemQuery(user).modify(getUpdated, user, timestamp);
+  let queries = [Topic, Claim, Source].map((Item) => Item
+    .itemQuery(user)
+    .modify(getUpdated, until)
+    .limit(100));
 
-  let [topicResults, claimResults, sourceResults] =
-    await Promise.all([topicQuery, claimQuery, sourceQuery]);
+  let [topicResults, claimResults, sourceResults] = await Promise.all(queries);
 
-  let results = sortBy([
+  let items = sortBy([
     ...topicResults.map((item) => ({ type: ItemType.TOPIC, item })),
     ...claimResults.map((item) => ({ type: ItemType.CLAIM, item })),
     ...sourceResults.map((item) => ({ type: ItemType.SOURCE, item })),
-  ], 'item.updatedAt').map(({ type, item }) => ({ type, id: item.id }));
-  results.reverse();
+  ], 'item.updatedAt');
 
-  await user.update({ caughtUpAt: timestamp });
+  items = items
+    .slice(0, 100)
+    .map(({ type, item }) => ({ type, id: item.id }))
+    .reverse();
 
   res.json({
     topics: Topic.processQueryResults(topicResults),
     claims: Claim.processQueryResults(claimResults),
     sources: Source.processQueryResults(sourceResults),
-    results,
+    results: {
+      items,
+      readUntil: user.caughtUpAt,
+    },
   });
 });
 
-router.get('/count', async function (req, res) {
+async function hasNotifications(user) {
+  let queries = [ItemType.TOPIC, ItemType.CLAIM, ItemType.SOURCE]
+    .map((type) => knex.queryBuilder().exists({
+      exists: q.base(type)
+        .modify(q.joinWatched, type, user)
+        .modify(getUpdated, new Date())
+        .where('h.created_at', '>', user.caughtUpAt),
+    }));
+  let results = await Promise.all(queries);
+  return results.reduce((acc, [{ exists }]) => acc || exists, false);
+}
+
+router.get('/has', async function (req, res) {
   let user = req.user;
   if (!user) {
     throw new AuthError();
   }
+  res.json({ hasNotifications: await hasNotifications(user) });
+});
 
-  let timestamp = new Date();
-
-  let queries = [ItemType.TOPIC, ItemType.CLAIM, ItemType.SOURCE]
-    .map((type) => q.base(type)
-      .modify(q.joinWatched, type, user)
-      .modify(getUpdated, user, timestamp)
-      .modify(q.count));
-
-  let results = await Promise.all(queries);
-  let totalCount = results.reduce((acc, [{ count }]) => acc + count, 0);
-  res.json(totalCount);
+router.post('/read', async function (req, res) {
+  let user = req.user;
+  if (!user) {
+    throw new AuthError();
+  }
+  let until = req.body.until;
+  if (!until) {
+    throw new ClientError('"until" parameter is required.');
+  }
+  await user.update({ caughtUpAt: until });
+  res.json({ hasNotifications: await hasNotifications(user) });
 });
 
 export default router;

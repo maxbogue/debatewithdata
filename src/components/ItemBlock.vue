@@ -161,7 +161,7 @@ export default {
 
       setTimeout(() => {
         this.$el.style.transition = `opacity ${ANIMATION_DURATION_SECS * 2}s`;
-        this.$el.style.opacity = 1;
+        this.$el.style.opacity = '';
       }, delay);
     },
     animateOpen: function () {

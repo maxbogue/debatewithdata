@@ -13,23 +13,6 @@ Vue.use(Vuex);
 const CONFLICT_ERROR_MESSAGE = 'Item was modified since you began editing.'
   + ' Please review your changes against the new version and try again.';
 
-// Whether the claim for claimId in s1 should be written to s2.
-// This is the case if:
-//   - claimId doesn't exist in s2, or
-//   - s1 has a different revision than s2 (it's always newer), or
-//   - s1 has more depth loaded than s2.
-function shouldStoreClaim(claimId, s1, s2) {
-  let c1 = s1.claims[claimId];
-  let c2 = s2.claims[claimId];
-  return !c2 || c1.revId !== c2.revId || c1.depth > c2.depth;
-}
-
-function shouldStoreTopic(topicId, s1, s2) {
-  let t1 = s1.topics[topicId];
-  let t2 = s2.topics[topicId];
-  return !t2 || t1.revId !== t2.revId || t1.depth > t2.depth;
-}
-
 function cleanItem(item) {
   let copy = cloneDeep(item);
   walk(copy, (o) => delete o.tempId);
@@ -61,6 +44,19 @@ function singleColumnPlugin(store) {
   });
 }
 
+async function wrapLoading(commit, promise) {
+  commit('setLoading', true);
+  try {
+    let ret = await promise;
+    commit('setLoading', false);
+    return ret;
+  } catch (err) {
+    commit('setLoading', false);
+    commit('setLoadingError', err);
+    throw err;
+  }
+}
+
 const makeStoreOptions = ($http) => ({
   state: {
     topics: {},
@@ -75,22 +71,18 @@ const makeStoreOptions = ($http) => ({
     itemBlocks: [],
     itemLocations: {},
     itemBlockSliding: false,
-    notificationCount: 0,
+    hasNotifications: false,
   },
   mutations: {
     setData: function (state, data) {
       if (data.topics) {
         forOwn(data.topics, (topic, id) => {
-          if (shouldStoreTopic(id, data, state)) {
-            Vue.set(state.topics, id, topic);
-          }
+          Vue.set(state.topics, id, topic);
         });
       }
       if (data.claims) {
         forOwn(data.claims, (claim, id) => {
-          if (shouldStoreClaim(id, data, state)) {
-            Vue.set(state.claims, id, claim);
-          }
+          Vue.set(state.claims, id, claim);
         });
       }
       if (data.sources) {
@@ -149,8 +141,8 @@ const makeStoreOptions = ($http) => ({
     itemBlockSliding: function (state) {
       state.itemBlockSliding = true;
     },
-    setNotificationCount: function (state, notificationCount) {
-      state.notificationCount = notificationCount;
+    setHasNotifications: function (state, hasNotifications) {
+      state.hasNotifications = hasNotifications;
     },
   },
   actions: {
@@ -180,16 +172,9 @@ const makeStoreOptions = ($http) => ({
     },
     getItem: async function ({ commit, state }, { type, id, trail }) {
       let params = paramsFromTrail(trail, state);
-      commit('setLoading', true);
-      try {
-        let res = await $http.get(`/api/${type}/${id}`, { params });
-        commit('setLoading', false);
-        commit('setData', res.data);
-      } catch (err) {
-        commit('setLoading', false);
-        commit('setLoadingError', err);
-        throw err;
-      }
+      let promise = $http.get(`/api/${type}/${id}`, { params });
+      let res = await wrapLoading(commit, promise);
+      commit('setData', res.data);
     },
     getItems: async function ({ commit },
                               { type, sort, filters, page, loader }) {
@@ -235,15 +220,20 @@ const makeStoreOptions = ($http) => ({
       commit('setData', res.data);
       return res.data;
     },
-    getNotifications: async function ({ commit }, { loader }) {
-      let res = await $http.get('/api/notifications', { loader });
+    getNotifications: async function ({ commit }, { until }) {
+      let params = { until };
+      let promise = $http.get('/api/notifications', { params });
+      let res = await wrapLoading(commit, promise);
       commit('setData', res.data);
-      commit('setNotificationCount', 0);
       return res.data.results;
     },
-    updateNotificationCount: async function ({ commit }) {
-      let res = await $http.get('/api/notifications/count');
-      commit('setNotificationCount', res.data);
+    updateHasNotifications: async function ({ commit }) {
+      let res = await $http.get('/api/notifications/has');
+      commit('setHasNotifications', res.data.hasNotifications);
+    },
+    readNotifications: async function ({ commit }, { until }) {
+      let res = await $http.post('/api/notifications/read', { until });
+      commit('setHasNotifications', res.data.hasNotifications);
     },
   },
   plugins: [singleColumnPlugin],

@@ -23,54 +23,6 @@
 </footer>
 </template>
 
-<script>
-import { mixin as clickaway } from 'vue-clickaway';
-import { mapState } from 'vuex';
-
-export default {
-  mixins: [clickaway],
-  data: () => ({
-    collapsed: true,
-  }),
-  computed: {
-    ...mapState([
-      'user',
-      'notificationCount',
-    ]),
-    loginUrl: function () {
-      let path = this.$route.fullPath;
-      if (path === '/' || path.startsWith('/login')) {
-        return '/login';
-      }
-      return '/login?next=' + path;
-    },
-    logoutUrl: function () {
-      let path = this.$route.fullPath;
-      if (path === '/' || path.startsWith('/logout')) {
-        return '/logout';
-      }
-      return '/logout?next=' + path;
-    },
-  },
-  watch: {
-    $route: function () {
-      this.collapse();
-    },
-    user: function () {
-      if (this.user) {
-        this.$store.dispatch('updateNotificationCount');
-      }
-    },
-  },
-  mountedTriggersWatchers: true,
-  methods: {
-    collapse: function () {
-      this.collapsed = true;
-    },
-  },
-};
-</script>
-
 <style lang="scss" module>
 @import "../style/constants";
 

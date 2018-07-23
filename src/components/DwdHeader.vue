@@ -48,7 +48,7 @@
               <router-link to="/notifications"
                            title="Notifications">
                 <span class="fas fa-bell" :class="$style.alertBadge">
-                  <span v-if="notificationCount > 0"></span>
+                  <span v-if="hasNotifications"></span>
                 </span>
                 <span v-if="!collapsed">Notifications</span>
               </router-link>
@@ -84,7 +84,7 @@ export default {
   computed: {
     ...mapState([
       'user',
-      'notificationCount',
+      'hasNotifications',
     ]),
     loginUrl: function () {
       let path = this.$route.fullPath;
@@ -107,7 +107,7 @@ export default {
     },
     user: function () {
       if (this.user) {
-        this.$store.dispatch('updateNotificationCount');
+        this.$store.dispatch('updateHasNotifications');
       }
     },
   },
