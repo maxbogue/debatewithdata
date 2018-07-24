@@ -28,9 +28,6 @@
           <li>
             <router-link to="/guide" title="Guide">Guide</router-link>
           </li>
-          <li>
-            <router-link to="/activity" title="Activity">Activity</router-link>
-          </li>
         </ul>
         <ul :class="$style.navbarNavRight">
           <template v-if="user">
