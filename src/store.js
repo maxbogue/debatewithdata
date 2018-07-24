@@ -220,9 +220,8 @@ const makeStoreOptions = ($http) => ({
       commit('setData', res.data);
       return res.data;
     },
-    getNotifications: async function ({ commit }, { until }) {
-      let params = { until };
-      let promise = $http.get('/api/notifications', { params });
+    getNotifications: async function ({ commit }) {
+      let promise = $http.get('/api/notifications');
       let res = await wrapLoading(commit, promise);
       commit('setData', res.data);
       return res.data.results;

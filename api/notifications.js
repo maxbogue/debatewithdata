@@ -25,10 +25,7 @@ router.get('/', async function (req, res) {
     throw new AuthError();
   }
 
-  let until = req.query.until;
-  if (!until) {
-    throw new ClientError('"until" query parameter is required.');
-  }
+  let until = new Date();
 
   let queries = [Topic, Claim, Source].map((Item) => Item
     .itemQuery(user)
@@ -54,6 +51,7 @@ router.get('/', async function (req, res) {
     sources: Source.processQueryResults(sourceResults),
     results: {
       items,
+      until,
       readUntil: user.caughtUpAt,
     },
   });

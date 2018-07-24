@@ -7,6 +7,15 @@ export async function asyncForOwn(obj, f) {
   }
 }
 
+export function any(ls, f) {
+  for (let e of ls) {
+    if (f(e)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function stripTabs(s) {
   return s.replace(/\t/g, '');
 }

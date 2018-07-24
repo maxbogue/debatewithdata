@@ -4,12 +4,13 @@
     Notifications
     <button class="dwd-btn dwd-btn-primary"
             :class="$style.markRead"
+            :disabled="!hasNotifications"
             @click="markRead">Mark Read</button>
   </h2>
   <ul v-if="items" :class="$style.activity">
     <li v-for="{ type, item } in items"
         :key="item.id"
-        :class="{ [$style.read]: item.updatedAt < readUntil }">
+        :class="{ [$style.read]: isItemRead(item) }">
       <div :class="$style.timestamp">{{ item.updatedAt | timestamp }}</div>
       <item-block :class="$style.item"
                   :type="type"
@@ -25,24 +26,36 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 import ItemBlock from '../components/ItemBlock.vue';
+import { any } from '../../common/utils';
 
 export default {
   components: {
     ItemBlock,
   },
   data: () => ({
-    until: new Date().toISOString(),
+    until: null,
     readUntil: null,
     items: null,
   }),
+  computed: {
+    ...mapState(['hasNotifications']),
+  },
   mounted: async function () {
-    let until = this.until;
-    let results = await this.$store.dispatch('getNotifications', { until });
+    let results = await this.$store.dispatch('getNotifications');
+    this.until = results.until;
     this.readUntil = results.readUntil;
     this.items = results.items.map(this.lookupItemWithType);
+    let hasNotifications = any(this.items,
+                               ({ item }) => !this.isItemRead(item));
+    this.$store.commit('setHasNotifications', hasNotifications);
   },
   methods: {
+    isItemRead: function (item) {
+      return item.updatedAt < this.readUntil;
+    },
     markRead: async function () {
       await this.$store.dispatch('readNotifications', { until: this.until });
       this.readUntil = this.until;

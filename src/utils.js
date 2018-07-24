@@ -309,7 +309,8 @@ export var DwdUtilsMixin = {
       throw new Error(`Invalid item type: ${type}`);
     },
     lookupItemWithType: function ({ type, id }) {
-      return { type, item: this.lookupItem(type, id) };
+      let item = this.lookupItem(type, id);
+      return { type, item };
     },
     displayItemType: function (type) {
       return type === ItemType.SOURCE ? 'data' : type;
