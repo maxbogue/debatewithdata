@@ -24,8 +24,9 @@ module.exports = [
     name: 'client',
     entry: './src/main.js',
     output: {
-      path: path.resolve(__dirname, 'build'),
-      filename: 'index.js'
+      path: path.resolve(__dirname, 'build/js'),
+      publicPath: '/js/',
+      filename: '[name].js'
     },
   }),
 ];

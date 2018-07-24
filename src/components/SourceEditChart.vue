@@ -41,8 +41,10 @@
 
 <script>
 import DwdInput from './DwdInput.vue';
-import SourceChart from './SourceChart.vue';
 import { deserializeTable } from '../../common/utils';
+
+const SourceChart = () =>
+  import(/* webpackChunkName: "chart" */ './SourceChart.vue');
 
 const UNIT_REGEX = /^(.+) \((.+)\)$/;
 

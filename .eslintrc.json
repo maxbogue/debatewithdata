@@ -10,6 +10,7 @@
         "plugin:vue/recommended"
     ],
     "parserOptions": {
+        "parser": "babel-eslint",
         "ecmaVersion": 8,
         "sourceType": "module"
     },

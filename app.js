@@ -7,9 +7,7 @@ import api from './api';
 import expressLogger from './base/expressLogger';
 
 const INDEX_PATH = path.resolve(__dirname, 'index.html');
-const JS_FILE = 'index.js';
-const JS_PATH = path.resolve(__dirname, 'build', JS_FILE);
-const JS_MAP_PATH = JS_PATH + '.map';
+const JS_PATH = path.resolve(__dirname, 'build', 'js');
 
 const app = express();
 app.set('trust proxy', 'loopback');
@@ -19,12 +17,8 @@ const sendIndex = function (req, res) {
   res.sendFile(INDEX_PATH);
 };
 
-app.get('/index.js', function (req, res) {
-  res.sendFile(JS_PATH);
-});
-
-app.get('/index.js.map', function (req, res) {
-  res.sendFile(JS_MAP_PATH);
+app.get('/js/:filename', function (req, res) {
+  res.sendFile(path.resolve(JS_PATH, req.params.filename));
 });
 
 app.get('/', sendIndex);

@@ -66,10 +66,12 @@
 </template>
 
 <script>
-import SourceChart from './SourceChart.vue';
 import SourceTableDiff from './SourceTableDiff.vue';
 import { diff } from '../utils';
 import { SourceType } from '../../common/constants';
+
+const SourceChart = () =>
+  import(/* webpackChunkName: "chart" */ './SourceChart.vue');
 
 const EMPTY_SOURCE = {
   url: '',

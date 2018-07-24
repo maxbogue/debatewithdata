@@ -7,11 +7,9 @@ import Account from './pages/Account.vue';
 import Activity from './pages/Activity.vue';
 import Admin from './pages/Admin.vue';
 import Claim from './pages/Claim.vue';
-import ClaimEdit from './pages/ClaimEdit.vue';
 import Contact from './pages/Contact.vue';
 import ForgotPassword from './pages/ForgotPassword.vue';
 import Guide from './pages/Guide.vue';
-import History from './pages/History.vue';
 import Home from './pages/Home.vue';
 import Items from './pages/Items.vue';
 import Login from './pages/Login.vue';
@@ -20,12 +18,20 @@ import Notifications from './pages/Notifications.vue';
 import Register from './pages/Register.vue';
 import ResetPassword from './pages/ResetPassword.vue';
 import Source from './pages/Source.vue';
-import SourceEdit from './pages/SourceEdit.vue';
 import Topic from './pages/Topic.vue';
-import TopicEdit from './pages/TopicEdit.vue';
 import User from './pages/User.vue';
 import VerifyEmail from './pages/VerifyEmail.vue';
 import { ItemType } from '../common/constants';
+
+const History = () =>
+  import(/* webpackChunkName: "history" */ './pages/History.vue');
+
+const ClaimEdit = () =>
+  import(/* webpackChunkName: "edit" */ './pages/ClaimEdit.vue');
+const SourceEdit = () =>
+  import(/* webpackChunkName: "edit" */ './pages/SourceEdit.vue');
+const TopicEdit = () =>
+  import(/* webpackChunkName: "edit" */ './pages/TopicEdit.vue');
 
 Vue.use(VueRouter);
 
