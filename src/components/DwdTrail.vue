@@ -115,10 +115,10 @@ export default {
       position: absolute;
       bottom: 0;
       left: calc(50% - #{$accent-border-width / 2});
-      width: 2px;
+      width: 4px;
       height: $mini-block-spacing;
       transform: translate(-50%, 100%);
-      background: $background-light-accent;
+      background: $white-accent;
     }
   }
 }
