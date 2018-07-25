@@ -14,6 +14,7 @@ import Home from './pages/Home.vue';
 import Items from './pages/Items.vue';
 import Login from './pages/Login.vue';
 import Logout from './pages/Logout.vue';
+import NotFound from './pages/NotFound.vue';
 import Notifications from './pages/Notifications.vue';
 import Register from './pages/Register.vue';
 import ResetPassword from './pages/ResetPassword.vue';
@@ -82,6 +83,7 @@ const routerOptions = {
     { path: '/topics/add', component: TopicEdit },
     { path: '/user/:username', component: User, props: true },
     { path: '/verify-email', component: VerifyEmail },
+    { path: '*', component: NotFound },
   ],
 };
 

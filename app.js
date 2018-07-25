@@ -53,6 +53,11 @@ app.get('/verify-email', sendIndex);
 
 app.use('/api', api);
 
+app.get('*', function (req, res) {
+  res.status(404);
+  res.sendFile(INDEX_PATH);
+});
+
 export default app;
 
 if (process.env.NODE_ENV !== 'test') {
