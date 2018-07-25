@@ -11,12 +11,14 @@
         <a href="https://twitter.com/debatewithdata"
            title="Twitter"
            target="_blank"
+           rel="noopener"
            class="fab fa-twitter"></a>
       </li>
       <li>
         <a href="https://github.com/maxbogue/debatewithdata"
            title="GitHub Repo"
            target="_blank"
+           rel="noopener"
            class="fab fa-github"></a>
       </li>
     </ul>

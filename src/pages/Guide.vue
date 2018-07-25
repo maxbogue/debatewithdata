@@ -10,10 +10,12 @@
     discovery of the key claims for an area of debate.
   </p>
   <p>
-    Please explore, add and edit content, and email <a
-      href="mailto:feedback@debatewithdata.org"
-      target="_blank">feedback@debatewithdata.org</a> with any feedback, bugs,
-    features requests, or other suggestions that you have.
+    Please explore, add and edit content, and email
+    <a href="mailto:feedback@debatewithdata.org"
+       target="_blank"
+       rel="noopener">feedback@debatewithdata.org</a>
+    with any feedback, bugs, features requests, or other suggestions that you
+    have.
   </p>
 
   <h2>Claims <dwd-anchor name="claims" /></h2>
@@ -76,7 +78,9 @@
   <p>
     The description of a topic can contain markdown-style links. For example,
     [Wikipedia](https://www.wikipedia.org/) will display as
-    <a href="https://www.wikipedia.org/" target="_blank">Wikipedia</a>.
+    <a href="https://www.wikipedia.org/"
+       target="_blank"
+       rel="noopener">Wikipedia</a>.
     Remember, these links should be neutral sources of background information
     only. Wikipedia tends to be perfect for this.
   </p>
@@ -132,7 +136,9 @@
     <h3 :id="flag">{{ data.name }} <dwd-anchor :name="flag" /></h3>
     <p :class="$style.links">
       <span v-for="[title, url] in data.links" :key="title">
-        <a :href="url" target="_blank">{{ title }}</a>
+        <a :href="url"
+           target="_blank"
+           rel="noopener">{{ title }}</a>
       </span>
     </p>
     <p v-html="data.desc"></p>
