@@ -167,7 +167,7 @@ export default function (sequelize, DataTypes, knex) {
           publication: 'h.publication',
         })
         .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
-        .leftOuterJoin(knex.raw('blobs AS t'), 'h.table_hash', 'b.hash');
+        .leftOuterJoin(knex.raw('blobs AS t'), 'h.table_hash', 't.hash');
     }
 
     Source.itemQuery = function (user) {

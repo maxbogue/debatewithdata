@@ -72,6 +72,14 @@ const AUTHORITY = {
 
 const DELETE_MSG = 'Violates guidelines.';
 
+function createRandomTable() {
+  let tabData = [];
+  for (let i = 0; i < 10; i += 1) {
+    tabData.push(randomHexString(6));
+  }
+  return serializeTable('title', [tabData]);
+}
+
 describe('Source', function () {
   let user;
 
@@ -305,12 +313,8 @@ describe('Source', function () {
       });
     });
 
-    it('with tabular', async function () {
-      let tabData = [];
-      for (let i = 0; i < 10; i += 1) {
-        tabData.push(randomHexString(6));
-      }
-      let table = serializeTable('title', [tabData]);
+    it('with table', async function () {
+      let table = createRandomTable();
       let sourceRev = await Source.apiCreate(user, {
         ...MISC,
         table,
@@ -393,6 +397,28 @@ describe('Source', function () {
             id: s2r.sourceId,
             revId: s2r.id,
             ...ARTICLE,
+            ...STARS_AND_COMMENTS,
+          },
+        },
+      });
+    });
+
+    it('with table', async function () {
+      let table = createRandomTable();
+      let s1r = await Source.apiCreate(user, {
+        ...MISC,
+        table,
+      });
+      let sourceData = await Source.apiGetAll({ user });
+      expect(sourceData).to.deep.equal({
+        results: [s1r.sourceId],
+        numPages: 1,
+        sources: {
+          [s1r.sourceId]: {
+            id: s1r.sourceId,
+            revId: s1r.id,
+            ...MISC,
+            table,
             ...STARS_AND_COMMENTS,
           },
         },

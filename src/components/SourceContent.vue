@@ -25,7 +25,7 @@
          @click.stop>{{ source.url }}</a>
     </div>
     <template v-if="!abbreviated">
-      <source-chart v-if="source.chart"
+      <source-chart v-if="source.table && source.chart"
                     :chart="source.chart"
                     :table="source.table" />
       <source-table v-else-if="source.table" :table="source.table" />
