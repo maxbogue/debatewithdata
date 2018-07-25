@@ -18,7 +18,6 @@ export default {
 .count {
   margin: -8px -8px 8px 8px;
   float: right;
-  color: $transparent-light;
   font-size: 0.8em;
 }
 </style>

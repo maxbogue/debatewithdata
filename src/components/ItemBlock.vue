@@ -227,7 +227,7 @@ export default {
   &:global(.claim),
   &:global(.source) {
     margin: $mini-block-spacing auto 0;
-    font-size: 0.8em;
+    font-size: 1em;
 
     &:last-child {
       margin-bottom: -$mini-block-spacing;

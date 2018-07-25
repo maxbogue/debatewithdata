@@ -3,7 +3,7 @@
   <h3 class="center">{{ headerText }}</h3>
   <div class="flex-block" :class="$style.bar">
     <template v-if="!query">
-      <select v-model="sortBy">
+      <select v-model="sortBy" aria-label="Sort By">
         <option :value="Sort.STARS">Stars</option>
         <option :value="Sort.RECENT">Recent</option>
       </select>
@@ -15,7 +15,10 @@
             :class="starFilterClasses"
             @click="cycleStarFilter"></span>
     </template>
-    <input v-model="query" type="text" placeholder="search">
+    <input v-model="query"
+           type="text"
+           placeholder="search"
+           aria-label="Search">
     <router-link v-if="type === ItemType.TOPIC && user && user.admin"
                  to="/topics/add"
                  class="dwd-btn pink-dark">New Topic</router-link>
