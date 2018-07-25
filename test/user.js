@@ -32,6 +32,12 @@ describe('User', function () {
         .rejectedWith(ClientError);
     });
 
+    it('fails with duplicate email', async function () {
+      await User.register(USERNAME, PASSWORD, EMAIL);
+      await expect(User.register(USERNAME + '2', PASSWORD, EMAIL)).to.be
+        .rejectedWith(ClientError);
+    });
+
     it('fails with bad args', async function () {
       await expect(User.register('ab', PASSWORD, EMAIL)).to.be
         .rejectedWith(ClientError, /at least 3/, 'short username');

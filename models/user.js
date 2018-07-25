@@ -52,6 +52,7 @@ export default function (sequelize, DataTypes) {
     },
     email: {
       type: DataTypes.TEXT,
+      unique: true,
       allowNull: false,
     },
     emailVerificationToken: {
@@ -104,10 +105,14 @@ export default function (sequelize, DataTypes) {
             transaction,
           });
         } catch (err) {
-          if (err instanceof sequelize.UniqueConstraintError
-              && err.fields.username) {
-            throw new ClientError(
-              `Username '${err.fields.username}' already exists.`);
+          if (err instanceof sequelize.UniqueConstraintError) {
+            if (err.fields.username) {
+              throw new ClientError(
+                `Username '${err.fields.username}' already exists.`);
+            } else if (err.fields.email) {
+              throw new ClientError(
+                `Email '${err.fields.email}' already in use.`);
+            }
           }
           throw err;
         }
