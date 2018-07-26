@@ -9,6 +9,9 @@
 
 <script>
 export default {
+  metaInfo: {
+    title: 'Admin',
+  },
   methods: {
     topicRoots: async function () {
       if (window.confirm('Are you sure?')) {

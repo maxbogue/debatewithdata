@@ -23,6 +23,10 @@ export default {
     DwdLoader,
     ErrorModal,
   },
+  metaInfo: {
+    title: 'Default',
+    titleTemplate: '%s - DebateWithData',
+  },
   computed: {
     ...mapState([
       'loading',

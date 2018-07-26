@@ -65,6 +65,13 @@ export default {
       }
     }
   },
+  metaInfo: function () {
+    let title = `Topic ${this.id}`;
+    if (this.topic) {
+      title = this.topic.title;
+    }
+    return { title };
+  },
   data: () => ({
     showComments: false,
   }),

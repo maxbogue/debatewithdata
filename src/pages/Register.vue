@@ -32,6 +32,9 @@ export default {
   components: {
     DwdLoader,
   },
+  metaInfo: {
+    title: 'Register',
+  },
   data: () => ({
     success: false,
     username: '',

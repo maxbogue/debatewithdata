@@ -4,6 +4,9 @@
 
 <script>
 export default {
+  metaInfo: {
+    title: 'Logout',
+  },
   computed: {
     nextUrl: function () {
       return this.$route.query.next || '/';

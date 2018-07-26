@@ -35,6 +35,9 @@ export default {
   components: {
     ItemBlock,
   },
+  metaInfo: {
+    title: 'Notifications',
+  },
   data: () => ({
     until: null,
     readUntil: null,

@@ -83,6 +83,11 @@ export default {
       });
     }
   },
+  metaInfo: function () {
+    return {
+      title: `Editing claim ${this.id}`,
+    };
+  },
   props: {
     id: { type: String, default: '' },
     seed: { type: Object, default: null },

@@ -65,7 +65,9 @@ import map from 'lodash/map';
 import DwdTrail from '../components/DwdTrail.vue';
 import IconAdd from '../components/IconAdd.vue';
 import ItemBlock from '../components/ItemBlock.vue';
-import { combineAndSortPoints, rotateWithIndexes, parseTrail } from '../utils';
+import {
+  combineAndSortPoints, rotateWithIndexes, parseTrail, titleFromText
+} from '../utils';
 import { ItemType } from '../../common/constants';
 
 export default {
@@ -88,6 +90,13 @@ export default {
         await promise;
       }
     }
+  },
+  metaInfo: function () {
+    let title = `Claim ${this.id}`;
+    if (this.claim) {
+      title = titleFromText(this.claim.text);
+    }
+    return { title };
   },
   data: () => ({
     showComments: false,

@@ -24,6 +24,9 @@ export default {
   components: {
     DwdLoader,
   },
+  metaInfo: {
+    title: 'Forgot Password',
+  },
   data: () => ({
     success: false,
     email: '',

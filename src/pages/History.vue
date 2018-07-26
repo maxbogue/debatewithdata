@@ -70,6 +70,12 @@ export default {
       return dateFormat(date, 'yyyy-mm-dd HH:MM');
     },
   },
+  metaInfo: function () {
+    let { type, id } = this.$route.params;
+    return {
+      title: `History for ${type} ${id}`,
+    };
+  },
   data: () => ({
     ItemType,
     data: null,

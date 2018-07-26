@@ -14,8 +14,16 @@ import sortBy from 'lodash/sortBy';
 import auth from './auth';
 import { ItemType, PointType } from '../common/constants';
 
-const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 const textDiff = new Diff();
+const ONE_DAY_MS = 1000 * 60 * 60 * 24;
+const TITLE_TEXT_LENGTH = 75;
+
+export function titleFromText(text) {
+  if (text.length < TITLE_TEXT_LENGTH) {
+    return text;
+  }
+  return text.slice(0, TITLE_TEXT_LENGTH - 3) + '...';
+}
 
 export function authRedirect(to, from, next) {
   if (!auth.getUser()) {

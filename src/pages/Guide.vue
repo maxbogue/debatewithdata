@@ -157,6 +157,9 @@ export default {
   components: {
     DwdAnchor,
   },
+  metaInfo: {
+    title: 'Guide',
+  },
   computed: {
     flags: function () {
       let flagList = map(FlagData, (v, k) => [k, v]);

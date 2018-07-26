@@ -27,6 +27,9 @@ export default {
   components: {
     DwdLoader,
   },
+  metaInfo: {
+    title: 'Login',
+  },
   data: () => ({
     username: '',
     password: '',

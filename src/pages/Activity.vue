@@ -15,6 +15,9 @@ export default {
     ActivityList,
     DwdLoader,
   },
+  metaInfo: {
+    title: 'Activity',
+  },
   data: () => ({
     activity: null,
   }),

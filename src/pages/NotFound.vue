@@ -6,3 +6,11 @@
   </div>
 </div>
 </template>
+
+<script>
+export default {
+  metaInfo: {
+    title: 'Not Found',
+  },
+};
+</script>

@@ -19,6 +19,11 @@ export default {
     ActivityList,
     DwdLoader,
   },
+  metaInfo: function () {
+    return {
+      title: `User ${this.username}`,
+    };
+  },
   props: {
     username: { type: String, required: true },
   },

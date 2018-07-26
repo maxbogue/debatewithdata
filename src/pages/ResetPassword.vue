@@ -20,6 +20,9 @@ export default {
   components: {
     DwdLoader,
   },
+  metaInfo: {
+    title: 'Reset Password',
+  },
   data: () => ({
     password: '',
   }),

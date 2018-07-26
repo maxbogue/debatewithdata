@@ -1,5 +1,6 @@
 import 'normalize.css/normalize.css';
 import axios from 'axios';
+import Meta from 'vue-meta';
 import Vue from 'vue';
 
 import './style/index.scss';
@@ -8,6 +9,7 @@ import { DwdUtilsMixin, axiosErrorToString } from './utils';
 import { createRouter } from './router';
 import { createStore } from './store';
 
+Vue.use(Meta);
 Vue.mixin(DwdUtilsMixin);
 
 function axiosError(err) {

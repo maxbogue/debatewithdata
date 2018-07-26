@@ -22,7 +22,7 @@ import map from 'lodash/map';
 import DwdLoader from '../components/DwdLoader.vue';
 import DwdTrail from '../components/DwdTrail.vue';
 import ItemBlock from '../components/ItemBlock.vue';
-import { parseTrail } from '../utils';
+import { parseTrail, titleFromText } from '../utils';
 import { ItemType } from '../../common/constants';
 
 export default {
@@ -44,6 +44,13 @@ export default {
         await promise;
       }
     }
+  },
+  metaInfo: function () {
+    let title = `Data ${this.id}`;
+    if (this.source) {
+      title = titleFromText(this.source.text);
+    }
+    return { title };
   },
   data: () => ({
     showComments: false,

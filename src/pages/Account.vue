@@ -19,6 +19,9 @@
 import { mapState } from 'vuex';
 
 export default {
+  metaInfo: {
+    title: 'Account',
+  },
   computed: {
     ...mapState(['user']),
   },

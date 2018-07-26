@@ -64,6 +64,14 @@ export default {
     DwdLoader,
     ItemBlock,
   },
+  metaInfo: function () {
+    let title = {
+      [ItemType.TOPIC]: 'Topics',
+      [ItemType.CLAIM]: 'Claims',
+      [ItemType.SOURCE]: 'Data',
+    }[this.type];
+    return { title };
+  },
   props: {
     type: { type: String, required: true },
   },

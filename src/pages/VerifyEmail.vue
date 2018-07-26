@@ -12,6 +12,11 @@ export default {
   components: {
     DwdLoader,
   },
+  metaInfo: function () {
+    return {
+      title: 'Verify Email',
+    };
+  },
   data: () => ({
     text: 'Verifying...',
   }),
