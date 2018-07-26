@@ -1,11 +1,12 @@
 /* global __dirname */
 
+const merge = require('webpack-merge');
 const nodeExternals = require('webpack-node-externals');
 const { EnvironmentPlugin } = require('webpack');
 
-const { extendBaseConfig } = require('./webpack.base.config.js');
+const { baseConfig } = require('./webpack.base.config.js');
 
-module.exports = extendBaseConfig({
+module.exports = merge(baseConfig, {
   mode: 'development',
   target: 'node',
   plugins: [

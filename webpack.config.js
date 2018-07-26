@@ -1,12 +1,13 @@
 /* global __dirname */
 
+const merge = require('webpack-merge');
 const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 
-const { extendBaseConfig } = require('./webpack.base.config.js');
+const { baseConfig } = require('./webpack.base.config.js');
 
 module.exports = [
-  extendBaseConfig({
+  merge(baseConfig, {
     name: 'server',
     target: 'node',
     entry: './app.js',
@@ -20,7 +21,7 @@ module.exports = [
     },
     externals: nodeExternals(),
   }),
-  extendBaseConfig({
+  merge(baseConfig, {
     name: 'client',
     entry: './src/main.js',
     output: {

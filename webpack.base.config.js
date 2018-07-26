@@ -1,4 +1,3 @@
-const { cloneDeep, isArray, mergeWith } = require('lodash');
 const { VueLoaderPlugin } = require('vue-loader');
 
 const baseConfig = {
@@ -85,16 +84,4 @@ const baseConfig = {
   },
 };
 
-function concatArray(objValue, srcValue) {
-  if (isArray(objValue)) {
-    return objValue.concat(srcValue);
-  }
-  // Indicates to use default merge strategy.
-  return undefined;
-}
-
-function extendBaseConfig(config) {
-  return mergeWith(cloneDeep(baseConfig), config, concatArray);
-}
-
-module.exports = { baseConfig, extendBaseConfig };
+module.exports = { baseConfig };
