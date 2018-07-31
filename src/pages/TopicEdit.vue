@@ -89,11 +89,11 @@ import DeleteButton from '../components/DeleteButton.vue';
 import FixedBottom from '../components/FixedBottom.vue';
 import TopicEditAndReviewBlock from '../components/TopicEditAndReviewBlock.vue';
 import TopicLinkModal from '../components/TopicLinkModal.vue';
-import { ItemType } from '../../common/constants';
+import { ItemType } from '../common/constants';
 import {
   authRedirect, diffIdLists, parseTrail, pipe, stableRandom, starCount, starred
 } from '../utils';
-import { topicsAreEqual } from '../../common/equality';
+import { topicsAreEqual } from '../common/equality';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
 

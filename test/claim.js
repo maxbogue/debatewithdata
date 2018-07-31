@@ -1,10 +1,10 @@
 import chai from 'chai';
 
-import { Claim, ClaimRev } from '../models';
-import { Filter, Sort } from '../common/constants';
-import { Flag } from '../common/flag';
-import { ConflictError, NotFoundError } from '../api/error';
-import { ValidationError } from '../common/validate';
+import { Claim, ClaimRev } from '../src/models';
+import { Filter, Sort } from '../src/common/constants';
+import { Flag } from '../src/common/flag';
+import { ConflictError, NotFoundError } from '../src/api/error';
+import { ValidationError } from '../src/common/validate';
 import { FOO, BAR, BAZ, STARS_AND_COMMENTS,
   TestSource, registerAndVerifyUser } from './utils';
 

@@ -40,10 +40,10 @@ import DeleteButton from '../components/DeleteButton.vue';
 import DwdLoader from '../components/DwdLoader.vue';
 import FixedBottom from '../components/FixedBottom.vue';
 import PointsEdit from '../components/PointsEdit.vue';
-import { ItemType } from '../../common/constants';
+import { ItemType } from '../common/constants';
 import { authRedirect, combineAndSortPoints, parseTrail,
   splitPoints } from '../utils';
-import { claimsAreEqual } from '../../common/equality';
+import { claimsAreEqual } from '../common/equality';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
 

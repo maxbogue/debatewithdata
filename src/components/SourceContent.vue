@@ -37,7 +37,7 @@
 <script>
 import SourceTable from './SourceTable.vue';
 import { itemErrorMessage } from '../utils';
-import { SourceType } from '../../common/constants';
+import { SourceType } from '../common/constants';
 
 const SourceChart = () =>
   import(/* webpackChunkName: "chart" */ './SourceChart.vue');

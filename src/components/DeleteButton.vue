@@ -26,7 +26,7 @@
 <script>
 import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
-import { validateClaim } from '../../common/validate';
+import { validateClaim } from '../common/validate';
 
 export default {
   components: {

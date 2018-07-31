@@ -5,9 +5,9 @@ import { expect } from 'chai';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 
 import ClaimEdit from '../../src/pages/ClaimEdit.vue';
-import { genId } from '../../models/utils';
+import { genId } from '../../src/models/utils';
 import { DwdUtilsMixin } from '../../src/utils';
-import { ItemType } from '../../common/constants';
+import { ItemType } from '../../src/common/constants';
 
 const localVue = createLocalVue();
 localVue.use(VueRouter);

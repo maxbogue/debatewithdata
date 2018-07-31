@@ -39,9 +39,9 @@ import DeleteButton from '../components/DeleteButton.vue';
 import FormValid from '../components/FormValid.vue';
 import SourceEditContent from '../components/SourceEditContent.vue';
 import SourceRevContent from '../components/SourceRevContent.vue';
-import { ItemType } from '../../common/constants';
+import { ItemType } from '../common/constants';
 import { authRedirect, parseTrail } from '../utils';
-import { sourcesAreEqual } from '../../common/equality';
+import { sourcesAreEqual } from '../common/equality';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
 

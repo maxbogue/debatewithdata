@@ -41,7 +41,7 @@
 
 <script>
 import DwdInput from './DwdInput.vue';
-import { deserializeTable } from '../../common/utils';
+import { deserializeTable } from '../common/utils';
 
 const SourceChart = () =>
   import(/* webpackChunkName: "chart" */ './SourceChart.vue');

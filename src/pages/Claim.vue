@@ -68,7 +68,7 @@ import ItemBlock from '../components/ItemBlock.vue';
 import {
   combineAndSortPoints, rotateWithIndexes, parseTrail, titleFromText
 } from '../utils';
-import { ItemType } from '../../common/constants';
+import { ItemType } from '../common/constants';
 
 export default {
   components: {

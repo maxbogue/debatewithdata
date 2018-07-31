@@ -1,4 +1,4 @@
-import { knex, sequelize } from '../models';
+import { knex, sequelize } from '../src/models';
 
 beforeEach(function () {
   return sequelize.truncate({ cascade: true });

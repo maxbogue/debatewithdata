@@ -151,7 +151,7 @@ import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 
 import DwdAnchor from '../components/DwdAnchor.vue';
-import { FlagData } from '../../common/flag';
+import { FlagData } from '../common/flag';
 
 export default {
   components: {

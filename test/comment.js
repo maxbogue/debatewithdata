@@ -1,7 +1,7 @@
 import chai from 'chai';
 
-import { Claim, Comment } from '../models';
-import { ItemType } from '../common/constants';
+import { Claim, Comment } from '../src/models';
+import { ItemType } from '../src/common/constants';
 import { FOO, BAR, BAZ, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;

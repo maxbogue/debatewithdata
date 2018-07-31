@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { FlagData } from '../../common/flag';
+import { FlagData } from '../common/flag';
 
 export default {
   props: {

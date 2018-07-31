@@ -6,7 +6,7 @@ import Vuex from 'vuex';
 
 import auth from './auth';
 import { axiosErrorToString, walk } from './utils';
-import { validateItem } from '../common/validate';
+import { validateItem } from './common/validate';
 
 Vue.use(Vuex);
 

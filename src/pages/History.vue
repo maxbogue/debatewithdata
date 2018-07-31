@@ -54,7 +54,7 @@ import RevNav from '../components/RevNav.vue';
 import SourceRev from '../components/SourceRev.vue';
 import TopicRev from '../components/TopicRev.vue';
 import DwdLoader from '../components/DwdLoader.vue';
-import { ItemType } from '../../common/constants';
+import { ItemType } from '../common/constants';
 
 export default {
   components: {

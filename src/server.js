@@ -7,7 +7,7 @@ import api from './api';
 import expressLogger from './base/expressLogger';
 
 const INDEX_PATH = path.resolve(__dirname, 'index.html');
-const JS_PATH = path.resolve(__dirname, 'build', 'js');
+const JS_PATH = path.resolve(__dirname, '..', 'build', 'js');
 
 const app = express();
 app.set('trust proxy', 'loopback');

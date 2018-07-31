@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { ValidationError } from '../../common/validate';
+import { ValidationError } from '../common/validate';
 
 function uppercaseFirstLetter(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);

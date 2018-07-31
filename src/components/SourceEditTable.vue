@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { deserializeTable, serializeTable } from '../../common/utils';
+import { deserializeTable, serializeTable } from '../common/utils';
 
 export default {
   props: {

@@ -26,7 +26,7 @@
 import '../style/point.scss';
 import PointDiff from './PointDiff.vue';
 import PointEditModal from './PointEditModal.vue';
-import { PointType } from '../../common/constants';
+import { PointType } from '../common/constants';
 import { splitPoints } from '../utils';
 
 export default {

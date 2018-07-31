@@ -1,7 +1,7 @@
 import chai from 'chai';
 
-import { Graph } from '../common/graph';
-import { ValidationError } from '../common/validate';
+import { Graph } from '../src/common/graph';
+import { ValidationError } from '../src/common/validate';
 
 const expect = chai.expect;
 

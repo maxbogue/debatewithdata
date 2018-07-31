@@ -7,7 +7,7 @@
 <script>
 import Chart from 'chart.js/dist/Chart.js';
 
-import { deserializeTable } from '../../common/utils';
+import { deserializeTable } from '../common/utils';
 
 const COLORS = ['#e91e63', '#1e88e5', '#8e24aa', '#ffb300', '#43a047'];
 const UNIT_REGEX = /^(.+) \((.+)\)$/;

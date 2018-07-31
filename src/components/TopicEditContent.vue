@@ -33,7 +33,7 @@
 import dashify from 'dashify';
 
 import DwdInput from './DwdInput.vue';
-import { validateTopic } from '../../common/validate';
+import { validateTopic } from '../common/validate';
 
 function fixWhitespace(text) {
   let paragraphs = text.split(/\s*\n\s*\n\s*/);

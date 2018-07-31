@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { deserializeTable } from '../../common/utils';
+import { deserializeTable } from '../common/utils';
 
 export default {
   props: {

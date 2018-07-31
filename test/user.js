@@ -3,8 +3,8 @@ import chaiAsPromised from 'chai-as-promised';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 
-import { AuthError, ClientError } from '../api/error';
-import { User } from '../models';
+import { AuthError, ClientError } from '../src/api/error';
+import { User } from '../src/models';
 import { registerAndVerifyUser } from './utils';
 
 chai.use(chaiAsPromised);

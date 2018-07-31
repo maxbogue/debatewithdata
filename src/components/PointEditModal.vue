@@ -45,8 +45,8 @@ import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
 import SourceEditContent from './SourceEditContent.vue';
-import { isValid, validateClaim, validateSource } from '../../common/validate';
-import { PointType } from '../../common/constants';
+import { isValid, validateClaim, validateSource } from '../common/validate';
+import { PointType } from '../common/constants';
 
 const ID_REGEX = /^[0-9a-f]{12}$/;
 

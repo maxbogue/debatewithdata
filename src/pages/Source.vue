@@ -23,7 +23,7 @@ import DwdLoader from '../components/DwdLoader.vue';
 import DwdTrail from '../components/DwdTrail.vue';
 import ItemBlock from '../components/ItemBlock.vue';
 import { parseTrail, titleFromText } from '../utils';
-import { ItemType } from '../../common/constants';
+import { ItemType } from '../common/constants';
 
 export default {
   components: {

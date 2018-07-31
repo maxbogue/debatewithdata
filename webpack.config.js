@@ -10,7 +10,7 @@ module.exports = [
   merge(baseConfig, {
     name: 'server',
     target: 'node',
-    entry: './app.js',
+    entry: './src/server.js',
     output: {
       path: path.resolve(__dirname, 'build'),
       filename: 'main.js'
@@ -23,7 +23,7 @@ module.exports = [
   }),
   merge(baseConfig, {
     name: 'client',
-    entry: './src/main.js',
+    entry: './src/client.js',
     output: {
       path: path.resolve(__dirname, 'build/js'),
       publicPath: '/js/',

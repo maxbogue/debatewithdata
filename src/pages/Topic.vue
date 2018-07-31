@@ -43,7 +43,7 @@ import map from 'lodash/map';
 
 import DwdTrail from '../components/DwdTrail.vue';
 import ItemBlock from '../components/ItemBlock.vue';
-import { ItemType } from '../../common/constants';
+import { ItemType } from '../common/constants';
 import { parseTrail, sortByStars } from '../utils';
 
 export default {

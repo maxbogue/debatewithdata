@@ -22,7 +22,7 @@ import Source from './pages/Source.vue';
 import Topic from './pages/Topic.vue';
 import User from './pages/User.vue';
 import VerifyEmail from './pages/VerifyEmail.vue';
-import { ItemType } from '../common/constants';
+import { ItemType } from './common/constants';
 
 const History = () =>
   import(/* webpackChunkName: "history" */ './pages/History.vue');

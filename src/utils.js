@@ -12,7 +12,7 @@ import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
 
 import auth from './auth';
-import { ItemType, PointType } from '../common/constants';
+import { ItemType, PointType } from './common/constants';
 
 const textDiff = new Diff();
 const ONE_DAY_MS = 1000 * 60 * 60 * 24;

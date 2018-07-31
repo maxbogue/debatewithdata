@@ -35,8 +35,8 @@ import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
 import NeedsDataEdit from './NeedsDataEdit.vue';
-import { validateClaim } from '../../common/validate';
-import { ItemType } from '../../common/constants';
+import { validateClaim } from '../common/validate';
+import { ItemType } from '../common/constants';
 
 export default {
   components: {
