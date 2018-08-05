@@ -1,1 +1,1 @@
-require('jsdom-global')();
+require('jsdom-global')('', { url: 'http://localhost' });

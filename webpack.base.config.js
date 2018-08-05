@@ -1,5 +1,14 @@
 const { VueLoaderPlugin } = require('vue-loader');
 
+const styleLoader = 'vue-style-loader';
+
+const sassLoader = {
+  loader: 'sass-loader',
+  options: {
+    implementation: require('sass'),
+  },
+};
+
 const baseConfig = {
   module: {
     rules: [
@@ -15,12 +24,12 @@ const baseConfig = {
         use: 'babel-loader',
       },
       {
-        test: /\.css$/,
+        test: /\.(sa|sc|c)ss$/,
         oneOf: [
           {
             resourceQuery: /module/,
             use: [
-              'vue-style-loader',
+              styleLoader,
               {
                 loader: 'css-loader',
                 options: {
@@ -28,30 +37,10 @@ const baseConfig = {
                   localIdentName: '[local]_[hash:base64:5]'
                 }
               },
+              sassLoader,
             ]
           }, {
-            use: ['vue-style-loader', 'css-loader']
-          }
-        ],
-      },
-      {
-        test: /\.scss$/,
-        oneOf: [
-          {
-            resourceQuery: /module/,
-            use: [
-              'vue-style-loader',
-              {
-                loader: 'css-loader',
-                options: {
-                  modules: true,
-                  localIdentName: '[local]_[hash:base64:5]'
-                }
-              },
-              'sass-loader',
-            ]
-          }, {
-            use: ['vue-style-loader', 'css-loader', 'sass-loader']
+            use: [styleLoader, 'css-loader', sassLoader]
           }
         ],
       },
