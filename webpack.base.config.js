@@ -1,6 +1,8 @@
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
 
-const styleLoader = 'vue-style-loader';
+const styleLoader = process.env.NODE_ENV !== 'production'
+  ? 'vue-style-loader' : MiniCssExtractPlugin.loader;
 
 const sassLoader = {
   loader: 'sass-loader',
@@ -52,6 +54,9 @@ const baseConfig = {
   },
   plugins: [
     new VueLoaderPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
   ],
   externals: {
     // Unused drivers for knex.
