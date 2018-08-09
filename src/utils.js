@@ -11,7 +11,6 @@ import omit from 'lodash/omit';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
 
-import auth from './auth';
 import { ItemType, PointType } from './common/constants';
 
 const textDiff = new Diff();
@@ -23,14 +22,6 @@ export function titleFromText(text) {
     return text;
   }
   return text.slice(0, TITLE_TEXT_LENGTH - 3) + '...';
-}
-
-export function authRedirect(to, from, next) {
-  if (!auth.getUser()) {
-    next({ path: '/login', query: { next: to.fullPath } });
-  } else {
-    next();
-  }
 }
 
 export function pipe(...fns) {

@@ -40,7 +40,7 @@ import FormValid from '../components/FormValid.vue';
 import SourceEditContent from '../components/SourceEditContent.vue';
 import SourceRevContent from '../components/SourceRevContent.vue';
 import { ItemType } from '../common/constants';
-import { authRedirect, parseTrail } from '../utils';
+import { parseTrail } from '../utils';
 import { sourcesAreEqual } from '../common/equality';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
@@ -59,7 +59,6 @@ function confirmLeave(to, from, next) {
 }
 
 export default {
-  beforeRouteEnter: authRedirect,
   beforeRouteUpdate: confirmLeave,
   beforeRouteLeave: confirmLeave,
   components: {

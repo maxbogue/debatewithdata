@@ -8,50 +8,67 @@ import jwtDecode from 'jwt-decode';
 
 const SESSION_COOKIE_NAME = 'session';
 
-function setAuthToken(authToken) {
-  if (authToken) {
-    let encodedSession = window.btoa(JSON.stringify({ authToken }));
-    Cookies.set(SESSION_COOKIE_NAME, encodedSession);
-  } else {
-    Cookies.remove(SESSION_COOKIE_NAME);
+class Auth {
+  getUserFromToken(authToken) {
+    if (!authToken) {
+      return null;
+    }
+
+    let decoded = jwtDecode(authToken);
+
+    // Check for an expired token.
+    if (Date.now() / 1000 > decoded.exp) {
+      return null;
+    }
+
+    let user = decoded.user;
+    user.createdAt = new Date(user.createdAt);
+    user.username = decoded.sub;
+    return user;
+  }
+
+  getUser() {
+    let token = this.getAuthToken();
+    let user = this.getUserFromToken(token);
+    if (token && !user) {
+      // Token must be expired.
+      setAuthToken(null);
+    }
+    return user;
   }
 }
 
-function getAuthToken() {
-  let encodedSession = Cookies.get(SESSION_COOKIE_NAME);
-  if (!encodedSession) {
-    return '';
+export class BrowserAuth extends Auth {
+  setAuthToken(authToken) {
+    if (authToken) {
+      let encodedSession = window.btoa(JSON.stringify({ authToken }));
+      Cookies.set(SESSION_COOKIE_NAME, encodedSession);
+    } else {
+      Cookies.remove(SESSION_COOKIE_NAME);
+    }
   }
-  let session = JSON.parse(window.atob(encodedSession));
-  return session && session.authToken || '';
+
+  getAuthToken() {
+    let encodedSession = Cookies.get(SESSION_COOKIE_NAME);
+    if (!encodedSession) {
+      return '';
+    }
+    let session = JSON.parse(window.atob(encodedSession));
+    return session && session.authToken || '';
+  }
 }
 
-function getUserFromToken(authToken) {
-  if (!authToken) {
-    return null;
+export class ServerAuth extends Auth {
+  constructor(authToken) {
+    super();
+    this.authToken = authToken;
   }
 
-  let decoded = jwtDecode(authToken);
-
-  // Check for an expired token.
-  if (Date.now() / 1000 > decoded.exp) {
-    return null;
+  setAuthToken(authToken) {
+    this.authToken = authToken;
   }
 
-  let user = decoded.user;
-  user.createdAt = new Date(user.createdAt);
-  user.username = decoded.sub;
-  return user;
+  getAuthToken() {
+    return this.authToken;
+  }
 }
-
-function getUser() {
-  let token = getAuthToken();
-  let user = getUserFromToken(token);
-  if (token && !user) {
-    // Token must be expired.
-    setAuthToken(null);
-  }
-  return user;
-}
-
-export default { getAuthToken, getUser, setAuthToken };

@@ -4,7 +4,6 @@ import forOwn from 'lodash/forOwn';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import auth from './auth';
 import { axiosErrorToString, walk } from './utils';
 import { validateItem } from './common/validate';
 
@@ -35,13 +34,15 @@ function sortFilterParam([s, b]) {
 }
 
 function windowIsSingleColumn() {
-  return window.innerWidth < 768;
+  return global.window ? window.innerWidth < 768 : false;
 }
 
 function singleColumnPlugin(store) {
-  window.addEventListener('resize', () => {
-    store.commit('setSingleColumn', windowIsSingleColumn());
-  });
+  if (global.window) {
+    window.addEventListener('resize', () => {
+      store.commit('setSingleColumn', windowIsSingleColumn());
+    });
+  }
 }
 
 async function wrapLoading(commit, promise) {
@@ -72,7 +73,7 @@ async function wrapLoader(loader, promise) {
   }
 }
 
-const makeStoreOptions = ($http) => ({
+const makeStoreOptions = (auth, $http) => ({
   state: {
     topics: {},
     claims: {},
@@ -253,8 +254,8 @@ const makeStoreOptions = ($http) => ({
   plugins: [singleColumnPlugin],
 });
 
-export function createStore($http) {
-  let store = new Vuex.Store(makeStoreOptions($http));
+export function createStore(auth, http) {
+  let store = new Vuex.Store(makeStoreOptions(auth, http));
   store.commit('setUserFromToken', auth.getAuthToken());
   return store;
 }

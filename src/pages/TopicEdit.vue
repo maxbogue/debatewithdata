@@ -91,7 +91,7 @@ import TopicEditAndReviewBlock from '../components/TopicEditAndReviewBlock.vue';
 import TopicLinkModal from '../components/TopicLinkModal.vue';
 import { ItemType } from '../common/constants';
 import {
-  authRedirect, diffIdLists, parseTrail, pipe, stableRandom, starCount, starred
+  diffIdLists, parseTrail, pipe, stableRandom, starCount, starred
 } from '../utils';
 import { topicsAreEqual } from '../common/equality';
 
@@ -111,7 +111,6 @@ function confirmLeave(to, from, next) {
 }
 
 export default {
-  beforeRouteEnter: authRedirect,
   beforeRouteUpdate: confirmLeave,
   beforeRouteLeave: confirmLeave,
   components: {

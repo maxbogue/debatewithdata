@@ -2,20 +2,52 @@ import 'systemd';
 import config from 'config';
 import cookieSession from 'cookie-session';
 import express from 'express';
+import fs from 'fs';
 import path from 'path';
+import { createRenderer } from 'vue-server-renderer';
 
 import ApiImpl from './api/impl';
 import expressLogger from './base/expressLogger';
 import { createApiRouter } from './api/router';
+import { createApp } from './app';
+import { ServerAuth } from './auth';
 
 const INDEX_PATH = path.resolve(__dirname, 'index.html');
 const JS_PATH = path.resolve(__dirname, '..', 'build', 'js');
 
-const app = express();
-app.set('trust proxy', 'loopback');
-app.use(expressLogger);
+const renderer = createRenderer({
+  template: fs.readFileSync('./src/index.html', 'utf-8'),
+});
 
-app.use(cookieSession({
+function createAppFromContext(context) {
+  // since there could potentially be asynchronous route hooks or components,
+  // we will be returning a Promise so that the server can wait until
+  // everything is ready before rendering.
+  return new Promise((resolve, reject) => {
+    const auth = new ServerAuth(context.authToken);
+    const { app, router } = createApp(auth);
+
+    // set server-side router's location
+    router.push(context.url)
+
+    // wait until router has resolved possible async components and hooks
+    router.onReady(() => {
+      const matchedComponents = router.getMatchedComponents()
+      // no matched routes, reject with 404
+      if (!matchedComponents.length) {
+        return reject({ code: 404 })
+      }
+
+      // the Promise should resolve to the app instance so it can be rendered
+      resolve(app)
+    }, reject)
+  })
+}
+
+const server = express();
+server.set('trust proxy', 'loopback');
+server.use(expressLogger);
+server.use(cookieSession({
   name: 'session',
   secret: config.get('secretKey'),
   maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -24,53 +56,30 @@ app.use(cookieSession({
   sameSite: 'lax',
 }));
 
-app.get('/js/:filename', function (req, res) {
+server.get('/js/:filename', function (req, res) {
   res.sendFile(path.resolve(JS_PATH, req.params.filename));
 });
 
-function sendIndex(req, res) {
-  res.sendFile(INDEX_PATH);
-}
+server.use('/api', createApiRouter(new ApiImpl()));
 
-app.get('/', sendIndex);
-app.get('/:type/:id/history', sendIndex);
-app.get('/:type/:id/rev/:revId', sendIndex);
-app.get('/about', sendIndex);
-app.get('/account', sendIndex);
-app.get('/activity', sendIndex);
-app.get('/admin', sendIndex);
-app.get('/claim/:id', sendIndex);
-app.get('/claim/:id/edit', sendIndex);
-app.get('/claims', sendIndex);
-app.get('/claims/add', sendIndex);
-app.get('/contact', sendIndex);
-app.get('/forgot-password', sendIndex);
-app.get('/guide', sendIndex);
-app.get('/login', sendIndex);
-app.get('/logout', sendIndex);
-app.get('/notifications', sendIndex);
-app.get('/register', sendIndex);
-app.get('/reset-password', sendIndex);
-app.get('/data/:id', sendIndex);
-app.get('/data/:id/edit', sendIndex);
-app.get('/datas', sendIndex);
-app.get('/datas/add', sendIndex);
-app.get('/topic/:id', sendIndex);
-app.get('/topic/:id/edit', sendIndex);
-app.get('/topics', sendIndex);
-app.get('/topics/add', sendIndex);
-app.get('/user/:username', sendIndex);
-app.get('/verify-email', sendIndex);
+server.get('*', async (req, res) => {
+  const context = {
+    url: req.url,
+    authToken: req.session.authToken,
+  };
 
-app.use('/api', createApiRouter(new ApiImpl()));
-
-app.get('*', function (req, res) {
-  res.status(404);
-  res.sendFile(INDEX_PATH);
+	try {
+    const app = await createAppFromContext(context);
+		const html = await renderer.renderToString(app);
+    res.status(200).send(html);
+  } catch (err) {
+    console.log(err);
+    res.status(500).end('Internal Server Error');
+	}
 });
 
-export default app;
+export default server;
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(config.get('port'));
+  server.listen(config.get('port'));
 }

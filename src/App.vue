@@ -1,5 +1,5 @@
 <template>
-<div>
+<div id="app">
   <dwd-header />
   <error-modal />
   <router-view v-if="!suppressRoutes" class="dwd-container" />

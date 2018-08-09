@@ -36,14 +36,18 @@ const TopicEdit = () =>
 
 Vue.use(VueRouter);
 
-const routerOptions = {
+const createRouterOptions = (authRedirect) => ({
   mode: 'history',
   routes: [
     { path: '/', component: Home },
     { path: '/:type/:id/history', component: History },
     { path: '/:type/:id/rev/:revId', component: History },
     { path: '/about', component: About },
-    { path: '/account', component: Account },
+    {
+      path: '/account',
+      component: Account,
+      beforeEnter: authRedirect,
+    },
     { path: '/activity', component: Activity },
     { path: '/admin', component: Admin },
     { path: '/claim/:id', component: Claim },
@@ -52,9 +56,14 @@ const routerOptions = {
       name: 'claimEdit',
       component: ClaimEdit,
       props: true,
+      beforeEnter: authRedirect,
     },
     { path: '/claims', component: Items, props: { type: ItemType.CLAIM } },
-    { path: '/claims/add', component: ClaimEdit },
+    {
+      path: '/claims/add',
+      component: ClaimEdit,
+      beforeEnter: authRedirect,
+    },
     { path: '/contact', component: Contact },
     { path: '/forgot-password', component: ForgotPassword },
     { path: '/guide', component: Guide },
@@ -69,23 +78,33 @@ const routerOptions = {
       name: 'sourceEdit',
       component: SourceEdit,
       props: true,
+      beforeEnter: authRedirect,
     },
     { path: '/datas', component: Items, props: { type: ItemType.SOURCE } },
-    { path: '/datas/add', component: SourceEdit },
+    {
+      path: '/datas/add',
+      component: SourceEdit,
+      beforeEnter: authRedirect,
+    },
     { path: '/topic/:id', component: Topic },
     {
       path: '/topic/:id/edit',
       name: 'topicEdit',
       component: TopicEdit,
       props: true,
+      beforeEnter: authRedirect,
     },
     { path: '/topics', component: Items, props: { type: ItemType.TOPIC } },
-    { path: '/topics/add', component: TopicEdit },
+    {
+      path: '/topics/add',
+      component: TopicEdit,
+      beforeEnter: authRedirect,
+    },
     { path: '/user/:username', component: User, props: true },
     { path: '/verify-email', component: VerifyEmail },
     { path: '*', component: NotFound },
   ],
-};
+});
 
 Vue.mixin({
   beforeRouteUpdate(to, from, next) {
@@ -101,8 +120,15 @@ Vue.mixin({
   }
 });
 
-export function createRouter(store) {
-  const router = new VueRouter(routerOptions);
+export function createRouter(auth, store) {
+  function authRedirect(to, from, next) {
+    if (!auth.getUser()) {
+      next({ path: '/login', query: { next: to.fullPath } });
+    } else {
+      next();
+    }
+  }
+  const router = new VueRouter(createRouterOptions(authRedirect));
 
   router.beforeEach((to, from, next) => {
     store.commit('storeItemBlockLocations');
