@@ -72,7 +72,7 @@ export default {
     FixedBottom,
     PointsEdit,
   },
-  asyncData: async function ({ store, route }) {
+  async asyncData({ store, route }) {
     let id = route.params.id;
     let claim = store.state.claims[id];
     if (id && (!claim || claim.depth < 2)) {
@@ -142,7 +142,7 @@ export default {
       this.showEditBlock = false;
       this.points = points;
     },
-    submit: async function () {
+    async submit() {
       let action = 'addItem';
       let payload = {
         type: ItemType.CLAIM,
@@ -157,7 +157,7 @@ export default {
       this.unloadOverride = true;
       this.$router.push(this.claimUrl(id, this.trail));
     },
-    remove: async function (message) {
+    async remove(message) {
       await this.$store.dispatch('removeItem', {
         type: ItemType.CLAIM,
         id: this.id,

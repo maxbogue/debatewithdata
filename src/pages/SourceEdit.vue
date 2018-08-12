@@ -68,7 +68,7 @@ export default {
     SourceEditContent,
     SourceRevContent,
   },
-  asyncData: async function ({ store, route }) {
+  async asyncData({ store, route }) {
     let id = route.params.id;
     let source = store.state.sources[id];
     if (id && !source) {
@@ -134,7 +134,7 @@ export default {
     review() {
       this.showEditBlock = false;
     },
-    submit: async function () {
+    async submit() {
       let action = 'addItem';
       let payload = {
         type: ItemType.SOURCE,
@@ -153,7 +153,7 @@ export default {
       this.newSource = this.oldSource;
       this.showEditBlock = false;
     },
-    remove: async function (message) {
+    async remove(message) {
       await this.$store.dispatch('removeItem', {
         type: ItemType.SOURCE,
         id: this.id,

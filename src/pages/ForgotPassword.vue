@@ -32,7 +32,7 @@ export default {
     email: '',
   }),
   methods: {
-    submit: async function () {
+    async submit() {
       await this.$store.dispatch('forgotPassword', {
         email: this.email,
         loader: this.$refs.loader,

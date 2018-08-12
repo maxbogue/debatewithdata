@@ -25,7 +25,7 @@ export default {
       return this.$route.query.token;
     },
   },
-  mounted: async function () {
+  async mounted() {
     await this.$store.dispatch('verifyEmail', {
       token: this.token,
       loader: this.$refs.loader,

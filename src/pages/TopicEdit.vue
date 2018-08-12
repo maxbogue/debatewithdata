@@ -123,7 +123,7 @@ export default {
     TopicEditAndReviewBlock,
     TopicLinkModal,
   },
-  asyncData: async function ({ store, route }) {
+  async asyncData({ store, route }) {
     let id = route.params.id;
     let topic = store.state.topics[id];
     if (id && (!topic || topic.depth < 2)) {
@@ -246,7 +246,7 @@ export default {
         ids.splice(i, 1);
       }
     },
-    submit: async function () {
+    async submit() {
       let action = 'addItem';
       let payload = {
         type: ItemType.TOPIC,
@@ -261,7 +261,7 @@ export default {
       this.unloadOverride = true;
       this.$router.push(this.topicUrl(id, this.trail));
     },
-    remove: async function (message) {
+    async remove(message) {
       await this.$store.dispatch('removeItem', {
         type: ItemType.TOPIC,
         id: this.topic.id,

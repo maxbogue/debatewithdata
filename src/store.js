@@ -146,38 +146,37 @@ const makeStoreOptions = ($http) => ({
     },
   },
   actions: {
-    register: async function (_, { username, password, email, loader }) {
+    async register(_, { username, password, email, loader }) {
       let payload = { username, password, email };
       await $http.post('/api/register', payload, { loader });
     },
-    verifyEmail: async function ({ commit }, { token, loader }) {
+    async verifyEmail({ commit }, { token, loader }) {
       let res = await $http.post('/api/verify-email', { token }, { loader });
       commit('setUserFromToken', res.data.authToken);
     },
-    login: async function ({ commit }, { username, password, loader }) {
+    async login({ commit }, { username, password, loader }) {
       let payload = { username, password };
       let res = await $http.post('/api/login', payload, { loader });
       commit('setUserFromToken', res.data.authToken);
     },
-    logout: async function ({ commit }) {
+    async logout({ commit }) {
       commit('setUserFromToken', null);
     },
-    forgotPassword: async function (_, { email, loader }) {
+    async forgotPassword(_, { email, loader }) {
       await $http.post('/api/forgot-password', { email }, { loader });
     },
-    resetPassword: async function ({ commit }, { token, password, loader }) {
+    async resetPassword({ commit }, { token, password, loader }) {
       let payload = { token, password };
       let res = await $http.post('/api/reset-password', payload, { loader });
       commit('setUserFromToken', res.data.authToken);
     },
-    getItem: async function ({ commit, state }, { type, id, trail }) {
+    async getItem({ commit, state }, { type, id, trail }) {
       let params = paramsFromTrail(trail, state);
       let promise = $http.get(`/api/${type}/${id}`, { params });
       let res = await wrapLoading(commit, promise);
       commit('setData', res.data);
     },
-    getItems: async function ({ commit },
-                              { type, sort, filters, page, loader }) {
+    async getItems({ commit }, { type, sort, filters, page, loader }) {
       let params = {
         sort: sortFilterParam(sort),
         filter: filters.map(sortFilterParam).join(','),
@@ -187,14 +186,14 @@ const makeStoreOptions = ($http) => ({
       commit('setData', res.data);
       return res.data;
     },
-    addItem: async function ({ commit }, { type, item }) {
+    async addItem({ commit }, { type, item }) {
       item = cleanItem(item);
       validateItem(type, item);
       let res = await $http.post(`/api/${type}`, item);
       commit('setData', res.data);
       return res.data.id;
     },
-    updateItem: async function ({ commit }, { type, item }) {
+    async updateItem({ commit }, { type, item }) {
       item = cleanItem(item);
       validateItem(type, item);
       try {
@@ -209,28 +208,28 @@ const makeStoreOptions = ($http) => ({
         throw err;
       }
     },
-    removeItem: async function ({ commit }, { type, id, message }) {
+    async removeItem({ commit }, { type, id, message }) {
       let params = { message };
       let res = await $http.delete(`/api/${type}/${id}`, { params });
       commit('setData', res.data);
     },
-    search: async function ({ commit }, { query, types, page, loader }) {
+    async search({ commit }, { query, types, page, loader }) {
       let params = { query, types, page };
       let res = await $http.get('/api/search', { params, loader });
       commit('setData', res.data);
       return res.data;
     },
-    getNotifications: async function ({ commit }) {
+    async getNotifications({ commit }) {
       let promise = $http.get('/api/notifications');
       let res = await wrapLoading(commit, promise);
       commit('setData', res.data);
       return res.data.results;
     },
-    updateHasNotifications: async function ({ commit }) {
+    async updateHasNotifications({ commit }) {
       let res = await $http.get('/api/notifications/has');
       commit('setHasNotifications', res.data.hasNotifications);
     },
-    readNotifications: async function ({ commit }, { until }) {
+    async readNotifications({ commit }, { until }) {
       let res = await $http.post('/api/notifications/read', { until });
       commit('setHasNotifications', res.data.hasNotifications);
     },

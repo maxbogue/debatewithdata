@@ -13,7 +13,7 @@ export default {
     title: 'Admin',
   },
   methods: {
-    topicRoots: async function () {
+    async topicRoots() {
       if (window.confirm('Are you sure?')) {
         let res = await this.$http.post('/api/admin/fix/topic-roots');
         window.alert(res.data.count + ' topics made root.');

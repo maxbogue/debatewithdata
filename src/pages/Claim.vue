@@ -76,7 +76,7 @@ export default {
     IconAdd,
     ItemBlock,
   },
-  asyncData: async function ({ store, route }) {
+  async asyncData({ store, route }) {
     let id = route.params.id;
     let claim = store.state.claims[id];
     if (!claim || claim.depth < 2) {

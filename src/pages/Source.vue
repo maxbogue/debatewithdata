@@ -31,7 +31,7 @@ export default {
     DwdTrail,
     ItemBlock,
   },
-  asyncData: async function ({ store, route }) {
+  async asyncData({ store, route }) {
     let id = route.params.id;
     let source = store.state.sources[id];
     if (!source || !source.claimIds) {

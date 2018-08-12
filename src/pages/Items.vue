@@ -185,7 +185,7 @@ export default {
     this.getItems();
   },
   methods: {
-    getItems: async function () {
+    async getItems() {
       this.results = null;
       let { results, numPages } = await this.$store.dispatch('getItems', {
         ...this.params,

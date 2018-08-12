@@ -40,7 +40,7 @@ export default {
     },
   },
   methods: {
-    submit: async function () {
+    async submit() {
       await this.$store.dispatch('login', {
         username: this.username,
         password: this.password,

@@ -154,7 +154,7 @@ export default {
     revUrl(rev) {
       return this.appendToUrl(this.urlWithTrail, '/rev/' + rev.revId);
     },
-    loadData: async function () {
+    async loadData() {
       this.data = null;
       let url = this.apiUrl(this.itemType, this.itemId) + '/rev';
       let res = await this.$http.get(url, { loader: this.$refs.loader });

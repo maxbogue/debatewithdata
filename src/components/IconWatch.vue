@@ -11,7 +11,7 @@ export default {
     url: { type: String, required: true },
   },
   methods: {
-    toggle: async function () {
+    async toggle() {
       let res = await this.$http.post(this.url + '/watch');
       this.item.watched = res.data.watched;
     },

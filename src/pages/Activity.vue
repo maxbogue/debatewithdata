@@ -21,7 +21,7 @@ export default {
   data: () => ({
     activity: null,
   }),
-  mounted: async function () {
+  async mounted() {
     if (!this.activity) {
       let loader = this.$refs.loader;
       let res = await this.$http.get('/api/activity', { loader });

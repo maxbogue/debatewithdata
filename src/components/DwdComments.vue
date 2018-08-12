@@ -69,7 +69,7 @@ export default {
     },
   },
   methods: {
-    load: async function () {
+    async load() {
       if (!this.canLoad) {
         return;
       }
@@ -78,7 +78,7 @@ export default {
       this.loaded = true;
       this.comments = res.data;
     },
-    submit: async function () {
+    async submit() {
       if (!this.newComment) {
         return;
       }
@@ -90,7 +90,7 @@ export default {
       this.newComment = '';
       this.comments.push(res.data.comment);
     },
-    deleteComment: async function (id) {
+    async deleteComment(id) {
       await this.$http.delete(this.commentsUrl + '/' + id);
       let i = this.comments.findIndex((c) => c.id === id);
       if (i >= 0) {

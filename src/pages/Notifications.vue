@@ -46,7 +46,7 @@ export default {
   computed: {
     ...mapState(['hasNotifications']),
   },
-  mounted: async function () {
+  async mounted() {
     let results = await this.$store.dispatch('getNotifications');
     this.until = results.until;
     this.readUntil = results.readUntil;
@@ -59,7 +59,7 @@ export default {
     isItemRead(item) {
       return item.updatedAt < this.readUntil;
     },
-    markRead: async function () {
+    async markRead() {
       await this.$store.dispatch('readNotifications', { until: this.until });
       this.readUntil = this.until;
     },

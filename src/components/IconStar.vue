@@ -21,7 +21,7 @@ export default {
     },
   },
   methods: {
-    toggle: async function () {
+    async toggle() {
       if (!this.user) {
         return;
       }

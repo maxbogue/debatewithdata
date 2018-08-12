@@ -39,7 +39,7 @@ export default {
     this.loadUser();
   },
   methods: {
-    loadUser: async function () {
+    async loadUser() {
       if (!this.username) {
         return;
       }

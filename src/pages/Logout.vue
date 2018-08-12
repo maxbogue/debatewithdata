@@ -12,7 +12,7 @@ export default {
       return this.$route.query.next || '/';
     },
   },
-  created: async function () {
+  async created() {
     await this.$store.dispatch('logout');
     this.$router.replace(this.nextUrl);
   },

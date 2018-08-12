@@ -51,7 +51,7 @@ export default {
     DwdTrail,
     ItemBlock,
   },
-  asyncData: async function ({ store, route }) {
+  async asyncData({ store, route }) {
     let id = route.params.id;
     let topic = store.state.topics[id];
     if (!topic || topic.depth < 3) {

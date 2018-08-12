@@ -42,7 +42,7 @@ export default {
     email: '',
   }),
   methods: {
-    submit: async function () {
+    async submit() {
       await this.$store.dispatch('register', {
         username: this.username,
         password: this.password,

@@ -32,7 +32,7 @@ export default {
     },
   },
   methods: {
-    submit: async function () {
+    async submit() {
       await this.$store.dispatch('resetPassword', {
         token: this.token,
         password: this.password,
