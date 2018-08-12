@@ -35,7 +35,7 @@ export default {
     password: '',
   }),
   computed: {
-    nextUrl: function () {
+    nextUrl() {
       return this.$route.query.next || '/';
     },
   },

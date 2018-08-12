@@ -20,13 +20,13 @@ export default {
     prev: { type: Object, default: null },
   },
   computed: {
-    hasPrev: function () {
+    hasPrev() {
       return this.prev && this.prev.pointType;
     },
-    hasCurr: function () {
+    hasCurr() {
       return this.curr && this.curr.pointType;
     },
-    hasBoth: function () {
+    hasBoth() {
       return this.hasPrev && this.hasCurr;
     },
   },

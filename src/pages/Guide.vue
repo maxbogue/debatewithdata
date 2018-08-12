@@ -161,7 +161,7 @@ export default {
     title: 'Guide',
   },
   computed: {
-    flags: function () {
+    flags() {
       let flagList = map(FlagData, (v, k) => [k, v]);
       return sortBy(flagList, ([, v]) => v.name);
     },

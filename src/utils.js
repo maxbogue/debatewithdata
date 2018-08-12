@@ -265,19 +265,19 @@ export function axiosErrorToString(error) {
 
 export var DwdUtilsMixin = {
   computed: {
-    $http: function () {
+    $http() {
       return this.$root.$axios;
     },
   },
   filters: {
-    toSideString: function (isFor) {
+    toSideString(isFor) {
       return isFor === null ? 'neutral' : isFor ? 'for' : 'against';
     },
-    timestamp: function (isoDate, format='yyyy-mm-dd HH:MM') {
+    timestamp(isoDate, format='yyyy-mm-dd HH:MM') {
       let date = new Date(isoDate);
       return dateFormat(date, format);
     },
-    shortTimestamp: function (isoDate) {
+    shortTimestamp(isoDate) {
       let date = new Date(isoDate);
       if (Date.now() - date < ONE_DAY_MS) {
         return dateFormat(date, 'h:MMtt');
@@ -287,25 +287,25 @@ export var DwdUtilsMixin = {
   },
   methods: {
     parseTrail,
-    lookupSource: function (sourceId) {
+    lookupSource(sourceId) {
       if (!sourceId) {
         return null;
       }
       return this.$store.state.sources[sourceId] || null;
     },
-    lookupClaim: function (claimId) {
+    lookupClaim(claimId) {
       if (!claimId) {
         return null;
       }
       return this.$store.state.claims[claimId] || null;
     },
-    lookupTopic: function (topicId) {
+    lookupTopic(topicId) {
       if (!topicId) {
         return null;
       }
       return this.$store.state.topics[topicId] || null;
     },
-    lookupItem: function (type, id) {
+    lookupItem(type, id) {
       switch (type) {
       case ItemType.TOPIC:
         return this.lookupTopic(id);
@@ -316,35 +316,35 @@ export var DwdUtilsMixin = {
       }
       throw new Error(`Invalid item type: ${type}`);
     },
-    lookupItemWithType: function ({ type, id }) {
+    lookupItemWithType({ type, id }) {
       let item = this.lookupItem(type, id);
       return { type, item };
     },
-    displayItemType: function (type) {
+    displayItemType(type) {
       return type === ItemType.SOURCE ? 'data' : type;
     },
-    topicUrl: function (topicId, trail) {
+    topicUrl(topicId, trail) {
       let url = '/topic/' + topicId;
       if (trail && trail.length > 0) {
         url += '?trail=' + trail.join(',');
       }
       return url;
     },
-    claimUrl: function (claimId, trail) {
+    claimUrl(claimId, trail) {
       let url = '/claim/' + claimId;
       if (trail && trail.length > 0) {
         url += '?trail=' + trail.join(',');
       }
       return url;
     },
-    sourceUrl: function (sourceId, trail) {
+    sourceUrl(sourceId, trail) {
       let url = '/data/' + sourceId;
       if (trail && trail.length > 0) {
         url += '?trail=' + trail.join(',');
       }
       return url;
     },
-    itemUrl: function (type, id, trail) {
+    itemUrl(type, id, trail) {
       switch (type) {
       case ItemType.TOPIC:
         return this.topicUrl(id, trail);
@@ -355,21 +355,21 @@ export var DwdUtilsMixin = {
       }
       throw new Error(`Invalid item type: ${type}`);
     },
-    apiUrl: function (type, id) {
+    apiUrl(type, id) {
       let url = '/api/' + type;
       if (id) {
         url += '/' + id;
       }
       return url;
     },
-    appendToUrl: function (url, path) {
+    appendToUrl(url, path) {
       if (url.includes('?')) {
         return url.replace('?', path + '?');
       }
       return url + path;
     },
   },
-  mounted: function () {
+  mounted() {
     if (this.$options.mountedTriggersWatchers && this.$options.watch) {
       forOwn(this.$options.watch, (f) => f.call(this));
     }

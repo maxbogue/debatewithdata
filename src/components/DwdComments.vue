@@ -46,23 +46,23 @@ export default {
     newComment: '',
   }),
   computed: {
-    commentsUrl: function () {
+    commentsUrl() {
       return this.url + '/comment';
     },
-    user: function () {
+    user() {
       return this.$store.state.user;
     },
   },
   watch: {
     // Load the first time hint triggers or when shown after being hidden.
-    show: function () {
+    show() {
       if (this.show) {
         this.load();
       } else {
         this.canLoad = true;
       }
     },
-    hint: function () {
+    hint() {
       if (this.hint && !this.loaded) {
         this.load();
       }

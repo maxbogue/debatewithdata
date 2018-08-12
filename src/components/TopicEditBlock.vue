@@ -36,19 +36,19 @@ export default {
   data: () => ({
     oldTopic: null,
   }),
-  mounted: function () {
+  mounted() {
     if (this.topic) {
       this.oldTopic = clone(this.topic);
     }
   },
   methods: {
-    update: function (newTopic) {
+    update(newTopic) {
       this.$emit('update:topic', newTopic);
     },
-    close: function () {
+    close() {
       this.$emit('close');
     },
-    cancel: function () {
+    cancel() {
       this.close();
       this.update(this.oldTopic);
     },

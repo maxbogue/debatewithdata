@@ -39,19 +39,19 @@ export default {
     trail: { type: Array, required: true },
   },
   computed: {
-    currHasContent: function () {
+    currHasContent() {
       return !this.curr.deleted;
     },
-    prevHasContent: function () {
+    prevHasContent() {
       return this.prev && !this.prev.deleted;
     },
-    subTopics: function () {
+    subTopics() {
       let currSubTopicIds = this.currHasContent ? this.curr.subTopicIds : [];
       let prevSubTopicIds = this.prevHasContent ? this.prev.subTopicIds : [];
       return diffIdLists(currSubTopicIds, prevSubTopicIds,
                          this.$store.state.topics);
     },
-    claims: function () {
+    claims() {
       let currClaimIds = this.currHasContent ? this.curr.claimIds : [];
       let prevClaimIds = this.prevHasContent ? this.prev.claimIds : [];
       return diffIdLists(currClaimIds, prevClaimIds, this.$store.state.claims);

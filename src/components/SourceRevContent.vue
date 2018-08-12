@@ -93,32 +93,32 @@ export default {
     SourceType,
   }),
   computed: {
-    safeCurr: function () {
+    safeCurr() {
       if (!this.curr || this.curr.deleted) {
         return EMPTY_SOURCE;
       }
       return this.curr;
     },
-    safePrev: function () {
+    safePrev() {
       if (!this.prev || this.prev.deleted) {
         return EMPTY_SOURCE;
       }
       return this.prev;
     },
-    textDiff: function () {
+    textDiff() {
       return diff(this.safePrev.text, this.safeCurr.text);
     },
-    urlDiff: function () {
+    urlDiff() {
       return diff(this.safePrev.url, this.safeCurr.url);
     },
-    dateDiff: function () {
+    dateDiff() {
       return diff(this.safePrev.date || '', this.safeCurr.date || '');
     },
-    publicationDiff: function () {
+    publicationDiff() {
       return diff(this.safePrev.publication || '',
                   this.safeCurr.publication || '');
     },
-    institutionDiff: function () {
+    institutionDiff() {
       return diff(this.safePrev.institution || '',
                   this.safeCurr.institution || '');
     },

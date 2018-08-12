@@ -65,7 +65,7 @@ export default {
       }
     }
   },
-  metaInfo: function () {
+  metaInfo() {
     let title = `Topic ${this.id}`;
     if (this.topic) {
       title = this.topic.title;
@@ -76,31 +76,31 @@ export default {
     showComments: false,
   }),
   computed: {
-    id: function () {
+    id() {
       return this.$route.params.id;
     },
-    topic: function () {
+    topic() {
       return this.lookupTopic(this.id);
     },
-    subTopics: function () {
+    subTopics() {
       if (!this.topic || this.topic.deleted) {
         return [];
       }
       return sortByStars(map(this.topic.subTopicIds, this.lookupTopic));
     },
-    claims: function () {
+    claims() {
       if (!this.topic || this.topic.deleted) {
         return [];
       }
       return sortByStars(map(this.topic.claimIds, this.lookupClaim));
     },
-    trail: function () {
+    trail() {
       return this.parseTrail(this.$route.query.trail);
     },
-    newTrail: function () {
+    newTrail() {
       return this.trail.concat(this.id);
     },
-    superTopics: function () {
+    superTopics() {
       if (!this.topic) {
         return [];
       }

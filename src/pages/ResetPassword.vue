@@ -27,7 +27,7 @@ export default {
     password: '',
   }),
   computed: {
-    token: function () {
+    token() {
       return this.$route.query.token;
     },
   },

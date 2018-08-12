@@ -21,7 +21,7 @@ export default {
   props: {
     show: { type: Boolean, required: true },
   },
-  data: function () {
+  data() {
     return {
       innerShow: this.show,
       height: this.show ? MAX_HEIGHT : 0,
@@ -29,15 +29,15 @@ export default {
     };
   },
   computed: {
-    maxHeight: function () {
+    maxHeight() {
       return Math.min(this.height, MAX_HEIGHT) + 'px';
     },
-    transform: function () {
+    transform() {
       return 'translateY(' + this.translateY + ')';
     },
   },
   watch: {
-    show: function (show) {
+    show(show) {
       if (show) {
         this.open();
       } else {
@@ -46,7 +46,7 @@ export default {
     },
   },
   methods: {
-    open: function () {
+    open() {
       let { drawer } = this.$refs;
 
       // Briefly override the v-show style to grab the height.
@@ -58,7 +58,7 @@ export default {
       this.translateY = '0%';
       this.innerShow = true;
     },
-    close: function () {
+    close() {
       let { drawer } = this.$refs;
       this.height = drawer.scrollHeight;
 
@@ -71,7 +71,7 @@ export default {
         this.innerShow = false;
       }, 0);
     },
-    afterEnter: function () {
+    afterEnter() {
       this.height = MAX_HEIGHT;
     },
   },

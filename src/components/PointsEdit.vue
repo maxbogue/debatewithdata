@@ -74,10 +74,10 @@ export default {
     pointOrder: null,
   }),
   computed: {
-    isSubPoints: function () {
+    isSubPoints() {
       return this.isFor !== null;
     },
-    pointDiffs: function () {
+    pointDiffs() {
       let pointDiffs = diffPoints(
         { points: this.points }, this.prev, this.$store.state);
       if (this.pointOrder) {
@@ -87,12 +87,12 @@ export default {
       }
       return pointDiffs;
     },
-    zippedPointDiffs: function () {
+    zippedPointDiffs() {
       return rotateWithIndexes(this.pointDiffs);
     },
   },
   watch: {
-    pointDiffs: function () {
+    pointDiffs() {
       if (!this.pointOrder) {
         // Initialize pointOrder with the order from diffPoints.
         this.pointOrder = map(this.pointDiffs, (s) => map(s, ([id]) => id));
@@ -100,7 +100,7 @@ export default {
     },
   },
   mountedTriggersWatchers: true,
-  mounted: function () {
+  mounted() {
     if (this.curr) {
       this.points = combineAndSortPoints(this.curr, this.$store.state);
     }
@@ -109,18 +109,18 @@ export default {
     }
   },
   methods: {
-    pointClass: function (isFor) {
+    pointClass(isFor) {
       return [
         this.isSubPoints ? 'sub-point' : 'point',
         this.$options.filters.toSideString(isFor),
       ];
     },
-    addPoint: function (si) {
+    addPoint(si) {
       let newPoint = emptyPoint();
       this.pointOrder[si].splice(0, 0, newPoint.tempId);
       this.points[si].splice(0, 0, newPoint);
     },
-    updatePoint: function (si, point) {
+    updatePoint(si, point) {
       let pi = findIndex(this.points[si], matchPoint(point));
       if (pi < 0) {
         this.points[si].push(point);
@@ -133,7 +133,7 @@ export default {
       }
       this.$emit('update', this.points);
     },
-    deletePoint: function (si, point) {
+    deletePoint(si, point) {
       let pi = findIndex(this.points[si], matchPoint(point));
       if (pi < 0) {
         this.points[si].push(point);

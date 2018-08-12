@@ -24,19 +24,19 @@ export default {
     errorOverride: '',
   }),
   computed: {
-    innerLoading: function () {
+    innerLoading() {
       return this.loadingOverride || this.loading;
     },
-    innerError: function () {
+    innerError() {
       return this.errorOverride || this.error;
     },
   },
   methods: {
-    setLoading: function (loading) {
+    setLoading(loading) {
       this.loadingOverride = loading;
       this.errorOverride = '';
     },
-    setError: function (error) {
+    setError(error) {
       this.errorOverride = error;
       this.loadingOverride = false;
     },

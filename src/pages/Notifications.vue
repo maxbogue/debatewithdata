@@ -56,7 +56,7 @@ export default {
     this.$store.commit('setHasNotifications', hasNotifications);
   },
   methods: {
-    isItemRead: function (item) {
+    isItemRead(item) {
       return item.updatedAt < this.readUntil;
     },
     markRead: async function () {

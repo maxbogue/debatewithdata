@@ -83,14 +83,14 @@ export default {
       'user',
       'hasNotifications',
     ]),
-    loginUrl: function () {
+    loginUrl() {
       let path = this.$route.fullPath;
       if (path === '/' || path.startsWith('/login')) {
         return '/login';
       }
       return '/login?next=' + path;
     },
-    logoutUrl: function () {
+    logoutUrl() {
       let path = this.$route.fullPath;
       if (path === '/' || path.startsWith('/logout')) {
         return '/logout';
@@ -99,10 +99,10 @@ export default {
     },
   },
   watch: {
-    $route: function () {
+    $route() {
       this.collapse();
     },
-    user: function () {
+    user() {
       if (this.user) {
         this.$store.dispatch('updateHasNotifications');
       }
@@ -110,7 +110,7 @@ export default {
   },
   mountedTriggersWatchers: true,
   methods: {
-    collapse: function () {
+    collapse() {
       this.collapsed = true;
     },
   },

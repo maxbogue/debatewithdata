@@ -42,16 +42,16 @@ export default {
     validate: validateClaim.deleteMessage,
   }),
   computed: {
-    text: function () {
+    text() {
       return 'Delete ' + this.noun;
     },
   },
   methods: {
-    close: function () {
+    close() {
       this.$emit('delete', this.message);
       this.cancel();
     },
-    cancel: function () {
+    cancel() {
       this.show = false;
       this.message = '';
     },

@@ -46,28 +46,28 @@ export default {
     subPoints: [[], []],
   }),
   computed: {
-    id: function () {
+    id() {
       let pointId = this.point ? this.point.id : '';
       let prevId = this.prev ? this.prev.id : '';
       return pointId || prevId;
     },
-    isEditable: function () {
+    isEditable() {
       if (!this.point) {
         return false;
       }
       return this.point.pointType === PointType.NEW_CLAIM
           || this.point.pointType === PointType.NEW_SOURCE;
     },
-    isSubPoint: function () {
+    isSubPoint() {
       return this.isParentFor !== null;
     },
-    hasSubPoints: function () {
+    hasSubPoints() {
       if (!this.point) {
         return false;
       }
       return this.point.pointType === PointType.NEW_CLAIM && !this.isSubPoint;
     },
-    pointClass: function () {
+    pointClass() {
       return [
         this.isSubPoint ? 'sub-point' : 'point',
         this.$options.filters.toSideString(this.isFor),
@@ -75,22 +75,22 @@ export default {
     },
   },
   watch: {
-    showModal: function () {
+    showModal() {
       if (!this.showModal && !this.point.pointType) {
         this.emitPoint({});
       }
     },
   },
-  beforeCreate: function () {
+  beforeCreate() {
     this.$options.components.PointsEdit = require('./PointsEdit.vue').default;
   },
-  mounted: function () {
+  mounted() {
     if (this.point && !this.point.pointType) {
       this.showModal = true;
     }
   },
   methods: {
-    emitPoint: function (p) {
+    emitPoint(p) {
       if (this.point && this.point.tempId) {
         p.tempId = this.point.tempId;
       } else {
@@ -105,7 +105,7 @@ export default {
       }
       this.$emit('update', p);
     },
-    updateSubPoints: function (newSubPoints) {
+    updateSubPoints(newSubPoints) {
       this.subPoints = newSubPoints;
       if (this.point.pointType === PointType.NEW_CLAIM) {
         this.emitPoint({

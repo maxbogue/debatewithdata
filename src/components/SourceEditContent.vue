@@ -103,7 +103,7 @@ export default {
     validate: validateSource,
   }),
   computed: {
-    newSource: function () {
+    newSource() {
       let source = {
         url: this.url,
         text: this.text,
@@ -136,18 +136,18 @@ export default {
     },
   },
   watch: {
-    source: function () {
+    source() {
       this.initialize();
     },
-    newSource: function () {
+    newSource() {
       this.$emit('update:source', this.newSource);
     },
   },
-  mounted: function () {
+  mounted() {
     this.initialize();
   },
   methods: {
-    initialize: function () {
+    initialize() {
       if (this.source) {
         this.url = this.source.url || '';
         this.text = this.source.text || '';

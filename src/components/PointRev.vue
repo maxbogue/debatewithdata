@@ -21,10 +21,10 @@ export default {
     trail: { type: Array, required: true },
   },
   computed: {
-    id: function () {
+    id() {
       return this.curr ? this.curr.id : this.prev.id;
     },
-    url: function () {
+    url() {
       let type = this.curr ? this.curr.pointType : this.prev.pointType;
       return this.itemUrl(type, this.id, this.trail);
     },

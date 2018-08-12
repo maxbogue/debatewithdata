@@ -134,7 +134,7 @@ export default {
       });
     }
   },
-  metaInfo: function () {
+  metaInfo() {
     return {
       title: `Editing topic ${this.id}`,
     };
@@ -161,23 +161,23 @@ export default {
     ...mapState([
       'user',
     ]),
-    newId: function () {
+    newId() {
       return this.newTopicPartial && this.newTopicPartial.id;
     },
-    topic: function () {
+    topic() {
       return this.lookupTopic(this.id);
     },
-    linkedSubTopics: function () {
+    linkedSubTopics() {
       let oldSubTopicIds = this.topic ? this.topic.subTopicIds : [];
       return diffIdLists(this.subTopicIds, oldSubTopicIds,
                          this.$store.state.topics);
     },
-    linkedClaims: function () {
+    linkedClaims() {
       let oldClaimIds = this.topic ? this.topic.claimIds : [];
       return diffIdLists(this.claimIds, oldClaimIds,
                          this.$store.state.claims);
     },
-    newTopicLinks: function () {
+    newTopicLinks() {
       return {
         subTopicIds: filter(this.subTopicIds, this.lookupTopic),
         claimIds: filter(this.claimIds, this.lookupClaim),
@@ -185,36 +185,36 @@ export default {
         newClaims: this.newClaims,
       };
     },
-    newTopic: function () {
+    newTopic() {
       return {
         ...this.newTopicPartial,
         ...this.newTopicLinks,
       };
     },
-    noChange: function () {
+    noChange() {
       return topicsAreEqual(this.topic, this.newTopic);
     },
-    trail: function () {
+    trail() {
       return this.parseTrail(this.$route.query.trail);
     },
   },
   watch: {
-    id: function () {
+    id() {
       this.initialize();
     },
-    newTopicLinks: function () {
+    newTopicLinks() {
       this.showEditBlock = false;
     },
   },
-  mounted: function () {
+  mounted() {
     this.initialize();
     window.addEventListener('beforeunload', this.beforeUnload);
   },
-  beforeDestroy: function () {
+  beforeDestroy() {
     window.removeEventListener('beforeunload', this.beforeUnload);
   },
   methods: {
-    beforeUnload: function (e) {
+    beforeUnload(e) {
       if (this.unloadOverride || this.noChange) {
         // Don't warn.
         return undefined;
@@ -222,23 +222,23 @@ export default {
       (e || window.event).returnValue = BEFORE_UNLOAD_MESSAGE;
       return BEFORE_UNLOAD_MESSAGE;
     },
-    addSubTopicId: function (subTopicId) {
+    addSubTopicId(subTopicId) {
       if (!this.subTopicIds.includes(subTopicId)) {
         this.subTopicIds.splice(0, 0, subTopicId);
       }
     },
-    addNewSubTopic: function (newSubTopic) {
+    addNewSubTopic(newSubTopic) {
       this.newSubTopics.splice(0, 0, newSubTopic);
     },
-    addClaimId: function (claimId) {
+    addClaimId(claimId) {
       if (!this.claimIds.includes(claimId)) {
         this.claimIds.splice(0, 0, claimId);
       }
     },
-    addNewClaim: function (newClaim) {
+    addNewClaim(newClaim) {
       this.newClaims.splice(0, 0, newClaim);
     },
-    toggleDeleted: function (ids, id) {
+    toggleDeleted(ids, id) {
       let i = ids.indexOf(id);
       if (i < 0) {
         ids.push(id);
@@ -270,11 +270,11 @@ export default {
       this.unloadOverride = true;
       this.$router.push('/topics');
     },
-    cancel: function () {
+    cancel() {
       let url = this.topic ? this.topicUrl(this.id, this.trail) : '/topics';
       this.$router.push(url);
     },
-    initialize: function () {
+    initialize() {
       let seed = this.seed || this.topic;
       if (seed && !seed.deleted) {
         this.newTopicPartial = {

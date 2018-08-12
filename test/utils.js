@@ -26,7 +26,7 @@ export const TestTopic = {
   TEXT: 'this is a test topic',
   TITLE: 'Dwd Testing',
   ID: 'dwd-testing',
-  create: function (user) {
+  create(user) {
     return Topic.apiCreate(user, {
       id: this.ID,
       text: this.TEXT,
@@ -35,7 +35,7 @@ export const TestTopic = {
       claimIds: [],
     });
   },
-  verify: function (topicRev) {
+  verify(topicRev) {
     return {
       id: this.ID,
       isRoot: false,
@@ -54,12 +54,12 @@ export const TestTopic = {
 
 export const TestClaim = {
   TEXT: 'this is a test claim',
-  create: function (user) {
+  create(user) {
     return Claim.apiCreate(user, {
       text: this.TEXT,
     });
   },
-  verify: function (claimRev) {
+  verify(claimRev) {
     return {
       id: claimRev.claimId,
       revId: claimRev.id,
@@ -81,14 +81,14 @@ export const TestClaim = {
 export const TestSource = {
   TEXT: 'this is a test source',
   URL: 'https://debatewithdata.org',
-  create: function (user) {
+  create(user) {
     return Source.apiCreate(user, {
       text: this.TEXT,
       url: this.URL,
       type: SourceType.MISC,
     });
   },
-  verify: function (sourceRev) {
+  verify(sourceRev) {
     return {
       id: sourceRev.sourceId,
       revId: sourceRev.id,

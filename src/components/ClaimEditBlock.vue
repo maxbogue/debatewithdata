@@ -56,13 +56,13 @@ export default {
     validate: validateClaim,
   }),
   computed: {
-    id: function () {
+    id() {
       if (this.oldClaim && this.oldClaim.id) {
         return this.oldClaim.id;
       }
       return null;
     },
-    newClaim: function () {
+    newClaim() {
       let claim = {
         text: this.text,
         needsData: this.needsData,
@@ -77,22 +77,22 @@ export default {
     },
   },
   watch: {
-    newClaim: function () {
+    newClaim() {
       this.$emit('update:claim', this.newClaim);
     },
   },
-  mounted: function () {
+  mounted() {
     this.initialize();
   },
   methods: {
-    close: function () {
+    close() {
       this.$emit('close');
     },
-    cancel: function () {
+    cancel() {
       this.close();
       this.$emit('update:claim', this.oldClaim);
     },
-    initialize: function () {
+    initialize() {
       if (this.claim) {
         this.oldClaim = clone(this.claim);
         this.text = this.claim.text;

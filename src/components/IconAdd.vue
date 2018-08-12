@@ -10,7 +10,7 @@ export default {
     extras: { type: Object, default: () => ({}) },
   },
   computed: {
-    addTo: function () {
+    addTo() {
       return {
         name: this.type + 'Edit',
         params: {

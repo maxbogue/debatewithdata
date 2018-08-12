@@ -34,25 +34,25 @@ export default {
     trail: { type: Array, required: true },
   },
   computed: {
-    url: function () {
+    url() {
       return this.itemUrl(this.itemType, this.curr.id, this.trail);
     },
-    prevUrl: function () {
+    prevUrl() {
       if (!this.prev) {
         return '';
       }
       return this.appendToUrl(this.url, '/rev/' + this.prev.revId);
     },
-    nextUrl: function () {
+    nextUrl() {
       if (!this.next) {
         return '';
       }
       return this.appendToUrl(this.url, '/rev/' + this.next.revId);
     },
-    historyUrl: function () {
+    historyUrl() {
       return this.appendToUrl(this.url, '/history');
     },
-    revertTo: function () {
+    revertTo() {
       if (!this.next || this.curr.deleted) {
         // Can't revert if already HEAD or is a deletion.
         return null;

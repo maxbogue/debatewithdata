@@ -55,7 +55,7 @@ export default {
     validate: validateTopic,
   }),
   computed: {
-    newTopic: function () {
+    newTopic() {
       let topic = {
         id: this.oldId || this.id,
         title: this.title,
@@ -65,15 +65,15 @@ export default {
     },
   },
   watch: {
-    topic: function () {
+    topic() {
       if (this.show) {
         this.initialize();
       }
     },
-    newTopic: function () {
+    newTopic() {
       this.$emit('update', this.newTopic);
     },
-    title: function (newTitle, oldTitle) {
+    title(newTitle, oldTitle) {
       let oldId = dashify(oldTitle);
       let newId = dashify(newTitle);
       if (!this.id || this.id === oldId) {
@@ -81,11 +81,11 @@ export default {
       }
     },
   },
-  mounted: function () {
+  mounted() {
     this.initialize();
   },
   methods: {
-    initialize: function () {
+    initialize() {
       if (this.topic) {
         this.id = this.topic.id || '';
         this.title = this.topic.title;

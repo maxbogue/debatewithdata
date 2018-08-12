@@ -29,7 +29,7 @@ export function createApp() {
     // Axios is exposed as $axios on the root element so it can be accessed by
     // all Vue instances via the $http computed property in DwdUtilsMixin.
     computed: { $axios: () => $http },
-    created: function () {
+    created() {
       $http.interceptors.request.use((config) => {
         if (config.loader) {
           config.loader.setLoading(true);

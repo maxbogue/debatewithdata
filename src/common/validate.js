@@ -145,7 +145,7 @@ function constraintToValidator(constraint, key) {
     }
   };
   validator.forDb = {
-    dwdValidator: function (val) {
+    dwdValidator(val) {
       validator(val, this);
     },
   };

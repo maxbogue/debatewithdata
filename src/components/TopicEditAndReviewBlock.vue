@@ -71,20 +71,20 @@ export default {
     reviewMode: PREVIEW,
   }),
   computed: {
-    noChange: function () {
+    noChange() {
       return this.prev
         && this.topic.title === this.prev.title
         && this.topic.text === this.prev.text;
     },
-    showReviewMode: function () {
+    showReviewMode() {
       return !this.editMode && !this.noChange;
     },
   },
   watch: {
-    showEditBlock: function () {
+    showEditBlock() {
       this.editMode = this.showEditBlock;
     },
-    editMode: function () {
+    editMode() {
       this.$emit('update:showEditBlock', this.editMode);
     },
   },

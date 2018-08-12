@@ -8,7 +8,7 @@
 <script>
 export default {
   methods: {
-    submit: function () {
+    submit() {
       if (this.$el.checkValidity()) {
         this.$emit('submit');
       } else {

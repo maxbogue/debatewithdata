@@ -50,7 +50,7 @@ export default {
     initialized: false,
   }),
   computed: {
-    numCols: function () {
+    numCols() {
       if (!this.rows) {
         return 0;
       }
@@ -58,15 +58,15 @@ export default {
     },
   },
   watch: {
-    table: function () {
+    table() {
       this.init();
     },
   },
-  mounted: function () {
+  mounted() {
     this.init();
   },
   methods: {
-    init: function () {
+    init() {
       if (!this.initialized && this.table) {
         this.initialized = true;
         let rows = deserializeTable(this.table);
@@ -79,27 +79,27 @@ export default {
         }
       }
     },
-    headerPlaceholder: function (col) {
+    headerPlaceholder(col) {
       return col === 0 ? 'row label units' : 'column label (units)';
     },
-    addTable: function () {
+    addTable() {
       this.rows = [['', ''], ['', ''], ['', '']];
       this.initialized = true;
     },
-    addColumn: function () {
+    addColumn() {
       for (let row of this.rows) {
         row.push('');
       }
     },
-    deleteTable: function () {
+    deleteTable() {
       this.rows = null;
       this.$emit('update:table', null);
     },
-    updateTitle: function (newTitle) {
+    updateTitle(newTitle) {
       this.title = newTitle.replace(/,/g, '');
       this.emitTable();
     },
-    updateCell: function (i, j, text) {
+    updateCell(i, j, text) {
       let useTabs = text.includes('\t');
       let newRows = text.split('\n');
       for (let m = 0; m < newRows.length; m += 1) {
@@ -117,7 +117,7 @@ export default {
       }
       this.updateRows();
     },
-    updateRows: function () {
+    updateRows() {
       this.initialized = true;
 
       // If every cell is empty, erase the table.
@@ -142,7 +142,7 @@ export default {
 
       this.emitTable();
     },
-    emitTable: function () {
+    emitTable() {
       this.$emit('update:table', serializeTable(
         this.title, this.rows.slice(0, -1)));
     },

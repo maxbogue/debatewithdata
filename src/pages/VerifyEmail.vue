@@ -12,7 +12,7 @@ export default {
   components: {
     DwdLoader,
   },
-  metaInfo: function () {
+  metaInfo() {
     return {
       title: 'Verify Email',
     };
@@ -21,7 +21,7 @@ export default {
     text: 'Verifying...',
   }),
   computed: {
-    token: function () {
+    token() {
       return this.$route.query.token;
     },
   },

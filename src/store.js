@@ -74,7 +74,7 @@ const makeStoreOptions = ($http) => ({
     hasNotifications: false,
   },
   mutations: {
-    setData: function (state, data) {
+    setData(state, data) {
       if (data.topics) {
         forOwn(data.topics, (topic, id) => {
           Vue.set(state.topics, id, topic);
@@ -91,7 +91,7 @@ const makeStoreOptions = ($http) => ({
         });
       }
     },
-    setUserFromToken: function (state, authToken) {
+    setUserFromToken(state, authToken) {
       auth.setAuthToken(authToken);
       // User will be null here if the auth token has expired.
       let user = auth.getUser();
@@ -105,25 +105,25 @@ const makeStoreOptions = ($http) => ({
       state.claims = {};
       state.source = {};
     },
-    setSuppressRoutes: function (state, suppressRoutes) {
+    setSuppressRoutes(state, suppressRoutes) {
       state.suppressRoutes = suppressRoutes;
     },
-    setLoading: function (state, loading) {
+    setLoading(state, loading) {
       state.loading = loading;
     },
-    setLoadingError: function (state, err) {
+    setLoadingError(state, err) {
       state.loadingError = axiosErrorToString(err);
     },
-    setModalError: function (state, modalError) {
+    setModalError(state, modalError) {
       state.modalError = modalError;
     },
-    setSingleColumn: function (state, isSingleColumn) {
+    setSingleColumn(state, isSingleColumn) {
       state.singleColumn = isSingleColumn;
     },
-    registerItemBlock: function (state, vm) {
+    registerItemBlock(state, vm) {
       state.itemBlocks.push(vm);
     },
-    unregisterItemBlock: function (state, vm) {
+    unregisterItemBlock(state, vm) {
       let i = state.itemBlocks.indexOf(vm);
       if (i < 0) {
         console.warn('Missing item block.');
@@ -131,17 +131,17 @@ const makeStoreOptions = ($http) => ({
         state.itemBlocks.splice(i, 1);
       }
     },
-    storeItemBlockLocations: function (state) {
+    storeItemBlockLocations(state) {
       state.itemLocations = {};
       state.itemBlockSliding = false;
       forEach(state.itemBlocks, (vm) => {
         state.itemLocations[vm.id] = vm.$el.getBoundingClientRect();
       });
     },
-    itemBlockSliding: function (state) {
+    itemBlockSliding(state) {
       state.itemBlockSliding = true;
     },
-    setHasNotifications: function (state, hasNotifications) {
+    setHasNotifications(state, hasNotifications) {
       state.hasNotifications = hasNotifications;
     },
   },

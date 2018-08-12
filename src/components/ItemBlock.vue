@@ -84,7 +84,7 @@ export default {
     showComments: false,
   }),
   computed: {
-    blockClasses: function () {
+    blockClasses() {
       return [
         this.type,
         this.$options.filters.toSideString(this.isFor),
@@ -94,25 +94,25 @@ export default {
         },
       ];
     },
-    id: function () {
+    id() {
       return this.item.id;
     },
-    url: function () {
+    url() {
       return this.itemUrl(this.type, this.id);
     },
-    urlWithTrail: function () {
+    urlWithTrail() {
       return this.itemUrl(this.type, this.id, this.trail);
     },
-    animateFrom: function () {
+    animateFrom() {
       return this.$store.state.itemLocations[this.id];
     },
   },
   watch: {
-    '$route': function () {
+    '$route'() {
       this.animate();
     },
   },
-  mounted: function () {
+  mounted() {
     this.$store.commit('registerItemBlock', this);
     this.$el.addEventListener('transitionend', () => {
       this.$el.classList.remove(this.$style.animating);
@@ -125,11 +125,11 @@ export default {
     });
     this.$nextTick(this.animate);
   },
-  beforeDestroy: function () {
+  beforeDestroy() {
     this.$store.commit('unregisterItemBlock', this);
   },
   methods: {
-    animate: function () {
+    animate() {
       if (this.fadeOnly) {
         this.animateFade();
         return;
@@ -149,7 +149,7 @@ export default {
         }
       });
     },
-    animateFade: function () {
+    animateFade() {
       let delay = 0;
       if (this.$store.state.itemBlockSliding) {
         // Delay fade if a block is sliding.
@@ -164,7 +164,7 @@ export default {
         this.$el.style.opacity = '';
       }, delay);
     },
-    animateOpen: function () {
+    animateOpen() {
       this.$el.classList.add(this.$style.animating);
       let height = this.$el.scrollHeight;
       this.$el.style.height = 0;
@@ -175,7 +175,7 @@ export default {
         this.$el.style.height = height + 'px';
       }, ANIMATION_DURATION_MS);
     },
-    animateSlide: function () {
+    animateSlide() {
       this.$store.commit('itemBlockSliding');
 
       let from = this.animateFrom;

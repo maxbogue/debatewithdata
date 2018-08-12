@@ -42,7 +42,7 @@ export default {
     mono: { type: Boolean, default: false },
     allowNewlines: { type: Boolean, default: false },
   },
-  data: function () {
+  data() {
     return {
       // Used to make sure whitespace isn't stripped while the user is typing,
       // since we don't want to update value itself with anything untrimmed.
@@ -52,10 +52,10 @@ export default {
     };
   },
   computed: {
-    trimmedValue: function () {
+    trimmedValue() {
       return this.displayValue.trim();
     },
-    innerError: function () {
+    innerError() {
       if (this.error) {
         return this.error;
       }
@@ -72,10 +72,10 @@ export default {
       }
       return '';
     },
-    showError: function () {
+    showError() {
       return !this.state && this.innerError && !this.maskError;
     },
-    inputClasses: function () {
+    inputClasses() {
       let classes = [];
       if (this.mono) {
         classes.push('mono');
@@ -95,7 +95,7 @@ export default {
     },
   },
   watch: {
-    value: function () {
+    value() {
       if (this.value !== this.trimmedValue) {
         this.displayValue = this.value;
       }
@@ -103,12 +103,12 @@ export default {
         this.maskError = false;
       }
     },
-    trimmedValue: function () {
+    trimmedValue() {
       if (this.trimmedValue !== this.value) {
         this.$emit('input', this.trimmedValue);
       }
     },
-    displayValue: function () {
+    displayValue() {
       // Disallow pasted in tabs and newlines.
       if (!this.allowNewlines && /\t|\n/.test(this.displayValue)) {
         this.displayValue = this.displayValue.replace(/\t|\n/g, ' ');
@@ -125,10 +125,10 @@ export default {
         }
       });
     },
-    innerError: function () {
+    innerError() {
       this.$refs.input.setCustomValidity(this.innerError);
     },
-    focus: function () {
+    focus() {
       if (this.focus) {
         this.$refs.input.focus();
       }
@@ -136,7 +136,7 @@ export default {
   },
   mountedTriggersWatchers: true,
   methods: {
-    handleEnter: function (event) {
+    handleEnter(event) {
       if (this.allowNewlines) {
         event.stopPropagation();
       } else {

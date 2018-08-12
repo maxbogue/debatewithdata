@@ -8,7 +8,7 @@ export default {
     title: 'Logout',
   },
   computed: {
-    nextUrl: function () {
+    nextUrl() {
       return this.$route.query.next || '/';
     },
   },

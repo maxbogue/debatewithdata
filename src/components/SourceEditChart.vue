@@ -73,38 +73,38 @@ export default {
     by: '',
   }),
   computed: {
-    tableData: function () {
+    tableData() {
       return deserializeTable(this.table);
     },
-    defaultTitle: function () {
+    defaultTitle() {
       if (this.tableData[0].length !== 1) {
         return 'chart title';
       }
       return extractText(this.tableData[0][0]);
     },
-    defaultUnit: function () {
+    defaultUnit() {
       if (this.tableData[0].length !== 1) {
         return '';
       }
       return extractUnit(this.tableData[0][0]);
     },
-    rows: function () {
+    rows() {
       if (this.tableData[0].length === 1) {
         return this.tableData.slice(1);
       }
       return this.tableData;
     },
-    columnLabels: function () {
+    columnLabels() {
       return this.rows[0].slice(1).map(extractText);
     },
-    rowLabels: function () {
+    rowLabels() {
       return this.rows.slice(1).map((row) => row[0]);
     },
-    columnUnits: function () {
+    columnUnits() {
       return this.rows[0].slice(1).map(
         (s) => extractUnit(s, this.defaultUnit) || s);
     },
-    uniqueUnits: function () {
+    uniqueUnits() {
       let units = new Set();
       return this.columnUnits.filter((unit) => {
         if (units.has(unit)) {
@@ -114,19 +114,19 @@ export default {
         return true;
       });
     },
-    defaultByRow: function () {
+    defaultByRow() {
       return this.columnUnits.length > 1 && this.uniqueUnits.length === 1;
     },
-    byRow: function () {
+    byRow() {
       return this.by ? this.by === 'row' : this.defaultByRow;
     },
-    defaultXAxis: function () {
+    defaultXAxis() {
       return this.byRow ? '' : this.rows[0][0];
     },
-    defaultYAxis: function () {
+    defaultYAxis() {
       return this.uniqueUnits[0];
     },
-    newChart: function () {
+    newChart() {
       return {
         type: this.type,
         title: this.title,
@@ -137,11 +137,11 @@ export default {
     },
   },
   watch: {
-    newChart: function () {
+    newChart() {
       this.$emit('update:chart', this.newChart);
     },
   },
-  mounted: function () {
+  mounted() {
     if (this.chart) {
       this.type = this.chart.type || 'line';
       this.title = this.chart.title || '';
@@ -153,10 +153,10 @@ export default {
     }
   },
   methods: {
-    addChart: function () {
+    addChart() {
       this.$emit('update:chart', this.newChart);
     },
-    removeChart: function () {
+    removeChart() {
       this.$emit('update:chart', null);
     },
   },

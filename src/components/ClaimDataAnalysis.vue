@@ -13,26 +13,26 @@ export default {
     noColor: { type: Boolean, default: false },
   },
   computed: {
-    hasDirectFor: function () {
+    hasDirectFor() {
       return some(this.claim.sourceIds);
     },
-    forCount: function () {
+    forCount() {
       if (!this.claim.dataCounts) {
         return 0;
       }
       return this.claim.dataCounts[0];
     },
-    needsData: function () {
+    needsData() {
       return this.claim.needsData || this.forCount === 0;
     },
-    classes: function () {
+    classes() {
       if (this.noColor) {
         return {};
       }
       let needsData = this.claim.needsData || this.forCount === 0;
       return [needsData ? this.$style.bad : this.$style.good];
     },
-    text: function () {
+    text() {
       if (this.claim.needsData) {
         return 'Missing Data (forced)';
       } else if (this.claim.needsData === false) {

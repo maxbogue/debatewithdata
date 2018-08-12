@@ -13,7 +13,7 @@ export default {
     flag: { type: String, required: true },
   },
   computed: {
-    data: function () {
+    data() {
       return FlagData[this.flag];
     },
   },

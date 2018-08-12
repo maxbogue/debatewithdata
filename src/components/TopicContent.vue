@@ -31,7 +31,7 @@ export default {
     isLink: { type: Boolean, default: false },
   },
   computed: {
-    errorMessage: function () {
+    errorMessage() {
       return itemErrorMessage(this.topic);
     },
   },

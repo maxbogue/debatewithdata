@@ -60,16 +60,16 @@ export default {
     results: [],
   }),
   computed: {
-    topic: function () {
+    topic() {
       return this.allowTopic ? this.lookupTopic(this.value) : null;
     },
-    claim: function () {
+    claim() {
       return this.allowClaim ? this.lookupClaim(this.value) : null;
     },
-    source: function () {
+    source() {
       return this.allowSource ? this.lookupSource(this.value) : null;
     },
-    itemType: function () {
+    itemType() {
       if (this.topic) {
         return ItemType.TOPIC;
       } else if (this.claim) {
@@ -79,7 +79,7 @@ export default {
       }
       return '';
     },
-    allowedTypes: function () {
+    allowedTypes() {
       let types = [];
       if (this.allowTopic) {
         types.push(ItemType.TOPIC);
@@ -92,10 +92,10 @@ export default {
       }
       return types;
     },
-    hasResults: function () {
+    hasResults() {
       return this.results.length > 0;
     },
-    inputError: function () {
+    inputError() {
       if (this.value && !this.itemType) {
         if (this.loading) {
           return 'Loading...';
@@ -103,7 +103,7 @@ export default {
       }
       return '';
     },
-    inputState: function () {
+    inputState() {
       if (this.value && !this.hasResults) {
         if (this.itemType) {
           return DwdInput.SUCCESS;
@@ -115,7 +115,7 @@ export default {
     },
   },
   watch: {
-    value: function () {
+    value() {
       this.highlighted = -1;
       this.loading = false;
 
@@ -126,24 +126,24 @@ export default {
 
       this.queryServer();
     },
-    itemType: function () {
+    itemType() {
       this.$emit('itemType', this.itemType);
     },
   },
   mountedTriggersWatchers: true,
   methods: {
-    highlight: function (i) {
+    highlight(i) {
       if (this.hasResults) {
         this.highlighted = (i + this.results.length) % this.results.length;
       }
     },
-    select: function (i) {
+    select(i) {
       let result = this.results[i];
       if (result) {
         this.$emit('input', result.item.id);
       }
     },
-    onEnter: function (e) {
+    onEnter(e) {
       if (!this.itemType && this.hasResults && this.highlighted >= 0) {
         this.select(this.highlighted);
         e.stopPropagation();
@@ -164,7 +164,7 @@ export default {
         this.loading = false;
       }
     }, DEBOUNCE_DELAY_MS),
-    makeLoader: function () {
+    makeLoader() {
       return {
         setLoading: (loading) => {
           this.loading = loading;
@@ -174,7 +174,7 @@ export default {
         },
       };
     },
-    resultClass: function (result, i) {
+    resultClass(result, i) {
       return [
         this.$style[result.type],
         { [this.$style.highlighted]: i === this.highlighted },

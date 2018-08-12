@@ -79,7 +79,7 @@ export default {
       });
     }
   },
-  metaInfo: function () {
+  metaInfo() {
     return {
       title: `Editing data ${this.id}`,
     };
@@ -95,35 +95,35 @@ export default {
     unloadOverride: false,
   }),
   computed: {
-    source: function () {
+    source() {
       return this.lookupSource(this.id);
     },
-    noChange: function () {
+    noChange() {
       return sourcesAreEqual(this.source, this.newSource);
     },
-    trail: function () {
+    trail() {
       return this.parseTrail(this.$route.query.trail);
     },
   },
   watch: {
-    id: function () {
+    id() {
       this.initialize();
     },
-    showEditBlock: function () {
+    showEditBlock() {
       if (this.showEditBlock) {
         this.oldSource = clone(this.newSource);
       }
     },
   },
-  mounted: function () {
+  mounted() {
     this.initialize();
     window.addEventListener('beforeunload', this.beforeUnload);
   },
-  beforeDestroy: function () {
+  beforeDestroy() {
     window.removeEventListener('beforeunload', this.beforeUnload);
   },
   methods: {
-    beforeUnload: function (e) {
+    beforeUnload(e) {
       if (this.unloadOverride || this.noChange) {
         // Indicates not to warn.
         return undefined;
@@ -131,7 +131,7 @@ export default {
       (e || window.event).returnValue = BEFORE_UNLOAD_MESSAGE;
       return BEFORE_UNLOAD_MESSAGE;
     },
-    review: function () {
+    review() {
       this.showEditBlock = false;
     },
     submit: async function () {
@@ -149,7 +149,7 @@ export default {
       this.unloadOverride = true;
       this.$router.push(this.sourceUrl(id, this.trail));
     },
-    revert: function () {
+    revert() {
       this.newSource = this.oldSource;
       this.showEditBlock = false;
     },
@@ -162,11 +162,11 @@ export default {
       this.unloadOverride = true;
       this.$router.push('/datas');
     },
-    cancel: function () {
+    cancel() {
       let url = this.id ? this.sourceUrl(this.id, this.trail) : '/datas';
       this.$router.push(url);
     },
-    initialize: function () {
+    initialize() {
       let seed = this.seed || this.source;
       if (seed && !seed.deleted) {
         this.newSource = seed;

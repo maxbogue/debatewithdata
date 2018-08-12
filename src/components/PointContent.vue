@@ -21,11 +21,11 @@ export default {
     point: { type: Object, required: true },
   },
   computed: {
-    isClaim: function () {
+    isClaim() {
       return this.point.pointType === PointType.CLAIM
           || this.point.pointType === PointType.NEW_CLAIM;
     },
-    isSource: function () {
+    isSource() {
       return this.point.pointType === PointType.SOURCE
           || this.point.pointType === PointType.NEW_SOURCE;
     },

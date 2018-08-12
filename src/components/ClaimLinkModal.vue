@@ -58,7 +58,7 @@ export default {
     validate: validateClaim,
   }),
   computed: {
-    newClaim: function () {
+    newClaim() {
       if (this.isLink) {
         return null;
       }
@@ -76,7 +76,7 @@ export default {
     },
   },
   watch: {
-    show: function () {
+    show() {
       if (this.show) {
         this.text = '';
         this.flag = '';
@@ -85,7 +85,7 @@ export default {
     },
   },
   methods: {
-    close: function () {
+    close() {
       if (this.isLink) {
         this.$emit('link', this.text);
       } else {
@@ -93,10 +93,10 @@ export default {
       }
       this.$emit('update:show', false);
     },
-    cancel: function () {
+    cancel() {
       this.$emit('update:show', false);
     },
-    updateIsLink: function (itemType) {
+    updateIsLink(itemType) {
       this.isLink = itemType === ItemType.CLAIM;
     },
   },

@@ -8,7 +8,7 @@ export default {
     url: { type: String, required: true },
   },
   computed: {
-    historyUrl: function () {
+    historyUrl() {
       return this.appendToUrl(this.url, '/history');
     },
   },

@@ -19,7 +19,7 @@ export default {
     ActivityList,
     DwdLoader,
   },
-  metaInfo: function () {
+  metaInfo() {
     return {
       title: `User ${this.username}`,
     };
@@ -31,11 +31,11 @@ export default {
     user: null,
   }),
   watch: {
-    username: function () {
+    username() {
       this.loadUser();
     },
   },
-  mounted: function () {
+  mounted() {
     this.loadUser();
   },
   methods: {

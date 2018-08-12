@@ -19,22 +19,22 @@ export default {
     prev: { type: Object, default: null },
   },
   computed: {
-    safeCurr: function () {
+    safeCurr() {
       if (!this.curr || this.curr.deleted) {
         return EMPTY_TOPIC;
       }
       return this.curr;
     },
-    safePrev: function () {
+    safePrev() {
       if (!this.prev || this.prev.deleted) {
         return EMPTY_TOPIC;
       }
       return this.prev;
     },
-    titleDiff: function () {
+    titleDiff() {
       return diff(this.safePrev.title, this.safeCurr.title);
     },
-    textDiff: function () {
+    textDiff() {
       return diff(this.safePrev.text, this.safeCurr.text);
     },
   },

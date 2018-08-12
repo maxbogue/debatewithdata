@@ -38,10 +38,10 @@ export default {
     chart: { type: Object, required: true },
   },
   computed: {
-    tableData: function () {
+    tableData() {
       return deserializeTable(this.table);
     },
-    title: function () {
+    title() {
       if (this.chart.title) {
         return this.chart.title;
       } else if (this.tableData[0].length !== 1) {
@@ -49,29 +49,29 @@ export default {
       }
       return extractText(this.tableData[0][0]);
     },
-    defaultUnit: function () {
+    defaultUnit() {
       if (this.tableData[0].length !== 1) {
         return '';
       }
       return extractUnit(this.tableData[0][0]);
     },
-    rows: function () {
+    rows() {
       if (this.tableData[0].length === 1) {
         return this.tableData.slice(1);
       }
       return this.tableData;
     },
-    columnLabels: function () {
+    columnLabels() {
       return this.rows[0].slice(1).map(extractText);
     },
-    rowLabels: function () {
+    rowLabels() {
       return this.rows.slice(1).map((row) => row[0]);
     },
-    columnUnits: function () {
+    columnUnits() {
       return this.rows[0].slice(1).map(
         (s) => extractUnit(s, this.defaultUnit) || s);
     },
-    uniqueUnits: function () {
+    uniqueUnits() {
       let units = new Set();
       return this.columnUnits.filter((unit) => {
         if (units.has(unit)) {
@@ -81,38 +81,38 @@ export default {
         return true;
       });
     },
-    byRow: function () {
+    byRow() {
       if (this.chart.byRow !== null) {
         return this.chart.byRow;
       }
       return this.columnUnits.length > 1 && this.uniqueUnits.length === 1;
     },
-    xLabels: function () {
+    xLabels() {
       return this.byRow ? this.columnLabels : this.rowLabels;
     },
-    setLabels: function () {
+    setLabels() {
       return this.byRow ? this.rowLabels : this.columnLabels;
     },
-    xAxis: function () {
+    xAxis() {
       if (this.chart.xAxis) {
         return this.chart.xAxis;
       }
       return this.byRow ? '' : this.rows[0][0];
     },
-    yAxes: function () {
+    yAxes() {
       if (this.chart.yAxis) {
         return [this.chart.yAxis];
       }
       return this.uniqueUnits;
     },
-    datas: function () {
+    datas() {
       let datas = this.rows.slice(1).map((row) => row.slice(1));
       if (!this.byRow) {
         datas = transpose(datas);
       }
       return datas;
     },
-    datasets: function () {
+    datasets() {
       return this.datas.map((data, i) => ({
         label: this.setLabels[i],
         backgroundColor: COLORS[i % COLORS.length],
@@ -121,7 +121,7 @@ export default {
         fill: false,
       }));
     },
-    chartOptions: function () {
+    chartOptions() {
       return {
         type: this.chart.type,
         animation: {
@@ -170,15 +170,15 @@ export default {
     },
   },
   watch: {
-    chartOptions: function () {
+    chartOptions() {
       this.resetChart();
     },
   },
-  mounted: function () {
+  mounted() {
     this.resetChart();
   },
   methods: {
-    resetChart: function () {
+    resetChart() {
       if (this.chartObj) {
         this.chartObj.destroy();
       }

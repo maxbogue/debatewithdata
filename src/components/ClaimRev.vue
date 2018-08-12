@@ -40,10 +40,10 @@ export default {
     trail: { type: Array, required: true },
   },
   computed: {
-    pointDiffs: function () {
+    pointDiffs() {
       return diffPoints(this.curr, this.prev, this.$store.state);
     },
-    zippedPointDiffs: function () {
+    zippedPointDiffs() {
       return rotateWithIndexes(this.points);
     },
   },

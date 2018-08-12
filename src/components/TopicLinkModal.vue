@@ -66,7 +66,7 @@ export default {
     validate: validateTopic,
   }),
   computed: {
-    newTopic: function () {
+    newTopic() {
       if (this.isLink) {
         return null;
       }
@@ -80,14 +80,14 @@ export default {
     },
   },
   watch: {
-    show: function () {
+    show() {
       if (this.show) {
         this.title = '';
         this.id = '';
         this.text = '';
       }
     },
-    title: function (newTitle, oldTitle) {
+    title(newTitle, oldTitle) {
       let oldId = dashify(oldTitle);
       let newId = dashify(newTitle);
       if (!this.id || this.id === oldId) {
@@ -96,7 +96,7 @@ export default {
     },
   },
   methods: {
-    close: function () {
+    close() {
       if (this.isLink) {
         this.$emit('link', this.title);
       } else {
@@ -104,10 +104,10 @@ export default {
       }
       this.$emit('update:show', false);
     },
-    cancel: function () {
+    cancel() {
       this.$emit('update:show', false);
     },
-    updateIsLink: function (itemType) {
+    updateIsLink(itemType) {
       this.isLink = itemType === ItemType.TOPIC;
     },
   },

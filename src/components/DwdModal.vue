@@ -26,13 +26,13 @@ export default {
     maxWidth: { type: String, default: null },
   },
   methods: {
-    submit: function () {
+    submit() {
       this.$refs.form.submit();
     },
-    close: function () {
+    close() {
       this.$emit('close');
     },
-    cancel: function () {
+    cancel() {
       this.$emit('cancel');
     },
   },

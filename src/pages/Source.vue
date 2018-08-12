@@ -45,7 +45,7 @@ export default {
       }
     }
   },
-  metaInfo: function () {
+  metaInfo() {
     let title = `Data ${this.id}`;
     if (this.source) {
       title = titleFromText(this.source.text);
@@ -57,16 +57,16 @@ export default {
     isFor: null,
   }),
   computed: {
-    id: function () {
+    id() {
       return this.$route.params.id;
     },
-    source: function () {
+    source() {
       return this.$store.state.sources[this.id] || null;
     },
-    trail: function () {
+    trail() {
       return this.parseTrail(this.$route.query.trail);
     },
-    claims: function () {
+    claims() {
       if (!this.source || !this.source.claimIds) {
         return [];
       }

@@ -33,41 +33,41 @@ export default {
     prev: { type: String, default: '' },
   },
   computed: {
-    prevTable: function () {
+    prevTable() {
       if (!this.prev) {
         return [['']];
       }
       return deserializeTable(this.prev);
     },
-    currTable: function () {
+    currTable() {
       if (!this.curr) {
         return [['']];
       }
       return deserializeTable(this.curr);
     },
-    prevTitle: function () {
+    prevTitle() {
       return this.prevTable[0][0];
     },
-    currTitle: function () {
+    currTitle() {
       return this.currTable[0][0];
     },
-    diffTitle: function () {
+    diffTitle() {
       return diff(this.prevTitle, this.currTitle);
     },
-    prevRows: function () {
+    prevRows() {
       return this.prevTable.slice(1);
     },
-    currRows: function () {
+    currRows() {
       return this.currTable.slice(1);
     },
-    numRows: function () {
+    numRows() {
       return Math.max(this.prevRows.length, this.currRows.length);
     },
-    numCols: function () {
+    numCols() {
       return Math.max(this.prevRows.length > 0 ? this.prevRows[0].length : 0,
                       this.currRows.length > 0 ? this.currRows[0].length : 0);
     },
-    diffRows: function () {
+    diffRows() {
       let diffs = [];
       for (let i = 0; i < this.numRows; i += 1) {
         let prevRow = this.prevRows[i];

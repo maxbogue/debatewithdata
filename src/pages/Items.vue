@@ -64,7 +64,7 @@ export default {
     DwdLoader,
     ItemBlock,
   },
-  metaInfo: function () {
+  metaInfo() {
     let title = {
       [ItemType.TOPIC]: 'Topics',
       [ItemType.CLAIM]: 'Claims',
@@ -89,7 +89,7 @@ export default {
   }),
   computed: {
     ...mapState(['user']),
-    headerText: function () {
+    headerText() {
       switch (this.type) {
       case ItemType.TOPIC:
         return 'Topics represent common areas of debate.';
@@ -101,7 +101,7 @@ export default {
       }
       throw new Error(`Invalid item type: ${this.type}`);
     },
-    paramsWithoutPage: function () {
+    paramsWithoutPage() {
       let filters = [];
       if (this.filterStarred !== null) {
         filters.push([Filter.STARRED, this.filterStarred]);
@@ -112,13 +112,13 @@ export default {
         filters,
       };
     },
-    params: function () {
+    params() {
       return {
         ...this.paramsWithoutPage,
         page: this.page,
       };
     },
-    queryParams: function () {
+    queryParams() {
       if (!this.query) {
         return null;
       }
@@ -128,20 +128,20 @@ export default {
         page: this.page,
       };
     },
-    items: function () {
+    items() {
       if (!this.results) {
         return [];
       }
       return this.results.map((result) => this.lookupItem(this.type, result));
     },
-    starFilterClasses: function () {
+    starFilterClasses() {
       return [this.filterStarred ? 'fas' : 'far', {
         [this.$style.starFilterActive]: this.filterStarred !== null,
       }];
     },
   },
   watch: {
-    type: function () {
+    type() {
       this.sortBy = Sort.STARS;
       this.sortDesc = true;
       this.filterStarred = null;
@@ -150,16 +150,16 @@ export default {
       this.numPages = 0;
       this.page = 1;
     },
-    paramsWithoutPage: function () {
+    paramsWithoutPage() {
       this.page = 1;
     },
-    params: function () {
+    params() {
       if (this.query) {
         return;
       }
       this.getItems();
     },
-    query: function () {
+    query() {
       this.page = 1;
     },
     queryParams: debounce(async function () {
@@ -181,7 +181,7 @@ export default {
       }
     }, DEBOUNCE_DELAY_MS),
   },
-  mounted: function () {
+  mounted() {
     this.getItems();
   },
   methods: {
@@ -197,7 +197,7 @@ export default {
         this.numPages = numPages;
       }
     },
-    cycleStarFilter: function () {
+    cycleStarFilter() {
       if (this.filterStarred === null) {
         this.filterStarred = true;
       } else if (this.filterStarred) {

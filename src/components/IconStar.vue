@@ -16,7 +16,7 @@ export default {
     url: { type: String, required: true },
   },
   computed: {
-    user: function () {
+    user() {
       return this.$store.state.user;
     },
   },

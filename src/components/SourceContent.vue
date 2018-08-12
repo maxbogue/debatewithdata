@@ -55,10 +55,10 @@ export default {
     SourceType,
   }),
   computed: {
-    sourceHasContent: function () {
+    sourceHasContent() {
       return this.source && !this.source.deleted;
     },
-    errorMessage: function () {
+    errorMessage() {
       return itemErrorMessage(this.source);
     },
   },

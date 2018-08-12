@@ -25,7 +25,7 @@ export default {
     ...mapState(['modalError']),
   },
   methods: {
-    clearError: function () {
+    clearError() {
       this.$store.commit('setModalError', '');
     },
   },

@@ -25,13 +25,13 @@ export default {
     showFlags: false,
   }),
   computed: {
-    flags: function () {
+    flags() {
       let flagList = map(FlagData, (v, k) => [k, v]);
       return sortBy(flagList, ([, v]) => v.name);
     },
   },
   methods: {
-    selectFlag: function (flag) {
+    selectFlag(flag) {
       this.$emit('input', flag === this.value ? null : flag);
     },
   },

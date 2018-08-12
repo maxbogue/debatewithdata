@@ -83,7 +83,7 @@ export default {
       });
     }
   },
-  metaInfo: function () {
+  metaInfo() {
     return {
       title: `Editing claim ${this.id}`,
     };
@@ -101,36 +101,36 @@ export default {
     unloadOverride: false,
   }),
   computed: {
-    claim: function () {
+    claim() {
       return this.$store.state.claims[this.id];
     },
-    newClaim: function () {
+    newClaim() {
       return {
         ...this.newClaimPartial,
         ...splitPoints(this.points),
       };
     },
-    noChange: function () {
+    noChange() {
       return claimsAreEqual(this.claim, this.newClaim);
     },
-    trail: function () {
+    trail() {
       return this.parseTrail(this.$route.query.trail);
     },
   },
   watch: {
-    id: function () {
+    id() {
       this.initialize();
     },
   },
-  mounted: function () {
+  mounted() {
     this.initialize();
     window.addEventListener('beforeunload', this.beforeUnload);
   },
-  beforeDestroy: function () {
+  beforeDestroy() {
     window.removeEventListener('beforeunload', this.beforeUnload);
   },
   methods: {
-    beforeUnload: function (e) {
+    beforeUnload(e) {
       if (this.unloadOverride || this.noChange) {
         // Don't warn.
         return undefined;
@@ -138,7 +138,7 @@ export default {
       (e || window.event).returnValue = BEFORE_UNLOAD_MESSAGE;
       return BEFORE_UNLOAD_MESSAGE;
     },
-    updatePoints: function (points) {
+    updatePoints(points) {
       this.showEditBlock = false;
       this.points = points;
     },
@@ -166,11 +166,11 @@ export default {
       this.unloadOverride = true;
       this.$router.push('/claims');
     },
-    cancel: function () {
+    cancel() {
       let url = this.id ? this.claimUrl(this.id, this.trail) : '/claims';
       this.$router.push(url);
     },
-    initialize: function () {
+    initialize() {
       let seed = this.seed || this.claim;
       if (seed && !seed.deleted) {
         this.newClaimPartial = seed;

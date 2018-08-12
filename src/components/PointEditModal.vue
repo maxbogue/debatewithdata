@@ -72,16 +72,16 @@ export default {
     source: {},
   }),
   computed: {
-    id: function () {
+    id() {
       if (ID_REGEX.test(this.input)) {
         return this.input;
       }
       return '';
     },
-    isUrl: function () {
+    isUrl() {
       return isValid(validateSource.url, this.input);
     },
-    pointType: function () {
+    pointType() {
       if (this.linkType) {
         return this.linkType;
       } else if (this.isUrl || this.forceSource) {
@@ -91,48 +91,48 @@ export default {
       }
       return null;
     },
-    isNewClaim: function () {
+    isNewClaim() {
       return this.pointType === PointType.NEW_CLAIM;
     },
-    isNewSource: function () {
+    isNewSource() {
       return this.pointType === PointType.NEW_SOURCE;
     },
   },
   watch: {
-    forceSource: function () {
+    forceSource() {
       if (this.forceSource) {
         this.source.text = this.input;
       } else {
         this.input = this.source.text;
       }
     },
-    input: function () {
+    input() {
       this.linkType = '';
     },
-    isUrl: function () {
+    isUrl() {
       if (this.isUrl) {
         this.source.url = this.input;
       }
     },
-    show: function () {
+    show() {
       if (this.show) {
         this.initialize();
       }
     },
   },
-  mounted: function () {
+  mounted() {
     this.initialize();
   },
   methods: {
-    close: function () {
+    close() {
       let p = this.makePoint();
       this.$emit('update', p || {});
       this.$emit('update:show', false);
     },
-    cancel: function () {
+    cancel() {
       this.$emit('update:show', false);
     },
-    makePoint: function () {
+    makePoint() {
       let pointType = this.pointType;
       switch (pointType) {
       case PointType.SOURCE:
@@ -146,14 +146,14 @@ export default {
       }
       return null;
     },
-    updateNewSource: function (source) {
+    updateNewSource(source) {
       this.source = source;
       this.input = source.url;
     },
-    updateLinkType: function (linkType) {
+    updateLinkType(linkType) {
       this.linkType = linkType;
     },
-    initialize: function () {
+    initialize() {
       this.input = '';
       if (this.point) {
         switch (this.point.pointType) {
@@ -167,7 +167,7 @@ export default {
         }
       }
     },
-    validate: function (input) {
+    validate(input) {
       // If the input is empty the point gets removed.
       if (!input) {
         return;

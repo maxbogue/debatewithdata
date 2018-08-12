@@ -65,12 +65,12 @@ export default {
     DwdLoader,
   },
   filters: {
-    timestamp: function (isoDate) {
+    timestamp(isoDate) {
       let date = new Date(isoDate);
       return dateFormat(date, 'yyyy-mm-dd HH:MM');
     },
   },
-  metaInfo: function () {
+  metaInfo() {
     let { type, id } = this.$route.params;
     return {
       title: `History for ${type} ${id}`,
@@ -81,17 +81,17 @@ export default {
     data: null,
   }),
   computed: {
-    itemType: function () {
+    itemType() {
       let type = this.$route.params.type;
       return type === 'data' ? ItemType.SOURCE : type;
     },
-    itemId: function () {
+    itemId() {
       return this.$route.params.id;
     },
-    revId: function () {
+    revId() {
       return this.$route.params.revId;
     },
-    revs: function () {
+    revs() {
       if (!this.data) {
         return [];
       }
@@ -105,7 +105,7 @@ export default {
       }
       return [];
     },
-    historyClasses: function () {
+    historyClasses() {
       let itemTypeClass = {
         [ItemType.TOPIC]: this.$style.topicHistory,
         [ItemType.CLAIM]: this.$style.claimHistory,
@@ -117,41 +117,41 @@ export default {
         { narrow: this.data && !this.revId },
       ];
     },
-    revIndex: function () {
+    revIndex() {
       return this.revs.findIndex((r) => r.revId === this.revId);
     },
-    curr: function () {
+    curr() {
       return this.revs[this.revIndex];
     },
-    prev: function () {
+    prev() {
       return this.revs[this.revIndex + 1];
     },
-    next: function () {
+    next() {
       return this.revs[this.revIndex - 1];
     },
-    trail: function () {
+    trail() {
       return this.parseTrail(this.$route.query.trail);
     },
-    newTrail: function () {
+    newTrail() {
       return this.trail.concat(this.itemId);
     },
-    url: function () {
+    url() {
       return this.itemUrl(this.itemType, this.itemId);
     },
-    urlWithTrail: function () {
+    urlWithTrail() {
       return this.itemUrl(this.itemType, this.itemId, this.trail);
     },
   },
   watch: {
-    id: function () {
+    id() {
       this.loadData();
     },
   },
-  mounted: function () {
+  mounted() {
     this.loadData();
   },
   methods: {
-    revUrl: function (rev) {
+    revUrl(rev) {
       return this.appendToUrl(this.urlWithTrail, '/rev/' + rev.revId);
     },
     loadData: async function () {

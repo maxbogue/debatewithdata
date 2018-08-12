@@ -61,36 +61,36 @@ export default {
     showComments: false,
   }),
   computed: {
-    safeCurr: function () {
+    safeCurr() {
       if (!this.curr || this.curr.deleted) {
         return EMPTY_CLAIM;
       }
       return this.curr;
     },
-    safePrev: function () {
+    safePrev() {
       if (!this.prev || this.prev.deleted) {
         return EMPTY_CLAIM;
       }
       return this.prev;
     },
-    id: function () {
+    id() {
       return this.safeCurr.id || this.safePrev.id;
     },
-    commentCount: function () {
+    commentCount() {
       if (!this.id) {
         return 0;
       }
       return this.lookupClaim(this.id).commentCount;
     },
-    url: function () {
+    url() {
       return this.claimUrl(this.id);
     },
-    textDiff: function () {
+    textDiff() {
       return diff(this.safePrev.text, this.safeCurr.text);
     },
   },
   methods: {
-    needsDataString: function (needsData) {
+    needsDataString(needsData) {
       if (needsData === null) {
         return 'Analyze Points';
       }

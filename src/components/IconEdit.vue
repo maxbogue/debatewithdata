@@ -8,7 +8,7 @@ export default {
     url: { type: String, required: true },
   },
   computed: {
-    editUrl: function () {
+    editUrl() {
       return this.appendToUrl(this.url, '/edit');
     },
   },

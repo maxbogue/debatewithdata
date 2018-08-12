@@ -22,13 +22,13 @@ export default {
     table: { type: String, required: true },
   },
   computed: {
-    tableData: function () {
+    tableData() {
       return deserializeTable(this.table);
     },
-    title: function () {
+    title() {
       return this.tableData[0][0];
     },
-    rows: function () {
+    rows() {
       return this.tableData.slice(1);
     },
   },

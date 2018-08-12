@@ -28,13 +28,13 @@ export default {
     ids: { type: Array, required: true },
   },
   computed: {
-    topics: function () {
+    topics() {
       return takeWhile(map(this.ids, this.lookupTopic), Boolean);
     },
-    itemIds: function () {
+    itemIds() {
       return this.ids.slice(this.topics.length);
     },
-    items: function () {
+    items() {
       let items = map(this.topics, (topic) => [ItemType.TOPIC, topic, null]);
       if (this.itemIds.length < 2) {
         return items;
@@ -59,7 +59,7 @@ export default {
       }
       return items;
     },
-    lastIsFor: function () {
+    lastIsFor() {
       if (this.itemIds.length < 2) {
         return null;
       }
@@ -81,13 +81,13 @@ export default {
     },
   },
   watch: {
-    lastIsFor: function () {
+    lastIsFor() {
       this.$emit('lastIsFor', this.lastIsFor);
     },
   },
   mountedTriggersWatchers: true,
   methods: {
-    findInside: function (item, id) {
+    findInside(item, id) {
       if (item.subClaimIds && typeof item.subClaimIds[id] === 'boolean') {
         let claim = this.lookupClaim(id);
         return [ItemType.CLAIM, claim, item.subClaimIds[id]];

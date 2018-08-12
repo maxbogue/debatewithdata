@@ -15,10 +15,10 @@ export default {
   },
   computed: {
     needsData: {
-      get: function () {
+      get() {
         return String(this.value);
       },
-      set: function (val) {
+      set(val) {
         if (val === String(true)) {
           this.$emit('input', true);
         } else if (val === String(false)) {

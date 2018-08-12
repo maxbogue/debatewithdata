@@ -91,7 +91,7 @@ export default {
       }
     }
   },
-  metaInfo: function () {
+  metaInfo() {
     let title = `Claim ${this.id}`;
     if (this.claim) {
       title = titleFromText(this.claim.text);
@@ -103,31 +103,31 @@ export default {
     isFor: null,
   }),
   computed: {
-    id: function () {
+    id() {
       return this.$route.params.id;
     },
-    claim: function () {
+    claim() {
       return this.lookupClaim(this.id);
     },
-    claimIsFor: function () {
+    claimIsFor() {
       return this.isFor !== null ? this.isFor : true;
     },
-    points: function () {
+    points() {
       if (!this.claim || this.claim.deleted || this.claim.depth < 2) {
         return [];
       }
       return combineAndSortPoints(this.claim, this.$store.state);
     },
-    zippedPoints: function () {
+    zippedPoints() {
       return rotateWithIndexes(this.points);
     },
-    trail: function () {
+    trail() {
       return parseTrail(this.$route.query.trail);
     },
-    newTrail: function () {
+    newTrail() {
       return this.trail.concat(this.id);
     },
-    superItems: function () {
+    superItems() {
       if (!this.claim) {
         return [];
       }
@@ -140,7 +140,7 @@ export default {
     },
   },
   methods: {
-    sideClass: function (side) {
+    sideClass(side) {
       return this.claimIsFor === !side ? this.$style.for : this.$style.against;
     },
   },

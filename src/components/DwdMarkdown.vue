@@ -37,7 +37,7 @@ export default {
     text: { type: String, required: true },
   },
   computed: {
-    paragraphs: function () {
+    paragraphs() {
       return this.text.split('\n\n').map(splitLinks);
     },
   },
