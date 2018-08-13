@@ -3,7 +3,6 @@ import config from 'config';
 import nodemailer from 'nodemailer';
 
 import { User } from '../models';
-import { AuthError } from './error';
 
 function makeSmtpTransport() {
   if (!config.has('smtpConfig')) {
@@ -14,18 +13,13 @@ function makeSmtpTransport() {
   return nodemailer.createTransport(config.get('smtpConfig'));
 }
 
-const AUTH_HEADER_REGEX = /^Bearer (.+)$/;
 const SMTP_TRANSPORT = makeSmtpTransport();
 
 // A middleware that parses the authorization request header and sets req.user
 // if it is valid.
 export async function parseAuthHeader(req, res, next) {
-  if (req.headers.authorization) {
-    let match = req.headers.authorization.match(AUTH_HEADER_REGEX);
-    if (!match) {
-      throw new AuthError('Malformed auth token.');
-    }
-    req.user = await User.verifyToken(match[1]);
+  if (req.session.authToken) {
+    req.user = await User.verifyToken(req.session.authToken);
   }
   next();
 }
@@ -34,7 +28,8 @@ const router = Router();
 
 router.post('/login', async function (req, res) {
   let user = await User.login(req.body.username, req.body.password);
-  res.json({ authToken: user.genAuthToken() });
+  req.session.authToken = user.genAuthToken();
+  res.end();
 });
 
 router.post('/register', async function (req, res) {
@@ -46,7 +41,8 @@ router.post('/register', async function (req, res) {
 
 router.post('/verify-email', async function (req, res) {
   let user = await User.verifyEmail(req.body.token);
-  res.json({ authToken: user.genAuthToken() });
+  req.session.authToken = user.genAuthToken();
+  res.end();
 });
 
 router.post('/forgot-password', async function (req, res) {
@@ -59,7 +55,8 @@ router.post('/forgot-password', async function (req, res) {
 
 router.post('/reset-password', async function (req, res) {
   let user = await User.resetPassword(req.body.token, req.body.password);
-  res.json({ authToken: user.genAuthToken() });
+  req.session.authToken = user.genAuthToken();
+  res.end();
 });
 
 export default router;

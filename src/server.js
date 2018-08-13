@@ -1,5 +1,6 @@
 import 'systemd';
 import config from 'config';
+import cookieSession from 'cookie-session';
 import express from 'express';
 import path from 'path';
 
@@ -13,13 +14,22 @@ const app = express();
 app.set('trust proxy', 'loopback');
 app.use(expressLogger);
 
-const sendIndex = function (req, res) {
-  res.sendFile(INDEX_PATH);
-};
+app.use(cookieSession({
+  name: 'session',
+  secret: config.get('secretKey'),
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  secure: true,
+  httpOnly: false,
+  sameSite: 'lax',
+}));
 
 app.get('/js/:filename', function (req, res) {
   res.sendFile(path.resolve(JS_PATH, req.params.filename));
 });
+
+function sendIndex(req, res) {
+  res.sendFile(INDEX_PATH);
+}
 
 app.get('/', sendIndex);
 app.get('/:type/:id/history', sendIndex);

@@ -94,13 +94,7 @@ const makeStoreOptions = ($http) => ({
     setUserFromToken(state, authToken) {
       auth.setAuthToken(authToken);
       // User will be null here if the auth token has expired.
-      let user = auth.getUser();
-      if (user) {
-        $http.defaults.headers.common.Authorization = 'Bearer ' + authToken;
-      } else {
-        delete $http.defaults.headers.common.Authorization;
-      }
-      state.user = user;
+      state.user = auth.getUser();
       state.topics = {};
       state.claims = {};
       state.source = {};
@@ -151,13 +145,13 @@ const makeStoreOptions = ($http) => ({
       await $http.post('/api/register', payload, { loader });
     },
     async verifyEmail({ commit }, { token, loader }) {
-      let res = await $http.post('/api/verify-email', { token }, { loader });
-      commit('setUserFromToken', res.data.authToken);
+      await $http.post('/api/verify-email', { token }, { loader });
+      commit('setUserFromToken', auth.getAuthToken());
     },
     async login({ commit }, { username, password, loader }) {
       let payload = { username, password };
-      let res = await $http.post('/api/login', payload, { loader });
-      commit('setUserFromToken', res.data.authToken);
+      await $http.post('/api/login', payload, { loader });
+      commit('setUserFromToken', auth.getAuthToken());
     },
     async logout({ commit }) {
       commit('setUserFromToken', null);
@@ -167,8 +161,8 @@ const makeStoreOptions = ($http) => ({
     },
     async resetPassword({ commit }, { token, password, loader }) {
       let payload = { token, password };
-      let res = await $http.post('/api/reset-password', payload, { loader });
-      commit('setUserFromToken', res.data.authToken);
+      await $http.post('/api/reset-password', payload, { loader });
+      commit('setUserFromToken', auth.getAuthToken());
     },
     async getItem({ commit, state }, { type, id, trail }) {
       let params = paramsFromTrail(trail, state);

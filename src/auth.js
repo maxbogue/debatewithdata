@@ -3,20 +3,27 @@
  * data from localStorage.
  */
 
+import Cookies from 'js-cookie';
 import jwtDecode from 'jwt-decode';
 
-const TOKEN_STORAGE_KEY = 'authToken';
+const SESSION_COOKIE_NAME = 'session';
 
 function setAuthToken(authToken) {
   if (authToken) {
-    window.localStorage.setItem(TOKEN_STORAGE_KEY, authToken);
+    let encodedSession = window.btoa(JSON.stringify({ authToken }));
+    Cookies.set(SESSION_COOKIE_NAME, encodedSession);
   } else {
-    window.localStorage.removeItem(TOKEN_STORAGE_KEY);
+    Cookies.remove(SESSION_COOKIE_NAME);
   }
 }
 
 function getAuthToken() {
-  return window.localStorage.getItem(TOKEN_STORAGE_KEY);
+  let encodedSession = Cookies.get(SESSION_COOKIE_NAME);
+  if (!encodedSession) {
+    return '';
+  }
+  let session = JSON.parse(window.atob(encodedSession));
+  return session && session.authToken || '';
 }
 
 function getUserFromToken(authToken) {
