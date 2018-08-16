@@ -2,7 +2,6 @@ import Router from 'express-promise-router';
 import bodyParser from 'body-parser';
 
 import activity from './activity';
-import admin from './admin';
 import auth, { parseAuthHeader } from './auth';
 import item from './item';
 import notifications from './notifications';
@@ -25,7 +24,6 @@ function setItem(Item) {
 
 router.use(auth);
 router.use('/activity', activity);
-router.use('/admin', admin);
 router.use('/claim', setItem(Claim), item);
 router.use('/notifications', notifications);
 router.use('/search', search);

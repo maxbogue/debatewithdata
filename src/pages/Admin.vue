@@ -1,9 +1,7 @@
 <template>
 <div class="center auth">
   <h2>Fixes</h2>
-  <button type="button"
-          class="dwd-btn dwd-btn-primary"
-          @click="topicRoots">Init topic roots</button>
+  <p>None at the moment.</p>
 </div>
 </template>
 
@@ -11,14 +9,6 @@
 export default {
   metaInfo: {
     title: 'Admin',
-  },
-  methods: {
-    async topicRoots() {
-      if (window.confirm('Are you sure?')) {
-        let res = await this.$http.post('/api/admin/fix/topic-roots');
-        window.alert(res.data.count + ' topics made root.');
-      }
-    },
   },
 };
 </script>
