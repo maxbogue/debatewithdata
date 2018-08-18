@@ -1,4 +1,5 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 
 const styleLoader = process.env.NODE_ENV !== 'production'
@@ -70,7 +71,8 @@ const baseConfig = {
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      '@': path.join(__dirname, 'src'),
     }
   },
   performance: {

@@ -1,14 +1,11 @@
-import Router from 'express-promise-router';
 import isArray from 'lodash/isArray';
 import mergeWith from 'lodash/mergeWith';
 import sortBy from 'lodash/sortBy';
 
-import { ClaimRev, Comment, SourceRev, TopicRev, User } from '../models';
-import { ItemType } from '../common/constants';
+import { ClaimRev, Comment, SourceRev, TopicRev, User } from '@/models';
+import { ItemType } from '@/common/constants';
 
-const router = Router();
-
-function merge (obj, other) {
+function merge(obj, other) {
   return mergeWith(obj, other, (a, b) => {
     if (isArray(a)) {
       return a.concat(b);
@@ -112,10 +109,3 @@ export async function getActivity({ user, limit }) {
   }
   return activity;
 }
-
-router.get('/', async function (req, res) {
-  let activity = await getActivity({ limit: 100 });
-  res.json({ activity });
-});
-
-export default router;

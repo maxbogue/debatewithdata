@@ -52,7 +52,11 @@ if (process.env.NODE_ENV === 'development') {
     { imports: { colorStatus } });
 
   const expressFormat = format((info) => {
-    info[MESSAGE] = render(info);
+    if (info.exception) {
+      info[MESSAGE] = info.message;
+    } else if (info.status) {
+      info[MESSAGE] = render(info);
+    }
     return info;
   });
 

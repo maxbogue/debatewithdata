@@ -1,4 +1,4 @@
-import { ValidationError } from '../common/validate';
+import { ValidationError } from '@/common/validate';
 
 class ApiError extends Error {
   toJson() {

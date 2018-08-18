@@ -4,8 +4,9 @@ import cookieSession from 'cookie-session';
 import express from 'express';
 import path from 'path';
 
-import api from './api';
+import ApiImpl from './api/impl';
 import expressLogger from './base/expressLogger';
+import { createApiRouter } from './api/router';
 
 const INDEX_PATH = path.resolve(__dirname, 'index.html');
 const JS_PATH = path.resolve(__dirname, '..', 'build', 'js');
@@ -61,7 +62,7 @@ app.get('/topics/add', sendIndex);
 app.get('/user/:username', sendIndex);
 app.get('/verify-email', sendIndex);
 
-app.use('/api', api);
+app.use('/api', createApiRouter(new ApiImpl()));
 
 app.get('*', function (req, res) {
   res.status(404);

@@ -1,7 +1,7 @@
 import includes from 'lodash/includes';
 
-import { ClientError } from './error';
-import { Filter, Sort } from '../common/constants';
+import { ClientError } from '@/api/error';
+import { Filter, Sort } from '@/common/constants';
 
 export function parseFilters(filters) {
   if (!filters) {

@@ -1,25 +1,19 @@
-import Router from 'express-promise-router';
-
-import search from '../common/search';
-import { Claim, Source, Topic } from '../models';
-import { ClientError } from './error';
-import { PAGE_SIZE, ItemType } from '../common/constants';
-
-const router = Router();
+import searchIndex from '@/common/search';
+import { Claim, Source, Topic } from '@/models';
+import { ClientError } from '@/api/error';
+import { PAGE_SIZE, ItemType } from '@/common/constants';
 
 // All IDs only use lowercase letters, numbers, and dashes.
 const ANY_ID_REGEX = /^[0-9a-z-]+$/;
 
-router.get('/', async function (req, res) {
-  let query = req.query.query;
+export async function search(user, query, types, page) {
   if (!query) {
     throw new ClientError('search requires a query');
   }
 
-  let results = search.query(query, req.query.types);
+  let results = searchIndex.query(query, types);
   let numPages = Math.ceil(results.length / PAGE_SIZE);
-  let page = parseInt(req.query.page) || 1;
-  let start = PAGE_SIZE * (page - 1);
+  let start = PAGE_SIZE * ((parseInt(page) || 1) - 1);
   results = results.slice(start, start + PAGE_SIZE);
 
   let data = { results, numPages, topics: {}, claims: {}, sources: {} };
@@ -37,7 +31,7 @@ router.get('/', async function (req, res) {
     });
     for (let topic of topics) {
       if (!topic.head.deleted) {
-        await topic.fillData(data, 1, req.user);
+        await topic.fillData(data, 1, user);
       }
     }
   }
@@ -54,7 +48,7 @@ router.get('/', async function (req, res) {
     });
     for (let claim of claims) {
       if (!claim.head.deleted) {
-        await claim.fillData(data, 1, req.user);
+        await claim.fillData(data, 1, user);
       }
     }
   }
@@ -71,12 +65,10 @@ router.get('/', async function (req, res) {
     });
     for (let source of sources) {
       if (!source.head.deleted) {
-        data.sources[source.id] = await source.toData(req.user);
+        data.sources[source.id] = await source.toData(user);
       }
     }
   }
 
-  res.json(data);
-});
-
-export default router;
+  return data;
+}
