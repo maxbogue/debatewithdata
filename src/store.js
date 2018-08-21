@@ -57,6 +57,21 @@ async function wrapLoading(commit, promise) {
   }
 }
 
+async function wrapLoader(loader, promise) {
+  if (!loader) {
+    return await promise;
+  }
+  loader.setLoading(true);
+  try {
+    return await promise;
+  } catch (err) {
+    loader.setError(axiosErrorToString(err));
+    throw err;
+  } finally {
+    loader.setLoading(false);
+  }
+}
+
 const makeStoreOptions = ($http) => ({
   state: {
     topics: {},
@@ -142,26 +157,31 @@ const makeStoreOptions = ($http) => ({
   actions: {
     async register(_, { username, password, email, loader }) {
       let payload = { username, password, email };
-      await $http.post('/api/register', payload, { loader });
+      let promise = $http.post('/api/register', payload);
+      await wrapLoader(loader, promise);
     },
     async verifyEmail({ commit }, { token, loader }) {
-      await $http.post('/api/verify-email', { token }, { loader });
+      let promise = $http.post('/api/verify-email', { token });
+      await wrapLoader(loader, promise);
       commit('setUserFromToken', auth.getAuthToken());
     },
     async login({ commit }, { username, password, loader }) {
       let payload = { username, password };
-      await $http.post('/api/login', payload, { loader });
+      let promise = $http.post('/api/login', payload);
+      await wrapLoader(loader, promise);
       commit('setUserFromToken', auth.getAuthToken());
     },
     async logout({ commit }) {
       commit('setUserFromToken', null);
     },
     async forgotPassword(_, { email, loader }) {
-      await $http.post('/api/forgot-password', { email }, { loader });
+      let promise = $http.post('/api/forgot-password', { email });
+      await wrapLoader(loader, promise);
     },
     async resetPassword({ commit }, { token, password, loader }) {
       let payload = { token, password };
-      await $http.post('/api/reset-password', payload, { loader });
+      let promise = $http.post('/api/reset-password', payload);
+      await wrapLoader(loader, promise);
       commit('setUserFromToken', auth.getAuthToken());
     },
     async getItem({ commit, state }, { type, id, trail }) {
@@ -176,7 +196,8 @@ const makeStoreOptions = ($http) => ({
         filter: filters.map(sortFilterParam).join(','),
         page,
       };
-      let res = await $http.get('/api/' + type, { params, loader });
+      let promise = $http.get('/api/' + type, { params });
+      let res = await wrapLoader(loader, promise);
       commit('setData', res.data);
       return res.data;
     },
@@ -209,7 +230,8 @@ const makeStoreOptions = ($http) => ({
     },
     async search({ commit }, { query, types, page, loader }) {
       let params = { query, types, page };
-      let res = await $http.get('/api/search', { params, loader });
+      let promise = $http.get('/api/search', { params });
+      let res = await wrapLoader(loader, promise);
       commit('setData', res.data);
       return res.data;
     },
