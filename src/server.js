@@ -12,7 +12,6 @@ import { createApiRouter } from './api/router';
 import { createApp } from './app';
 import { ServerAuth } from './auth';
 
-const INDEX_PATH = path.resolve(__dirname, 'index.html');
 const JS_PATH = path.resolve(__dirname, '..', 'build', 'js');
 
 const renderer = createRenderer({
@@ -20,28 +19,20 @@ const renderer = createRenderer({
 });
 
 function createAppFromContext(context) {
-  // since there could potentially be asynchronous route hooks or components,
-  // we will be returning a Promise so that the server can wait until
-  // everything is ready before rendering.
   return new Promise((resolve, reject) => {
     const auth = new ServerAuth(context.authToken);
-    const { app, router } = createApp(auth);
+    const api = new ApiImpl(auth);
+    const { app, router } = createApp(api, auth);
 
-    // set server-side router's location
-    router.push(context.url)
-
-    // wait until router has resolved possible async components and hooks
+    router.push(context.url);
     router.onReady(() => {
-      const matchedComponents = router.getMatchedComponents()
-      // no matched routes, reject with 404
+      const matchedComponents = router.getMatchedComponents();
       if (!matchedComponents.length) {
-        return reject({ code: 404 })
+        reject({ code: 404 });
       }
-
-      // the Promise should resolve to the app instance so it can be rendered
-      resolve(app)
-    }, reject)
-  })
+      resolve(app);
+    }, reject);
+  });
 }
 
 const server = express();
@@ -60,7 +51,8 @@ server.get('/js/:filename', function (req, res) {
   res.sendFile(path.resolve(JS_PATH, req.params.filename));
 });
 
-server.use('/api', createApiRouter(new ApiImpl()));
+server.use('/api', createApiRouter((authToken) =>
+  new ApiImpl(new ServerAuth(authToken))));
 
 server.get('*', async (req, res) => {
   const context = {
@@ -68,14 +60,14 @@ server.get('*', async (req, res) => {
     authToken: req.session.authToken,
   };
 
-	try {
+  try {
     const app = await createAppFromContext(context);
-		const html = await renderer.renderToString(app);
+    const html = await renderer.renderToString(app);
     res.status(200).send(html);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).end('Internal Server Error');
-	}
+  }
 });
 
 export default server;

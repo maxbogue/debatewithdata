@@ -34,22 +34,27 @@ function getModel(type) {
   return ITEM_TYPE_TO_MODEL[type];
 }
 
-async function getUser(authToken) {
-  if (!authToken) {
-    return null;
-  }
-  return await User.verifyToken(authToken);
-}
-
-async function requireUser(authToken) {
-  const user = await getUser(authToken);
-  if (!user) {
-    throw new AuthError();
-  }
-  return user;
-}
-
 export default class ApiImpl {
+  constructor(auth) {
+    this.auth = auth;
+  }
+
+  async optionalUser() {
+    const authToken = this.auth.getAuthToken();
+    if (!authToken) {
+      return null;
+    }
+    return await User.verifyToken(authToken);
+  }
+
+  async requireUser() {
+    const user = await this.optionalUser();
+    if (!user) {
+      throw new AuthError();
+    }
+    return user;
+  }
+
   async login(username, password) {
     const user = await User.login(username, password);
     return user.genAuthToken();
@@ -79,8 +84,8 @@ export default class ApiImpl {
     return user.genAuthToken();
   }
 
-  async createItem(authToken, type, itemData) {
-    const user = await requireUser(authToken);
+  async createItem(type, itemData) {
+    const user = await this.requireUser();
     const Item = getModel(type);
     const rev = await Item.apiCreate(user, itemData);
     const data = await Item.apiGet(rev.getItemId(), user);
@@ -88,45 +93,45 @@ export default class ApiImpl {
     return data;
   }
 
-  async getItem(authToken, type, id, trail) {
-    const user = await getUser(authToken);
+  async getItem(type, id, trail) {
+    const user = await this.optionalUser();
     const data = await getTrailData(trail, user);
     const itemData = await getModel(type).apiGet(id, user, Boolean(trail));
     addApiData(data, itemData);
     return data;
   }
 
-  async getItems(authToken, type, filters, sort, page) {
-    const user = await getUser(authToken);
+  async getItems(type, filters, sort, page) {
+    const user = await this.optionalUser();
     return await getModel(type).apiGetAll({ user, filters, sort, page });
   }
 
-  async updateItem(authToken, type, id, itemData) {
-    const user = await requireUser(authToken);
+  async updateItem(type, id, itemData) {
+    const user = await this.requireUser();
     const Item = getModel(type);
     await Item.apiUpdate(id, user, itemData);
     return await Item.apiGet(id, user);
   }
 
-  async deleteItem(authToken, type, id, message) {
-    const user = await requireUser(authToken);
+  async deleteItem(type, id, message) {
+    const user = await this.requireUser();
     const Item = getModel(type);
     await Item.apiDelete(id, user, message);
     return await Item.apiGet(id, user);
   }
 
-  async getItemRevs(authToken, type, id) {
-    const user = await getUser(authToken);
+  async getItemRevs(type, id) {
+    const user = await this.optionalUser();
     return await getModel(type).apiGetRevs(id, user);
   }
 
-  async toggleStar(authToken, type, id) {
-    const user = await requireUser(authToken);
+  async toggleStar(type, id) {
+    const user = await this.requireUser();
     return await getModel(type).apiToggleStar(id, user);
   }
 
-  async toggleWatch(authToken, type, id) {
-    const user = await requireUser(authToken);
+  async toggleWatch(type, id) {
+    const user = await this.requireUser();
     return await getModel(type).apiToggleWatch(id, user);
   }
 
@@ -134,15 +139,15 @@ export default class ApiImpl {
     return await Comment.apiGetAll(getModel(type), id);
   }
 
-  async createComment(authToken, type, id, text) {
-    const user = await requireUser(authToken);
+  async createComment(type, id, text) {
+    const user = await this.requireUser();
     const commentModel = await Comment.apiAdd(getModel(type), id, user, text);
     const comment = await Comment.apiGet(commentModel.id);
     return { comment };
   }
 
-  async deleteComment(authToken, type, id, commentId) {
-    const user = await requireUser(authToken);
+  async deleteComment(type, id, commentId) {
+    const user = await this.requireUser();
     await Comment.apiDelete(getModel(type), id, user, commentId);
     return { message: 'success' };
   }
@@ -152,18 +157,18 @@ export default class ApiImpl {
     return { activity };
   }
 
-  async hasNotifications(authToken) {
-    const user = await requireUser(authToken);
+  async hasNotifications() {
+    const user = await this.requireUser();
     return { hasNotifications: await hasNotifications(user) };
   }
 
-  async getNotifications(authToken) {
-    const user = await requireUser(authToken);
+  async getNotifications() {
+    const user = await this.requireUser();
     return await getNotifications(user);
   }
 
-  async readNotifications(authToken, until) {
-    const user = await requireUser(authToken);
+  async readNotifications(until) {
+    const user = await this.requireUser();
     if (!until) {
       throw new ClientError('"until" parameter is required.');
     }
@@ -186,8 +191,8 @@ export default class ApiImpl {
     };
   }
 
-  async search(authToken, query, types, page) {
-    const user = await getUser(authToken);
+  async search(query, types, page) {
+    const user = await this.optionalUser();
     return await search(user, query, types, page);
   }
 }

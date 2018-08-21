@@ -59,12 +59,11 @@ export function addApiData(data, otherData) {
 }
 
 export async function getTrailData(trail, user) {
-  let ids = trail ? trail.split(',') : [];
-  if (ids.length === 0) {
+  if (trail.length === 0) {
     return {};
   }
-  let data = await Topic.apiGetForTrail(ids, user);
-  let claimsData = await Claim.apiGetForTrail(ids, user);
+  let data = await Topic.apiGetForTrail(trail, user);
+  let claimsData = await Claim.apiGetForTrail(trail, user);
   addApiData(data, claimsData);
   return data;
 }

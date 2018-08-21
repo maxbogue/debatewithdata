@@ -18,19 +18,11 @@ function cleanItem(item) {
   return copy;
 }
 
-function paramsFromTrail(trail, state) {
+function filterTrail(trail, state) {
   if (!trail) {
-    return {};
+    return [];
   }
-  trail = trail.filter((id) => !state.claims[id] && !state.topics[id]);
-  if (trail.length > 0) {
-    return { trail: trail.join(',') };
-  }
-  return {};
-}
-
-function sortFilterParam([s, b]) {
-  return (b ? '+' : '-') + s;
+  return trail.filter((id) => !state.claims[id] && !state.topics[id]);
 }
 
 function windowIsSingleColumn() {
@@ -73,7 +65,7 @@ async function wrapLoader(loader, promise) {
   }
 }
 
-const makeStoreOptions = (auth, $http) => ({
+const makeStoreOptions = (auth, api) => ({
   state: {
     topics: {},
     claims: {},
@@ -157,66 +149,59 @@ const makeStoreOptions = (auth, $http) => ({
   },
   actions: {
     async register(_, { username, password, email, loader }) {
-      let payload = { username, password, email };
-      let promise = $http.post('/api/register', payload);
+      const promise = api.register(username, password, email);
       await wrapLoader(loader, promise);
     },
     async verifyEmail({ commit }, { token, loader }) {
-      let promise = $http.post('/api/verify-email', { token });
-      await wrapLoader(loader, promise);
-      commit('setUserFromToken', auth.getAuthToken());
+      const promise = await api.verifyEmail(token);
+      const authToken = await wrapLoader(loader, promise);
+      commit('setUserFromToken', authToken);
     },
     async login({ commit }, { username, password, loader }) {
-      let payload = { username, password };
-      let promise = $http.post('/api/login', payload);
-      await wrapLoader(loader, promise);
-      commit('setUserFromToken', auth.getAuthToken());
+      const promise = api.login(username, password);
+      const authToken = await wrapLoader(loader, promise);
+      commit('setUserFromToken', authToken);
     },
     async logout({ commit }) {
       commit('setUserFromToken', null);
     },
     async forgotPassword(_, { email, loader }) {
-      let promise = $http.post('/api/forgot-password', { email });
+      const promise = api.forgotPassword(email);
       await wrapLoader(loader, promise);
     },
     async resetPassword({ commit }, { token, password, loader }) {
-      let payload = { token, password };
-      let promise = $http.post('/api/reset-password', payload);
-      await wrapLoader(loader, promise);
-      commit('setUserFromToken', auth.getAuthToken());
+      const promise = api.resetPassword(token, password);
+      const authToken = await wrapLoader(loader, promise);
+      commit('setUserFromToken', authToken);
     },
     async getItem({ commit, state }, { type, id, trail }) {
-      let params = paramsFromTrail(trail, state);
-      let promise = $http.get(`/api/${type}/${id}`, { params });
-      let res = await wrapLoading(commit, promise);
-      commit('setData', res.data);
+      const filteredTrail = filterTrail(trail, state);
+      const promise = api.getItem(type, id, filteredTrail);
+      const data = await wrapLoading(commit, promise);
+      commit('setData', data);
     },
     async getItems({ commit }, { type, sort, filters, page, loader }) {
-      let params = {
-        sort: sortFilterParam(sort),
-        filter: filters.map(sortFilterParam).join(','),
-        page,
-      };
-      let promise = $http.get('/api/' + type, { params });
-      let res = await wrapLoader(loader, promise);
-      commit('setData', res.data);
-      return res.data;
+      const promise = api.getItems(type, filters, sort, page);
+      const data = await wrapLoader(loader, promise);
+      commit('setData', data);
+      return data;
     },
     async addItem({ commit }, { type, item }) {
       item = cleanItem(item);
       validateItem(type, item);
-      let res = await $http.post(`/api/${type}`, item);
-      commit('setData', res.data);
-      return res.data.id;
+      const data = await api.createItem(type, item);
+      commit('setData', data);
+      return data.id;
     },
     async updateItem({ commit }, { type, item }) {
       item = cleanItem(item);
       validateItem(type, item);
       try {
-        let res = await $http.put(`/api/${type}/${item.id}`, item);
-        commit('setData', res.data);
+        const data = await api.updateItem(type, item.id, item);
+        commit('setData', data);
         return item.id;
       } catch (err) {
+        // TODO: Translate HTTP errors at the ApiClient level.
         if (err.response.status === 409) {
           commit('setData', err.response.data.data);
           commit('setErrorMessage', CONFLICT_ERROR_MESSAGE);
@@ -225,37 +210,39 @@ const makeStoreOptions = (auth, $http) => ({
       }
     },
     async removeItem({ commit }, { type, id, message }) {
-      let params = { message };
-      let res = await $http.delete(`/api/${type}/${id}`, { params });
-      commit('setData', res.data);
-    },
-    async search({ commit }, { query, types, page, loader }) {
-      let params = { query, types, page };
-      let promise = $http.get('/api/search', { params });
-      let res = await wrapLoader(loader, promise);
-      commit('setData', res.data);
-      return res.data;
+      const data = await api.deleteItem(type, id, message);
+      commit('setData', data);
     },
     async getNotifications({ commit }) {
-      let promise = $http.get('/api/notifications');
-      let res = await wrapLoading(commit, promise);
-      commit('setData', res.data);
-      return res.data.results;
+      const promise = api.getNotifications();
+      const data = await wrapLoading(commit, promise);
+      commit('setData', data);
+      return data.results;
     },
     async updateHasNotifications({ commit }) {
-      let res = await $http.get('/api/notifications/has');
-      commit('setHasNotifications', res.data.hasNotifications);
+      const data = await api.hasNotifications();
+      commit('setHasNotifications', data.hasNotifications);
     },
     async readNotifications({ commit }, { until }) {
-      let res = await $http.post('/api/notifications/read', { until });
-      commit('setHasNotifications', res.data.hasNotifications);
+      const data = await api.readNotifications(until);
+      commit('setHasNotifications', data.hasNotifications);
+    },
+    async getUser(_, { username, loader }) {
+      const promise = api.getUser(username);
+      return await wrapLoader(loader, promise);
+    },
+    async search({ commit }, { query, types, page, loader }) {
+      const promise = api.search(query, types, page);
+      const data = await wrapLoader(loader, promise);
+      commit('setData', data);
+      return data;
     },
   },
   plugins: [singleColumnPlugin],
 });
 
-export function createStore(auth, http) {
-  let store = new Vuex.Store(makeStoreOptions(auth, http));
+export function createStore(api, auth) {
+  const store = new Vuex.Store(makeStoreOptions(auth, api));
   store.commit('setUserFromToken', auth.getAuthToken());
   return store;
 }

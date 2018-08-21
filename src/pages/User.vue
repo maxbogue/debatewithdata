@@ -44,9 +44,10 @@ export default {
         return;
       }
       this.user = null;
-      let loader = this.$refs.loader;
-      let res = await this.$http.get('/api/user/' + this.username, { loader });
-      this.user = res.data;
+      this.user = await this.$store.dispatch('getUser', {
+        username: this.username,
+        loader: this.$refs.loader,
+      });
     },
   },
 };

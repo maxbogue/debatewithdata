@@ -1,21 +1,20 @@
 import Router from 'express-promise-router';
 
-export function createNotificationRouter(api) {
+export function createNotificationRouter() {
   const router = Router();
 
   router.get('/', async function (req, res) {
-    const data = await api.getNotifications(req.session.authToken);
+    const data = await req.api.getNotifications();
     res.json(data);
   });
 
   router.get('/has', async function (req, res) {
-    const data = await api.hasNotifications(req.session.authToken);
+    const data = await req.api.hasNotifications();
     res.json(data);
   });
 
   router.post('/read', async function (req, res) {
-    const data = await api.readNotifications(
-      req.session.authToken, req.body.until);
+    const data = await req.api.readNotifications(req.body.until);
     res.json(data);
   });
 

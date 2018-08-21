@@ -1,5 +1,4 @@
 //import 'normalize.css/normalize.css';
-import axios from 'axios';
 import Meta from 'vue-meta';
 import Vue from 'vue';
 
@@ -12,16 +11,16 @@ import { createStore } from './store';
 Vue.use(Meta);
 Vue.mixin(DwdUtilsMixin);
 
-export function createApp(auth) {
-  const http = axios.create();
-  const store = createStore(auth, http);
+export function createApp(api, auth) {
+  const store = createStore(api, auth);
   const router = createRouter(auth, store);
   const app = new Vue({
     store,
     router,
     // Axios is exposed as $axios on the root element so it can be accessed by
     // all Vue instances via the $http computed property in DwdUtilsMixin.
-    computed: { $axios: () => http },
+    // TODO: All API calls should go through the api object.
+    computed: { $axios: () => api.http },
     render: (h) => h(App),
   });
 
