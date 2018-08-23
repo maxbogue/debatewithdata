@@ -174,6 +174,10 @@ const makeStoreOptions = (auth, api) => ({
       const authToken = await wrapLoader(loader, promise);
       commit('setUserFromToken', authToken);
     },
+    async getUser(_, { username, loader }) {
+      const promise = api.getUser(username);
+      return await wrapLoader(loader, promise);
+    },
     async getItem({ commit, state }, { type, id, trail }) {
       const filteredTrail = filterTrail(trail, state);
       const promise = api.getItem(type, id, filteredTrail);
@@ -182,6 +186,12 @@ const makeStoreOptions = (auth, api) => ({
     },
     async getItems({ commit }, { type, sort, filters, page, loader }) {
       const promise = api.getItems(type, filters, sort, page);
+      const data = await wrapLoader(loader, promise);
+      commit('setData', data);
+      return data;
+    },
+    async search({ commit }, { query, types, page, loader }) {
+      const promise = api.search(query, types, page);
       const data = await wrapLoader(loader, promise);
       commit('setData', data);
       return data;
@@ -213,6 +223,29 @@ const makeStoreOptions = (auth, api) => ({
       const data = await api.deleteItem(type, id, message);
       commit('setData', data);
     },
+    async getItemRevs({ commit }, { type, id }) {
+      const data = await wrapLoading(commit, api.getItemRevs(type, id));
+      commit('setData', data);
+      return data;
+    },
+    async toggleStar(_, { type, id }) {
+      return await api.toggleStar(type, id);
+    },
+    async toggleWatch(_, { type, id }) {
+      return await api.toggleWatch(type, id);
+    },
+    async getComments(_, { type, id }) {
+      return await api.getComments(type, id);
+    },
+    async createComment(_, { type, id, text }) {
+      return await api.createComment(type, id, text);
+    },
+    async deleteComment(_, { type, id, commentId }) {
+      return await api.deleteComment(type, id, commentId);
+    },
+    async getActivity({ commit }) {
+      return await wrapLoading(commit, api.getActivity());
+    },
     async getNotifications({ commit }) {
       const promise = api.getNotifications();
       const data = await wrapLoading(commit, promise);
@@ -226,16 +259,6 @@ const makeStoreOptions = (auth, api) => ({
     async readNotifications({ commit }, { until }) {
       const data = await api.readNotifications(until);
       commit('setHasNotifications', data.hasNotifications);
-    },
-    async getUser(_, { username, loader }) {
-      const promise = api.getUser(username);
-      return await wrapLoader(loader, promise);
-    },
-    async search({ commit }, { query, types, page, loader }) {
-      const promise = api.search(query, types, page);
-      const data = await wrapLoader(loader, promise);
-      commit('setData', data);
-      return data;
     },
   },
   plugins: [singleColumnPlugin],

@@ -255,11 +255,6 @@ export function axiosErrorToString(error) {
 }
 
 export var DwdUtilsMixin = {
-  computed: {
-    $http() {
-      return this.$root.$axios;
-    },
-  },
   filters: {
     toSideString(isFor) {
       return isFor === null ? 'neutral' : isFor ? 'for' : 'against';

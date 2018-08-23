@@ -21,18 +21,15 @@
       <claim-data-analysis v-if="type === ItemType.CLAIM" :claim="item" />
       <span v-else class="id mono">{{ id }}</span>
       <span class="controls">
-        <icon-star :item="item" :url="apiUrl(type, id)" />
-        <icon-watch v-if="$store.state.user"
-                    :item="item"
-                    :url="apiUrl(type, id)" />
+        <icon-star :type="type" :item="item" />
+        <icon-watch v-if="$store.state.user" :type="type" :item="item" />
         <icon-comment @click.native="showComments = !showComments"
                       :count="item.commentCount" />
         <icon-history :url="urlWithTrail" />
         <icon-edit :url="urlWithTrail" />
       </span>
     </div>
-    <dwd-comments :url="'/api' + url"
-                  :show="showComments" />
+    <dwd-comments :type="type" :id="id" :show="showComments" />
   </template>
 </div>
 </template>

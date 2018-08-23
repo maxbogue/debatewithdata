@@ -34,7 +34,8 @@ export default {
     DwdInput,
   },
   props: {
-    url: { type: String, required: true },
+    type: { type: String, required: true },
+    id: { type: String, required: true },
     show: { type: Boolean, required: true },
     // Triggers an eager load the first time it flips to true.
     hint: { type: Boolean, default: false },
@@ -46,9 +47,6 @@ export default {
     newComment: '',
   }),
   computed: {
-    commentsUrl() {
-      return this.url + '/comment';
-    },
     user() {
       return this.$store.state.user;
     },
@@ -74,25 +72,31 @@ export default {
         return;
       }
       this.canLoad = false;
-      let res = await this.$http.get(this.commentsUrl);
+      this.comments = await this.$store.dispatch('getComments', {
+        type: this.type,
+        id: this.id,
+      });
       this.loaded = true;
-      this.comments = res.data;
     },
     async submit() {
       if (!this.newComment) {
         return;
       }
-
-      let payload = {
+      const data = await this.$store.dispatch('createComment', {
+        type: this.type,
+        id: this.id,
         text: this.newComment,
-      };
-      let res = await this.$http.post(this.commentsUrl, payload);
+      });
       this.newComment = '';
-      this.comments.push(res.data.comment);
+      this.comments.push(data.comment);
     },
-    async deleteComment(id) {
-      await this.$http.delete(this.commentsUrl + '/' + id);
-      let i = this.comments.findIndex((c) => c.id === id);
+    async deleteComment(commentId) {
+      await this.$store.dispatch('deleteComment', {
+        type: this.type,
+        id: this.id,
+        commentId,
+      });
+      let i = this.comments.findIndex((c) => c.id === commentId);
       if (i >= 0) {
         this.comments.splice(i, 1);
       }

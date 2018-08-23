@@ -12,8 +12,8 @@
 <script>
 export default {
   props: {
+    type: { type: String, required: true },
     item: { type: Object, required: true },
-    url: { type: String, required: true },
   },
   computed: {
     user() {
@@ -25,10 +25,13 @@ export default {
       if (!this.user) {
         return;
       }
-      let res = await this.$http.post(this.url + '/star');
-      this.item.starCount = res.data.starCount;
-      this.item.starred = res.data.starred;
-      this.item.watched = res.data.watched;
+      const data = await this.$store.dispatch('toggleStar', {
+        type: this.type,
+        id: this.item.id,
+      });
+      this.item.starCount = data.starCount;
+      this.item.starred = data.starred;
+      this.item.watched = data.watched;
     },
   },
 };

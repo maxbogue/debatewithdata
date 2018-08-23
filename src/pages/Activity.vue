@@ -1,19 +1,16 @@
 <template>
 <div class="narrow">
   <h1>Recent Activity</h1>
-  <dwd-loader ref="loader" />
   <activity-list v-if="activity" :activity="activity" />
 </div>
 </template>
 
 <script>
 import ActivityList from '../components/ActivityList.vue';
-import DwdLoader from '../components/DwdLoader.vue';
 
 export default {
   components: {
     ActivityList,
-    DwdLoader,
   },
   metaInfo: {
     title: 'Activity',
@@ -23,9 +20,8 @@ export default {
   }),
   async mounted() {
     if (!this.activity) {
-      let loader = this.$refs.loader;
-      let res = await this.$http.get('/api/activity', { loader });
-      this.activity = res.data.activity;
+      const data = await this.$store.dispatch('getActivity');
+      this.activity = data.activity;
     }
   },
 };

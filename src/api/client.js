@@ -43,6 +43,11 @@ export default class ApiClient {
     return this.auth.getAuthToken();
   }
 
+  async getUser(username) {
+    const res = await this.http.get(`/user/${username}`);
+    return res.data;
+  }
+
   async getItem(type, id, trail) {
     const params = paramsFromTrail(trail);
     const res = await this.http.get(`/${type}/${id}`, { params });
@@ -56,6 +61,12 @@ export default class ApiClient {
       page,
     };
     const res = await this.http.get(`/${type}`, { params });
+    return res.data;
+  }
+
+  async search(query, types, page) {
+    const params = { query, types, page };
+    const res = await this.http.get('/search', { params });
     return res.data;
   }
 
@@ -75,35 +86,40 @@ export default class ApiClient {
     return res.data;
   }
 
-  /*
   async getItemRevs(type, id) {
-    throw new Error('not implemented');
+    const res = await this.http.get(`/${type}/${id}/rev`);
+    return res.data;
   }
 
   async toggleStar(type, id) {
-    throw new Error('not implemented');
+    const res = await this.http.post(`/${type}/${id}/star`);
+    return res.data;
   }
 
   async toggleWatch(type, id) {
-    throw new Error('not implemented');
+    const res = await this.http.post(`/${type}/${id}/watch`);
+    return res.data;
   }
 
   async getComments(type, id) {
-    throw new Error('not implemented');
+    const res = await this.http.get(`/${type}/${id}/comments`);
+    return res.data;
   }
 
   async createComment(type, id, text) {
-    throw new Error('not implemented');
+    const res = await this.http.post(`/${type}/${id}/comments`, { text });
+    return res.data;
   }
 
   async deleteComment(type, id, commentId) {
-    throw new Error('not implemented');
+    const res = await this.http.delete(`/${type}/${id}/comments/${commentId}`);
+    return res.data;
   }
 
   async getActivity() {
-    throw new Error('not implemented');
+    const res = await this.http.get('/activity');
+    return res.data;
   }
-  */
 
   async hasNotifications() {
     const res = await this.http.get('/notifications/has');
@@ -117,17 +133,6 @@ export default class ApiClient {
 
   async readNotifications(until) {
     const res = await this.http.post('/notifications/read', { until });
-    return res.data;
-  }
-
-  async getUser(username) {
-    const res = await this.http.get(`/user/${username}`);
-    return res.data;
-  }
-
-  async search(query, types, page) {
-    const params = { query, types, page };
-    const res = await this.http.get('/search', { params });
     return res.data;
   }
 }

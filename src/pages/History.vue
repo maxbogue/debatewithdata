@@ -42,7 +42,6 @@
                 :curr="curr"
                 :prev="prev" />
   </template>
-  <dwd-loader ref="loader" />
 </div>
 </template>
 
@@ -53,7 +52,6 @@ import ClaimRev from '../components/ClaimRev.vue';
 import RevNav from '../components/RevNav.vue';
 import SourceRev from '../components/SourceRev.vue';
 import TopicRev from '../components/TopicRev.vue';
-import DwdLoader from '../components/DwdLoader.vue';
 import { ItemType } from '../common/constants';
 
 export default {
@@ -62,7 +60,6 @@ export default {
     RevNav,
     SourceRev,
     TopicRev,
-    DwdLoader,
   },
   filters: {
     timestamp(isoDate) {
@@ -156,10 +153,10 @@ export default {
     },
     async loadData() {
       this.data = null;
-      let url = this.apiUrl(this.itemType, this.itemId) + '/rev';
-      let res = await this.$http.get(url, { loader: this.$refs.loader });
-      this.$store.commit('setData', res.data);
-      this.data = res.data;
+      this.data = await this.$store.dispatch('getItemRevs', {
+        type: this.itemType,
+        id: this.itemId,
+      });
     },
   },
 };

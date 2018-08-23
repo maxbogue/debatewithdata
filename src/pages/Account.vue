@@ -18,10 +18,7 @@
 <script>
 import { mapState } from 'vuex';
 
-import { authRedirect } from '../utils';
-
 export default {
-  beforeRouteEnter: authRedirect,
   metaInfo: {
     title: 'Account',
   },

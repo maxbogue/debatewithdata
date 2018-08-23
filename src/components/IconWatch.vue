@@ -7,13 +7,16 @@
 <script>
 export default {
   props: {
+    type: { type: String, required: true },
     item: { type: Object, required: true },
-    url: { type: String, required: true },
   },
   methods: {
     async toggle() {
-      let res = await this.$http.post(this.url + '/watch');
-      this.item.watched = res.data.watched;
+      const data = await this.$store.dispatch('toggleWatch', {
+        type: this.type,
+        id: this.item.id,
+      });
+      this.item.watched = data.watched;
     },
   },
 };

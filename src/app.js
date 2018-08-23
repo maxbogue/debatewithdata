@@ -17,10 +17,6 @@ export function createApp(api, auth) {
   const app = new Vue({
     store,
     router,
-    // Axios is exposed as $axios on the root element so it can be accessed by
-    // all Vue instances via the $http computed property in DwdUtilsMixin.
-    // TODO: All API calls should go through the api object.
-    computed: { $axios: () => api.http },
     render: (h) => h(App),
   });
 
