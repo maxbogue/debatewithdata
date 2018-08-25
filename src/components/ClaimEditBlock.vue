@@ -30,12 +30,12 @@
 <script>
 import clone from 'lodash/clone';
 
-import NeedsDataEdit from './NeedsDataEdit.vue';
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdInput from './DwdInput.vue';
 import FormValid from './FormValid.vue';
-import { validateClaim } from '../common/validate';
+import NeedsDataEdit from './NeedsDataEdit.vue';
+import { validateClaim } from '@/common/validate';
 
 export default {
   components: {

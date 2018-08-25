@@ -1,7 +1,7 @@
 import chai from 'chai';
 
-import { SourceType } from '../src/common/constants';
-import { ValidationError, validateSource } from '../src/common/validate';
+import { SourceType } from '@/common/constants';
+import { ValidationError, validateSource } from '@/common/validate';
 
 const expect = chai.expect;
 

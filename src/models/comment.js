@@ -1,6 +1,6 @@
-import { map } from 'lodash';
-import { ForbiddenError, NotFoundError } from '../api/error';
+import { ForbiddenError, NotFoundError } from '@/api/error';
 import { genRevId } from './utils';
+import { map } from 'lodash';
 
 export default function (sequelize, DataTypes) {
   const Comment = sequelize.define('comment', {

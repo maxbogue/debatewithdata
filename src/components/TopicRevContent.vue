@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { diff } from '../utils';
+import { diff } from '@/utils';
 
 const EMPTY_TOPIC = {
   title: '',

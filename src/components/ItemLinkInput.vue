@@ -35,8 +35,8 @@ import ClaimContent from './ClaimContent.vue';
 import DwdInput from './DwdInput.vue';
 import SourceContent from './SourceContent.vue';
 import TopicContent from './TopicContent.vue';
-import { DEBOUNCE_DELAY_MS } from '../constants';
-import { ItemType } from '../common/constants';
+import { DEBOUNCE_DELAY_MS } from '@/constants';
+import { ItemType } from '@/common/constants';
 
 export default {
   components: {

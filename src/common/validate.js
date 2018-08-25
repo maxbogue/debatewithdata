@@ -9,7 +9,7 @@ import omit from 'lodash/omit';
 import validate from 'validate.js';
 
 import { FlagData } from './flag';
-import { ItemType, SourceType, SOURCE_TYPES } from './constants';
+import { ItemType, SOURCE_TYPES, SourceType } from './constants';
 import { deserializeTable } from './utils';
 
 validate.validators.format.message = 'has invalid format: "%{value}"';

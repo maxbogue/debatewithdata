@@ -1,13 +1,13 @@
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
 import sinon from 'sinon';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { expect } from 'chai';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 
-import ClaimEdit from '../../src/pages/ClaimEdit.vue';
-import { genId } from '../../src/models/utils';
-import { DwdUtilsMixin } from '../../src/utils';
-import { ItemType } from '../../src/common/constants';
+import ClaimEdit from '@/pages/ClaimEdit.vue';
+import { DwdUtilsMixin } from '@/utils';
+import { ItemType } from '@/common/constants';
+import { genId } from '@/models/utils';
 
 const localVue = createLocalVue();
 localVue.use(VueRouter);

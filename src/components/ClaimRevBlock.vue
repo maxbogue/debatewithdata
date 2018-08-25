@@ -37,7 +37,7 @@ import ClaimDataAnalysis from './ClaimDataAnalysis.vue';
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import IconComment from './IconComment.vue';
-import { diff } from '../utils';
+import { diff } from '@/utils';
 
 const EMPTY_CLAIM = {
   text: '',

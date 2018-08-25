@@ -1,6 +1,6 @@
+import { SourceType } from '@/common/constants';
 import { genRevId } from './utils';
-import { validateSource } from '../common/validate';
-import { SourceType } from '../common/constants';
+import { validateSource } from '@/common/validate';
 
 export default function (sequelize, DataTypes) {
   const SourceRev = sequelize.define('source_rev', {

@@ -28,8 +28,8 @@
 <script>
 import { mapState } from 'vuex';
 
-import ItemBlock from '../components/ItemBlock.vue';
-import { any } from '../common/utils';
+import ItemBlock from '@/components/ItemBlock.vue';
+import { any } from '@/common/utils';
 
 export default {
   components: {

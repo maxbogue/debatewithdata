@@ -1,4 +1,4 @@
-import { ItemType } from '../common/constants';
+import { ItemType } from '@/common/constants';
 import { ValidationError } from './validate';
 
 function difference(a, b) {

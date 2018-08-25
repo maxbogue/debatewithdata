@@ -26,7 +26,7 @@
 <script>
 import ClaimContent from './ClaimContent.vue';
 import TopicRevContent from './TopicRevContent.vue';
-import { diffIdLists } from '../utils';
+import { diffIdLists } from '@/utils';
 
 export default {
   components: {

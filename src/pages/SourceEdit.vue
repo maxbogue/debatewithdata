@@ -35,13 +35,13 @@
 <script>
 import clone from 'lodash/clone';
 
-import DeleteButton from '../components/DeleteButton.vue';
-import FormValid from '../components/FormValid.vue';
-import SourceEditContent from '../components/SourceEditContent.vue';
-import SourceRevContent from '../components/SourceRevContent.vue';
-import { ItemType } from '../common/constants';
-import { parseTrail } from '../utils';
-import { sourcesAreEqual } from '../common/equality';
+import DeleteButton from '@/components/DeleteButton.vue';
+import FormValid from '@/components/FormValid.vue';
+import SourceEditContent from '@/components/SourceEditContent.vue';
+import SourceRevContent from '@/components/SourceRevContent.vue';
+import { ItemType } from '@/common/constants';
+import { parseTrail } from '@/utils';
+import { sourcesAreEqual } from '@/common/equality';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
 

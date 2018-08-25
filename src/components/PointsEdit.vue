@@ -53,7 +53,7 @@ import sortBy from 'lodash/sortBy';
 import PointEdit from './PointEdit.vue';
 import {
   combineAndSortPoints, diffPoints, emptyPoint, rotateWithIndexes
-} from '../utils';
+} from '@/utils';
 
 function matchPoint(p) {
   return (q) => p.id && p.id === q.id || p.tempId && p.tempId === q.tempId;

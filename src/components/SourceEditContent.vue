@@ -74,8 +74,8 @@
 import DwdInput from './DwdInput.vue';
 import SourceEditChart from './SourceEditChart.vue';
 import SourceEditTable from './SourceEditTable.vue';
-import { validateSource } from '../common/validate';
-import { SourceType } from '../common/constants';
+import { SourceType } from '@/common/constants';
+import { validateSource } from '@/common/validate';
 
 export default {
   components: {

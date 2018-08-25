@@ -15,7 +15,7 @@
 import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 
-import { FlagData } from '../common/flag';
+import { FlagData } from '@/common/flag';
 
 export default {
   props: {

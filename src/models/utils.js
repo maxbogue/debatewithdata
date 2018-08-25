@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 import forOwn from 'lodash/forOwn';
 
-import { Claim, Topic } from '../models';
-import { FlagData } from '../common/flag';
+import { Claim, Topic } from '@/models';
+import { FlagData } from '@/common/flag';
 
 export function randomHexString(n) {
   if (n % 2 !== 0) {

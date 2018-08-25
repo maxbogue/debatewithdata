@@ -1,10 +1,11 @@
 import chai from 'chai';
 
-import { Claim, Topic, TopicRev } from '../src/models';
-import { ConflictError, NotFoundError } from '../src/api/error';
-import { Sort } from '../src/common/constants';
-import { ValidationError } from '../src/common/validate';
-import { FOO, BAR, BAZ, STARS_AND_COMMENTS,
+import { Claim, Topic, TopicRev } from '@/models';
+import { ConflictError, NotFoundError } from '@/api/error';
+import { Sort } from '@/common/constants';
+import { ValidationError } from '@/common/validate';
+
+import { BAR, BAZ, FOO, STARS_AND_COMMENTS,
   TestClaim, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;

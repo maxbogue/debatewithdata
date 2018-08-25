@@ -1,12 +1,12 @@
 import _ from 'lodash';
 
-import graph, { Graph } from '../common/graph';
+import graph, { Graph } from '@/common/graph';
 import q from './query';
-import search from '../common/search';
-import { PAGE_SIZE, ItemType } from '../common/constants';
-import { ConflictError, NotFoundError } from '../api/error';
-import { ValidationError, validateClaim } from '../common/validate';
-import { claimsAreEqual } from '../common/equality';
+import search from '@/common/search';
+import { ConflictError, NotFoundError } from '@/api/error';
+import { ItemType, PAGE_SIZE } from '@/common/constants';
+import { ValidationError, validateClaim } from '@/common/validate';
+import { claimsAreEqual } from '@/common/equality';
 import { genId } from './utils';
 
 const CLAIM = ItemType.CLAIM;

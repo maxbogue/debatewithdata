@@ -1,5 +1,5 @@
-import { knex } from '../models';
-import { Filter, Sort } from '../common/constants';
+import { Filter, Sort } from '@/common/constants';
+import { knex } from '@/models';
 
 function baseQuery(type) {
   return knex(knex.raw(type + 's AS i'))

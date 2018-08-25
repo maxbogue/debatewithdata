@@ -19,11 +19,11 @@
 import filter from 'lodash/filter';
 import map from 'lodash/map';
 
-import DwdLoader from '../components/DwdLoader.vue';
-import DwdTrail from '../components/DwdTrail.vue';
-import ItemBlock from '../components/ItemBlock.vue';
-import { parseTrail, titleFromText } from '../utils';
-import { ItemType } from '../common/constants';
+import DwdLoader from '@/components/DwdLoader.vue';
+import DwdTrail from '@/components/DwdTrail.vue';
+import ItemBlock from '@/components/ItemBlock.vue';
+import { ItemType } from '@/common/constants';
+import { parseTrail, titleFromText } from '@/utils';
 
 export default {
   components: {

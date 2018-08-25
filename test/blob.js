@@ -1,6 +1,6 @@
 import chai from 'chai';
 
-import { Blob } from '../src/models';
+import { Blob } from '@/models';
 
 const expect = chai.expect;
 

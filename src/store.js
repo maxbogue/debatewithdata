@@ -1,8 +1,8 @@
+import Vue from 'vue';
+import Vuex from 'vuex';
 import cloneDeep from 'lodash/cloneDeep';
 import forEach from 'lodash/forEach';
 import forOwn from 'lodash/forOwn';
-import Vue from 'vue';
-import Vuex from 'vuex';
 
 import { axiosErrorToString, walk } from './utils';
 import { validateItem } from './common/validate';

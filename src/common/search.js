@@ -1,6 +1,6 @@
 import elasticlunr from 'elasticlunr';
 
-import { ItemType } from '../common/constants';
+import { ItemType } from '@/common/constants';
 
 function unwrapResult(result) {
   let [typeKey, id] = result.ref.split('|');

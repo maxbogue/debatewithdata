@@ -18,7 +18,7 @@
 <script>
 import ChildCount from './ChildCount.vue';
 import DwdMarkdown from './DwdMarkdown.vue';
-import { itemErrorMessage } from '../utils';
+import { itemErrorMessage } from '@/utils';
 
 export default {
   components: {

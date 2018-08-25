@@ -1,5 +1,5 @@
+import { ValidationError, validateTopic } from '@/common/validate';
 import { genRevId } from './utils';
-import { ValidationError, validateTopic } from '../common/validate';
 
 export default function (sequelize, DataTypes) {
   const TopicRev = sequelize.define('topic_rev', {

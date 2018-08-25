@@ -1,10 +1,10 @@
 import q from './query';
-import search from '../common/search';
-import { ConflictError, NotFoundError } from '../api/error';
-import { PAGE_SIZE, ItemType } from '../common/constants';
-import { ValidationError, validateSource } from '../common/validate';
+import search from '@/common/search';
+import { ConflictError, NotFoundError } from '@/api/error';
+import { ItemType, PAGE_SIZE } from '@/common/constants';
+import { ValidationError, validateSource } from '@/common/validate';
 import { genId } from './utils';
-import { sourcesAreEqual } from '../common/equality';
+import { sourcesAreEqual } from '@/common/equality';
 
 const SOURCE = ItemType.SOURCE;
 

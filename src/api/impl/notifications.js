@@ -1,9 +1,9 @@
 import sortBy from 'lodash/sortBy';
 
 import q from '@/models/query';
+import { AuthError } from '@/api/error';
+import { Claim, Source, Topic, knex } from '@/models';
 import { ItemType } from '@/common/constants';
-import { AuthError, ClientError } from '@/api/error';
-import { knex, Claim, Source, Topic } from '@/models';
 
 function getUpdated(query, until) {
   query

@@ -43,7 +43,7 @@ import IconHistory from './IconHistory.vue';
 import IconStar from './IconStar.vue';
 import IconWatch from './IconWatch.vue';
 import ItemContent from './ItemContent.vue';
-import { ItemType } from '../common/constants';
+import { ItemType } from '@/common/constants';
 
 const ANIMATION_DURATION_MS = 300;
 const ANIMATION_DURATION_SECS = ANIMATION_DURATION_MS / 1000;

@@ -32,7 +32,7 @@ class Auth {
     let user = this.getUserFromToken(token);
     if (token && !user) {
       // Token must be expired.
-      setAuthToken(null);
+      this.setAuthToken(null);
     }
     return user;
   }

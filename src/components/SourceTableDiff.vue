@@ -21,8 +21,8 @@
 
 <script>
 import SourceTable from './SourceTable.vue';
-import { deserializeTable } from '../common/utils';
-import { diff } from '../utils';
+import { deserializeTable } from '@/common/utils';
+import { diff } from '@/utils';
 
 export default {
   components: {

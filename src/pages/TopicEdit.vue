@@ -82,18 +82,18 @@ import filter from 'lodash/filter';
 import sortBy from 'lodash/sortBy';
 import { mapState } from 'vuex';
 
-import ClaimContent from '../components/ClaimContent.vue';
-import ClaimLinkModal from '../components/ClaimLinkModal.vue';
-import ClaimRevAndModalEdit from '../components/ClaimRevAndModalEdit.vue';
-import DeleteButton from '../components/DeleteButton.vue';
-import FixedBottom from '../components/FixedBottom.vue';
-import TopicEditAndReviewBlock from '../components/TopicEditAndReviewBlock.vue';
-import TopicLinkModal from '../components/TopicLinkModal.vue';
-import { ItemType } from '../common/constants';
+import ClaimContent from '@/components/ClaimContent.vue';
+import ClaimLinkModal from '@/components/ClaimLinkModal.vue';
+import ClaimRevAndModalEdit from '@/components/ClaimRevAndModalEdit.vue';
+import DeleteButton from '@/components/DeleteButton.vue';
+import FixedBottom from '@/components/FixedBottom.vue';
+import TopicEditAndReviewBlock from '@/components/TopicEditAndReviewBlock.vue';
+import TopicLinkModal from '@/components/TopicLinkModal.vue';
+import { ItemType } from '@/common/constants';
 import {
   diffIdLists, parseTrail, pipe, stableRandom, starCount, starred
-} from '../utils';
-import { topicsAreEqual } from '../common/equality';
+} from '@/utils';
+import { topicsAreEqual } from '@/common/equality';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
 

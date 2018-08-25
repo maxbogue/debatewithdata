@@ -34,15 +34,15 @@
 </template>
 
 <script>
-import ClaimEditBlock from '../components/ClaimEditBlock.vue';
-import ClaimRevBlock from '../components/ClaimRevBlock.vue';
-import DeleteButton from '../components/DeleteButton.vue';
-import DwdLoader from '../components/DwdLoader.vue';
-import FixedBottom from '../components/FixedBottom.vue';
-import PointsEdit from '../components/PointsEdit.vue';
-import { ItemType } from '../common/constants';
-import { combineAndSortPoints, parseTrail, splitPoints } from '../utils';
-import { claimsAreEqual } from '../common/equality';
+import ClaimEditBlock from '@/components/ClaimEditBlock.vue';
+import ClaimRevBlock from '@/components/ClaimRevBlock.vue';
+import DeleteButton from '@/components/DeleteButton.vue';
+import DwdLoader from '@/components/DwdLoader.vue';
+import FixedBottom from '@/components/FixedBottom.vue';
+import PointsEdit from '@/components/PointsEdit.vue';
+import { ItemType } from '@/common/constants';
+import { claimsAreEqual } from '@/common/equality';
+import { combineAndSortPoints, parseTrail, splitPoints } from '@/utils';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
 

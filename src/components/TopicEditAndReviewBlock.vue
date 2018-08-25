@@ -43,10 +43,10 @@
 </template>
 
 <script>
+import DwdModal from './DwdModal.vue';
 import TopicContent from './TopicContent.vue';
 import TopicEditBlock from './TopicEditBlock.vue';
 import TopicRevContent from './TopicRevContent.vue';
-import DwdModal from './DwdModal.vue';
 
 const PREVIEW = 'preview';
 const DIFF = 'diff';

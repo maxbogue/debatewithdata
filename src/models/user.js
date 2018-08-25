@@ -2,8 +2,8 @@ import bcrypt from 'bcrypt';
 import config from 'config';
 import jwt from 'jsonwebtoken';
 
-import { AuthError, ClientError } from '../api/error';
-import { ItemType } from '../common/constants';
+import { AuthError, ClientError } from '@/api/error';
+import { ItemType } from '@/common/constants';
 import { ROOT_URL, randomHexString } from './utils';
 
 const VALID_USERNAME = /^[a-z][a-z0-9]+$/;

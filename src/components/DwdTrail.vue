@@ -18,7 +18,7 @@ import map from 'lodash/map';
 import takeWhile from 'lodash/takeWhile';
 
 import ItemBlock from './ItemBlock.vue';
-import { ItemType } from '../common/constants';
+import { ItemType } from '@/common/constants';
 
 export default {
   components: {

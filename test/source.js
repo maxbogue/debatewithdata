@@ -1,13 +1,14 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
+import { Claim, Source, SourceRev } from '@/models';
+import { ConflictError, NotFoundError } from '@/api/error';
+import { Sort, SourceType } from '@/common/constants';
+import { ValidationError } from '@/common/validate';
+import { randomHexString } from '@/models/utils';
+import { serializeTable } from '@/common/utils';
+
 import { STARS_AND_COMMENTS, registerAndVerifyUser } from './utils';
-import { Claim, Source, SourceRev } from '../src/models';
-import { ConflictError, NotFoundError } from '../src/api/error';
-import { Sort, SourceType } from '../src/common/constants';
-import { ValidationError } from '../src/common/validate';
-import { randomHexString } from '../src/models/utils';
-import { serializeTable } from '../src/common/utils';
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;

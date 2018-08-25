@@ -1,11 +1,11 @@
 import request from 'supertest';
 
-import app from '../src/server';
+import app from '@/server';
+import { Claim, Comment } from '@/models';
+import { ItemType } from '@/common/constants';
 
-import { FOO, BAR, TestClaim, TestSource, TestTopic,
+import { BAR, FOO, TestClaim, TestSource, TestTopic,
   registerAndVerifyUser } from './utils';
-import { Claim, Comment } from '../src/models';
-import { ItemType } from '../src/common/constants';
 
 describe('Activity', function () {
   let user;

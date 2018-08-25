@@ -1,7 +1,7 @@
 import searchIndex from '@/common/search';
 import { Claim, Source, Topic } from '@/models';
 import { ClientError } from '@/api/error';
-import { PAGE_SIZE, ItemType } from '@/common/constants';
+import { ItemType, PAGE_SIZE } from '@/common/constants';
 
 // All IDs only use lowercase letters, numbers, and dashes.
 const ANY_ID_REGEX = /^[0-9a-z-]+$/;

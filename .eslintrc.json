@@ -9,6 +9,9 @@
         "eslint:recommended",
         "plugin:vue/recommended"
     ],
+    "plugins": [
+      "sort-imports-es6-autofix"
+    ],
     "parserOptions": {
         "parser": "babel-eslint",
         "ecmaVersion": 8,
@@ -59,6 +62,12 @@
         "no-trailing-spaces": ["error"],
         "quotes": ["error", "single"],
         "semi": ["error", "always"],
+
+        "sort-imports-es6-autofix/sort-imports-es6": [2, {
+          "ignoreCase": false,
+          "ignoreMemberSort": false,
+          "memberSyntaxSortOrder": ["none", "all", "single", "multiple"]
+        }],
 
         "vue/attributes-order": ["off"],
         "vue/html-closing-bracket-spacing": ["error"],

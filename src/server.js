@@ -8,9 +8,9 @@ import { createRenderer } from 'vue-server-renderer';
 
 import ApiImpl from './api/impl';
 import expressLogger from './base/expressLogger';
+import { ServerAuth } from './auth';
 import { createApiRouter } from './api/router';
 import { createApp } from './app';
-import { ServerAuth } from './auth';
 
 const JS_PATH = path.resolve(__dirname, '..', 'build', 'js');
 
