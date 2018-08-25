@@ -1,4 +1,3 @@
-//import 'normalize.css/normalize.css';
 import Meta from 'vue-meta';
 import Vue from 'vue';
 

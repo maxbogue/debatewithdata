@@ -1,3 +1,4 @@
+import 'normalize.css/normalize.css';
 import axios from 'axios';
 
 import ApiClient from './api/client';
