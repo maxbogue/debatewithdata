@@ -105,7 +105,7 @@ export default {
     },
   },
   watch: {
-    '$route'() {
+    $route() {
       this.animate();
     },
   },
@@ -190,8 +190,7 @@ export default {
       }
 
       this.$el.classList.add(this.$style.animating);
-      this.$el.style.transform =
-          `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+      this.$el.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
       this.$el.style.transformOrigin = 'top left';
 
       setTimeout(() => {
@@ -205,7 +204,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .contentSpacing > :not(:first-child) {
   margin-top: $block-content-spacing;

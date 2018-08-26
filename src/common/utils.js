@@ -22,10 +22,11 @@ function stripTabs(s) {
 
 export function deserializeTable(tableString) {
   const separator = tableString.includes('\t') ? '\t' : ',';
-  return tableString.split('\n').map((row) => row.split(separator));
+  return tableString.split('\n').map(row => row.split(separator));
 }
 
 export function serializeTable(title, rows) {
-  return [stripTabs(title)].concat(rows.map(
-    (row) => row.map(stripTabs).join('\t'))).join('\n');
+  return [stripTabs(title)]
+    .concat(rows.map(row => row.map(stripTabs).join('\t')))
+    .join('\n');
 }

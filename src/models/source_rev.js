@@ -2,7 +2,7 @@ import { SourceType } from '@/common/constants';
 import { genRevId } from './utils';
 import { validateSource } from '@/common/validate';
 
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   const SourceRev = sequelize.define('source_rev', {
     id: {
       type: DataTypes.TEXT,
@@ -48,7 +48,7 @@ export default function (sequelize, DataTypes) {
     },
   });
 
-  SourceRev.associate = function (models) {
+  SourceRev.associate = function(models) {
     SourceRev.belongsTo(models.User, {
       foreignKey: {
         name: 'userId',
@@ -90,37 +90,43 @@ export default function (sequelize, DataTypes) {
     });
   };
 
-  SourceRev.postAssociate = function (models) {
-    SourceRev.INCLUDE = function (includeUser=false) {
-      let include = [models.Blob, {
-        association: SourceRev.Table,
-      }];
+  SourceRev.postAssociate = function(models) {
+    SourceRev.INCLUDE = function(includeUser = false) {
+      let include = [
+        models.Blob,
+        {
+          association: SourceRev.Table,
+        },
+      ];
       if (includeUser) {
         include.push(models.User);
       }
       return { include };
     };
 
-    SourceRev.createForApi = async function (source, user, data, transaction) {
+    SourceRev.createForApi = async function(source, user, data, transaction) {
       let blob = await models.Blob.fromText(data.text, transaction);
       let tableBlob = {};
       if (data.table) {
         tableBlob = await models.Blob.fromText(data.table, transaction);
       }
-      let rev = await SourceRev.create({
-        userId: user.id,
-        sourceId: source.id,
-        parentId: source.headId,
-        blobHash: blob.hash,
-        url: data.url,
-        date: data.date,
-        tableHash: tableBlob.hash,
-        type: data.type,
-        chart: data.chart ? JSON.stringify(data.chart) : null,
-        institution: data.institution,
-        publication: data.publication,
-        firstHand: data.firstHand,
-      }, { transaction });
+      let rev = await SourceRev.create(
+        {
+          userId: user.id,
+          sourceId: source.id,
+          parentId: source.headId,
+          blobHash: blob.hash,
+          url: data.url,
+          date: data.date,
+          tableHash: tableBlob.hash,
+          type: data.type,
+          chart: data.chart ? JSON.stringify(data.chart) : null,
+          institution: data.institution,
+          publication: data.publication,
+          firstHand: data.firstHand,
+        },
+        { transaction }
+      );
 
       await source.setHead(rev, { transaction });
       await source.addWatchedByUser(user);
@@ -128,11 +134,11 @@ export default function (sequelize, DataTypes) {
       return rev;
     };
 
-    SourceRev.prototype.getItemId = function () {
+    SourceRev.prototype.getItemId = function() {
       return this.sourceId;
     };
 
-    SourceRev.prototype.toCoreData = function () {
+    SourceRev.prototype.toCoreData = function() {
       let data = {
         id: this.sourceId,
         revId: this.id,
@@ -154,22 +160,22 @@ export default function (sequelize, DataTypes) {
       data.publication = null;
 
       switch (this.type) {
-      case SourceType.RESEARCH:
-        data.institution = this.institution;
-        data.publication = this.publication;
-        break;
-      case SourceType.ARTICLE:
-        data.publication = this.publication;
-        break;
-      case SourceType.AUTHORITY:
-        data.institution = this.institution;
-        break;
+        case SourceType.RESEARCH:
+          data.institution = this.institution;
+          data.publication = this.publication;
+          break;
+        case SourceType.ARTICLE:
+          data.publication = this.publication;
+          break;
+        case SourceType.AUTHORITY:
+          data.institution = this.institution;
+          break;
       }
 
       return data;
     };
 
-    SourceRev.prototype.toRevData = function () {
+    SourceRev.prototype.toRevData = function() {
       let data = this.toCoreData();
       data.username = this.user.username;
       data.createdAt = this.created_at;

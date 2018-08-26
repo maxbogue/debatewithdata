@@ -57,12 +57,16 @@ believe something has no bearing on whether it is true.`,
     desc: `Appeals to emotion deliberately manipulate the emotions of the
 reader without presenting any actual evidence. This is fallacious because how
 an argument makes you feel is irrelevant if the argument itself is not based on
-reality.`, },
+reality.`,
+  },
   [Flag.FALSE_CAUSE]: {
     name: 'False Cause',
     links: [
-      ['Wikipedia', 'https://en.wikipedia.org/wiki/Correlation_does_not_\
-imply_causation'],
+      [
+        'Wikipedia',
+        'https://en.wikipedia.org/wiki/Correlation_does_not_\
+imply_causation',
+      ],
       ['YLFI', 'https://yourlogicalfallacyis.com/false-cause'],
     ],
     tldr: 'Assumes correlation equals causation.',
@@ -122,7 +126,7 @@ justify why the worse thing will follow.`,
       ['Wikipedia', 'https://en.wikipedia.org/wiki/Straw_man'],
       ['YLFI', 'https://yourlogicalfallacyis.com/strawman'],
     ],
-    tldr: 'Refutes an argument that wasn\'t made.',
+    tldr: "Refutes an argument that wasn't made.",
     desc: `Strawman arguments generate a fake argument by the opposition
 so they can defeat it. They are more common in live discussions.`,
   },

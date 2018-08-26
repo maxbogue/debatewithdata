@@ -7,7 +7,7 @@ module.exports = {
     });
   },
 
-  down: (queryInterface) => {
+  down: queryInterface => {
     return queryInterface.removeColumn('claim_revs', 'needs_data');
   },
 };

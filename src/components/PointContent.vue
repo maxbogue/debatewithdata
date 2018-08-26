@@ -22,12 +22,16 @@ export default {
   },
   computed: {
     isClaim() {
-      return this.point.pointType === PointType.CLAIM
-          || this.point.pointType === PointType.NEW_CLAIM;
+      return (
+        this.point.pointType === PointType.CLAIM ||
+        this.point.pointType === PointType.NEW_CLAIM
+      );
     },
     isSource() {
-      return this.point.pointType === PointType.SOURCE
-          || this.point.pointType === PointType.NEW_SOURCE;
+      return (
+        this.point.pointType === PointType.SOURCE ||
+        this.point.pointType === PointType.NEW_SOURCE
+      );
     },
   },
 };

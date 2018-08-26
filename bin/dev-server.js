@@ -39,8 +39,10 @@ function invoke(env) {
   logInfo('Loading Webpack config...');
   let webpackConfigs = require(env.configPath);
 
-  if (typeof webpackConfigs === 'object'
-      && typeof webpackConfigs.default === 'object') {
+  if (
+    typeof webpackConfigs === 'object' &&
+    typeof webpackConfigs.default === 'object'
+  ) {
     // Normalize default export.
     webpackConfigs = webpackConfigs.default;
   }
@@ -54,9 +56,11 @@ function invoke(env) {
     webpackConfig.mode = 'development';
   }
 
-  let serverConfig = webpackConfigs.filter((c) => c.name === 'server')[0];
-  let outputPath = path.join(serverConfig.output.path,
-                             serverConfig.output.filename);
+  let serverConfig = webpackConfigs.filter(c => c.name === 'server')[0];
+  let outputPath = path.join(
+    serverConfig.output.path,
+    serverConfig.output.filename
+  );
   let serverProcess = null;
 
   function startServer() {
@@ -88,11 +92,13 @@ function invoke(env) {
     progressPercentage = 0;
   });
 
-  compiler.apply(new webpack.ProgressPlugin((p) => {
-    let newPercentage = Math.floor(p * 100);
-    progressBar.tick(newPercentage - progressPercentage);
-    progressPercentage = newPercentage;
-  }));
+  compiler.apply(
+    new webpack.ProgressPlugin(p => {
+      let newPercentage = Math.floor(p * 100);
+      progressBar.tick(newPercentage - progressPercentage);
+      progressPercentage = newPercentage;
+    })
+  );
 
   const watcher = compiler.watch({}, (errors, multiStats) => {
     for (let stats of multiStats.stats) {

@@ -40,7 +40,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../style/constants";
+@import '../style/constants';
 
 .dwd-modal-mask {
   display: flex;

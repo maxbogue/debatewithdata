@@ -37,9 +37,9 @@ export function diff(text1, text2) {
 export function walk(o, f) {
   if (isObject(o)) {
     f(o);
-    forOwn(o, (v) => walk(v, f));
+    forOwn(o, v => walk(v, f));
   } else if (isArray(o)) {
-    forEach(o, (v) => walk(v, f));
+    forEach(o, v => walk(v, f));
   }
 }
 
@@ -128,7 +128,7 @@ export function splitPoints(points) {
 }
 
 export function filterLiving(items) {
-  return filter(items, (item) => !item.deleted);
+  return filter(items, item => !item.deleted);
 }
 
 // This random string acts as a seed to keep the sort stable.
@@ -162,7 +162,7 @@ export function combineAndSortPoints(claim, state) {
 
 export function rotateWithIndexes(lists) {
   let retList = [];
-  for (let i = 0; i < Math.max(...map(lists, (list) => list.length)); i++) {
+  for (let i = 0; i < Math.max(...map(lists, list => list.length)); i++) {
     for (let j = 0; j < lists.length; j++) {
       if (i < lists[j].length) {
         retList.push([lists[j][i], j, i]);
@@ -175,8 +175,8 @@ export function rotateWithIndexes(lists) {
 // Takes two lists of IDs and an { id: item } map and computes the diff.
 // Returns [[item, diffClass]] where |diffClass| is '', 'ins', or 'del'.
 export function diffIdLists(newIds, oldIds, data) {
-  let inOld = (id) => oldIds.includes(id);
-  let notInNew = (id) => !newIds.includes(id);
+  let inOld = id => oldIds.includes(id);
+  let notInNew = id => !newIds.includes(id);
 
   let [inBoth, added] = partition(newIds, inOld);
   let removed = filter(oldIds, notInNew);
@@ -185,7 +185,7 @@ export function diffIdLists(newIds, oldIds, data) {
   removed.sort();
   inBoth.sort();
 
-  let zipWith = (ids, v) => map(ids, (id) => [data[id], v]);
+  let zipWith = (ids, v) => map(ids, id => [data[id], v]);
   added = zipWith(added, 'ins');
   removed = zipWith(removed, 'del');
   inBoth = zipWith(inBoth, '');
@@ -203,8 +203,8 @@ function diffItems(newItems, oldItems) {
     }
     newItems = newItemMap;
   }
-  let inOld = (id) => oldItems[id];
-  let notInNew = (id) => !newItems[id];
+  let inOld = id => oldItems[id];
+  let notInNew = id => !newItems[id];
 
   let [inBoth, added] = partition(Object.keys(newItems), inOld);
   let removed = Object.keys(oldItems).filter(notInNew);
@@ -214,12 +214,12 @@ function diffItems(newItems, oldItems) {
   inBoth.sort();
 
   let ids = added.concat(removed, inBoth);
-  return map(ids, (id) => [id, newItems[id], oldItems[id]]);
+  return map(ids, id => [id, newItems[id], oldItems[id]]);
 }
 
 export function diffPoints(newItem, oldItem, state) {
-  let newPoints = newItem && newItem.points || combinePoints(newItem, state);
-  let oldPoints = oldItem && oldItem.points || combinePoints(oldItem, state);
+  let newPoints = (newItem && newItem.points) || combinePoints(newItem, state);
+  let oldPoints = (oldItem && oldItem.points) || combinePoints(oldItem, state);
   let pointDiffs = [];
 
   for (let i of [0, 1]) {
@@ -259,7 +259,7 @@ export var DwdUtilsMixin = {
     toSideString(isFor) {
       return isFor === null ? 'neutral' : isFor ? 'for' : 'against';
     },
-    timestamp(isoDate, format='yyyy-mm-dd HH:MM') {
+    timestamp(isoDate, format = 'yyyy-mm-dd HH:MM') {
       let date = new Date(isoDate);
       return dateFormat(date, format);
     },
@@ -293,12 +293,12 @@ export var DwdUtilsMixin = {
     },
     lookupItem(type, id) {
       switch (type) {
-      case ItemType.TOPIC:
-        return this.lookupTopic(id);
-      case ItemType.CLAIM:
-        return this.lookupClaim(id);
-      case ItemType.SOURCE:
-        return this.lookupSource(id);
+        case ItemType.TOPIC:
+          return this.lookupTopic(id);
+        case ItemType.CLAIM:
+          return this.lookupClaim(id);
+        case ItemType.SOURCE:
+          return this.lookupSource(id);
       }
       throw new Error(`Invalid item type: ${type}`);
     },
@@ -332,12 +332,12 @@ export var DwdUtilsMixin = {
     },
     itemUrl(type, id, trail) {
       switch (type) {
-      case ItemType.TOPIC:
-        return this.topicUrl(id, trail);
-      case ItemType.CLAIM:
-        return this.claimUrl(id, trail);
-      case ItemType.SOURCE:
-        return this.sourceUrl(id, trail);
+        case ItemType.TOPIC:
+          return this.topicUrl(id, trail);
+        case ItemType.CLAIM:
+          return this.claimUrl(id, trail);
+        case ItemType.SOURCE:
+          return this.sourceUrl(id, trail);
       }
       throw new Error(`Invalid item type: ${type}`);
     },
@@ -357,7 +357,7 @@ export var DwdUtilsMixin = {
   },
   mounted() {
     if (this.$options.mountedTriggersWatchers && this.$options.watch) {
-      forOwn(this.$options.watch, (f) => f.call(this));
+      forOwn(this.$options.watch, f => f.call(this));
     }
   },
 };

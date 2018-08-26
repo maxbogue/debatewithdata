@@ -35,7 +35,7 @@ export default {
       return this.ids.slice(this.topics.length);
     },
     items() {
-      let items = map(this.topics, (topic) => [ItemType.TOPIC, topic, null]);
+      let items = map(this.topics, topic => [ItemType.TOPIC, topic, null]);
       if (this.itemIds.length < 2) {
         return items;
       }
@@ -102,7 +102,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .trail {
   :global(.topic),
@@ -111,7 +111,7 @@ export default {
     position: relative;
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       bottom: 0;
       left: calc(50% - #{$accent-border-width / 2});

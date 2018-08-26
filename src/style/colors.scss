@@ -1,4 +1,4 @@
-@import "constants";
+@import 'constants';
 
 @mixin color($primary, $accent, $is-light) {
   border-left: $accent-border-width solid $accent;

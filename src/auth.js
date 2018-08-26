@@ -54,7 +54,7 @@ export class BrowserAuth extends Auth {
       return '';
     }
     let session = JSON.parse(window.atob(encodedSession));
-    return session && session.authToken || '';
+    return (session && session.authToken) || '';
   }
 }
 

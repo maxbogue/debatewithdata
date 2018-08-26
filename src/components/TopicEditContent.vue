@@ -37,7 +37,7 @@ import { validateTopic } from '@/common/validate';
 
 function fixWhitespace(text) {
   let paragraphs = text.split(/\s*\n\s*\n\s*/);
-  return paragraphs.map((p) => p.replace(/(\s)\s*/g, ' ')).join('\n\n');
+  return paragraphs.map(p => p.replace(/(\s)\s*/g, ' ')).join('\n\n');
 }
 
 export default {

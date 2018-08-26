@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .account {
   margin-top: 50px;

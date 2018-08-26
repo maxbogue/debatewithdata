@@ -26,7 +26,7 @@ const MD_LINK_WHOLE = /(\[.*?\]\(http[s]?:\/\/.*?\))/;
 const MD_LINK_PARTS = /\[(.*?)\]\((http[s]?:\/\/.*?)\)/;
 
 function splitLinks(p) {
-  return p.split(MD_LINK_WHOLE).map((s) => {
+  return p.split(MD_LINK_WHOLE).map(s => {
     let parts = s.match(MD_LINK_PARTS);
     return parts ? [parts[1], parts[2]] : [s];
   });
@@ -45,7 +45,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .md {
   a {

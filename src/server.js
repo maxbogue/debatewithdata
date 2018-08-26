@@ -38,21 +38,25 @@ function createAppFromContext(context) {
 const server = express();
 server.set('trust proxy', 'loopback');
 server.use(expressLogger);
-server.use(cookieSession({
-  name: 'session',
-  secret: config.get('secretKey'),
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-  secure: true,
-  httpOnly: false,
-  sameSite: 'lax',
-}));
+server.use(
+  cookieSession({
+    name: 'session',
+    secret: config.get('secretKey'),
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    secure: true,
+    httpOnly: false,
+    sameSite: 'lax',
+  })
+);
 
-server.get('/js/:filename', function (req, res) {
+server.get('/js/:filename', function(req, res) {
   res.sendFile(path.resolve(JS_PATH, req.params.filename));
 });
 
-server.use('/api', createApiRouter((authToken) =>
-  new ApiImpl(new ServerAuth(authToken))));
+server.use(
+  '/api',
+  createApiRouter(authToken => new ApiImpl(new ServerAuth(authToken)))
+);
 
 server.get('*', async (req, res) => {
   const context = {

@@ -79,10 +79,7 @@ export default {
     collapsed: true,
   }),
   computed: {
-    ...mapState([
-      'user',
-      'hasNotifications',
-    ]),
+    ...mapState(['user', 'hasNotifications']),
     loginUrl() {
       let path = this.$route.fullPath;
       if (path === '/' || path.startsWith('/login')) {
@@ -118,7 +115,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 $toggler-accent: #666;
 $badge-radius: 3px;

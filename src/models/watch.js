@@ -1,9 +1,9 @@
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   const Watch = sequelize.define('watch', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     watchable: {
       type: DataTypes.TEXT,
@@ -19,7 +19,7 @@ export default function (sequelize, DataTypes) {
     },
   });
 
-  Watch.associate = function (models) {
+  Watch.associate = function(models) {
     Watch.belongsTo(models.User, {
       foreignKey: {
         allowNull: false,

@@ -135,14 +135,14 @@ export default {
     makePoint() {
       let pointType = this.pointType;
       switch (pointType) {
-      case PointType.SOURCE:
-        return { pointType, ...this.lookupSource(this.input) };
-      case PointType.CLAIM:
-        return { pointType, ...this.lookupClaim(this.input) };
-      case PointType.NEW_SOURCE:
-        return { pointType, ...this.source };
-      case PointType.NEW_CLAIM:
-        return { pointType, text: this.input, flag: this.flag };
+        case PointType.SOURCE:
+          return { pointType, ...this.lookupSource(this.input) };
+        case PointType.CLAIM:
+          return { pointType, ...this.lookupClaim(this.input) };
+        case PointType.NEW_SOURCE:
+          return { pointType, ...this.source };
+        case PointType.NEW_CLAIM:
+          return { pointType, text: this.input, flag: this.flag };
       }
       return null;
     },
@@ -157,13 +157,13 @@ export default {
       this.input = '';
       if (this.point) {
         switch (this.point.pointType) {
-        case PointType.NEW_CLAIM:
-          this.input = this.point.text;
-          this.flag = this.point.flag || null;
-          break;
-        case PointType.NEW_SOURCE:
-          this.input = this.point.url;
-          break;
+          case PointType.NEW_CLAIM:
+            this.input = this.point.text;
+            this.flag = this.point.flag || null;
+            break;
+          case PointType.NEW_SOURCE:
+            this.input = this.point.url;
+            break;
         }
       }
     },
@@ -173,12 +173,12 @@ export default {
         return;
       }
       switch (this.pointType) {
-      case PointType.NEW_SOURCE:
-        validateSource.url(input);
-        break;
-      case PointType.NEW_CLAIM:
-        validateClaim.text(input);
-        break;
+        case PointType.NEW_SOURCE:
+          validateSource.url(input);
+          break;
+        case PointType.NEW_CLAIM:
+          validateClaim.text(input);
+          break;
       }
     },
   },

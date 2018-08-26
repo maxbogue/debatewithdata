@@ -18,7 +18,7 @@ function union(a, b) {
 }
 
 class Node {
-  constructor (id) {
+  constructor(id) {
     if (typeof id !== 'string') {
       throw new Error('Node IDs must be strings.');
     }
@@ -82,7 +82,7 @@ class Node {
 }
 
 class TopicNode extends Node {
-  constructor (id) {
+  constructor(id) {
     super(id);
     this.children = new Set();
   }
@@ -100,7 +100,7 @@ class TopicNode extends Node {
 }
 
 class ClaimNode extends Node {
-  constructor (id) {
+  constructor(id) {
     super(id);
     this.points = [new Set(), new Set()];
     this.dataCounts = [0, 0];
@@ -140,7 +140,7 @@ class ClaimNode extends Node {
 }
 
 class SourceNode extends Node {
-  constructor (id) {
+  constructor(id) {
     super(id);
   }
 
@@ -161,17 +161,17 @@ function getOrCreate(nodes, info) {
   }
 
   switch (info.type) {
-  case ItemType.TOPIC:
-    node = new TopicNode(info.id);
-    break;
-  case ItemType.CLAIM:
-    node = new ClaimNode(info.id);
-    break;
-  case ItemType.SOURCE:
-    node = new SourceNode(info.id);
-    break;
-  default:
-    throw new Error('Invalid graph info: ' + info);
+    case ItemType.TOPIC:
+      node = new TopicNode(info.id);
+      break;
+    case ItemType.CLAIM:
+      node = new ClaimNode(info.id);
+      break;
+    case ItemType.SOURCE:
+      node = new SourceNode(info.id);
+      break;
+    default:
+      throw new Error('Invalid graph info: ' + info);
   }
   nodes.set(info.id, node);
   return node;
@@ -197,8 +197,9 @@ export class Graph {
 
   updateClaimPoints(id, pointInfos) {
     let node = getOrCreate(this.nodes, { id, type: ItemType.CLAIM });
-    let points = pointInfos.map(
-      (sideInfos) => infosToNodes(this.nodes, sideInfos));
+    let points = pointInfos.map(sideInfos =>
+      infosToNodes(this.nodes, sideInfos)
+    );
     node.setChildren(points);
   }
 

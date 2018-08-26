@@ -6,8 +6,14 @@ import { Filter, Sort } from '@/common/constants';
 import { Flag } from '@/common/flag';
 import { ValidationError } from '@/common/validate';
 
-import { BAR, BAZ, FOO, STARS_AND_COMMENTS,
-  TestSource, registerAndVerifyUser } from './utils';
+import {
+  BAR,
+  BAZ,
+  FOO,
+  STARS_AND_COMMENTS,
+  TestSource,
+  registerAndVerifyUser,
+} from './utils';
 
 const expect = chai.expect;
 
@@ -46,15 +52,15 @@ const CLAIM_DEPTH_3 = {
   ...STARS_AND_COMMENTS,
 };
 
-describe('Claim', function () {
+describe('Claim', function() {
   let user;
 
-  beforeEach(async function () {
+  beforeEach(async function() {
     user = await registerAndVerifyUser();
   });
 
-  describe('.apiCreate()', function () {
-    it('text only', async function () {
+  describe('.apiCreate()', function() {
+    it('text only', async function() {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
       });
@@ -69,7 +75,7 @@ describe('Claim', function () {
       expect(claim.headId).to.equal(rev.id);
     });
 
-    it('with flag', async function () {
+    it('with flag', async function() {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
         flag: Flag.AD_HOMINEM,
@@ -79,13 +85,15 @@ describe('Claim', function () {
       expect(rev.flag).to.equal(Flag.AD_HOMINEM);
     });
 
-    it('with claim for', async function () {
+    it('with claim for', async function() {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
-        newSubClaims: [{
-          text: BAR,
-          isFor: true,
-        }],
+        newSubClaims: [
+          {
+            text: BAR,
+            isFor: true,
+          },
+        ],
       });
       await rev.reload(ClaimRev.INCLUDE(2));
       expect(rev.userId).to.equal(user.id);
@@ -100,13 +108,15 @@ describe('Claim', function () {
       expect(subClaim.claimClaim.isFor).to.be.true;
     });
 
-    it('with claim against', async function () {
+    it('with claim against', async function() {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
-        newSubClaims: [{
-          text: BAR,
-          isFor: false,
-        }],
+        newSubClaims: [
+          {
+            text: BAR,
+            isFor: false,
+          },
+        ],
       });
       await rev.reload(ClaimRev.INCLUDE(2));
       expect(rev.userId).to.equal(user.id);
@@ -122,8 +132,8 @@ describe('Claim', function () {
     });
   });
 
-  describe('.apiUpdate()', function () {
-    it('change text', async function () {
+  describe('.apiUpdate()', function() {
+    it('change text', async function() {
       let r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
@@ -146,7 +156,7 @@ describe('Claim', function () {
       expect(claim.headId).to.equal(r2.id);
     });
 
-    it('add claim', async function () {
+    it('add claim', async function() {
       let r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
@@ -156,10 +166,12 @@ describe('Claim', function () {
       let r2 = await Claim.apiUpdate(r1.claimId, user, {
         baseRev: r1.id,
         text: FOO,
-        newSubClaims: [{
-          text: BAR,
-          isFor: true,
-        }],
+        newSubClaims: [
+          {
+            text: BAR,
+            isFor: true,
+          },
+        ],
       });
       await r2.reload(ClaimRev.INCLUDE(2));
 
@@ -170,29 +182,33 @@ describe('Claim', function () {
       expect(subClaim.claimClaim.isFor).to.be.true;
     });
 
-    it('cycle fails', async function () {
+    it('cycle fails', async function() {
       let c1r = await Claim.apiCreate(user, {
         text: FOO,
-        newSubClaims: [{
-          text: BAR,
-          isFor: false,
-        }],
+        newSubClaims: [
+          {
+            text: BAR,
+            isFor: false,
+          },
+        ],
       });
       await c1r.reload(ClaimRev.INCLUDE(2));
 
       expect(c1r.subClaims).to.have.lengthOf(1);
       let c2 = c1r.subClaims[0];
 
-      await expect(Claim.apiUpdate(c2.id, user, {
-        baseRev: c2.headId,
-        text: BAR,
-        subClaimIds: {
-          [c1r.claimId]: true,
-        },
-      })).to.be.rejectedWith(ValidationError);
+      await expect(
+        Claim.apiUpdate(c2.id, user, {
+          baseRev: c2.headId,
+          text: BAR,
+          subClaimIds: {
+            [c1r.claimId]: true,
+          },
+        })
+      ).to.be.rejectedWith(ValidationError);
     });
 
-    it('no change no-op', async function () {
+    it('no change no-op', async function() {
       let r1 = await Claim.apiCreate(user, { text: FOO });
       let r2 = await Claim.apiUpdate(r1.claimId, user, {
         baseRev: r1.id,
@@ -202,7 +218,7 @@ describe('Claim', function () {
       expect(r2.parentId).to.be.null;
     });
 
-    it('baseRev', async function () {
+    it('baseRev', async function() {
       let r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
@@ -213,24 +229,30 @@ describe('Claim', function () {
       });
 
       // No baseRev.
-      await expect(Claim.apiUpdate(claimId, user, {
-        text: FOO,
-      })).to.be.rejectedWith(ValidationError);
+      await expect(
+        Claim.apiUpdate(claimId, user, {
+          text: FOO,
+        })
+      ).to.be.rejectedWith(ValidationError);
       // Garbage baseRev.
-      await expect(Claim.apiUpdate(claimId, user, {
-        baseRev: 'jklsahfjklashd',
-        text: FOO,
-      })).to.be.rejectedWith(ValidationError);
+      await expect(
+        Claim.apiUpdate(claimId, user, {
+          baseRev: 'jklsahfjklashd',
+          text: FOO,
+        })
+      ).to.be.rejectedWith(ValidationError);
       // Invalid baseRev.
-      await expect(Claim.apiUpdate(claimId, user, {
-        baseRev: r1.id,
-        text: FOO,
-      })).to.be.rejectedWith(ConflictError);
+      await expect(
+        Claim.apiUpdate(claimId, user, {
+          baseRev: r1.id,
+          text: FOO,
+        })
+      ).to.be.rejectedWith(ConflictError);
     });
   });
 
-  describe('.apiDelete()', function () {
-    it('happy', async function () {
+  describe('.apiDelete()', function() {
+    it('happy', async function() {
       let r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
@@ -251,7 +273,7 @@ describe('Claim', function () {
       expect(claim.headId).to.equal(r2.id);
     });
 
-    it('no-op', async function () {
+    it('no-op', async function() {
       let r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
@@ -268,8 +290,8 @@ describe('Claim', function () {
     });
   });
 
-  describe('.apiGet()', function () {
-    it('no points', async function () {
+  describe('.apiGet()', function() {
+    it('no points', async function() {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
         flag: Flag.AD_HOMINEM,
@@ -290,7 +312,7 @@ describe('Claim', function () {
       });
     });
 
-    it('starred', async function () {
+    it('starred', async function() {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
       });
@@ -328,16 +350,19 @@ describe('Claim', function () {
       });
     });
 
-    it('two points', async function () {
+    it('two points', async function() {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
-        newSubClaims: [{
-          text: BAR,
-          isFor: true,
-        }, {
-          text: BAZ,
-          isFor: false,
-        }],
+        newSubClaims: [
+          {
+            text: BAR,
+            isFor: true,
+          },
+          {
+            text: BAZ,
+            isFor: false,
+          },
+        ],
       });
       await rev.reload(ClaimRev.INCLUDE(2));
       expect(rev.subClaims).to.have.lengthOf(2);
@@ -375,17 +400,21 @@ describe('Claim', function () {
       });
     });
 
-    it('nested points', async function () {
+    it('nested points', async function() {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
-        newSubClaims: [{
-          text: BAR,
-          isFor: true,
-          newSubClaims: [{
-            text: BAZ,
+        newSubClaims: [
+          {
+            text: BAR,
             isFor: true,
-          }],
-        }],
+            newSubClaims: [
+              {
+                text: BAZ,
+                isFor: true,
+              },
+            ],
+          },
+        ],
       });
       await rev.reload(ClaimRev.INCLUDE(3));
       expect(rev.subClaims).to.have.lengthOf(1);
@@ -428,13 +457,15 @@ describe('Claim', function () {
       });
     });
 
-    it('includes supers', async function () {
+    it('includes supers', async function() {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
-        newSubClaims: [{
-          text: BAR,
-          isFor: true,
-        }],
+        newSubClaims: [
+          {
+            text: BAR,
+            isFor: true,
+          },
+        ],
       });
       await rev.reload(ClaimRev.INCLUDE(3));
       expect(rev.subClaims).to.have.lengthOf(1);
@@ -478,11 +509,11 @@ describe('Claim', function () {
       });
     });
 
-    it('bad ID', function () {
+    it('bad ID', function() {
       return expect(Claim.apiGet('bad id')).to.be.rejected;
     });
 
-    it('deleted', async function () {
+    it('deleted', async function() {
       let r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
@@ -509,8 +540,8 @@ describe('Claim', function () {
     });
   });
 
-  describe('.apiGetAll()', function () {
-    it('two claims', async function () {
+  describe('.apiGetAll()', function() {
+    it('two claims', async function() {
       let c1r = await Claim.apiCreate(user, { text: FOO });
       let c2r = await Claim.apiCreate(user, { text: BAR });
       let c1Id = c1r.claimId;
@@ -608,7 +639,7 @@ describe('Claim', function () {
       });
     });
 
-    it('excludes deleted', async function () {
+    it('excludes deleted', async function() {
       let c1r = await Claim.apiCreate(user, { text: FOO });
       let c2r = await Claim.apiCreate(user, { text: BAR });
       await Claim.apiDelete(c2r.claimId, user, DELETE_MSG);
@@ -628,8 +659,8 @@ describe('Claim', function () {
     });
   });
 
-  describe('.apiGetForTrail()', function () {
-    it('happy', async function () {
+  describe('.apiGetForTrail()', function() {
+    it('happy', async function() {
       let sourceRev = await TestSource.create(user);
       let c2r = await Claim.apiCreate(user, {
         text: BAR,
@@ -643,8 +674,7 @@ describe('Claim', function () {
       // Extra claim to make sure they're selected by ID.
       await Claim.apiCreate(user, { text: BAZ });
 
-      let data = await Claim.apiGetForTrail(
-        [c1r.claimId, c2r.claim_id], user);
+      let data = await Claim.apiGetForTrail([c1r.claimId, c2r.claim_id], user);
       expect(data).to.deep.equal({
         claims: {
           [c1r.claimId]: {
@@ -672,8 +702,7 @@ describe('Claim', function () {
         },
       });
 
-      let noUserData = await Claim.apiGetForTrail(
-        [c1r.claimId, c2r.claim_id]);
+      let noUserData = await Claim.apiGetForTrail([c1r.claimId, c2r.claim_id]);
       expect(noUserData).to.deep.equal({
         claims: {
           [c1r.claimId]: {
@@ -705,8 +734,8 @@ describe('Claim', function () {
     });
   });
 
-  describe('apiGetRevs', function () {
-    it('change text', async function () {
+  describe('apiGetRevs', function() {
+    it('change text', async function() {
       let r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
@@ -721,27 +750,30 @@ describe('Claim', function () {
 
       let data = await Claim.apiGetRevs(claimId, user);
       expect(data).to.deep.equal({
-        claimRevs: [{
-          id: claimId,
-          revId: r2.id,
-          username: user.username,
-          createdAt: r2.created_at,
-          text: BAR,
-          flag: null,
-          needsData: null,
-          subClaimIds: {},
-          sourceIds: {},
-        }, {
-          id: claimId,
-          revId: r1.id,
-          username: user.username,
-          createdAt: r1.created_at,
-          text: FOO,
-          flag: null,
-          needsData: null,
-          subClaimIds: {},
-          sourceIds: {},
-        }],
+        claimRevs: [
+          {
+            id: claimId,
+            revId: r2.id,
+            username: user.username,
+            createdAt: r2.created_at,
+            text: BAR,
+            flag: null,
+            needsData: null,
+            subClaimIds: {},
+            sourceIds: {},
+          },
+          {
+            id: claimId,
+            revId: r1.id,
+            username: user.username,
+            createdAt: r1.created_at,
+            text: FOO,
+            flag: null,
+            needsData: null,
+            subClaimIds: {},
+            sourceIds: {},
+          },
+        ],
         claims: {
           [r2.claimId]: {
             ...CLAIM_DEPTH_1,
@@ -755,14 +787,15 @@ describe('Claim', function () {
       });
     });
 
-    it('bad id', async function () {
+    it('bad id', async function() {
       await expect(Claim.apiGetRevs('bad id')).to.be.rejectedWith(
-        NotFoundError);
+        NotFoundError
+      );
     });
   });
 
-  describe('.apiToggleStar()', function () {
-    it('happy', async function () {
+  describe('.apiToggleStar()', function() {
+    it('happy', async function() {
       let rev = await Claim.apiCreate(user, {
         text: FOO,
       });

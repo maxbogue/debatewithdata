@@ -64,8 +64,10 @@ export default {
       return Math.max(this.prevRows.length, this.currRows.length);
     },
     numCols() {
-      return Math.max(this.prevRows.length > 0 ? this.prevRows[0].length : 0,
-                      this.currRows.length > 0 ? this.currRows[0].length : 0);
+      return Math.max(
+        this.prevRows.length > 0 ? this.prevRows[0].length : 0,
+        this.currRows.length > 0 ? this.currRows[0].length : 0
+      );
     },
     diffRows() {
       let diffs = [];
@@ -74,8 +76,8 @@ export default {
         let currRow = this.currRows[i];
         let newRow = [];
         for (let j = 0; j < this.numCols; j += 1) {
-          let prevCell = prevRow && prevRow[j] || '';
-          let currCell = currRow && currRow[j] || '';
+          let prevCell = (prevRow && prevRow[j]) || '';
+          let currCell = (currRow && currRow[j]) || '';
           newRow.push(diff(prevCell, currCell));
         }
         diffs.push(newRow);

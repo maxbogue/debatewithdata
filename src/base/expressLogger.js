@@ -38,7 +38,6 @@ const transportList = [
 ];
 
 if (process.env.NODE_ENV === 'development') {
-
   /* eslint no-template-curly-in-string: "off" */
   const render = template(
     [
@@ -49,9 +48,10 @@ if (process.env.NODE_ENV === 'development') {
       '${contentLength}',
       'in ${responseTime}ms',
     ].join(' '),
-    { imports: { colorStatus } });
+    { imports: { colorStatus } }
+  );
 
-  const expressFormat = format((info) => {
+  const expressFormat = format(info => {
     if (info.exception) {
       info[MESSAGE] = info.message;
     } else if (info.status) {
@@ -60,19 +60,17 @@ if (process.env.NODE_ENV === 'development') {
     return info;
   });
 
-  transportList.push(new transports.Console({
-    format: format.combine(
-      format.timestamp(),
-      expressFormat()),
-    level: 'debug',
-    handleExceptions: true,
-  }));
+  transportList.push(
+    new transports.Console({
+      format: format.combine(format.timestamp(), expressFormat()),
+      level: 'debug',
+      handleExceptions: true,
+    })
+  );
 }
 
 const logger = createLogger({
-  format: format.combine(
-    format.timestamp(),
-    format.json()),
+  format: format.combine(format.timestamp(), format.json()),
   transports: transportList,
   exitOnError: false,
 });
@@ -83,17 +81,18 @@ function recordStartTime() {
 }
 
 const INFO_FIELDS = {
-  status: (req, res) => res.headersSent ? res.statusCode : undefined,
-  method: (req) => req.method,
-  url: (req) => req.originalUrl,
-  ip: (req) => req.ip,
-  user: (req) => req.user ? req.user.username : undefined,
+  status: (req, res) => (res.headersSent ? res.statusCode : undefined),
+  method: req => req.method,
+  url: req => req.originalUrl,
+  ip: req => req.ip,
+  user: req => (req.user ? req.user.username : undefined),
   responseTime: (req, res) => {
     if (!req._startAt || !res._startAt) {
       return undefined;
     }
-    let ms = (res._startAt[0] - req._startAt[0]) * 1e3
-        + (res._startAt[1] - req._startAt[1]) * 1e-6;
+    let ms =
+      (res._startAt[0] - req._startAt[0]) * 1e3 +
+      (res._startAt[1] - req._startAt[1]) * 1e-6;
     return ms.toFixed(3);
   },
   contentLength: (req, res) => res.getHeader('content-length'),
@@ -112,7 +111,7 @@ export default function expressLogger(req, res, next) {
   recordStartTime.call(req);
   onHeaders(res, recordStartTime);
   onFinished(res, () => {
-    let info = mapValues(INFO_FIELDS, (f) => f(req, res));
+    let info = mapValues(INFO_FIELDS, f => f(req, res));
     let logLevel = statusToLogLevel(info.status);
     logger.log(logLevel, info);
   });

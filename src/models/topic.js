@@ -14,7 +14,7 @@ function notNull(thing) {
   return thing !== null;
 }
 
-export default function (sequelize, DataTypes, knex) {
+export default function(sequelize, DataTypes, knex) {
   const Topic = sequelize.define('topic', {
     id: {
       type: DataTypes.TEXT,
@@ -29,7 +29,7 @@ export default function (sequelize, DataTypes, knex) {
     },
   });
 
-  Topic.associate = function (models) {
+  Topic.associate = function(models) {
     Topic.Head = Topic.belongsTo(models.TopicRev, {
       as: 'head',
       foreignKey: {
@@ -49,7 +49,7 @@ export default function (sequelize, DataTypes, knex) {
         unique: false,
         scope: {
           starrable: TOPIC,
-        }
+        },
       },
       foreignKey: 'starrableId',
       constraints: false,
@@ -61,7 +61,7 @@ export default function (sequelize, DataTypes, knex) {
         unique: false,
         scope: {
           watchable: TOPIC,
-        }
+        },
       },
       foreignKey: 'watchableId',
       constraints: false,
@@ -75,17 +75,19 @@ export default function (sequelize, DataTypes, knex) {
     });
   };
 
-  Topic.postAssociate = function (models) {
-    Topic.INCLUDE = function (n) {
+  Topic.postAssociate = function(models) {
+    Topic.INCLUDE = function(n) {
       return {
-        include: [{
-          association: Topic.Head,
-          ...models.TopicRev.INCLUDE(n),
-        }],
+        include: [
+          {
+            association: Topic.Head,
+            ...models.TopicRev.INCLUDE(n),
+          },
+        ],
       };
     };
 
-    Topic.apiCreate = async function (user, data, isRoot=false, transaction) {
+    Topic.apiCreate = async function(user, data, isRoot = false, transaction) {
       if (!transaction) {
         return await sequelize.transaction(function(t) {
           return Topic.apiCreate(user, data, isRoot, t);
@@ -95,10 +97,13 @@ export default function (sequelize, DataTypes, knex) {
       validateTopic(data);
 
       try {
-        const topic = await Topic.create({
-          id: data.id,
-          isRoot,
-        }, { transaction });
+        const topic = await Topic.create(
+          {
+            id: data.id,
+            isRoot,
+          },
+          { transaction }
+        );
         return models.TopicRev.createForApi(topic, user, data, transaction);
       } catch (e) {
         if (e instanceof sequelize.UniqueConstraintError) {
@@ -108,7 +113,7 @@ export default function (sequelize, DataTypes, knex) {
       }
     };
 
-    Topic.apiUpdate = async function (id, user, data, transaction) {
+    Topic.apiUpdate = async function(id, user, data, transaction) {
       if (!transaction) {
         return await sequelize.transaction(function(t) {
           return Topic.apiUpdate(id, user, data, t);
@@ -137,7 +142,7 @@ export default function (sequelize, DataTypes, knex) {
       return models.TopicRev.createForApi(topic, user, data, transaction);
     };
 
-    Topic.apiDelete = async function (id, user, msg, transaction) {
+    Topic.apiDelete = async function(id, user, msg, transaction) {
       if (!transaction) {
         return await sequelize.transaction(function(t) {
           return Topic.apiDelete(id, user, msg, t);
@@ -171,7 +176,7 @@ export default function (sequelize, DataTypes, knex) {
       return topicRev;
     };
 
-    Topic.prototype.fillData = async function (data, depth, user) {
+    Topic.prototype.fillData = async function(data, depth, user) {
       if (data.topics[this.id] && data.topics[this.id].depth >= depth) {
         // This topic has already been loaded with at least as much depth.
         return;
@@ -197,14 +202,19 @@ export default function (sequelize, DataTypes, knex) {
 
       if (depth === 3) {
         let superTopics = await models.Topic.findAll({
-          include: [{
-            association: models.Topic.Head,
-            required: true,
-            include: [models.Blob, {
-              association: models.TopicRev.SubTopics,
-              where: { id: this.id },
-            }],
-          }],
+          include: [
+            {
+              association: models.Topic.Head,
+              required: true,
+              include: [
+                models.Blob,
+                {
+                  association: models.TopicRev.SubTopics,
+                  where: { id: this.id },
+                },
+              ],
+            },
+          ],
         });
         let superTopicIds = [];
         for (let superTopic of superTopics) {
@@ -226,11 +236,11 @@ export default function (sequelize, DataTypes, knex) {
         .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash');
     }
 
-    Topic.itemQuery = function (user) {
+    Topic.itemQuery = function(user) {
       return q.item(TOPIC, user).modify(addTopicFields);
     };
 
-    Topic.processQueryResults = function (topics) {
+    Topic.processQueryResults = function(topics) {
       let data = {};
       for (let topic of topics) {
         topic.depth = 1;
@@ -240,7 +250,7 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Topic.apiGet = async function (id, user) {
+    Topic.apiGet = async function(id, user) {
       let topic = await Topic.findById(id, Topic.INCLUDE(3));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
@@ -250,12 +260,12 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Topic.apiSetIsRoot = async function (id, isRoot) {
+    Topic.apiSetIsRoot = async function(id, isRoot) {
       let topic = await Topic.findById(id);
       await topic.update({ isRoot });
     };
 
-    Topic.apiGetAll = async function ({ user, filters, sort, page } = {}) {
+    Topic.apiGetAll = async function({ user, filters, sort, page } = {}) {
       page = page || 1;
 
       let query = Topic.itemQuery(user)
@@ -265,42 +275,51 @@ export default function (sequelize, DataTypes, knex) {
         })
         .modify(q.sortAndFilter, sort, filters);
 
-      let countQuery = query.clone().clearSelect().clearOrder().count('*');
+      let countQuery = query
+        .clone()
+        .clearSelect()
+        .clearOrder()
+        .count('*');
       query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
 
       let [topics, [{ count }]] = await Promise.all([query, countQuery]);
       return {
         topics: Topic.processQueryResults(topics),
-        results: topics.map((topic) => topic.id),
+        results: topics.map(topic => topic.id),
         numPages: Math.ceil(count / PAGE_SIZE),
       };
     };
 
-    Topic.apiGetForTrail = async function (ids, user) {
+    Topic.apiGetForTrail = async function(ids, user) {
       let flatTopics = await Topic.itemQuery(user)
         .column({
           subTopicId: 'topic_topics.sub_topic_id',
           claimId: 'topic_claims.claim_id',
         })
         .whereIn('i.id', ids)
+        .leftOuterJoin('topic_topics', 'i.head_id', 'topic_topics.topic_rev_id')
         .leftOuterJoin(
-          'topic_topics', 'i.head_id', 'topic_topics.topic_rev_id')
-        .leftOuterJoin(
-          'topic_claims', 'i.head_id', 'topic_claims.topic_rev_id');
+          'topic_claims',
+          'i.head_id',
+          'topic_claims.topic_rev_id'
+        );
 
-      let topics = _.chain(flatTopics).groupBy('id').map((grouped) => {
-        let topic = _.omit(grouped[0], ['subTopicId', 'claimId']);
-        topic.subTopicIds = grouped.map((t) => t.subTopicId).filter(notNull);
-        topic.claimIds = grouped.map((t) => t.claimId).filter(notNull);
-        return topic;
-      }).value();
+      let topics = _.chain(flatTopics)
+        .groupBy('id')
+        .map(grouped => {
+          let topic = _.omit(grouped[0], ['subTopicId', 'claimId']);
+          topic.subTopicIds = grouped.map(t => t.subTopicId).filter(notNull);
+          topic.claimIds = grouped.map(t => t.claimId).filter(notNull);
+          return topic;
+        })
+        .value();
 
       return {
         topics: Topic.processQueryResults(topics),
       };
     };
 
-    Topic.apiGetRevs = async function (topicId, user) {
+    Topic.apiGetRevs = async function(topicId, user) {
       let topicRevs = await models.TopicRev.findAll({
         where: { topicId },
         order: [['created_at', 'DESC']],
@@ -322,7 +341,7 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Topic.prototype.toStarData = async function (user) {
+    Topic.prototype.toStarData = async function(user) {
       let starCount = await this.countStarredByUsers();
       let starred = false;
       let watched = false;
@@ -333,7 +352,7 @@ export default function (sequelize, DataTypes, knex) {
       return { starCount, starred, watched };
     };
 
-    Topic.apiToggleStar = async function (id, user) {
+    Topic.apiToggleStar = async function(id, user) {
       let topic = await Topic.findById(id);
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
@@ -348,7 +367,7 @@ export default function (sequelize, DataTypes, knex) {
       return await topic.toStarData(user);
     };
 
-    Topic.apiToggleWatch = async function (topicId, user) {
+    Topic.apiToggleWatch = async function(topicId, user) {
       let topic = await Topic.findById(topicId);
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + topicId);
@@ -362,7 +381,7 @@ export default function (sequelize, DataTypes, knex) {
       return { watched: !isWatched };
     };
 
-    Topic.prototype.updateGraph = function (subTopics, claims) {
+    Topic.prototype.updateGraph = function(subTopics, claims) {
       subTopics = subTopics || this.head.subTopics;
       claims = claims || this.head.claims;
       let topicInfos = subTopics.map(Graph.toTopicInfo);
@@ -370,7 +389,7 @@ export default function (sequelize, DataTypes, knex) {
       graph.updateTopicChildren(this.id, [...topicInfos, ...claimInfos]);
     };
 
-    Topic.prototype.updateIndex = function (data) {
+    Topic.prototype.updateIndex = function(data) {
       data = data || this.head.toCoreData();
       search.updateTopic(data);
     };

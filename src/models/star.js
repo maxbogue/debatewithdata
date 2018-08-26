@@ -1,9 +1,9 @@
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   const Star = sequelize.define('star', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     starrable: {
       type: DataTypes.TEXT,
@@ -19,7 +19,7 @@ export default function (sequelize, DataTypes) {
     },
   });
 
-  Star.associate = function (models) {
+  Star.associate = function(models) {
     Star.belongsTo(models.User, {
       foreignKey: {
         allowNull: false,

@@ -32,7 +32,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .activity {
   width: 100%;
@@ -49,4 +49,3 @@ export default {
   }
 }
 </style>
-

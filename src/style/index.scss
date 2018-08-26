@@ -1,5 +1,5 @@
-@import "bubble";
-@import "colors";
+@import 'bubble';
+@import 'colors';
 
 * {
   box-sizing: border-box;
@@ -57,8 +57,8 @@ hr {
 }
 
 textarea,
-input[type="text"],
-input[type="password"] {
+input[type='text'],
+input[type='password'] {
   display: block;
   width: 100%;
   padding: 0.5em;
@@ -166,7 +166,7 @@ p .click {
   }
 
   .dwd-cols::after {
-    content: "";
+    content: '';
     display: table;
     clear: both;
   }

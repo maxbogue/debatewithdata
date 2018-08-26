@@ -149,7 +149,7 @@ export default {
         e.stopPropagation();
       }
     },
-    queryServer: debounce(async function () {
+    queryServer: debounce(async function() {
       /* eslint no-invalid-this: "off" */
       let query = this.value;
       this.loading = true;
@@ -166,7 +166,7 @@ export default {
     }, DEBOUNCE_DELAY_MS),
     makeLoader() {
       return {
-        setLoading: (loading) => {
+        setLoading: loading => {
           this.loading = loading;
         },
         setError: () => {
@@ -185,7 +185,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .input > :not(:first-child) {
   margin-top: 8px;

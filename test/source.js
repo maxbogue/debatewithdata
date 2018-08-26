@@ -81,15 +81,15 @@ function createRandomTable() {
   return serializeTable('title', [tabData]);
 }
 
-describe('Source', function () {
+describe('Source', function() {
   let user;
 
-  beforeEach(async function () {
+  beforeEach(async function() {
     user = await registerAndVerifyUser();
   });
 
-  describe('.apiCreate()', function () {
-    it('happy misc', async function () {
+  describe('.apiCreate()', function() {
+    it('happy misc', async function() {
       let rev = await Source.apiCreate(user, MISC);
       await rev.reload(SourceRev.INCLUDE());
       expect(rev.deleted).to.be.false;
@@ -107,25 +107,31 @@ describe('Source', function () {
       expect(source.headId).to.equal(rev.id);
     });
 
-    it('validation', async function () {
-      await expect(Source.apiCreate(user, {
-        url: 'debatewithdata.org',
-        text: TEXT,
-        type: SourceType.MISC,
-      })).to.be.rejectedWith(ValidationError);
-      await expect(Source.apiCreate(user, {
-        url: URL,
-        text: 'short',
-        type: SourceType.MISC,
-      })).to.be.rejectedWith(ValidationError);
-      await expect(Source.apiCreate(user, {
-        url: URL,
-        text: TEXT,
-        type: SourceType.ARTICLE,
-      })).to.be.rejectedWith(ValidationError);
+    it('validation', async function() {
+      await expect(
+        Source.apiCreate(user, {
+          url: 'debatewithdata.org',
+          text: TEXT,
+          type: SourceType.MISC,
+        })
+      ).to.be.rejectedWith(ValidationError);
+      await expect(
+        Source.apiCreate(user, {
+          url: URL,
+          text: 'short',
+          type: SourceType.MISC,
+        })
+      ).to.be.rejectedWith(ValidationError);
+      await expect(
+        Source.apiCreate(user, {
+          url: URL,
+          text: TEXT,
+          type: SourceType.ARTICLE,
+        })
+      ).to.be.rejectedWith(ValidationError);
     });
 
-    it('happy research', async function () {
+    it('happy research', async function() {
       let rev = await Source.apiCreate(user, RESEARCH);
       await rev.reload(SourceRev.INCLUDE());
       expect(rev.deleted).to.be.false;
@@ -141,7 +147,7 @@ describe('Source', function () {
       expect(source.headId).to.equal(rev.id);
     });
 
-    it('happy article', async function () {
+    it('happy article', async function() {
       let rev = await Source.apiCreate(user, ARTICLE);
       await rev.reload(SourceRev.INCLUDE());
       expect(rev.deleted).to.be.false;
@@ -157,7 +163,7 @@ describe('Source', function () {
       expect(source.headId).to.equal(rev.id);
     });
 
-    it('happy authority', async function () {
+    it('happy authority', async function() {
       let rev = await Source.apiCreate(user, AUTHORITY);
       await rev.reload(SourceRev.INCLUDE());
       expect(rev.deleted).to.be.false;
@@ -174,8 +180,8 @@ describe('Source', function () {
     });
   });
 
-  describe('.apiUpdate()', function () {
-    it('change', async function () {
+  describe('.apiUpdate()', function() {
+    it('change', async function() {
       let rev1 = await Source.apiCreate(user, MISC);
       let source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
@@ -198,7 +204,7 @@ describe('Source', function () {
       expect(source.headId).to.equal(rev2.id);
     });
 
-    it('no change no-op', async function () {
+    it('no change no-op', async function() {
       let rev1 = await Source.apiCreate(user, MISC);
       let source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
@@ -211,7 +217,7 @@ describe('Source', function () {
       expect(rev2.parentId).to.be.null;
     });
 
-    it('baseRev', async function () {
+    it('baseRev', async function() {
       let rev1 = await Source.apiCreate(user, MISC);
       let sourceId = rev1.sourceId;
       await Source.apiUpdate(sourceId, user, {
@@ -220,23 +226,28 @@ describe('Source', function () {
       });
 
       // No baseRev.
-      await expect(Source.apiUpdate(sourceId, user, MISC))
-        .to.be.rejectedWith(ValidationError);
+      await expect(Source.apiUpdate(sourceId, user, MISC)).to.be.rejectedWith(
+        ValidationError
+      );
       // Garbage baseRev.
-      await expect(Source.apiUpdate(sourceId, user, {
-        ...MISC,
-        baseRev: 'jklsahfjklashd',
-      })).to.be.rejectedWith(ValidationError);
+      await expect(
+        Source.apiUpdate(sourceId, user, {
+          ...MISC,
+          baseRev: 'jklsahfjklashd',
+        })
+      ).to.be.rejectedWith(ValidationError);
       // Invalid baseRev.
-      await expect(Source.apiUpdate(sourceId, user, {
-        ...MISC,
-        baseRev: rev1.id,
-      })).to.be.rejectedWith(ConflictError);
+      await expect(
+        Source.apiUpdate(sourceId, user, {
+          ...MISC,
+          baseRev: rev1.id,
+        })
+      ).to.be.rejectedWith(ConflictError);
     });
   });
 
-  describe('.apiDelete()', function () {
-    it('normal delete', async function () {
+  describe('.apiDelete()', function() {
+    it('normal delete', async function() {
       let rev1 = await Source.apiCreate(user, MISC);
       let source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
@@ -255,7 +266,7 @@ describe('Source', function () {
       expect(source.headId).to.equal(rev2.id);
     });
 
-    it('already deleted no-op', async function () {
+    it('already deleted no-op', async function() {
       let rev1 = await Source.apiCreate(user, MISC);
       let source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
@@ -272,8 +283,8 @@ describe('Source', function () {
     });
   });
 
-  describe('.apiGet()', function () {
-    it('source exists', async function () {
+  describe('.apiGet()', function() {
+    it('source exists', async function() {
       let rev = await Source.apiCreate(user, MISC);
       let sourceData = await Source.apiGet(rev.sourceId, user);
 
@@ -291,11 +302,11 @@ describe('Source', function () {
       });
     });
 
-    it('source does not exist', function () {
+    it('source does not exist', function() {
       expect(Source.apiGet('bad id')).to.be.rejected;
     });
 
-    it('source deleted', async function () {
+    it('source deleted', async function() {
       let r1 = await Source.apiCreate(user, MISC);
       let r2 = await Source.apiDelete(r1.sourceId, user, DELETE_MSG);
       let sourceData = await Source.apiGet(r1.sourceId, user);
@@ -314,7 +325,7 @@ describe('Source', function () {
       });
     });
 
-    it('with table', async function () {
+    it('with table', async function() {
       let table = createRandomTable();
       let sourceRev = await Source.apiCreate(user, {
         ...MISC,
@@ -338,14 +349,14 @@ describe('Source', function () {
       });
     });
 
-    it('with claim', async function () {
+    it('with claim', async function() {
       let sourceRev = await Source.apiCreate(user, MISC);
       let sourceId = sourceRev.sourceId;
       let claimRev = await Claim.apiCreate(user, {
         text: TEXT2,
         sourceIds: {
           [sourceId]: true,
-        }
+        },
       });
 
       let sourceData = await Source.apiGet(sourceId, user);
@@ -376,8 +387,8 @@ describe('Source', function () {
     });
   });
 
-  describe('.apiGetAll()', function () {
-    it('two sources', async function () {
+  describe('.apiGetAll()', function() {
+    it('two sources', async function() {
       let s1r = await Source.apiCreate(user, RESEARCH);
       let s2r = await Source.apiCreate(user, ARTICLE);
       let sourcesData = await Source.apiGetAll({
@@ -404,7 +415,7 @@ describe('Source', function () {
       });
     });
 
-    it('with table', async function () {
+    it('with table', async function() {
       let table = createRandomTable();
       let s1r = await Source.apiCreate(user, {
         ...MISC,
@@ -426,7 +437,7 @@ describe('Source', function () {
       });
     });
 
-    it('excludes deleted', async function () {
+    it('excludes deleted', async function() {
       let s1r = await Source.apiCreate(user, RESEARCH);
       let s2r = await Source.apiCreate(user, ARTICLE);
       await Source.apiDelete(s2r.sourceId, user, DELETE_MSG);
@@ -446,8 +457,8 @@ describe('Source', function () {
     });
   });
 
-  describe('.apiGetRevs()', function () {
-    it('change', async function () {
+  describe('.apiGetRevs()', function() {
+    it('change', async function() {
       let r1 = await Source.apiCreate(user, MISC);
       let sourceId = r1.sourceId;
       let r2 = await Source.apiUpdate(sourceId, user, {
@@ -457,30 +468,34 @@ describe('Source', function () {
 
       let data = await Source.apiGetRevs(sourceId);
       expect(data).to.deep.equal({
-        sourceRevs: [{
-          id: sourceId,
-          revId: r2.id,
-          username: user.username,
-          createdAt: r2.created_at,
-          ...MISC2,
-        }, {
-          id: sourceId,
-          revId: r1.id,
-          username: user.username,
-          createdAt: r1.created_at,
-          ...MISC,
-        }],
+        sourceRevs: [
+          {
+            id: sourceId,
+            revId: r2.id,
+            username: user.username,
+            createdAt: r2.created_at,
+            ...MISC2,
+          },
+          {
+            id: sourceId,
+            revId: r1.id,
+            username: user.username,
+            createdAt: r1.created_at,
+            ...MISC,
+          },
+        ],
       });
     });
 
-    it('bad id', async function () {
+    it('bad id', async function() {
       await expect(Source.apiGetRevs('bad id')).to.be.rejectedWith(
-        NotFoundError);
+        NotFoundError
+      );
     });
   });
 
-  describe('.apiToggleStar()', function () {
-    it('happy', async function () {
+  describe('.apiToggleStar()', function() {
+    it('happy', async function() {
       let r1 = await Source.apiCreate(user, MISC);
       let star = await Source.apiToggleStar(r1.sourceId, user);
       expect(star).to.deep.equal({

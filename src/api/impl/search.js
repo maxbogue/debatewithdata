@@ -19,9 +19,9 @@ export async function search(user, query, types, page) {
   let data = { results, numPages, topics: {}, claims: {}, sources: {} };
   let maybeId = ANY_ID_REGEX.test(query);
 
-  let topicItems = results.filter((item) => item.type === ItemType.TOPIC);
+  let topicItems = results.filter(item => item.type === ItemType.TOPIC);
   if (topicItems.length > 0 || maybeId) {
-    let topicIds = topicItems.map((item) => item.id);
+    let topicIds = topicItems.map(item => item.id);
     if (maybeId) {
       topicIds.push(query);
     }
@@ -36,9 +36,9 @@ export async function search(user, query, types, page) {
     }
   }
 
-  let claimItems = results.filter((item) => item.type === ItemType.CLAIM);
+  let claimItems = results.filter(item => item.type === ItemType.CLAIM);
   if (claimItems.length > 0 || maybeId) {
-    let claimIds = claimItems.map((item) => item.id);
+    let claimIds = claimItems.map(item => item.id);
     if (maybeId) {
       claimIds.push(query);
     }
@@ -53,9 +53,9 @@ export async function search(user, query, types, page) {
     }
   }
 
-  let sourceItems = results.filter((item) => item.type === ItemType.SOURCE);
+  let sourceItems = results.filter(item => item.type === ItemType.SOURCE);
   if (sourceItems.length > 0 || maybeId) {
-    let sourceIds = sourceItems.map((item) => item.id);
+    let sourceIds = sourceItems.map(item => item.id);
     if (maybeId) {
       sourceIds.push(query);
     }

@@ -54,7 +54,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .timestamp {
   color: $text-dark-accent;

@@ -52,11 +52,14 @@ import sortBy from 'lodash/sortBy';
 
 import PointEdit from './PointEdit.vue';
 import {
-  combineAndSortPoints, diffPoints, emptyPoint, rotateWithIndexes
+  combineAndSortPoints,
+  diffPoints,
+  emptyPoint,
+  rotateWithIndexes,
 } from '@/utils';
 
 function matchPoint(p) {
-  return (q) => p.id && p.id === q.id || p.tempId && p.tempId === q.tempId;
+  return q => (p.id && p.id === q.id) || (p.tempId && p.tempId === q.tempId);
 }
 
 export default {
@@ -79,11 +82,15 @@ export default {
     },
     pointDiffs() {
       let pointDiffs = diffPoints(
-        { points: this.points }, this.prev, this.$store.state);
+        { points: this.points },
+        this.prev,
+        this.$store.state
+      );
       if (this.pointOrder) {
         // Sort by the point order.
         pointDiffs = map(pointDiffs, (ps, si) =>
-          sortBy(ps, (p) => this.pointOrder[si].indexOf(p[0])));
+          sortBy(ps, p => this.pointOrder[si].indexOf(p[0]))
+        );
       }
       return pointDiffs;
     },
@@ -95,7 +102,7 @@ export default {
     pointDiffs() {
       if (!this.pointOrder) {
         // Initialize pointOrder with the order from diffPoints.
-        this.pointOrder = map(this.pointDiffs, (s) => map(s, ([id]) => id));
+        this.pointOrder = map(this.pointDiffs, s => map(s, ([id]) => id));
       }
     },
   },

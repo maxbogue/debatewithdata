@@ -67,7 +67,10 @@ import IconAdd from '@/components/IconAdd.vue';
 import ItemBlock from '@/components/ItemBlock.vue';
 import { ItemType } from '@/common/constants';
 import {
-  combineAndSortPoints, parseTrail, rotateWithIndexes, titleFromText
+  combineAndSortPoints,
+  parseTrail,
+  rotateWithIndexes,
+  titleFromText,
 } from '@/utils';
 
 export default {
@@ -132,10 +135,14 @@ export default {
         return [];
       }
 
-      let superTopics = map(this.claim.superTopicIds || [],
-                            (id) => [this.lookupTopic(id), ItemType.TOPIC]);
-      let superClaims = map(this.claim.superClaimIds || [],
-                            (id) => [this.lookupClaim(id), ItemType.CLAIM]);
+      let superTopics = map(this.claim.superTopicIds || [], id => [
+        this.lookupTopic(id),
+        ItemType.TOPIC,
+      ]);
+      let superClaims = map(this.claim.superClaimIds || [], id => [
+        this.lookupClaim(id),
+        ItemType.CLAIM,
+      ]);
       return superTopics.concat(superClaims);
     },
   },
@@ -148,7 +155,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .pointHeader {
   display: flex;

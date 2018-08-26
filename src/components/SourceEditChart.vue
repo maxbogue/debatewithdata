@@ -98,15 +98,16 @@ export default {
       return this.rows[0].slice(1).map(extractText);
     },
     rowLabels() {
-      return this.rows.slice(1).map((row) => row[0]);
+      return this.rows.slice(1).map(row => row[0]);
     },
     columnUnits() {
-      return this.rows[0].slice(1).map(
-        (s) => extractUnit(s, this.defaultUnit) || s);
+      return this.rows[0]
+        .slice(1)
+        .map(s => extractUnit(s, this.defaultUnit) || s);
     },
     uniqueUnits() {
       let units = new Set();
-      return this.columnUnits.filter((unit) => {
+      return this.columnUnits.filter(unit => {
         if (units.has(unit)) {
           return false;
         }
@@ -164,7 +165,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .editChart {
   span {

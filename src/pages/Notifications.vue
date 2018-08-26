@@ -51,8 +51,10 @@ export default {
     this.until = results.until;
     this.readUntil = results.readUntil;
     this.items = results.items.map(this.lookupItemWithType);
-    let hasNotifications = any(this.items,
-                               ({ item }) => !this.isItemRead(item));
+    let hasNotifications = any(
+      this.items,
+      ({ item }) => !this.isItemRead(item)
+    );
     this.$store.commit('setHasNotifications', hasNotifications);
   },
   methods: {
@@ -68,7 +70,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .markRead {
   font-size: 1rem;

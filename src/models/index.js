@@ -27,8 +27,11 @@ import makeWatch from './watch';
 
 KnexQueryBuilder.prototype.exists = function(obj) {
   const raw = this.client.raw;
-  this.column(mapValues(obj, (q) =>
-    raw(q.select(raw('null')).limit(1)).wrap('exists (', ')')));
+  this.column(
+    mapValues(obj, q =>
+      raw(q.select(raw('null')).limit(1)).wrap('exists (', ')')
+    )
+  );
   return this;
 };
 
@@ -65,13 +68,13 @@ export const TopicTopic = makeModel('TopicTopic', makeTopicTopic);
 export const User = makeModel('User', makeUser);
 export const Watch = makeModel('Watch', makeWatch);
 
-forOwn(models, (model) => {
+forOwn(models, model => {
   if ('associate' in model) {
     model.associate(models);
   }
 });
 
-forOwn(models, (model) => {
+forOwn(models, model => {
   if ('postAssociate' in model) {
     model.postAssociate(models);
   }
@@ -102,6 +105,6 @@ async function initGraph() {
   }
 }
 
-initGraph().catch((err) => {
+initGraph().catch(err => {
   console.error(err.stack);
 });

@@ -9,7 +9,7 @@
 </template>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 $ball-size: 14px;
 $translate-amount: 10px;

@@ -1,10 +1,10 @@
 import { knex, sequelize } from '@/models';
 
-beforeEach(function () {
+beforeEach(function() {
   return sequelize.truncate({ cascade: true });
 });
 
-after(function () {
+after(function() {
   knex.destroy();
   sequelize.close();
 });

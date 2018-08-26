@@ -120,17 +120,17 @@ export default {
       }
 
       switch (this.type) {
-      case SourceType.RESEARCH:
-        source.institution = this.institution;
-        source.publication = this.publication;
-        break;
-      case SourceType.ARTICLE:
-        source.publication = this.publication;
-        source.firstHand = this.firstHand;
-        break;
-      case SourceType.AUTHORITY:
-        source.institution = this.institution;
-        break;
+        case SourceType.RESEARCH:
+          source.institution = this.institution;
+          source.publication = this.publication;
+          break;
+        case SourceType.ARTICLE:
+          source.publication = this.publication;
+          source.firstHand = this.firstHand;
+          break;
+        case SourceType.AUTHORITY:
+          source.institution = this.institution;
+          break;
       }
       return source;
     },
@@ -165,7 +165,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .type {
   display: flex;

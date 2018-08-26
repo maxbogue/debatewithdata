@@ -48,8 +48,11 @@ export default {
     subTopics() {
       let currSubTopicIds = this.currHasContent ? this.curr.subTopicIds : [];
       let prevSubTopicIds = this.prevHasContent ? this.prev.subTopicIds : [];
-      return diffIdLists(currSubTopicIds, prevSubTopicIds,
-                         this.$store.state.topics);
+      return diffIdLists(
+        currSubTopicIds,
+        prevSubTopicIds,
+        this.$store.state.topics
+      );
     },
     claims() {
       let currClaimIds = this.currHasContent ? this.curr.claimIds : [];

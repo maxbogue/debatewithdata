@@ -2,7 +2,7 @@ import { ForbiddenError, NotFoundError } from '@/api/error';
 import { genRevId } from './utils';
 import { map } from 'lodash';
 
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   const Comment = sequelize.define('comment', {
     id: {
       type: DataTypes.TEXT,
@@ -30,7 +30,7 @@ export default function (sequelize, DataTypes) {
     },
   });
 
-  Comment.associate = function (models) {
+  Comment.associate = function(models) {
     Comment.belongsTo(models.User, {
       foreignKey: {
         name: 'userId',
@@ -41,8 +41,8 @@ export default function (sequelize, DataTypes) {
     });
   };
 
-  Comment.postAssociate = function (models) {
-    Comment.prototype.toData = function () {
+  Comment.postAssociate = function(models) {
+    Comment.prototype.toData = function() {
       return {
         id: this.id,
         text: this.text,
@@ -51,7 +51,7 @@ export default function (sequelize, DataTypes) {
       };
     };
 
-    Comment.apiAdd = async function (Item, itemId, user, text) {
+    Comment.apiAdd = async function(Item, itemId, user, text) {
       let item = await Item.findById(itemId);
       if (!item) {
         throw new NotFoundError(Item.name + ' not found: ' + itemId);
@@ -62,13 +62,13 @@ export default function (sequelize, DataTypes) {
       });
     };
 
-    Comment.apiDelete = async function (Item, itemId, user, commentId) {
+    Comment.apiDelete = async function(Item, itemId, user, commentId) {
       let item = await Item.findById(itemId);
       if (!item) {
         throw new NotFoundError(Item.name + ' not found: ' + itemId);
       }
       let comment = await models.Comment.findById(commentId);
-      if (!await item.hasComment(comment)) {
+      if (!(await item.hasComment(comment))) {
         throw new NotFoundError('Comment not found.');
       }
       if (comment.userId !== user.id) {
@@ -77,14 +77,14 @@ export default function (sequelize, DataTypes) {
       await comment.update({ deleted: true });
     };
 
-    Comment.apiGet = async function (commentId) {
+    Comment.apiGet = async function(commentId) {
       let comment = await Comment.findById(commentId, {
         include: [models.User],
       });
       return comment.toData();
     };
 
-    Comment.apiGetAll = async function (Item, itemId) {
+    Comment.apiGetAll = async function(Item, itemId) {
       let item = await Item.findById(itemId);
       if (!item) {
         throw new NotFoundError(Item.name + ' not found: ' + itemId);
@@ -94,7 +94,7 @@ export default function (sequelize, DataTypes) {
         order: ['created_at'],
         include: [models.User],
       });
-      return map(comments, (c) => c.toData());
+      return map(comments, c => c.toData());
     };
   };
 

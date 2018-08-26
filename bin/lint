@@ -12,7 +12,7 @@ STATUS=0
 
 JS_FILES=$($GIT_CMD | egrep "\.(js|vue)$")
 if [ "$JS_FILES" != "" ]; then
-  eslint $JS_FILES || STATUS=1
+  eslint $JS_FILES --fix || STATUS=1
 fi
 
 TS_FILES=$($GIT_CMD | egrep "\.(ts)$")

@@ -96,7 +96,7 @@ export default {
         id: this.id,
         commentId,
       });
-      let i = this.comments.findIndex((c) => c.id === commentId);
+      let i = this.comments.findIndex(c => c.id === commentId);
       if (i >= 0) {
         this.comments.splice(i, 1);
       }
@@ -106,7 +106,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .comments {
   padding: 1em;

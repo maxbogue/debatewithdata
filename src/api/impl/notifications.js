@@ -23,18 +23,22 @@ export async function getNotifications(user) {
 
   let until = new Date();
 
-  let queries = [Topic, Claim, Source].map((Item) => Item
-    .itemQuery(user)
-    .modify(getUpdated, until)
-    .limit(100));
+  let queries = [Topic, Claim, Source].map(Item =>
+    Item.itemQuery(user)
+      .modify(getUpdated, until)
+      .limit(100)
+  );
 
   let [topicResults, claimResults, sourceResults] = await Promise.all(queries);
 
-  let items = sortBy([
-    ...topicResults.map((item) => ({ type: ItemType.TOPIC, item })),
-    ...claimResults.map((item) => ({ type: ItemType.CLAIM, item })),
-    ...sourceResults.map((item) => ({ type: ItemType.SOURCE, item })),
-  ], 'item.updatedAt');
+  let items = sortBy(
+    [
+      ...topicResults.map(item => ({ type: ItemType.TOPIC, item })),
+      ...claimResults.map(item => ({ type: ItemType.CLAIM, item })),
+      ...sourceResults.map(item => ({ type: ItemType.SOURCE, item })),
+    ],
+    'item.updatedAt'
+  );
 
   items = items
     .slice(0, 100)
@@ -54,13 +58,15 @@ export async function getNotifications(user) {
 }
 
 export async function hasNotifications(user) {
-  let queries = [ItemType.TOPIC, ItemType.CLAIM, ItemType.SOURCE]
-    .map((type) => knex.queryBuilder().exists({
-      exists: q.base(type)
+  let queries = [ItemType.TOPIC, ItemType.CLAIM, ItemType.SOURCE].map(type =>
+    knex.queryBuilder().exists({
+      exists: q
+        .base(type)
         .modify(q.joinWatched, type, user)
         .modify(getUpdated, new Date())
         .where('h.created_at', '>', user.caughtUpAt),
-    }));
+    })
+  );
   let results = await Promise.all(queries);
   return results.reduce((acc, [{ exists }]) => acc || exists, false);
 }

@@ -55,8 +55,10 @@ export default {
       if (!this.point) {
         return false;
       }
-      return this.point.pointType === PointType.NEW_CLAIM
-          || this.point.pointType === PointType.NEW_SOURCE;
+      return (
+        this.point.pointType === PointType.NEW_CLAIM ||
+        this.point.pointType === PointType.NEW_SOURCE
+      );
     },
     isSubPoint() {
       return this.isParentFor !== null;
@@ -96,8 +98,10 @@ export default {
       } else {
         p.id = this.id;
       }
-      if (p.pointType === PointType.SUBCLAIM
-          || p.pointType === PointType.NEW_CLAIM) {
+      if (
+        p.pointType === PointType.SUBCLAIM ||
+        p.pointType === PointType.NEW_CLAIM
+      ) {
         p = {
           ...p,
           ...splitPoints(this.subPoints),

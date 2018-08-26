@@ -10,16 +10,16 @@ const BAD_URL = 'debatewithdata.org';
 const GOOD_TEXT = 'More than 10 characters.';
 const BAD_TEXT = 'foo';
 
-describe('validate', function () {
-  describe('source', function () {
-    let expectValid = function (source) {
+describe('validate', function() {
+  describe('source', function() {
+    let expectValid = function(source) {
       expect(() => validateSource(source)).to.not.throw();
     };
-    let expectInvalid = function (source) {
+    let expectInvalid = function(source) {
       expect(() => validateSource(source)).to.throw(ValidationError);
     };
 
-    it('misc', function () {
+    it('misc', function() {
       expectValid({
         url: GOOD_URL,
         text: GOOD_TEXT,
@@ -57,7 +57,7 @@ describe('validate', function () {
       });
     });
 
-    it('article', function () {
+    it('article', function() {
       expectValid({
         url: GOOD_URL,
         text: GOOD_TEXT,
@@ -84,7 +84,7 @@ describe('validate', function () {
       });
     });
 
-    it('authority', function () {
+    it('authority', function() {
       expectValid({
         url: GOOD_URL,
         text: GOOD_TEXT,
@@ -111,7 +111,7 @@ describe('validate', function () {
       });
     });
 
-    it('research', function () {
+    it('research', function() {
       expectValid({
         url: GOOD_URL,
         text: GOOD_TEXT,
@@ -138,7 +138,7 @@ describe('validate', function () {
       });
     });
 
-    it('deleted', function () {
+    it('deleted', function() {
       const DELETE_MSG = 'Violates guidelines.';
       expectValid({
         deleted: true,
@@ -168,7 +168,7 @@ describe('validate', function () {
       });
     });
 
-    it('url', function () {
+    it('url', function() {
       const INVALID_URL = '"url" must be a valid URL.';
       const BLANK = '"url" can\'t be blank.';
       let v = (url, source) => () => validateSource.url(url, source);
@@ -179,11 +179,11 @@ describe('validate', function () {
       expect(v(GOOD_URL, { deleted: true })).to.throw(ValidationError);
     });
 
-    it('date', function () {
-      let ev = function (d, m) {
+    it('date', function() {
+      let ev = function(d, m) {
         expect(() => validateSource.date(d), m).to.not.throw();
       };
-      let ei = function (d, m) {
+      let ei = function(d, m) {
         expect(() => validateSource.date(d), m).to.throw(ValidationError);
       };
 

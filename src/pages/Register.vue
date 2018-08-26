@@ -50,7 +50,7 @@ export default {
         loader: this.$refs.loader,
       });
       this.success = true;
-    }
+    },
   },
 };
 </script>

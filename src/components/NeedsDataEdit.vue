@@ -33,7 +33,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .needsData {
   flex: 1;

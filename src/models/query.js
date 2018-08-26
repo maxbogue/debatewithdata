@@ -44,9 +44,11 @@ function itemQuery(type, user) {
       }),
     })
     .count({ count: 'stars.id' })
-    .leftOuterJoin('stars', function () {
-      this.on(idField, 'stars.starrable_id')
-        .andOn('stars.starrable', knex.raw('?', [type]));
+    .leftOuterJoin('stars', function() {
+      this.on(idField, 'stars.starrable_id').andOn(
+        'stars.starrable',
+        knex.raw('?', [type])
+      );
     })
     .groupBy(idField);
 
@@ -54,10 +56,12 @@ function itemQuery(type, user) {
   let commentQuery = knex(table)
     .column({ id: idField })
     .count({ count: 'comments.id' })
-    .leftOuterJoin('comments', function () {
+    .leftOuterJoin('comments', function() {
       /* eslint no-invalid-this: "off" */
-      this.on(idField, 'comments.commentable_id')
-        .andOn('comments.commentable', knex.raw('?', [type]));
+      this.on(idField, 'comments.commentable_id').andOn(
+        'comments.commentable',
+        knex.raw('?', [type])
+      );
     })
     .groupBy(idField);
 
@@ -98,7 +102,10 @@ function sortAndFilterQuery(query, sort, filters) {
 }
 
 function countQuery(query) {
-  query.clearSelect().clearOrder().count('*');
+  query
+    .clearSelect()
+    .clearOrder()
+    .count('*');
 }
 
 export default {

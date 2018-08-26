@@ -16,7 +16,7 @@ export function createApp(api, auth) {
   const app = new Vue({
     store,
     router,
-    render: (h) => h(App),
+    render: h => h(App),
   });
 
   return { app, store, router };

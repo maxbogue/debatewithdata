@@ -26,7 +26,9 @@ const LOADING = 'loading';
 const SUCCESS = 'success';
 
 export default {
-  NORMAL, LOADING, SUCCESS,
+  NORMAL,
+  LOADING,
+  SUCCESS,
   props: {
     value: { type: String, required: true },
     placeholder: { type: String, default: '' },
@@ -148,7 +150,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .error {
   font-size: 12px;

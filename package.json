@@ -58,6 +58,7 @@
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "pg-query-stream": "^1.1.1",
+    "prettier": "^1.14.2",
     "properties": "^1.2.1",
     "sass": "^1.10.3",
     "sass-loader": "^7.1.0",
@@ -93,6 +94,8 @@
     "chalk": "^2.4.1",
     "env-test": "^1.0.0",
     "eslint": "^5.3.0",
+    "eslint-config-prettier": "^3.0.1",
+    "eslint-plugin-prettier": "^2.6.2",
     "eslint-plugin-sort-imports-es6-autofix": "^0.3.0",
     "eslint-plugin-vue": "^4.7.1",
     "jsdom": "^11.12.0",
@@ -111,6 +114,8 @@
     "stylelint-processor-html": "^1.0.0",
     "stylelint-scss": "^3.2.0",
     "supertest": "^3.1.0",
-    "tslint": "^5.11.0"
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "tslint-plugin-prettier": "^1.3.0"
   }
 }

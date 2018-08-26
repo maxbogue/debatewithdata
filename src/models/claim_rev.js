@@ -2,7 +2,7 @@ import { asyncForOwn } from '@/common/utils';
 import { genRevId } from './utils';
 import { validateClaim } from '@/common/validate';
 
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   const ClaimRev = sequelize.define('claim_rev', {
     id: {
       type: DataTypes.TEXT,
@@ -29,7 +29,7 @@ export default function (sequelize, DataTypes) {
     },
   });
 
-  ClaimRev.associate = function (models) {
+  ClaimRev.associate = function(models) {
     ClaimRev.belongsTo(models.User, {
       foreignKey: {
         name: 'userId',
@@ -71,8 +71,8 @@ export default function (sequelize, DataTypes) {
     });
   };
 
-  ClaimRev.postAssociate = function (models) {
-    ClaimRev.INCLUDE = function (n, includeUser=false) {
+  ClaimRev.postAssociate = function(models) {
+    ClaimRev.INCLUDE = function(n, includeUser = false) {
       if (n < 1) {
         throw new Error('Must include at least 1 tier.');
       }
@@ -93,16 +93,19 @@ export default function (sequelize, DataTypes) {
       return { include };
     };
 
-    ClaimRev.createForApi = async function (claim, user, data, transaction) {
+    ClaimRev.createForApi = async function(claim, user, data, transaction) {
       const blob = await models.Blob.fromText(data.text, transaction);
-      const claimRev = await models.ClaimRev.create({
-        userId: user.id,
-        claimId: claim.id,
-        parentId: claim.headId,
-        blobHash: blob.hash,
-        flag: data.flag,
-        needsData: data.needsData,
-      }, { transaction });
+      const claimRev = await models.ClaimRev.create(
+        {
+          userId: user.id,
+          claimId: claim.id,
+          parentId: claim.headId,
+          blobHash: blob.hash,
+          flag: data.flag,
+          needsData: data.needsData,
+        },
+        { transaction }
+      );
 
       let subClaimIds = data.subClaimIds ? { ...data.subClaimIds } : {};
       let sourceIds = data.sourceIds ? { ...data.sourceIds } : {};
@@ -116,7 +119,10 @@ export default function (sequelize, DataTypes) {
       if (data.newSources) {
         for (let sourceData of data.newSources) {
           let rev = await models.Source.apiCreate(
-            user, sourceData, transaction);
+            user,
+            sourceData,
+            transaction
+          );
           sourceIds[rev.sourceId] = sourceData.isFor;
         }
       }
@@ -125,12 +131,14 @@ export default function (sequelize, DataTypes) {
         claimRev.addSubClaim(subClaimId, {
           through: { isFor },
           transaction,
-        }));
+        })
+      );
       await asyncForOwn(sourceIds, (isFor, sourceId) =>
         claimRev.addSource(sourceId, {
           through: { isFor },
           transaction,
-        }));
+        })
+      );
       await claim.setHead(claimRev, { transaction });
       await claim.addWatchedByUser(user);
 
@@ -140,11 +148,11 @@ export default function (sequelize, DataTypes) {
       return claimRev;
     };
 
-    ClaimRev.prototype.getItemId = function () {
+    ClaimRev.prototype.getItemId = function() {
       return this.claimId;
     };
 
-    ClaimRev.prototype.toCoreData = function (recurse=true) {
+    ClaimRev.prototype.toCoreData = function(recurse = true) {
       let data = {
         id: this.claimId,
         revId: this.id,
@@ -175,7 +183,7 @@ export default function (sequelize, DataTypes) {
     };
 
     // Only called for apiGetRevs.
-    ClaimRev.prototype.fillData = async function (data) {
+    ClaimRev.prototype.fillData = async function(data) {
       let thisData = this.toCoreData();
       thisData.username = this.user.username;
       thisData.createdAt = this.created_at;

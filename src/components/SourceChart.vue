@@ -16,7 +16,7 @@ function transpose(m) {
   let t = [];
   for (let j = 0; j < m[0].length; j += 1) {
     let r = [];
-    for(let i = 0; i < m.length; i += 1) {
+    for (let i = 0; i < m.length; i += 1) {
       r.push(m[i][j]);
     }
     t.push(r);
@@ -65,15 +65,16 @@ export default {
       return this.rows[0].slice(1).map(extractText);
     },
     rowLabels() {
-      return this.rows.slice(1).map((row) => row[0]);
+      return this.rows.slice(1).map(row => row[0]);
     },
     columnUnits() {
-      return this.rows[0].slice(1).map(
-        (s) => extractUnit(s, this.defaultUnit) || s);
+      return this.rows[0]
+        .slice(1)
+        .map(s => extractUnit(s, this.defaultUnit) || s);
     },
     uniqueUnits() {
       let units = new Set();
-      return this.columnUnits.filter((unit) => {
+      return this.columnUnits.filter(unit => {
         if (units.has(unit)) {
           return false;
         }
@@ -106,7 +107,7 @@ export default {
       return this.uniqueUnits;
     },
     datas() {
-      let datas = this.rows.slice(1).map((row) => row.slice(1));
+      let datas = this.rows.slice(1).map(row => row.slice(1));
       if (!this.byRow) {
         datas = transpose(datas);
       }
@@ -147,24 +148,26 @@ export default {
           },
           hover: {
             mode: 'nearest',
-            intersect: true
+            intersect: true,
           },
           scales: {
-            xAxes: [{
-              display: true,
-              scaleLabel: {
-                display: Boolean(this.xAxis),
-                labelString: this.xAxis,
-              }
-            }],
-            yAxes: this.yAxes.map((yAxis) => ({
+            xAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: Boolean(this.xAxis),
+                  labelString: this.xAxis,
+                },
+              },
+            ],
+            yAxes: this.yAxes.map(yAxis => ({
               display: true,
               scaleLabel: {
                 display: Boolean(yAxis),
                 labelString: yAxis,
-              }
+              },
             })),
-          }
+          },
         },
       };
     },
@@ -183,7 +186,9 @@ export default {
         this.chartObj.destroy();
       }
       this.chartObj = new Chart(
-        this.$refs.chart.getContext('2d'), this.chartOptions);
+        this.$refs.chart.getContext('2d'),
+        this.chartOptions
+      );
     },
   },
 };

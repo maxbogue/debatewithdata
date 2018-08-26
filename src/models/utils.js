@@ -19,8 +19,10 @@ export function genRevId() {
   return randomHexString(24);
 }
 
-export const ROOT_URL = process.env.NODE_ENV === 'production'
-  ? 'https://debatewithdata.org' : 'https://dev.debatewithdata.org';
+export const ROOT_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://debatewithdata.org'
+    : 'https://dev.debatewithdata.org';
 
 export function isValidFlag(flag) {
   if (!FlagData[flag]) {

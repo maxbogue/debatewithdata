@@ -26,7 +26,7 @@
 </template>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .footer {
   position: relative;

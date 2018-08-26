@@ -93,12 +93,12 @@ export default {
         return [];
       }
       switch (this.itemType) {
-      case ItemType.TOPIC:
-        return this.data.topicRevs;
-      case ItemType.CLAIM:
-        return this.data.claimRevs;
-      case ItemType.SOURCE:
-        return this.data.sourceRevs;
+        case ItemType.TOPIC:
+          return this.data.topicRevs;
+        case ItemType.CLAIM:
+          return this.data.claimRevs;
+        case ItemType.SOURCE:
+          return this.data.sourceRevs;
       }
       return [];
     },
@@ -115,7 +115,7 @@ export default {
       ];
     },
     revIndex() {
-      return this.revs.findIndex((r) => r.revId === this.revId);
+      return this.revs.findIndex(r => r.revId === this.revId);
     },
     curr() {
       return this.revs[this.revIndex];
@@ -163,7 +163,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .timestamp {
   color: $text-dark-accent;

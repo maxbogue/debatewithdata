@@ -14,13 +14,13 @@ localVue.use(VueRouter);
 localVue.use(Vuex);
 localVue.mixin(DwdUtilsMixin);
 
-describe.skip('ClaimEdit.vue', function () {
+describe.skip('ClaimEdit.vue', function() {
   let id;
   let actions;
   let store;
   let router;
 
-  beforeEach(function () {
+  beforeEach(function() {
     id = genId();
     actions = {
       addItem: sinon.stub().resolves(id),
@@ -35,7 +35,7 @@ describe.skip('ClaimEdit.vue', function () {
     sinon.spy(router, 'push');
   });
 
-  it('submits and redirects', async function () {
+  it('submits and redirects', async function() {
     //const wrapper = shallowMount(ClaimEdit, { store, router, localVue });
     const wrapper = shallowMount(null, { store, router, localVue });
     const newClaim = {

@@ -121,37 +121,38 @@ export default {
       this.initialized = true;
 
       // If every cell is empty, erase the table.
-      if (this.rows.every((row) => row.every((cell) => !cell))) {
+      if (this.rows.every(row => row.every(cell => !cell))) {
         this.$emit('update:table', null);
         return;
       }
 
       // Purge empty rows.
       for (let i = 2; i < this.rows.length - 1; i += 1) {
-        while (i < this.rows.length - 1
-            && this.rows[i].every((cell) => !cell)) {
+        while (i < this.rows.length - 1 && this.rows[i].every(cell => !cell)) {
           this.rows.splice(i, 1);
         }
       }
 
       // Add a new row if needed.
       let lastRow = this.rows[this.rows.length - 1];
-      if (lastRow.some((cell) => cell)) {
+      if (lastRow.some(cell => cell)) {
         this.rows.push(this.rows[0].map(() => ''));
       }
 
       this.emitTable();
     },
     emitTable() {
-      this.$emit('update:table', serializeTable(
-        this.title, this.rows.slice(0, -1)));
+      this.$emit(
+        'update:table',
+        serializeTable(this.title, this.rows.slice(0, -1))
+      );
     },
   },
 };
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .dataTable {
   span {

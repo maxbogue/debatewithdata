@@ -22,18 +22,21 @@ export function createApiRouter(createApiFromAuthToken) {
   router.use('/source', createItemRouter(ItemType.SOURCE));
   router.use('/topic', createItemRouter(ItemType.TOPIC));
 
-  router.get('/activity', async function (req, res) {
+  router.get('/activity', async function(req, res) {
     const data = await req.api.getActivity();
     res.json(data);
   });
 
-  router.get('/search', async function (req, res) {
+  router.get('/search', async function(req, res) {
     const data = await req.api.search(
-      req.query.query, req.query.types, req.query.page);
+      req.query.query,
+      req.query.types,
+      req.query.page
+    );
     res.json(data);
   });
 
-  router.get('/user/:username', async function (req, res) {
+  router.get('/user/:username', async function(req, res) {
     const data = await req.api.getUser(req.params.username);
     res.json(data);
   });

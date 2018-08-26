@@ -13,7 +13,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .count {
   margin: -8px -8px 8px 8px;

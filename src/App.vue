@@ -28,11 +28,7 @@ export default {
     titleTemplate: '%s - DebateWithData',
   },
   computed: {
-    ...mapState([
-      'loading',
-      'loadingError',
-      'suppressRoutes',
-    ]),
+    ...mapState(['loading', 'loadingError', 'suppressRoutes']),
   },
 };
 </script>

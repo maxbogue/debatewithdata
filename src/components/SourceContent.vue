@@ -66,7 +66,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .metadata {
   color: $text-dark-accent;

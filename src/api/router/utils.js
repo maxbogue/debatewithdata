@@ -8,7 +8,7 @@ export function parseFilters(filters) {
     return {};
   }
   let filterMap = {};
-  filters.split(',').forEach((s) => {
+  filters.split(',').forEach(s => {
     if (!s) {
       throw new ClientError(`Malformed filter string: "${filters}"`);
     }

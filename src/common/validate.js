@@ -14,10 +14,10 @@ import { deserializeTable } from './utils';
 
 validate.validators.format.message = 'has invalid format: "%{value}"';
 validate.validators.length.tooShort =
-    'too short (minimum is %{count} characters).';
+  'too short (minimum is %{count} characters).';
 validate.validators.length.tooLong =
-    'too long (maximum is %{count} characters).';
-validate.validators.presence.options = { message: 'can\'t be blank.' };
+  'too long (maximum is %{count} characters).';
+validate.validators.presence.options = { message: "can't be blank." };
 validate.validators.url.options = { message: 'must be a valid URL.' };
 
 const ID_FORMAT = {
@@ -90,7 +90,7 @@ function validatePresenceIf(key, value, item, conds, iff) {
 }
 
 function constraintToValidator(constraint, key) {
-  let validator = function (value, item) {
+  let validator = function(value, item) {
     if (item) {
       if (item.deleted && !constraint.validIfDeleted) {
         if (validate.isDefined(value)) {
@@ -118,7 +118,9 @@ function constraintToValidator(constraint, key) {
       }
       forEach(value, (e, i) => {
         let elementValidator = constraintToValidator(
-          constraint.arrayOf, `${key}[${i}]`);
+          constraint.arrayOf,
+          `${key}[${i}]`
+        );
         elementValidator(e, item);
       });
     }
@@ -129,12 +131,16 @@ function constraintToValidator(constraint, key) {
       forEach(value, (v, k) => {
         if (constraint.objectOf.key) {
           let keyValidator = constraintToValidator(
-            constraint.objectOf.key, `${key}.${k}`);
+            constraint.objectOf.key,
+            `${key}.${k}`
+          );
           keyValidator(k, item);
         }
         if (constraint.objectOf.value) {
           let valueValidator = constraintToValidator(
-            constraint.objectOf.value, `${key}.${k}`);
+            constraint.objectOf.value,
+            `${key}.${k}`
+          );
           valueValidator(v, item);
         }
       });
@@ -149,7 +155,7 @@ function constraintToValidator(constraint, key) {
       validator(val, this);
     },
   };
-  validator.emptyAsNull = (val) => validator(val === '' ? null : val);
+  validator.emptyAsNull = val => validator(val === '' ? null : val);
   return validator;
 }
 
@@ -194,10 +200,10 @@ function validateTable(t, key) {
     throw new ValidationError(key, 'missing title.');
   }
   let rows = table.slice(1);
-  if (rows[0].length <2) {
+  if (rows[0].length < 2) {
     throw new ValidationError(key, 'rows must have two columns.');
   }
-  if (!rows.every((row) => row.length === rows[0].length)) {
+  if (!rows.every(row => row.length === rows[0].length)) {
     throw new ValidationError(key, 'rows must all be the same length.');
   }
 }
@@ -246,10 +252,13 @@ export const sourceConstraints = {
   },
 };
 
-const sourceValidators = mapValues({
-  ...commonConstraints,
-  ...sourceConstraints,
-}, constraintToValidator);
+const sourceValidators = mapValues(
+  {
+    ...commonConstraints,
+    ...sourceConstraints,
+  },
+  constraintToValidator
+);
 
 export function validateSource(source) {
   forOwn(sourceValidators, (f, k) => f(source[k], source));
@@ -293,10 +302,13 @@ export const claimConstraints = {
   newSources: {},
 };
 
-const claimValidators = mapValues({
-  ...commonConstraints,
-  ...claimConstraints,
-}, constraintToValidator);
+const claimValidators = mapValues(
+  {
+    ...commonConstraints,
+    ...claimConstraints,
+  },
+  constraintToValidator
+);
 
 export function validateClaim(claim) {
   forOwn(claimValidators, (f, k) => f(claim[k], claim));
@@ -344,10 +356,13 @@ export const topicConstraints = {
   newClaims: {},
 };
 
-const topicValidators = mapValues({
-  ...commonConstraints,
-  ...topicConstraints,
-}, constraintToValidator);
+const topicValidators = mapValues(
+  {
+    ...commonConstraints,
+    ...topicConstraints,
+  },
+  constraintToValidator
+);
 
 export function validateTopic(topic) {
   forOwn(topicValidators, (f, k) => f(topic[k], topic));
@@ -356,15 +371,15 @@ validate.extend(validateTopic, topicValidators);
 
 export function validateItem(type, item) {
   switch (type) {
-  case ItemType.TOPIC:
-    validateTopic(item);
-    return;
-  case ItemType.CLAIM:
-    validateClaim(item);
-    return;
-  case ItemType.SOURCE:
-    validateSource(item);
-    return;
+    case ItemType.TOPIC:
+      validateTopic(item);
+      return;
+    case ItemType.CLAIM:
+      validateClaim(item);
+      return;
+    case ItemType.SOURCE:
+      validateSource(item);
+      return;
   }
   throw new Error('Invalid item type: ' + type);
 }

@@ -9,12 +9,13 @@ import { validateItem } from './common/validate';
 
 Vue.use(Vuex);
 
-const CONFLICT_ERROR_MESSAGE = 'Item was modified since you began editing.'
-  + ' Please review your changes against the new version and try again.';
+const CONFLICT_ERROR_MESSAGE =
+  'Item was modified since you began editing.' +
+  ' Please review your changes against the new version and try again.';
 
 function cleanItem(item) {
   let copy = cloneDeep(item);
-  walk(copy, (o) => delete o.tempId);
+  walk(copy, o => delete o.tempId);
   return copy;
 }
 
@@ -22,7 +23,7 @@ function filterTrail(trail, state) {
   if (!trail) {
     return [];
   }
-  return trail.filter((id) => !state.claims[id] && !state.topics[id]);
+  return trail.filter(id => !state.claims[id] && !state.topics[id]);
 }
 
 function windowIsSingleColumn() {
@@ -136,7 +137,7 @@ const makeStoreOptions = (auth, api) => ({
     storeItemBlockLocations(state) {
       state.itemLocations = {};
       state.itemBlockSliding = false;
-      forEach(state.itemBlocks, (vm) => {
+      forEach(state.itemBlocks, vm => {
         state.itemLocations[vm.id] = vm.$el.getBoundingClientRect();
       });
     },

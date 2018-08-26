@@ -115,19 +115,23 @@ export default {
       return diff(this.safePrev.date || '', this.safeCurr.date || '');
     },
     publicationDiff() {
-      return diff(this.safePrev.publication || '',
-                  this.safeCurr.publication || '');
+      return diff(
+        this.safePrev.publication || '',
+        this.safeCurr.publication || ''
+      );
     },
     institutionDiff() {
-      return diff(this.safePrev.institution || '',
-                  this.safeCurr.institution || '');
+      return diff(
+        this.safePrev.institution || '',
+        this.safeCurr.institution || ''
+      );
     },
   },
 };
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .metadata {
   color: $text-dark-accent;

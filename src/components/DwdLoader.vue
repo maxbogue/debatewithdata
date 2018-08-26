@@ -45,7 +45,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .loader {
   margin: 25px 0;

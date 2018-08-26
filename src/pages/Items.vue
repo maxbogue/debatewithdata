@@ -91,13 +91,15 @@ export default {
     ...mapState(['user']),
     headerText() {
       switch (this.type) {
-      case ItemType.TOPIC:
-        return 'Topics represent common areas of debate.';
-      case ItemType.CLAIM:
-        return 'Claims are simple statements about the world.';
-      case ItemType.SOURCE:
-        return 'Data are external sources of information used to support '
-          + 'claims.';
+        case ItemType.TOPIC:
+          return 'Topics represent common areas of debate.';
+        case ItemType.CLAIM:
+          return 'Claims are simple statements about the world.';
+        case ItemType.SOURCE:
+          return (
+            'Data are external sources of information used to support ' +
+            'claims.'
+          );
       }
       throw new Error(`Invalid item type: ${this.type}`);
     },
@@ -132,12 +134,15 @@ export default {
       if (!this.results) {
         return [];
       }
-      return this.results.map((result) => this.lookupItem(this.type, result));
+      return this.results.map(result => this.lookupItem(this.type, result));
     },
     starFilterClasses() {
-      return [this.filterStarred ? 'fas' : 'far', {
-        [this.$style.starFilterActive]: this.filterStarred !== null,
-      }];
+      return [
+        this.filterStarred ? 'fas' : 'far',
+        {
+          [this.$style.starFilterActive]: this.filterStarred !== null,
+        },
+      ];
     },
   },
   watch: {
@@ -162,7 +167,7 @@ export default {
     query() {
       this.page = 1;
     },
-    queryParams: debounce(async function () {
+    queryParams: debounce(async function() {
       /* eslint no-invalid-this: "off" */
       this.results = null;
       if (!this.queryParams) {
@@ -176,7 +181,7 @@ export default {
         loader: this.$refs.loader,
       });
       if (query === this.query) {
-        this.results = results.map((result) => result.id);
+        this.results = results.map(result => result.id);
         this.numPages = numPages;
       }
     }, DEBOUNCE_DELAY_MS),
@@ -211,7 +216,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .bar {
   :not(:first-child) {

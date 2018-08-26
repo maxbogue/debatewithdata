@@ -5,7 +5,9 @@ import keys from 'lodash/keys';
 import pick from 'lodash/pick';
 
 import {
-  claimConstraints, sourceConstraints, topicConstraints
+  claimConstraints,
+  sourceConstraints,
+  topicConstraints,
 } from './validate';
 
 const SOURCE_FIELDS = keys(sourceConstraints);

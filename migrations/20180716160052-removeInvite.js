@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface) => {
+  up: queryInterface => {
     return queryInterface.dropTable('invites');
   },
 
@@ -32,5 +32,5 @@ module.exports = {
         allowNull: false,
       },
     });
-  }
+  },
 };

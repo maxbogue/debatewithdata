@@ -24,32 +24,32 @@ function itemToAction(itemRev) {
   return 'edited';
 }
 
-const itemToEntry = (itemRev) => ({
+const itemToEntry = itemRev => ({
   timestamp: itemRev.created_at,
   username: itemRev.user.username,
   action: itemToAction(itemRev),
   revId: itemRev.id,
 });
 
-const topicRevToEntry = (topicRev) => ({
+const topicRevToEntry = topicRev => ({
   ...itemToEntry(topicRev),
   type: ItemType.TOPIC,
   id: topicRev.topicId,
 });
 
-const claimRevToEntry = (claimRev) => ({
+const claimRevToEntry = claimRev => ({
   ...itemToEntry(claimRev),
   type: ItemType.CLAIM,
   id: claimRev.claimId,
 });
 
-const sourceRevToEntry = (sourceRev) => ({
+const sourceRevToEntry = sourceRev => ({
   ...itemToEntry(sourceRev),
   type: ItemType.SOURCE,
   id: sourceRev.sourceId,
 });
 
-const commentToEntry = (comment) => ({
+const commentToEntry = comment => ({
   timestamp: comment.created_at,
   username: comment.user.username,
   action: 'commented on',
@@ -84,10 +84,15 @@ export async function getActivity({ user = null, limit }) {
     attributes: [...ITEM_ATTRS, 'sourceId'],
   });
 
-  const comments = await Comment.findAll(merge({
-    attributes: ['commentable', 'commentableId', 'created_at'],
-    where: { deleted: false },
-  }, QUERY));
+  const comments = await Comment.findAll(
+    merge(
+      {
+        attributes: ['commentable', 'commentableId', 'created_at'],
+        where: { deleted: false },
+      },
+      QUERY
+    )
+  );
 
   const topicEntries = topicRevs.map(topicRevToEntry);
   const claimEntries = claimRevs.map(claimRevToEntry);
@@ -95,8 +100,11 @@ export async function getActivity({ user = null, limit }) {
   const commentEntries = comments.map(commentToEntry);
 
   let activity = topicEntries.concat(
-    claimEntries, sourceEntries, commentEntries);
-  activity = sortBy(activity, (e) => -e.timestamp.getTime());
+    claimEntries,
+    sourceEntries,
+    commentEntries
+  );
+  activity = sortBy(activity, e => -e.timestamp.getTime());
   if (limit) {
     activity = activity.slice(0, limit);
   }

@@ -72,9 +72,11 @@ export default {
   }),
   computed: {
     noChange() {
-      return this.prev
-        && this.topic.title === this.prev.title
-        && this.topic.text === this.prev.text;
+      return (
+        this.prev &&
+        this.topic.title === this.prev.title &&
+        this.topic.text === this.prev.text
+      );
     },
     showReviewMode() {
       return !this.editMode && !this.noChange;
@@ -92,7 +94,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import "../style/constants";
+@import '../style/constants';
 
 .reviewMode {
   margin: $block-spacing 0 (-$block-spacing) 0;

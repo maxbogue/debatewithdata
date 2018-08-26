@@ -14,7 +14,7 @@ function unwrapResult(result) {
 
 export class Search {
   constructor() {
-    this.index = elasticlunr(function () {
+    this.index = elasticlunr(function() {
       /* eslint no-invalid-this: "off" */
       this.addField('title');
       this.addField('text');
@@ -43,12 +43,14 @@ export class Search {
   }
 
   query(q, types) {
-    let items = this.index.search(q, {
-      bool: 'AND',
-      expand: true,
-    }).map(unwrapResult);
+    let items = this.index
+      .search(q, {
+        bool: 'AND',
+        expand: true,
+      })
+      .map(unwrapResult);
     if (types) {
-      items = items.filter((item) => types.includes(item.type));
+      items = items.filter(item => types.includes(item.type));
     }
     return items;
   }

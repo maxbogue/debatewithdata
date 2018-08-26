@@ -1,12 +1,12 @@
 import blake2 from 'blake2';
 
 function hashText(text) {
-  var h = blake2.createHash('blake2b', {digestLength: 20});
+  var h = blake2.createHash('blake2b', { digestLength: 20 });
   h.update(new Buffer(text));
   return h.digest().toString('hex');
 }
 
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   const Blob = sequelize.define('blob', {
     hash: {
       type: DataTypes.TEXT,
@@ -18,7 +18,7 @@ export default function (sequelize, DataTypes) {
     },
   });
 
-  Blob.fromText = async function (text, transaction) {
+  Blob.fromText = async function(text, transaction) {
     let hash = hashText(text);
     let [blob] = await Blob.findOrCreate({
       where: { hash },

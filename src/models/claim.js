@@ -11,7 +11,7 @@ import { genId } from './utils';
 
 const CLAIM = ItemType.CLAIM;
 
-export default function (sequelize, DataTypes, knex) {
+export default function(sequelize, DataTypes, knex) {
   const Claim = sequelize.define('claim', {
     id: {
       type: DataTypes.TEXT,
@@ -20,7 +20,7 @@ export default function (sequelize, DataTypes, knex) {
     },
   });
 
-  Claim.associate = function (models) {
+  Claim.associate = function(models) {
     Claim.Head = Claim.belongsTo(models.ClaimRev, {
       as: 'head',
       foreignKey: {
@@ -40,7 +40,7 @@ export default function (sequelize, DataTypes, knex) {
         unique: false,
         scope: {
           starrable: CLAIM,
-        }
+        },
       },
       foreignKey: 'starrableId',
       constraints: false,
@@ -52,7 +52,7 @@ export default function (sequelize, DataTypes, knex) {
         unique: false,
         scope: {
           watchable: CLAIM,
-        }
+        },
       },
       foreignKey: 'watchableId',
       constraints: false,
@@ -66,20 +66,22 @@ export default function (sequelize, DataTypes, knex) {
     });
   };
 
-  Claim.postAssociate = function (models) {
-    Claim.INCLUDE = function (n) {
+  Claim.postAssociate = function(models) {
+    Claim.INCLUDE = function(n) {
       if (n < 1) {
         throw new Error('Must include at least 1 tier.');
       }
       return {
-        include: [{
-          association: Claim.Head,
-          ...models.ClaimRev.INCLUDE(n),
-        }],
+        include: [
+          {
+            association: Claim.Head,
+            ...models.ClaimRev.INCLUDE(n),
+          },
+        ],
       };
     };
 
-    Claim.apiCreate = async function (user, data, transaction) {
+    Claim.apiCreate = async function(user, data, transaction) {
       if (!transaction) {
         return await sequelize.transaction(function(t) {
           return Claim.apiCreate(user, data, t);
@@ -92,7 +94,7 @@ export default function (sequelize, DataTypes, knex) {
       return models.ClaimRev.createForApi(claim, user, data, transaction);
     };
 
-    Claim.apiUpdate = async function (claimId, user, data, transaction) {
+    Claim.apiUpdate = async function(claimId, user, data, transaction) {
       if (!transaction) {
         return await sequelize.transaction(function(t) {
           return Claim.apiUpdate(claimId, user, data, t);
@@ -121,7 +123,7 @@ export default function (sequelize, DataTypes, knex) {
       return models.ClaimRev.createForApi(claim, user, data, transaction);
     };
 
-    Claim.apiDelete = async function (claimId, user, msg, transaction) {
+    Claim.apiDelete = async function(claimId, user, msg, transaction) {
       if (!transaction) {
         return await sequelize.transaction(function(t) {
           return Claim.apiDelete(claimId, user, msg, t);
@@ -155,8 +157,12 @@ export default function (sequelize, DataTypes, knex) {
       return claimRev;
     };
 
-    Claim.prototype.fillData =
-    async function (data, depth, user, includeSupers = false) {
+    Claim.prototype.fillData = async function(
+      data,
+      depth,
+      user,
+      includeSupers = false
+    ) {
       if (data.claims[this.id] && data.claims[this.id].depth >= depth) {
         // This claim has already been loaded with at least as much depth.
         return;
@@ -183,14 +189,19 @@ export default function (sequelize, DataTypes, knex) {
 
       if (includeSupers) {
         let superClaims = await models.Claim.findAll({
-          include: [{
-            association: models.Claim.Head,
-            required: true,
-            include: [models.Blob, {
-              association: models.ClaimRev.SubClaims,
-              where: { id: this.id },
-            }],
-          }],
+          include: [
+            {
+              association: models.Claim.Head,
+              required: true,
+              include: [
+                models.Blob,
+                {
+                  association: models.ClaimRev.SubClaims,
+                  where: { id: this.id },
+                },
+              ],
+            },
+          ],
         });
 
         let superClaimIds = [];
@@ -201,14 +212,19 @@ export default function (sequelize, DataTypes, knex) {
         thisData.superClaimIds = superClaimIds;
 
         let superTopics = await models.Topic.findAll({
-          include: [{
-            association: models.Topic.Head,
-            required: true,
-            include: [models.Blob, {
-              association: models.TopicRev.Claims,
-              where: { id: this.id },
-            }],
-          }],
+          include: [
+            {
+              association: models.Topic.Head,
+              required: true,
+              include: [
+                models.Blob,
+                {
+                  association: models.TopicRev.Claims,
+                  where: { id: this.id },
+                },
+              ],
+            },
+          ],
         });
 
         let superTopicIds = [];
@@ -232,11 +248,11 @@ export default function (sequelize, DataTypes, knex) {
         .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash');
     }
 
-    Claim.itemQuery = function (user) {
+    Claim.itemQuery = function(user) {
       return q.item(CLAIM, user).modify(addClaimFields);
     };
 
-    Claim.processQueryResults = function (claims, depth = 1) {
+    Claim.processQueryResults = function(claims, depth = 1) {
       let data = {};
       for (let claim of claims) {
         claim.depth = depth;
@@ -247,7 +263,7 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Claim.apiGet = async function (id, user, hasTrail) {
+    Claim.apiGet = async function(id, user, hasTrail) {
       let claim = await Claim.findById(id, Claim.INCLUDE(3));
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + id);
@@ -257,25 +273,29 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Claim.apiGetAll = async function ({ user, filters, sort, page } = {}) {
+    Claim.apiGetAll = async function({ user, filters, sort, page } = {}) {
       page = page || 1;
 
       let query = Claim.itemQuery(user)
         .where('deleted', false)
         .modify(q.sortAndFilter, sort, filters);
 
-      let countQuery = query.clone().clearSelect().clearOrder().count('*');
+      let countQuery = query
+        .clone()
+        .clearSelect()
+        .clearOrder()
+        .count('*');
       query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
 
       let [claims, [{ count }]] = await Promise.all([query, countQuery]);
       return {
         claims: Claim.processQueryResults(claims),
-        results: claims.map((claim) => claim.id),
+        results: claims.map(claim => claim.id),
         numPages: Math.ceil(count / PAGE_SIZE),
       };
     };
 
-    Claim.apiGetForTrail = async function (ids, user) {
+    Claim.apiGetForTrail = async function(ids, user) {
       let flatClaims = await Claim.itemQuery(user)
         .column({
           subClaimId: 'claim_claims.claim_id',
@@ -284,37 +304,42 @@ export default function (sequelize, DataTypes, knex) {
           sourceIsFor: 'claim_sources.is_for',
         })
         .whereIn('i.id', ids)
+        .leftOuterJoin('claim_claims', 'i.head_id', 'claim_claims.claim_rev_id')
         .leftOuterJoin(
-          'claim_claims', 'i.head_id', 'claim_claims.claim_rev_id')
-        .leftOuterJoin(
-          'claim_sources', 'i.head_id', 'claim_sources.claim_rev_id');
+          'claim_sources',
+          'i.head_id',
+          'claim_sources.claim_rev_id'
+        );
 
-      let claims = _.chain(flatClaims).groupBy('id').map((groupedClaims) => {
-        let claim = _.omit(groupedClaims[0], [
-          'subClaimId',
-          'subClaimIsFor',
-          'sourceId',
-          'sourceIsFor',
-        ]);
-        claim.subClaimIds = {};
-        claim.sourceIds = {};
-        for (let c of groupedClaims) {
-          if (c.subClaimId) {
-            claim.subClaimIds[c.subClaimId] = c.subClaimIsFor;
+      let claims = _.chain(flatClaims)
+        .groupBy('id')
+        .map(groupedClaims => {
+          let claim = _.omit(groupedClaims[0], [
+            'subClaimId',
+            'subClaimIsFor',
+            'sourceId',
+            'sourceIsFor',
+          ]);
+          claim.subClaimIds = {};
+          claim.sourceIds = {};
+          for (let c of groupedClaims) {
+            if (c.subClaimId) {
+              claim.subClaimIds[c.subClaimId] = c.subClaimIsFor;
+            }
+            if (c.sourceId) {
+              claim.sourceIds[c.sourceId] = c.sourceIsFor;
+            }
           }
-          if (c.sourceId) {
-            claim.sourceIds[c.sourceId] = c.sourceIsFor;
-          }
-        }
-        return claim;
-      }).value();
+          return claim;
+        })
+        .value();
 
       return {
         claims: Claim.processQueryResults(claims, 1.5),
       };
     };
 
-    Claim.apiGetRevs = async function (claimId, user) {
+    Claim.apiGetRevs = async function(claimId, user) {
       let claim = await Claim.findById(claimId, Claim.INCLUDE(1));
       let claimRevs = await models.ClaimRev.findAll({
         where: { claimId },
@@ -336,7 +361,7 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Claim.prototype.toStarData = async function (user) {
+    Claim.prototype.toStarData = async function(user) {
       let starCount = await this.countStarredByUsers();
       let starred = false;
       let watched = false;
@@ -347,7 +372,7 @@ export default function (sequelize, DataTypes, knex) {
       return { starCount, starred, watched };
     };
 
-    Claim.apiToggleStar = async function (claimId, user) {
+    Claim.apiToggleStar = async function(claimId, user) {
       let claim = await Claim.findById(claimId);
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
@@ -362,7 +387,7 @@ export default function (sequelize, DataTypes, knex) {
       return await claim.toStarData(user);
     };
 
-    Claim.apiToggleWatch = async function (claimId, user) {
+    Claim.apiToggleWatch = async function(claimId, user) {
       let claim = await Claim.findById(claimId);
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
@@ -376,26 +401,27 @@ export default function (sequelize, DataTypes, knex) {
       return { watched: !isWatched };
     };
 
-    Claim.prototype.updateGraph = function (subClaims, sources) {
+    Claim.prototype.updateGraph = function(subClaims, sources) {
       let partedSubClaims = subClaims
-        ? _.partition(_.keys(subClaims), (id) => subClaims[id])
-        : _.partition(this.head.subClaims, (c) => c.claimClaim.isFor);
+        ? _.partition(_.keys(subClaims), id => subClaims[id])
+        : _.partition(this.head.subClaims, c => c.claimClaim.isFor);
 
       let partedSources = sources
-        ? _.partition(_.keys(sources), (id) => sources[id])
-        : _.partition(this.head.sources, (s) => s.claimSource.isFor);
+        ? _.partition(_.keys(sources), id => sources[id])
+        : _.partition(this.head.sources, s => s.claimSource.isFor);
 
-      let claimInfos = partedSubClaims.map((ls) => ls.map(Graph.toClaimInfo));
-      let sourceInfos = partedSources.map((ls) => ls.map(Graph.toSourceInfo));
+      let claimInfos = partedSubClaims.map(ls => ls.map(Graph.toClaimInfo));
+      let sourceInfos = partedSources.map(ls => ls.map(Graph.toSourceInfo));
 
       // Merge together the claim and source nested arrays.
-      let pointInfos = _.zipWith(claimInfos, sourceInfos,
-                                 (head, ...tail) => head.concat(...tail));
+      let pointInfos = _.zipWith(claimInfos, sourceInfos, (head, ...tail) =>
+        head.concat(...tail)
+      );
 
       graph.updateClaimPoints(this.id, pointInfos);
     };
 
-    Claim.prototype.updateIndex = function (data) {
+    Claim.prototype.updateIndex = function(data) {
       data = data || this.head.toCoreData();
       search.updateClaim(data);
     };

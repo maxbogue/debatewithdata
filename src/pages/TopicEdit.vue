@@ -91,7 +91,12 @@ import TopicEditAndReviewBlock from '@/components/TopicEditAndReviewBlock.vue';
 import TopicLinkModal from '@/components/TopicLinkModal.vue';
 import { ItemType } from '@/common/constants';
 import {
-  diffIdLists, parseTrail, pipe, stableRandom, starCount, starred
+  diffIdLists,
+  parseTrail,
+  pipe,
+  stableRandom,
+  starCount,
+  starred,
 } from '@/utils';
 import { topicsAreEqual } from '@/common/equality';
 
@@ -143,7 +148,7 @@ export default {
     seed: { type: Object, default: null },
   },
   data: () => ({
-    newTopicPartial:  {
+    newTopicPartial: {
       title: '',
       text: '',
     },
@@ -157,9 +162,7 @@ export default {
     unloadOverride: false,
   }),
   computed: {
-    ...mapState([
-      'user',
-    ]),
+    ...mapState(['user']),
     newId() {
       return this.newTopicPartial && this.newTopicPartial.id;
     },
@@ -168,13 +171,15 @@ export default {
     },
     linkedSubTopics() {
       let oldSubTopicIds = this.topic ? this.topic.subTopicIds : [];
-      return diffIdLists(this.subTopicIds, oldSubTopicIds,
-                         this.$store.state.topics);
+      return diffIdLists(
+        this.subTopicIds,
+        oldSubTopicIds,
+        this.$store.state.topics
+      );
     },
     linkedClaims() {
       let oldClaimIds = this.topic ? this.topic.claimIds : [];
-      return diffIdLists(this.claimIds, oldClaimIds,
-                         this.$store.state.claims);
+      return diffIdLists(this.claimIds, oldClaimIds, this.$store.state.claims);
     },
     newTopicLinks() {
       return {
@@ -281,15 +286,33 @@ export default {
           text: seed.text || '',
         };
 
-        let topicStarred = pipe(this.lookupTopic, starred);
-        let topicStarCount = pipe(this.lookupTopic, starCount);
-        this.subTopicIds = sortBy(seed.subTopicIds,
-                                  [topicStarred, topicStarCount, stableRandom]);
+        let topicStarred = pipe(
+          this.lookupTopic,
+          starred
+        );
+        let topicStarCount = pipe(
+          this.lookupTopic,
+          starCount
+        );
+        this.subTopicIds = sortBy(seed.subTopicIds, [
+          topicStarred,
+          topicStarCount,
+          stableRandom,
+        ]);
 
-        let claimStarred = pipe(this.lookupClaim, starred);
-        let claimStarCount = pipe(this.lookupClaim, starCount);
-        this.claimIds = sortBy(seed.claimIds,
-                               [claimStarred, claimStarCount, stableRandom]);
+        let claimStarred = pipe(
+          this.lookupClaim,
+          starred
+        );
+        let claimStarCount = pipe(
+          this.lookupClaim,
+          starCount
+        );
+        this.claimIds = sortBy(seed.claimIds, [
+          claimStarred,
+          claimStarCount,
+          stableRandom,
+        ]);
       }
       if (!this.seed) {
         // Done next tick so it comes after newTopicLinks watcher.

@@ -37,7 +37,7 @@ const TopicEdit = () =>
 
 Vue.use(VueRouter);
 
-const createRouterOptions = (authRedirect) => ({
+const createRouterOptions = authRedirect => ({
   mode: 'history',
   routes: [
     { path: '/', component: Home },
@@ -115,11 +115,13 @@ Vue.mixin({
       asyncData({
         store: this.$store,
         route: to,
-      }).then(next).catch(next);
+      })
+        .then(next)
+        .catch(next);
     } else {
       next();
     }
-  }
+  },
 });
 
 export function createRouter(auth, store) {
@@ -160,10 +162,12 @@ export function createRouter(auth, store) {
 
     store.commit('setSuppressRoutes', true);
 
-    Promise.all(promises).then(() => {
-      next();
-      store.commit('setSuppressRoutes', false);
-    }).catch(next);
+    Promise.all(promises)
+      .then(() => {
+        next();
+        store.commit('setSuppressRoutes', false);
+      })
+      .catch(next);
   });
 
   return router;
