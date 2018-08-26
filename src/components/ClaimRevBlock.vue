@@ -28,16 +28,18 @@
                     @click.native="showComments = !showComments" />
     </span>
   </div>
-  <dwd-comments :url="'/api' + url" :show="showComments" />
+  <dwd-comments :type="ItemType.CLAIM" :id="id" :show="showComments" />
 </div>
 </template>
 
 <script>
+import { ItemType } from '@/common/constants';
+import { diff } from '@/utils';
+
 import ClaimDataAnalysis from './ClaimDataAnalysis.vue';
 import DwdComments from './DwdComments.vue';
 import DwdFlag from './DwdFlag.vue';
 import IconComment from './IconComment.vue';
-import { diff } from '@/utils';
 
 const EMPTY_CLAIM = {
   text: '',
@@ -58,6 +60,7 @@ export default {
     canDelete: { type: Boolean, default: false },
   },
   data: () => ({
+    ItemType,
     showComments: false,
   }),
   computed: {

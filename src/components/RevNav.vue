@@ -9,22 +9,25 @@
   <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
   <div :class="$style.nav">
     <router-link :to="prevUrl"
-                 :class="{ [$style.hidden]: !prevUrl }"
-                 class="dwd-btn grey">Prev</router-link>
+                 :class="[buttonClasses, { [$style.hidden]: !prevUrl }]"
+                 >Prev</router-link>
     <router-link :to="historyUrl"
-                 class="dwd-btn grey">History</router-link>
+                 :class="buttonClasses">History</router-link>
     <router-link :to="nextUrl"
-                 :class="{ [$style.hidden]: !nextUrl }"
-                 class="dwd-btn grey">Next</router-link>
+                 :class="[buttonClasses, { [$style.hidden]: !nextUrl }]"
+                 >Next</router-link>
   </div>
   <div>
     <router-link v-if="revertTo"
-                 :to="revertTo">Revert To This Revision</router-link>
+                 :to="revertTo"
+                 class="click-text">Revert To This Revision</router-link>
   </div>
 </div>
 </template>
 
 <script>
+import { ItemType } from '@/common/constants';
+
 export default {
   props: {
     itemType: { type: String, required: true },
@@ -61,6 +64,17 @@ export default {
         name: this.itemType + 'Edit',
         params: { id: this.curr.id, seed: this.curr },
       };
+    },
+    buttonClasses() {
+      let colorClass = 'grey';
+      if (this.itemType === ItemType.CLAIM) {
+        colorClass = 'blue-dark';
+      } else if (this.itemType === ItemType.TOPIC) {
+        colorClass = 'pink-dark';
+      } else if (this.itemType === ItemType.SOURCE) {
+        colorClass = 'green-dark';
+      }
+      return ['dwd-btn', colorClass];
     },
   },
 };

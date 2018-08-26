@@ -102,17 +102,17 @@ export default class ApiClient {
   }
 
   async getComments(type, id) {
-    const res = await this.http.get(`/${type}/${id}/comments`);
+    const res = await this.http.get(`/${type}/${id}/comment`);
     return res.data;
   }
 
   async createComment(type, id, text) {
-    const res = await this.http.post(`/${type}/${id}/comments`, { text });
+    const res = await this.http.post(`/${type}/${id}/comment`, { text });
     return res.data;
   }
 
   async deleteComment(type, id, commentId) {
-    const res = await this.http.delete(`/${type}/${id}/comments/${commentId}`);
+    const res = await this.http.delete(`/${type}/${id}/comment/${commentId}`);
     return res.data;
   }
 
