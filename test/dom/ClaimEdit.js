@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { expect } from 'chai';
 
-import ClaimEdit from '@/pages/ClaimEdit.vue';
+//import ClaimEdit from '@/pages/ClaimEdit.vue';
 import { DwdUtilsMixin } from '@/utils';
 import { ItemType } from '@/common/constants';
 import { genId } from '@/models/utils';
@@ -14,7 +14,7 @@ localVue.use(VueRouter);
 localVue.use(Vuex);
 localVue.mixin(DwdUtilsMixin);
 
-describe('ClaimEdit.vue', function () {
+describe.skip('ClaimEdit.vue', function () {
   let id;
   let actions;
   let store;
