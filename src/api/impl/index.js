@@ -96,7 +96,7 @@ export default class ApiImpl {
   async getItem(type, id, trail) {
     const user = await this.optionalUser();
     const data = await getTrailData(trail, user);
-    const itemData = await getModel(type).apiGet(id, user, Boolean(trail));
+    const itemData = await getModel(type).apiGet(id, user, trail.length > 0);
     addApiData(data, itemData);
     return data;
   }

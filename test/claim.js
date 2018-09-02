@@ -428,6 +428,56 @@ describe('Claim', function () {
       });
     });
 
+    it('includes supers', async function () {
+      let rev = await Claim.apiCreate(user, {
+        text: FOO,
+        newSubClaims: [{
+          text: BAR,
+          isFor: true,
+        }],
+      });
+      await rev.reload(ClaimRev.INCLUDE(3));
+      expect(rev.subClaims).to.have.lengthOf(1);
+      let c1 = rev.subClaims[0];
+
+      let claimData = await Claim.apiGet(c1.id, user, false);
+      expect(claimData).to.deep.equal({
+        claims: {
+          [rev.claimId]: {
+            ...CLAIM_DEPTH_1,
+            id: rev.claimId,
+            revId: rev.id,
+            text: FOO,
+            childCount: 1,
+          },
+          [c1.id]: {
+            ...CLAIM_DEPTH_3,
+            id: c1.id,
+            revId: c1.headId,
+            text: BAR,
+            superClaimIds: [rev.claimId],
+          },
+        },
+        topics: {},
+        sources: {},
+      });
+
+      claimData = await Claim.apiGet(c1.id, user, true);
+      expect(claimData).to.deep.equal({
+        claims: {
+          [c1.id]: {
+            ...CLAIM_DEPTH_2,
+            depth: 3,
+            id: c1.id,
+            revId: c1.headId,
+            text: BAR,
+          },
+        },
+        topics: {},
+        sources: {},
+      });
+    });
+
     it('bad ID', function () {
       return expect(Claim.apiGet('bad id')).to.be.rejected;
     });
@@ -599,6 +649,7 @@ describe('Claim', function () {
         claims: {
           [c1r.claimId]: {
             ...CLAIM_DEPTH_1,
+            depth: 1.5,
             id: c1r.claimId,
             revId: c1r.id,
             childCount: 2,
@@ -609,6 +660,7 @@ describe('Claim', function () {
           },
           [c2r.claimId]: {
             ...CLAIM_DEPTH_1,
+            depth: 1.5,
             id: c2r.claimId,
             revId: c2r.id,
             childCount: 1,
@@ -626,6 +678,7 @@ describe('Claim', function () {
         claims: {
           [c1r.claimId]: {
             ...CLAIM_DEPTH_1,
+            depth: 1.5,
             id: c1r.claimId,
             revId: c1r.id,
             childCount: 2,
@@ -637,6 +690,7 @@ describe('Claim', function () {
           },
           [c2r.claimId]: {
             ...CLAIM_DEPTH_1,
+            depth: 1.5,
             id: c2r.claimId,
             revId: c2r.id,
             childCount: 1,

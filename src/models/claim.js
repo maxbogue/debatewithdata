@@ -155,7 +155,8 @@ export default function (sequelize, DataTypes, knex) {
       return claimRev;
     };
 
-    Claim.prototype.fillData = async function (data, depth, user) {
+    Claim.prototype.fillData =
+    async function (data, depth, user, includeSupers = false) {
       if (data.claims[this.id] && data.claims[this.id].depth >= depth) {
         // This claim has already been loaded with at least as much depth.
         return;
@@ -180,7 +181,7 @@ export default function (sequelize, DataTypes, knex) {
         }
       }
 
-      if (depth === 3) {
+      if (includeSupers) {
         let superClaims = await models.Claim.findAll({
           include: [{
             association: models.Claim.Head,
@@ -235,10 +236,10 @@ export default function (sequelize, DataTypes, knex) {
       return q.item(CLAIM, user).modify(addClaimFields);
     };
 
-    Claim.processQueryResults = function (claims) {
+    Claim.processQueryResults = function (claims, depth = 1) {
       let data = {};
       for (let claim of claims) {
-        claim.depth = 1;
+        claim.depth = depth;
         claim.childCount = graph.getCount(claim.id);
         claim.dataCounts = graph.getDataCounts(claim.id);
         data[claim.id] = claim;
@@ -246,13 +247,13 @@ export default function (sequelize, DataTypes, knex) {
       return data;
     };
 
-    Claim.apiGet = async function (claimId, user) {
-      let claim = await Claim.findById(claimId, Claim.INCLUDE(3));
+    Claim.apiGet = async function (id, user, hasTrail) {
+      let claim = await Claim.findById(id, Claim.INCLUDE(3));
       if (!claim) {
-        throw new NotFoundError('Claim not found: ' + claimId);
+        throw new NotFoundError('Claim not found: ' + id);
       }
       let data = { topics: {}, claims: {}, sources: {} };
-      await claim.fillData(data, 3, user);
+      await claim.fillData(data, 3, user, !hasTrail);
       return data;
     };
 
@@ -309,7 +310,7 @@ export default function (sequelize, DataTypes, knex) {
       }).value();
 
       return {
-        claims: Claim.processQueryResults(claims),
+        claims: Claim.processQueryResults(claims, 1.5),
       };
     };
 
