@@ -77,7 +77,7 @@ function invoke(env) {
   let progressPercentage = 0;
   let progressBar = null;
 
-  compiler.hooks.watchRun.tap('DwdDevServer', () => {
+  compiler.hooks.watchRun.tap('DevServer', () => {
     clearConsole();
     progressBar = new ProgressBar(PROGRESS_BAR_FORMAT, {
       total: 100,
@@ -134,12 +134,12 @@ function invoke(env) {
 }
 
 const args = minimist(process.argv.slice(2));
-const DwdDevServer = new Liftoff({
-  name: 'dwd-dev-server',
+const DevServer = new Liftoff({
+  name: 'dev-server',
   configName: 'webpack',
   extensions: {
     '.config.babel.js': 'babel-register',
     '.config.js': null,
   },
 });
-DwdDevServer.launch({ configPath: args.config }, invoke);
+DevServer.launch({ configPath: args.config }, invoke);

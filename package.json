@@ -6,7 +6,7 @@
   "license": "AGPL-3.0+",
   "private": true,
   "scripts": {
-    "dev": "node bin/dwd-dev-server.js",
+    "dev": "node bin/dev-server.js",
     "build": "NODE_ENV=production webpack -p --progress --hide-modules",
     "prod": "NODE_ENV=production node build/main.js",
     "test": "mocha-webpack --opts test/mocha-webpack.opts \"test/**/*.js\"",
