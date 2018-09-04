@@ -24,48 +24,41 @@ function itemToAction(itemRev) {
   return 'edited';
 }
 
-function itemToEntry(itemRev) {
-  return {
-    timestamp: itemRev.created_at,
-    username: itemRev.user.username,
-    action: itemToAction(itemRev),
-    revId: itemRev.id,
-  };
-}
+const itemToEntry = (itemRev) => ({
+  timestamp: itemRev.created_at,
+  username: itemRev.user.username,
+  action: itemToAction(itemRev),
+  revId: itemRev.id,
+});
 
-function topicRevToEntry(topicRev) {
-  let entry = itemToEntry(topicRev);
-  entry.type = ItemType.TOPIC;
-  entry.id = topicRev.topicId;
-  return entry;
-}
+const topicRevToEntry = (topicRev) => ({
+  ...itemToEntry(topicRev),
+  type: ItemType.TOPIC,
+  id: topicRev.topicId,
+});
 
-function claimRevToEntry(claimRev) {
-  let entry = itemToEntry(claimRev);
-  entry.type = ItemType.CLAIM;
-  entry.id = claimRev.claimId;
-  return entry;
-}
+const claimRevToEntry = (claimRev) => ({
+  ...itemToEntry(claimRev),
+  type: ItemType.CLAIM,
+  id: claimRev.claimId,
+});
 
-function sourceRevToEntry(sourceRev) {
-  let entry = itemToEntry(sourceRev);
-  entry.type = ItemType.SOURCE;
-  entry.id = sourceRev.sourceId;
-  return entry;
-}
+const sourceRevToEntry = (sourceRev) => ({
+  ...itemToEntry(sourceRev),
+  type: ItemType.SOURCE,
+  id: sourceRev.sourceId,
+});
 
-function commentToEntry(comment) {
-  return {
-    timestamp: comment.created_at,
-    username: comment.user.username,
-    action: 'commented on',
-    type: comment.commentable,
-    id: comment.commentableId,
-  };
-}
+const commentToEntry = (comment) => ({
+  timestamp: comment.created_at,
+  username: comment.user.username,
+  action: 'commented on',
+  type: comment.commentable,
+  id: comment.commentableId,
+});
 
-export async function getActivity({ user, limit }) {
-  let QUERY = {
+export async function getActivity({ user = null, limit }) {
+  let QUERY: any = {
     include: {
       model: User,
       attributes: ['username'],

@@ -1,6 +1,7 @@
 import config from 'config';
 import nodemailer from 'nodemailer';
 
+import Api from '@/api/interface';
 import { AuthError, ClientError, NotFoundError } from '@/api/error';
 import { Claim, Comment, Source, Topic, User } from '@/models';
 import { ItemType } from '@/common/constants';
@@ -34,7 +35,9 @@ function getModel(type) {
   return ITEM_TYPE_TO_MODEL[type];
 }
 
-export default class ApiImpl {
+export default class ApiImpl implements Api {
+  auth: any;
+
   constructor(auth) {
     this.auth = auth;
   }

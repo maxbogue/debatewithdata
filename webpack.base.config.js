@@ -23,6 +23,14 @@ const baseConfig = {
         },
       },
       {
+        test: /\.ts$/,
+        loader: 'awesome-typescript-loader',
+        exclude: /node_modules/,
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+        }
+      },
+      {
         test: /\.js$/,
         use: 'babel-loader',
       },
@@ -70,11 +78,13 @@ const baseConfig = {
     'oracledb': 'oracledb'
   },
   resolve: {
+    extensions: ['.ts', '.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': path.join(__dirname, 'src'),
     }
   },
+  devtool: 'source-map',
   performance: {
     hints: false
   },

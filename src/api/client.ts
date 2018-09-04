@@ -1,3 +1,5 @@
+import Api from '@/api/interface';
+
 function paramsFromTrail(trail) {
   if (trail.length > 0) {
     return { trail: trail.join(',') };
@@ -9,7 +11,10 @@ function sortFilterParam([s, b]) {
   return (b ? '+' : '-') + s;
 }
 
-export default class ApiClient {
+export default class ApiClient implements Api {
+  auth: any;
+  http: any;
+
   constructor(auth, http) {
     this.auth = auth;
     this.http = http;
