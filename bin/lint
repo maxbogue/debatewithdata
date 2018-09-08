@@ -15,6 +15,11 @@ if [ "$JS_FILES" != "" ]; then
   eslint $JS_FILES || STATUS=1
 fi
 
+TS_FILES=$($GIT_CMD | egrep "\.(ts)$")
+if [ "$TS_FILES" != "" ]; then
+  tslint $TS_FILES || STATUS=1
+fi
+
 CSS_FILES=$($GIT_CMD | egrep "\.(scss|vue)$")
 if [ "$CSS_FILES" != "" ]; then
   stylelint $CSS_FILES || STATUS=1

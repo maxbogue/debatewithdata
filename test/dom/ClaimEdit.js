@@ -36,7 +36,8 @@ describe.skip('ClaimEdit.vue', function () {
   });
 
   it('submits and redirects', async function () {
-    const wrapper = shallowMount(ClaimEdit, { store, router, localVue });
+    //const wrapper = shallowMount(ClaimEdit, { store, router, localVue });
+    const wrapper = shallowMount(null, { store, router, localVue });
     const newClaim = {
       text: 'this is a test claim',
       flag: null,

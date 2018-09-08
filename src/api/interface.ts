@@ -6,7 +6,7 @@ export default interface Api {
   resetPassword(resetToken: string, password: string): Promise<string>;
   getUser(username: string): Promise<object>;
   getItem(type: string, id: string, trail: string[]): Promise<object>;
-  getItems(type: string, filters: [string, boolean][], sort: [string, boolean], page: number): Promise<object>;
+  getItems(type: string, filters: Array<[string, boolean]>, sort: [string, boolean], page: number): Promise<object>;
   search(query: string, types: string[], page: number): Promise<object>;
   createItem(type: string, itemData: object): Promise<object>;
   updateItem(type: string, id: string, itemData: object): Promise<object>;

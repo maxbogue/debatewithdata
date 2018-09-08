@@ -1,10 +1,10 @@
 import config from 'config';
 import nodemailer from 'nodemailer';
 
-import Api from '@/api/interface';
 import { AuthError, ClientError, NotFoundError } from '@/api/error';
-import { Claim, Comment, Source, Topic, User } from '@/models';
+import Api from '@/api/interface';
 import { ItemType } from '@/common/constants';
+import { Claim, Comment, Source, Topic, User } from '@/models';
 import { addApiData, getTrailData } from '@/models/utils';
 
 import { getActivity } from './activity';
@@ -36,45 +36,29 @@ function getModel(type) {
 }
 
 export default class ApiImpl implements Api {
-  auth: any;
+  private auth: any;
 
   constructor(auth) {
     this.auth = auth;
   }
 
-  async optionalUser() {
-    const authToken = this.auth.getAuthToken();
-    if (!authToken) {
-      return null;
-    }
-    return await User.verifyToken(authToken);
-  }
-
-  async requireUser() {
-    const user = await this.optionalUser();
-    if (!user) {
-      throw new AuthError();
-    }
-    return user;
-  }
-
-  async login(username, password) {
+  public async login(username, password) {
     const user = await User.login(username, password);
     return user.genAuthToken();
   }
 
-  async register(username, password, email) {
+  public async register(username, password, email) {
     const user = await User.register(username, password, email);
     await user.sendVerificationEmail(SMTP_TRANSPORT);
     return { message: 'Email verification required.' };
   }
 
-  async verifyEmail(verificationToken) {
+  public async verifyEmail(verificationToken) {
     const user = await User.verifyEmail(verificationToken);
     return user.genAuthToken();
   }
 
-  async forgotPassword(email) {
+  public async forgotPassword(email) {
     const user = await User.forgotPassword(email);
     if (user) {
       await user.sendForgotPasswordEmail(SMTP_TRANSPORT);
@@ -82,12 +66,12 @@ export default class ApiImpl implements Api {
     return { message: 'success' };
   }
 
-  async resetPassword(resetToken, password) {
+  public async resetPassword(resetToken, password) {
     const user = await User.resetPassword(resetToken, password);
     return user.genAuthToken();
   }
 
-  async createItem(type, itemData) {
+  public async createItem(type, itemData) {
     const user = await this.requireUser();
     const Item = getModel(type);
     const rev = await Item.apiCreate(user, itemData);
@@ -96,7 +80,7 @@ export default class ApiImpl implements Api {
     return data;
   }
 
-  async getItem(type, id, trail) {
+  public async getItem(type, id, trail) {
     const user = await this.optionalUser();
     const data = await getTrailData(trail, user);
     const itemData = await getModel(type).apiGet(id, user, trail.length > 0);
@@ -104,73 +88,73 @@ export default class ApiImpl implements Api {
     return data;
   }
 
-  async getItems(type, filters, sort, page) {
+  public async getItems(type, filters, sort, page) {
     const user = await this.optionalUser();
     return await getModel(type).apiGetAll({ user, filters, sort, page });
   }
 
-  async updateItem(type, id, itemData) {
+  public async updateItem(type, id, itemData) {
     const user = await this.requireUser();
     const Item = getModel(type);
     await Item.apiUpdate(id, user, itemData);
     return await Item.apiGet(id, user);
   }
 
-  async deleteItem(type, id, message) {
+  public async deleteItem(type, id, message) {
     const user = await this.requireUser();
     const Item = getModel(type);
     await Item.apiDelete(id, user, message);
     return await Item.apiGet(id, user);
   }
 
-  async getItemRevs(type, id) {
+  public async getItemRevs(type, id) {
     const user = await this.optionalUser();
     return await getModel(type).apiGetRevs(id, user);
   }
 
-  async toggleStar(type, id) {
+  public async toggleStar(type, id) {
     const user = await this.requireUser();
     return await getModel(type).apiToggleStar(id, user);
   }
 
-  async toggleWatch(type, id) {
+  public async toggleWatch(type, id) {
     const user = await this.requireUser();
     return await getModel(type).apiToggleWatch(id, user);
   }
 
-  async getComments(type, id) {
+  public async getComments(type, id) {
     return await Comment.apiGetAll(getModel(type), id);
   }
 
-  async createComment(type, id, text) {
+  public async createComment(type, id, text) {
     const user = await this.requireUser();
     const commentModel = await Comment.apiAdd(getModel(type), id, user, text);
     const comment = await Comment.apiGet(commentModel.id);
     return { comment };
   }
 
-  async deleteComment(type, id, commentId) {
+  public async deleteComment(type, id, commentId) {
     const user = await this.requireUser();
     await Comment.apiDelete(getModel(type), id, user, commentId);
     return { message: 'success' };
   }
 
-  async getActivity() {
+  public async getActivity() {
     const activity = await getActivity({ limit: 100 });
     return { activity };
   }
 
-  async hasNotifications() {
+  public async hasNotifications() {
     const user = await this.requireUser();
     return { hasNotifications: await hasNotifications(user) };
   }
 
-  async getNotifications() {
+  public async getNotifications() {
     const user = await this.requireUser();
     return await getNotifications(user);
   }
 
-  async readNotifications(until) {
+  public async readNotifications(until) {
     const user = await this.requireUser();
     if (!until) {
       throw new ClientError('"until" parameter is required.');
@@ -179,7 +163,7 @@ export default class ApiImpl implements Api {
     return { hasNotifications: await hasNotifications(user) };
   }
 
-  async getUser(username) {
+  public async getUser(username) {
     const user = await User.findOne({
       where: { username },
     });
@@ -194,8 +178,24 @@ export default class ApiImpl implements Api {
     };
   }
 
-  async search(query, types, page) {
+  public async search(query, types, page) {
     const user = await this.optionalUser();
     return await search(user, query, types, page);
+  }
+
+  private async optionalUser() {
+    const authToken = this.auth.getAuthToken();
+    if (!authToken) {
+      return null;
+    }
+    return await User.verifyToken(authToken);
+  }
+
+  private async requireUser() {
+    const user = await this.optionalUser();
+    if (!user) {
+      throw new AuthError();
+    }
+    return user;
   }
 }

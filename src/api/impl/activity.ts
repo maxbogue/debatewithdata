@@ -2,8 +2,8 @@ import isArray from 'lodash/isArray';
 import mergeWith from 'lodash/mergeWith';
 import sortBy from 'lodash/sortBy';
 
-import { ClaimRev, Comment, SourceRev, TopicRev, User } from '@/models';
 import { ItemType } from '@/common/constants';
+import { ClaimRev, Comment, SourceRev, TopicRev, User } from '@/models';
 
 function merge(obj, other) {
   return mergeWith(obj, other, (a, b) => {
@@ -58,7 +58,7 @@ const commentToEntry = (comment) => ({
 });
 
 export async function getActivity({ user = null, limit }) {
-  let QUERY: any = {
+  const QUERY: any = {
     include: {
       model: User,
       attributes: ['username'],
@@ -70,29 +70,29 @@ export async function getActivity({ user = null, limit }) {
     QUERY.where = { userId: user.id };
   }
 
-  let ITEM_ATTRS = ['id', 'deleted', 'parentId', 'created_at'];
-  let topicRevs = await TopicRev.findAll({
+  const ITEM_ATTRS = ['id', 'deleted', 'parentId', 'created_at'];
+  const topicRevs = await TopicRev.findAll({
     ...QUERY,
     attributes: [...ITEM_ATTRS, 'topicId'],
   });
-  let claimRevs = await ClaimRev.findAll({
+  const claimRevs = await ClaimRev.findAll({
     ...QUERY,
     attributes: [...ITEM_ATTRS, 'claimId'],
   });
-  let sourceRevs = await SourceRev.findAll({
+  const sourceRevs = await SourceRev.findAll({
     ...QUERY,
     attributes: [...ITEM_ATTRS, 'sourceId'],
   });
 
-  let comments = await Comment.findAll(merge({
+  const comments = await Comment.findAll(merge({
     attributes: ['commentable', 'commentableId', 'created_at'],
     where: { deleted: false },
   }, QUERY));
 
-  let topicEntries = topicRevs.map(topicRevToEntry);
-  let claimEntries = claimRevs.map(claimRevToEntry);
-  let sourceEntries = sourceRevs.map(sourceRevToEntry);
-  let commentEntries = comments.map(commentToEntry);
+  const topicEntries = topicRevs.map(topicRevToEntry);
+  const claimEntries = claimRevs.map(claimRevToEntry);
+  const sourceEntries = sourceRevs.map(sourceRevToEntry);
+  const commentEntries = comments.map(commentToEntry);
 
   let activity = topicEntries.concat(
     claimEntries, sourceEntries, commentEntries);
