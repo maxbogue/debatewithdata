@@ -12,6 +12,7 @@ import ForgotPassword from './pages/ForgotPassword.vue';
 import Guide from './pages/Guide.vue';
 import Home from './pages/Home.vue';
 import Items from './pages/Items.vue';
+import Loading from './pages/Loading.vue';
 import Login from './pages/Login.vue';
 import Logout from './pages/Logout.vue';
 import NotFound from './pages/NotFound.vue';
@@ -67,6 +68,7 @@ const createRouterOptions = (authRedirect) => ({
     { path: '/contact', component: Contact },
     { path: '/forgot-password', component: ForgotPassword },
     { path: '/guide', component: Guide },
+    { path: '/loading', component: Loading },
     { path: '/login', component: Login },
     { path: '/logout', component: Logout },
     { path: '/notifications', component: Notifications },
