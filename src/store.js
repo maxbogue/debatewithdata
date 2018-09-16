@@ -13,6 +13,11 @@ const CONFLICT_ERROR_MESSAGE =
   'Item was modified since you began editing.' +
   ' Please review your changes against the new version and try again.';
 
+// Whether i1 should be stored over i2.
+function shouldStore(i1, i2) {
+  return !i2 || i1.depth > i2.depth;
+}
+
 function cleanItem(item) {
   let copy = cloneDeep(item);
   walk(copy, o => delete o.tempId);
@@ -86,12 +91,16 @@ const makeStoreOptions = (auth, api) => ({
     setData(state, data) {
       if (data.topics) {
         forOwn(data.topics, (topic, id) => {
-          Vue.set(state.topics, id, topic);
+          if (shouldStore(topic, state.topics[id])) {
+            Vue.set(state.topics, id, topic);
+          }
         });
       }
       if (data.claims) {
         forOwn(data.claims, (claim, id) => {
-          Vue.set(state.claims, id, claim);
+          if (shouldStore(claim, state.claims[id])) {
+            Vue.set(state.claims, id, claim);
+          }
         });
       }
       if (data.sources) {
