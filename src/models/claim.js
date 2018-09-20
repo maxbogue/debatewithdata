@@ -1,4 +1,7 @@
 import _ from 'lodash';
+import flow from 'lodash/fp/flow';
+import groupBy from 'lodash/fp/groupBy';
+import map from 'lodash/fp/map';
 
 import graph, { Graph } from '@/common/graph';
 import q from './query';
@@ -10,6 +13,29 @@ import { claimsAreEqual } from '@/common/equality';
 import { genId } from './utils';
 
 const CLAIM = ItemType.CLAIM;
+
+const hydrateClaims = flow(
+  groupBy('id'),
+  map(grouped => {
+    const claim = _.omit(grouped[0], [
+      'subClaimId',
+      'subClaimIsFor',
+      'sourceId',
+      'sourceIsFor',
+    ]);
+    claim.subClaimIds = {};
+    claim.sourceIds = {};
+    for (const c of grouped) {
+      if (c.subClaimId) {
+        claim.subClaimIds[c.subClaimId] = c.subClaimIsFor;
+      }
+      if (c.sourceId) {
+        claim.sourceIds[c.sourceId] = c.sourceIsFor;
+      }
+    }
+    return claim;
+  })
+);
 
 export default function(sequelize, DataTypes, knex) {
   const Claim = sequelize.define('claim', {
@@ -296,7 +322,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Claim.apiGetForTrail = async function(ids, user) {
-      let flatClaims = await Claim.itemQuery(user)
+      const flatClaims = await Claim.itemQuery(user)
         .column({
           subClaimId: 'claim_claims.claim_id',
           subClaimIsFor: 'claim_claims.is_for',
@@ -311,29 +337,7 @@ export default function(sequelize, DataTypes, knex) {
           'claim_sources.claim_rev_id'
         );
 
-      let claims = _.chain(flatClaims)
-        .groupBy('id')
-        .map(groupedClaims => {
-          let claim = _.omit(groupedClaims[0], [
-            'subClaimId',
-            'subClaimIsFor',
-            'sourceId',
-            'sourceIsFor',
-          ]);
-          claim.subClaimIds = {};
-          claim.sourceIds = {};
-          for (let c of groupedClaims) {
-            if (c.subClaimId) {
-              claim.subClaimIds[c.subClaimId] = c.subClaimIsFor;
-            }
-            if (c.sourceId) {
-              claim.sourceIds[c.sourceId] = c.sourceIsFor;
-            }
-          }
-          return claim;
-        })
-        .value();
-
+      const claims = hydrateClaims(flatClaims);
       return {
         claims: Claim.processQueryResults(claims, 1.5),
       };

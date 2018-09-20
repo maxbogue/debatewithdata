@@ -1,4 +1,7 @@
-import _ from 'lodash';
+import flow from 'lodash/fp/flow';
+import groupBy from 'lodash/fp/groupBy';
+import map from 'lodash/fp/map';
+import omit from 'lodash/fp/omit';
 
 import graph, { Graph } from '@/common/graph';
 import q from './query';
@@ -13,6 +16,16 @@ const TOPIC = ItemType.TOPIC;
 function notNull(thing) {
   return thing !== null;
 }
+
+const hydrateTopics = flow(
+  groupBy('id'),
+  map(grouped => {
+    const topic = omit(['subTopicId', 'claimId'], grouped[0]);
+    topic.subTopicIds = grouped.map(t => t.subTopicId).filter(notNull);
+    topic.claimIds = grouped.map(t => t.claimId).filter(notNull);
+    return topic;
+  })
+);
 
 export default function(sequelize, DataTypes, knex) {
   const Topic = sequelize.define('topic', {
@@ -291,7 +304,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Topic.apiGetForTrail = async function(ids, user) {
-      let flatTopics = await Topic.itemQuery(user)
+      const flatTopics = await Topic.itemQuery(user)
         .column({
           subTopicId: 'topic_topics.sub_topic_id',
           claimId: 'topic_claims.claim_id',
@@ -304,16 +317,7 @@ export default function(sequelize, DataTypes, knex) {
           'topic_claims.topic_rev_id'
         );
 
-      let topics = _.chain(flatTopics)
-        .groupBy('id')
-        .map(grouped => {
-          let topic = _.omit(grouped[0], ['subTopicId', 'claimId']);
-          topic.subTopicIds = grouped.map(t => t.subTopicId).filter(notNull);
-          topic.claimIds = grouped.map(t => t.claimId).filter(notNull);
-          return topic;
-        })
-        .value();
-
+      const topics = hydrateTopics(flatTopics);
       return {
         topics: Topic.processQueryResults(topics),
       };
