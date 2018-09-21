@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import isEmpty from 'lodash/isEmpty';
+
 import ClaimDataAnalysis from './ClaimDataAnalysis.vue';
 import DwdComments from './DwdComments.vue';
 import IconComment from './IconComment.vue';
@@ -127,6 +129,10 @@ export default {
   },
   methods: {
     animate() {
+      if (isEmpty(this.$store.state.itemLocations)) {
+        return;
+      }
+
       if (this.fadeOnly) {
         this.animateFade();
         return;
