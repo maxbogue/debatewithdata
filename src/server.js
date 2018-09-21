@@ -22,7 +22,7 @@ function createAppFromContext(context) {
   return new Promise((resolve, reject) => {
     const auth = new ServerAuth(context.authToken);
     const api = new ApiImpl(auth);
-    const { app, router } = createApp(api, auth);
+    const { app, store, router } = createApp(api, auth);
 
     router.push(context.url);
     router.onReady(() => {
@@ -30,6 +30,7 @@ function createAppFromContext(context) {
       if (!matchedComponents.length) {
         reject({ code: 404 });
       }
+      context.state = store.state;
       resolve(app);
     }, reject);
   });
@@ -66,7 +67,7 @@ server.get('*', async (req, res) => {
 
   try {
     const app = await createAppFromContext(context);
-    const html = await renderer.renderToString(app);
+    const html = await renderer.renderToString(app, context);
     res.status(200).send(html);
   } catch (err) {
     console.error(err);
