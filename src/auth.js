@@ -14,22 +14,22 @@ class Auth {
       return null;
     }
 
-    let decoded = jwtDecode(authToken);
+    const decoded = jwtDecode(authToken);
 
     // Check for an expired token.
     if (Date.now() / 1000 > decoded.exp) {
       return null;
     }
 
-    let user = decoded.user;
+    const user = decoded.user;
     user.createdAt = new Date(user.createdAt);
     user.username = decoded.sub;
     return user;
   }
 
   getUser() {
-    let token = this.getAuthToken();
-    let user = this.getUserFromToken(token);
+    const token = this.getAuthToken();
+    const user = this.getUserFromToken(token);
     if (token && !user) {
       // Token must be expired.
       this.setAuthToken(null);
@@ -41,7 +41,7 @@ class Auth {
 export class BrowserAuth extends Auth {
   setAuthToken(authToken) {
     if (authToken) {
-      let encodedSession = window.btoa(JSON.stringify({ authToken }));
+      const encodedSession = window.btoa(JSON.stringify({ authToken }));
       Cookies.set(SESSION_COOKIE_NAME, encodedSession);
     } else {
       Cookies.remove(SESSION_COOKIE_NAME);
@@ -49,11 +49,11 @@ export class BrowserAuth extends Auth {
   }
 
   getAuthToken() {
-    let encodedSession = Cookies.get(SESSION_COOKIE_NAME);
+    const encodedSession = Cookies.get(SESSION_COOKIE_NAME);
     if (!encodedSession) {
       return '';
     }
-    let session = JSON.parse(window.atob(encodedSession));
+    const session = JSON.parse(window.atob(encodedSession));
     return (session && session.authToken) || '';
   }
 }

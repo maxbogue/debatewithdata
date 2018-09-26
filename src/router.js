@@ -144,11 +144,11 @@ export function createRouter(auth, store) {
     const prevMatched = router.getMatchedComponents(from);
     const activated = dropWhile(matched, (c, i) => c === prevMatched[i]);
 
-    let promises = [];
+    const promises = [];
 
-    for (let c of activated) {
+    for (const c of activated) {
       if (c.asyncData) {
-        let promise = c.asyncData({ store, route: to });
+        const promise = c.asyncData({ store, route: to });
         if (promise) {
           promises.push(promise);
         }

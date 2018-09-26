@@ -13,9 +13,9 @@ const COLORS = ['#e91e63', '#1e88e5', '#8e24aa', '#ffb300', '#43a047'];
 const UNIT_REGEX = /^(.+) \((.+)\)$/;
 
 function transpose(m) {
-  let t = [];
+  const t = [];
   for (let j = 0; j < m[0].length; j += 1) {
-    let r = [];
+    const r = [];
     for (let i = 0; i < m.length; i += 1) {
       r.push(m[i][j]);
     }
@@ -73,7 +73,7 @@ export default {
         .map(s => extractUnit(s, this.defaultUnit) || s);
     },
     uniqueUnits() {
-      let units = new Set();
+      const units = new Set();
       return this.columnUnits.filter(unit => {
         if (units.has(unit)) {
           return false;

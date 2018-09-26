@@ -70,7 +70,7 @@ export default function(sequelize, DataTypes) {
 
   TopicRev.postAssociate = function(models) {
     TopicRev.INCLUDE = function(n, includeUser = false) {
-      let include = [models.Blob];
+      const include = [models.Blob];
       if (includeUser) {
         include.push(models.User);
       }
@@ -100,10 +100,10 @@ export default function(sequelize, DataTypes) {
         { transaction }
       );
 
-      let subTopicIds = [...data.subTopicIds];
-      let claimIds = [...data.claimIds];
+      const subTopicIds = [...data.subTopicIds];
+      const claimIds = [...data.claimIds];
 
-      let rootSubTopics = await models.Topic.findAll({
+      const rootSubTopics = await models.Topic.findAll({
         where: { id: subTopicIds, isRoot: true },
         attributes: ['id'],
       });
@@ -118,7 +118,7 @@ export default function(sequelize, DataTypes) {
       const promises = [];
 
       if (data.newSubTopics) {
-        for (let subTopicData of data.newSubTopics) {
+        for (const subTopicData of data.newSubTopics) {
           promises.push(
             models.Topic.apiCreate(user, subTopicData, false, transaction)
           );
@@ -127,7 +127,7 @@ export default function(sequelize, DataTypes) {
       }
 
       if (data.newClaims) {
-        for (let claimData of data.newClaims) {
+        for (const claimData of data.newClaims) {
           promises.push(
             models.Claim.apiCreate(user, claimData, transaction).then(rev => {
               claimIds.push(rev.claimId);
@@ -153,7 +153,7 @@ export default function(sequelize, DataTypes) {
     };
 
     TopicRev.prototype.toCoreData = function() {
-      let data = {
+      const data = {
         id: this.topicId,
         revId: this.id,
       };
@@ -177,16 +177,16 @@ export default function(sequelize, DataTypes) {
 
     // Only called for apiGetRevs.
     TopicRev.prototype.fillData = async function(data, user) {
-      let thisData = this.toCoreData();
+      const thisData = this.toCoreData();
       thisData.username = this.user.username;
       thisData.createdAt = this.created_at;
 
       if (!this.deleted) {
         const promises = [];
-        for (let subTopic of this.subTopics) {
+        for (const subTopic of this.subTopics) {
           promises.push(subTopic.fillData(data, 1, user));
         }
-        for (let claim of this.claims) {
+        for (const claim of this.claims) {
           promises.push(claim.fillData(data, 1, user));
         }
         await Promise.all(promises);

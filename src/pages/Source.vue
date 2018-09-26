@@ -32,10 +32,10 @@ export default {
     ItemBlock,
   },
   async asyncData({ store, route }) {
-    let id = route.params.id;
-    let source = store.state.sources[id];
+    const id = route.params.id;
+    const source = store.state.sources[id];
     if (!source || !source.claimIds) {
-      let promise = store.dispatch('getItem', {
+      const promise = store.dispatch('getItem', {
         type: ItemType.SOURCE,
         id,
         trail: parseTrail(route.query.trail),
@@ -70,7 +70,7 @@ export default {
       if (!this.source || !this.source.claimIds) {
         return [];
       }
-      let notInTrail = filter(
+      const notInTrail = filter(
         this.source.claimIds,
         id => !this.trail.includes(id)
       );

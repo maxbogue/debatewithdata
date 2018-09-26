@@ -7,7 +7,7 @@ export function parseFilters(filters) {
   if (!filters) {
     return {};
   }
-  let filterMap = {};
+  const filterMap = {};
   filters.split(',').forEach(s => {
     if (!s) {
       throw new ClientError(`Malformed filter string: "${filters}"`);
@@ -15,7 +15,7 @@ export function parseFilters(filters) {
     if (s[0] !== '-' && s[0] !== '+') {
       throw new ClientError(`Filter must start with "+" or "-": "${s}"`);
     }
-    let filter = s.slice(1);
+    const filter = s.slice(1);
     if (!includes(Filter, filter)) {
       throw new ClientError(`Invalid filter: "${filter}"`);
     }
@@ -31,7 +31,7 @@ export function parseSort(s) {
   if (s[0] !== '-' && s[0] !== '+') {
     throw new ClientError(`Sort must start with "+" or "-": "${s}"`);
   }
-  let sort = s.slice(1);
+  const sort = s.slice(1);
   if (!includes(Sort, sort)) {
     throw new ClientError(`Invalid sort: "${sort}"`);
   }

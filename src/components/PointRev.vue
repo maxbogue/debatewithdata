@@ -25,7 +25,7 @@ export default {
       return this.curr ? this.curr.id : this.prev.id;
     },
     url() {
-      let type = this.curr ? this.curr.pointType : this.prev.pointType;
+      const type = this.curr ? this.curr.pointType : this.prev.pointType;
       return this.itemUrl(type, this.id, this.trail);
     },
   },

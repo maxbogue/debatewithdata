@@ -64,8 +64,8 @@ export async function getTrailData(trail, user) {
   if (trail.length === 0) {
     return {};
   }
-  let data = await Topic.apiGetForTrail(trail, user);
-  let claimsData = await Claim.apiGetForTrail(trail, user);
+  const data = await Topic.apiGetForTrail(trail, user);
+  const claimsData = await Claim.apiGetForTrail(trail, user);
   addApiData(data, claimsData);
   return data;
 }

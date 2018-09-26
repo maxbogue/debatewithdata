@@ -17,8 +17,8 @@ export const STARS_AND_COMMENTS = {
 };
 
 export async function registerAndVerifyUser(n) {
-  let username = USERNAME + (n ? n : '');
-  let user = await User.register(username, PASSWORD, EMAIL);
+  const username = USERNAME + (n ? n : '');
+  const user = await User.register(username, PASSWORD, EMAIL);
   return User.verifyEmail(user.emailVerificationToken);
 }
 

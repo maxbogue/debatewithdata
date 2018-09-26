@@ -106,7 +106,7 @@ export default {
         .map(s => extractUnit(s, this.defaultUnit) || s);
     },
     uniqueUnits() {
-      let units = new Set();
+      const units = new Set();
       return this.columnUnits.filter(unit => {
         if (units.has(unit)) {
           return false;

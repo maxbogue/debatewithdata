@@ -47,8 +47,8 @@ export default {
   }),
   computed: {
     id() {
-      let pointId = this.point ? this.point.id : '';
-      let prevId = this.prev ? this.prev.id : '';
+      const pointId = this.point ? this.point.id : '';
+      const prevId = this.prev ? this.prev.id : '';
       return pointId || prevId;
     },
     isEditable() {

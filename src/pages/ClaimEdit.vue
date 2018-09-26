@@ -71,8 +71,8 @@ export default {
     PointsEdit,
   },
   async asyncData({ store, route }) {
-    let id = route.params.id;
-    let claim = store.state.claims[id];
+    const id = route.params.id;
+    const claim = store.state.claims[id];
     if (id && (!claim || claim.depth < 2)) {
       await store.dispatch('getItem', {
         type: ItemType.CLAIM,
@@ -142,7 +142,7 @@ export default {
     },
     async submit() {
       let action = 'addItem';
-      let payload = {
+      const payload = {
         type: ItemType.CLAIM,
         item: this.newClaim,
       };
@@ -151,7 +151,7 @@ export default {
         payload.item.id = this.id;
         payload.item.baseRev = this.claim.revId;
       }
-      let id = await this.$store.dispatch(action, payload);
+      const id = await this.$store.dispatch(action, payload);
       this.unloadOverride = true;
       this.$router.push(this.claimUrl(id, this.trail));
     },
@@ -165,11 +165,11 @@ export default {
       this.$router.push('/claims');
     },
     cancel() {
-      let url = this.id ? this.claimUrl(this.id, this.trail) : '/claims';
+      const url = this.id ? this.claimUrl(this.id, this.trail) : '/claims';
       this.$router.push(url);
     },
     initialize() {
-      let seed = this.seed || this.claim;
+      const seed = this.seed || this.claim;
       if (seed && !seed.deleted) {
         this.newClaimPartial = seed;
         this.points = combineAndSortPoints(seed, this.$store.state);

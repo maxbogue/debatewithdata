@@ -54,8 +54,8 @@ describe('Topic', function() {
 
   describe('.apiCreate()', function() {
     it('happy', async function() {
-      let claimRev = await Claim.apiCreate(user, { text: BAR });
-      let topicRev = await Topic.apiCreate(user, {
+      const claimRev = await Claim.apiCreate(user, { text: BAR });
+      const topicRev = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
@@ -71,21 +71,21 @@ describe('Topic', function() {
       expect(topicRev.claims).to.have.lengthOf(1);
       expect(topicRev.subTopics).to.have.lengthOf(0);
 
-      let claim = topicRev.claims[0];
+      const claim = topicRev.claims[0];
       expect(claim.id).to.equal(claimRev.claimId);
       expect(claim.head.blob.text).to.equal(BAR);
 
-      let topic = await Topic.findById(topicRev.topicId);
+      const topic = await Topic.findById(topicRev.topicId);
       expect(topic.headId).to.equal(topicRev.id);
     });
 
     it('nested', async function() {
-      let subTopicRev = await Topic.apiCreate(user, {
+      const subTopicRev = await Topic.apiCreate(user, {
         id: ID2,
         title: TITLE2,
         text: BAR,
       });
-      let topicRev = await Topic.apiCreate(user, {
+      const topicRev = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
@@ -101,17 +101,17 @@ describe('Topic', function() {
       expect(topicRev.claims).to.have.lengthOf(0);
       expect(topicRev.subTopics).to.have.lengthOf(1);
 
-      let subTopic = topicRev.subTopics[0];
+      const subTopic = topicRev.subTopics[0];
       expect(subTopic.id).to.equal(subTopicRev.topicId);
       expect(subTopic.head.title).to.equal(TITLE2);
       expect(subTopic.head.blob.text).to.equal(BAR);
 
-      let topic = await Topic.findById(topicRev.topicId);
+      const topic = await Topic.findById(topicRev.topicId);
       expect(topic.headId).to.equal(topicRev.id);
     });
 
     it('new sub-topic', async function() {
-      let topicRev = await Topic.apiCreate(user, {
+      const topicRev = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
@@ -135,17 +135,17 @@ describe('Topic', function() {
       expect(topicRev.claims).to.have.lengthOf(0);
       expect(topicRev.subTopics).to.have.lengthOf(1);
 
-      let subTopic = topicRev.subTopics[0];
+      const subTopic = topicRev.subTopics[0];
       expect(subTopic.id).to.equal(ID2);
       expect(subTopic.head.title).to.equal(TITLE2);
       expect(subTopic.head.blob.text).to.equal(BAR);
 
-      let topic = await Topic.findById(topicRev.topicId);
+      const topic = await Topic.findById(topicRev.topicId);
       expect(topic.headId).to.equal(topicRev.id);
     });
 
     it('new claim', async function() {
-      let topicRev = await Topic.apiCreate(user, {
+      const topicRev = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
@@ -165,30 +165,30 @@ describe('Topic', function() {
       expect(topicRev.claims).to.have.lengthOf(1);
       expect(topicRev.subTopics).to.have.lengthOf(0);
 
-      let claim = topicRev.claims[0];
+      const claim = topicRev.claims[0];
       expect(claim.head.blob.text).to.equal(BAR);
 
-      let topic = await Topic.findById(topicRev.topicId);
+      const topic = await Topic.findById(topicRev.topicId);
       expect(topic.headId).to.equal(topicRev.id);
     });
   });
 
   describe('.apiUpdate()', function() {
     it('normal update', async function() {
-      let c1r = await Claim.apiCreate(user, {
+      const c1r = await Claim.apiCreate(user, {
         text: BAZ,
       });
-      let r1 = await Topic.apiCreate(user, {
+      const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
         claimIds: [c1r.claimId],
       });
 
-      let c2r = await Claim.apiCreate(user, {
+      const c2r = await Claim.apiCreate(user, {
         text: BAZ,
       });
-      let r2 = await Topic.apiUpdate(ID, user, {
+      const r2 = await Topic.apiUpdate(ID, user, {
         baseRev: r1.id,
         title: TITLE2,
         text: BAR,
@@ -206,17 +206,17 @@ describe('Topic', function() {
       expect(r2.claims[0].id).to.equal(c2r.claimId);
       expect(r2.subTopics).to.have.lengthOf(0);
 
-      let topic = await Topic.findById(ID);
+      const topic = await Topic.findById(ID);
       expect(topic.headId).to.equal(r2.id);
     });
 
     it('new sub-topic', async function() {
-      let r1 = await Topic.apiCreate(user, {
+      const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
       });
-      let r2 = await Topic.apiUpdate(ID, user, {
+      const r2 = await Topic.apiUpdate(ID, user, {
         baseRev: r1.id,
         title: TITLE,
         text: FOO,
@@ -240,22 +240,22 @@ describe('Topic', function() {
       expect(r2.claims).to.have.lengthOf(0);
       expect(r2.subTopics).to.have.lengthOf(1);
 
-      let subTopic = r2.subTopics[0];
+      const subTopic = r2.subTopics[0];
       expect(subTopic.id).to.equal(ID2);
       expect(subTopic.head.title).to.equal(TITLE2);
       expect(subTopic.head.blob.text).to.equal(BAR);
 
-      let topic = await Topic.findById(r2.topicId);
+      const topic = await Topic.findById(r2.topicId);
       expect(topic.headId).to.equal(r2.id);
     });
 
     it('new claim', async function() {
-      let r1 = await Topic.apiCreate(user, {
+      const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
       });
-      let r2 = await Topic.apiUpdate(ID, user, {
+      const r2 = await Topic.apiUpdate(ID, user, {
         baseRev: r1.id,
         title: TITLE,
         text: FOO,
@@ -275,20 +275,20 @@ describe('Topic', function() {
       expect(r2.claims).to.have.lengthOf(1);
       expect(r2.subTopics).to.have.lengthOf(0);
 
-      let claim = r2.claims[0];
+      const claim = r2.claims[0];
       expect(claim.head.blob.text).to.equal(BAR);
 
-      let topic = await Topic.findById(r2.topicId);
+      const topic = await Topic.findById(r2.topicId);
       expect(topic.headId).to.equal(r2.id);
     });
 
     it('no change no-op', async function() {
-      let r1 = await Topic.apiCreate(user, {
+      const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
       });
-      let r2 = await Topic.apiUpdate(ID, user, {
+      const r2 = await Topic.apiUpdate(ID, user, {
         baseRev: r1.id,
         title: TITLE,
         text: FOO,
@@ -298,7 +298,7 @@ describe('Topic', function() {
     });
 
     it('baseRev', async function() {
-      let r1 = await Topic.apiCreate(user, {
+      const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
@@ -337,13 +337,13 @@ describe('Topic', function() {
 
   describe('.apiDelete()', function() {
     it('normal delete', async function() {
-      let r1 = await Topic.apiCreate(user, {
+      const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
       });
 
-      let r2 = await Topic.apiDelete(ID, user, DELETE_MSG);
+      const r2 = await Topic.apiDelete(ID, user, DELETE_MSG);
 
       await r2.reload(TopicRev.INCLUDE(3));
       expect(r2.topicId).to.equal(ID);
@@ -355,19 +355,19 @@ describe('Topic', function() {
       expect(r2.claims).to.have.lengthOf(0);
       expect(r2.subTopics).to.have.lengthOf(0);
 
-      let topic = await Topic.findById(ID);
+      const topic = await Topic.findById(ID);
       expect(topic.headId).to.equal(r2.id);
     });
 
     it('already deleted no-op', async function() {
-      let r1 = await Topic.apiCreate(user, {
+      const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
       });
 
-      let r2 = await Topic.apiDelete(ID, user, DELETE_MSG);
-      let r3 = await Topic.apiDelete(ID, user, DELETE_MSG);
+      const r2 = await Topic.apiDelete(ID, user, DELETE_MSG);
+      const r3 = await Topic.apiDelete(ID, user, DELETE_MSG);
 
       expect(r3.id).to.equal(r2.id);
       expect(r3.parentId).to.equal(r1.id);
@@ -376,16 +376,16 @@ describe('Topic', function() {
 
   describe('.apiGet()', function() {
     it('happy', async function() {
-      let c1r = await Claim.apiCreate(user, {
+      const c1r = await Claim.apiCreate(user, {
         text: BAZ,
       });
-      let r1 = await Topic.apiCreate(user, {
+      const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
         claimIds: [c1r.claimId],
       });
-      let data = await Topic.apiGet(ID, user);
+      const data = await Topic.apiGet(ID, user);
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
@@ -424,8 +424,8 @@ describe('Topic', function() {
         title: TITLE,
         text: FOO,
       });
-      let r2 = await Topic.apiDelete(ID, user, DELETE_MSG);
-      let data = await Topic.apiGet(ID, user);
+      const r2 = await Topic.apiDelete(ID, user, DELETE_MSG);
+      const data = await Topic.apiGet(ID, user);
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
@@ -447,7 +447,7 @@ describe('Topic', function() {
 
   describe('.apiGetAll()', function() {
     it('two topics', async function() {
-      let t1r = await Topic.apiCreate(
+      const t1r = await Topic.apiCreate(
         user,
         {
           id: ID,
@@ -456,7 +456,7 @@ describe('Topic', function() {
         },
         true
       );
-      let t2r = await Topic.apiCreate(
+      const t2r = await Topic.apiCreate(
         user,
         {
           id: ID2,
@@ -465,7 +465,7 @@ describe('Topic', function() {
         },
         true
       );
-      let data = await Topic.apiGetAll({
+      const data = await Topic.apiGetAll({
         user,
         sort: [Sort.RECENT, false],
       });
@@ -489,7 +489,7 @@ describe('Topic', function() {
     });
 
     it('roots only', async function() {
-      let t1r = await Topic.apiCreate(
+      const t1r = await Topic.apiCreate(
         user,
         {
           id: ID,
@@ -504,7 +504,7 @@ describe('Topic', function() {
         title: TITLE2,
         text: BAR,
       });
-      let data = await Topic.apiGetAll({ user });
+      const data = await Topic.apiGetAll({ user });
       expect(data).to.deep.equal({
         results: [ID],
         numPages: 1,
@@ -518,7 +518,7 @@ describe('Topic', function() {
     });
 
     it('excludes deleted', async function() {
-      let t1r = await Topic.apiCreate(
+      const t1r = await Topic.apiCreate(
         user,
         {
           id: ID,
@@ -537,7 +537,7 @@ describe('Topic', function() {
         true
       );
       await Topic.apiDelete(ID2, user, DELETE_MSG);
-      let data = await Topic.apiGetAll({ user });
+      const data = await Topic.apiGetAll({ user });
       expect(data).to.deep.equal({
         results: [ID],
         numPages: 1,
@@ -553,15 +553,15 @@ describe('Topic', function() {
 
   describe('.apiGetForTrail()', function() {
     it('happy', async function() {
-      let claimRev = await TestClaim.create(user);
+      const claimRev = await TestClaim.create(user);
       // Not a root topic.
-      let t2r = await Topic.apiCreate(user, {
+      const t2r = await Topic.apiCreate(user, {
         id: ID2,
         title: TITLE2,
         text: BAR,
         claimIds: [claimRev.claimId],
       });
-      let t1r = await Topic.apiCreate(
+      const t1r = await Topic.apiCreate(
         user,
         {
           id: ID,
@@ -579,7 +579,7 @@ describe('Topic', function() {
         text: FOO,
       });
 
-      let data = await Topic.apiGetForTrail([ID, ID2], user);
+      const data = await Topic.apiGetForTrail([ID, ID2], user);
       expect(data).to.deep.equal({
         topics: {
           [ID]: {
@@ -602,7 +602,7 @@ describe('Topic', function() {
         },
       });
 
-      let noUserData = await Topic.apiGetForTrail([ID, ID2]);
+      const noUserData = await Topic.apiGetForTrail([ID, ID2]);
       expect(noUserData).to.deep.equal({
         topics: {
           [ID]: {
@@ -631,12 +631,12 @@ describe('Topic', function() {
 
   describe('.apiGetRevs()', function() {
     it('with sub-topic and claim', async function() {
-      let r1 = await Topic.apiCreate(user, {
+      const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
         text: FOO,
       });
-      let r2 = await Topic.apiUpdate(ID, user, {
+      const r2 = await Topic.apiUpdate(ID, user, {
         baseRev: r1.id,
         title: TITLE,
         text: BAR,
@@ -656,10 +656,10 @@ describe('Topic', function() {
         ],
       });
       await r2.reload(TopicRev.INCLUDE(2));
-      let claim = r2.claims[0];
-      let subTopic = r2.subTopics[0];
+      const claim = r2.claims[0];
+      const subTopic = r2.subTopics[0];
 
-      let data = await Topic.apiGetRevs(ID, user);
+      const data = await Topic.apiGetRevs(ID, user);
       expect(data).to.deep.equal({
         topicRevs: [
           {

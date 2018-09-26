@@ -46,8 +46,8 @@ export default {
       return this.prev && !this.prev.deleted;
     },
     subTopics() {
-      let currSubTopicIds = this.currHasContent ? this.curr.subTopicIds : [];
-      let prevSubTopicIds = this.prevHasContent ? this.prev.subTopicIds : [];
+      const currSubTopicIds = this.currHasContent ? this.curr.subTopicIds : [];
+      const prevSubTopicIds = this.prevHasContent ? this.prev.subTopicIds : [];
       return diffIdLists(
         currSubTopicIds,
         prevSubTopicIds,
@@ -55,8 +55,8 @@ export default {
       );
     },
     claims() {
-      let currClaimIds = this.currHasContent ? this.curr.claimIds : [];
-      let prevClaimIds = this.prevHasContent ? this.prev.claimIds : [];
+      const currClaimIds = this.currHasContent ? this.curr.claimIds : [];
+      const prevClaimIds = this.prevHasContent ? this.prev.claimIds : [];
       return diffIdLists(currClaimIds, prevClaimIds, this.$store.state.claims);
     },
   },

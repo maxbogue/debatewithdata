@@ -18,7 +18,7 @@ const EMAIL = 'test@debatewithdata.org';
 describe('User', function() {
   describe('.register()', function() {
     it('works with good args', async function() {
-      let user = await User.register(USERNAME, PASSWORD, EMAIL);
+      const user = await User.register(USERNAME, PASSWORD, EMAIL);
       expect(user.username).to.equal(USERNAME);
       expect(user.passwordHash).to.not.be.empty;
       expect(user.email).to.equal(EMAIL);
@@ -67,16 +67,16 @@ describe('User', function() {
     it.skip('sends email', async function() {
       /* eslint no-invalid-this: "off" */
       this.timeout(30000);
-      let user = await User.register(USERNAME, PASSWORD, EMAIL);
-      let account = await nodemailer.createTestAccount();
-      let transport = await nodemailer.createTransport({
+      const user = await User.register(USERNAME, PASSWORD, EMAIL);
+      const account = await nodemailer.createTestAccount();
+      const transport = await nodemailer.createTransport({
         ...account.smtp,
         auth: {
           user: account.user,
           pass: account.pass,
         },
       });
-      let info = await user.sendVerificationEmail(transport);
+      const info = await user.sendVerificationEmail(transport);
       /* eslint no-console: "off" */
       console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     });
@@ -85,7 +85,7 @@ describe('User', function() {
   describe('.login()', function() {
     it('auths with good creds', async function() {
       await registerAndVerifyUser();
-      let user = await User.login(USERNAME, PASSWORD);
+      const user = await User.login(USERNAME, PASSWORD);
       expect(user.username).to.equal(USERNAME);
       expect(user.passwordHash).to.not.be.empty;
       expect(user.email).to.equal(EMAIL);
@@ -97,7 +97,7 @@ describe('User', function() {
         /Invalid user/,
         'missing user'
       );
-      let user = await User.register(USERNAME, PASSWORD, EMAIL);
+      const user = await User.register(USERNAME, PASSWORD, EMAIL);
       await expect(User.login(USERNAME, PASSWORD)).to.be.rejectedWith(
         AuthError,
         /Email verification required/,
@@ -119,9 +119,9 @@ describe('User', function() {
 
   describe('.genAuthToken()', function() {
     it('creates a valid token', async function() {
-      let user = await registerAndVerifyUser();
-      let token = user.genAuthToken();
-      let payload = jwt.decode(token);
+      const user = await registerAndVerifyUser();
+      const token = user.genAuthToken();
+      const payload = jwt.decode(token);
       expect(payload.sub).to.equal(USERNAME);
       expect(payload.user.email).to.equal(EMAIL);
       expect(payload.user.createdAt).to.equal(user.created_at.toISOString());
@@ -130,17 +130,17 @@ describe('User', function() {
 
   describe('.verifyToken()', function() {
     it('verifies a valid token', async function() {
-      let user = await registerAndVerifyUser();
-      let token = user.genAuthToken();
-      let userFromToken = await User.verifyToken(token);
+      const user = await registerAndVerifyUser();
+      const token = user.genAuthToken();
+      const userFromToken = await User.verifyToken(token);
       expect(userFromToken.username).to.equal(USERNAME);
       expect(userFromToken.passwordHash).to.not.be.empty;
       expect(userFromToken.email).to.equal(EMAIL);
     });
 
     it('fails for expired token', async function() {
-      let user = await registerAndVerifyUser();
-      let token = user.genAuthToken(-1);
+      const user = await registerAndVerifyUser();
+      const token = user.genAuthToken(-1);
       await expect(User.verifyToken(token)).to.be.rejectedWith(
         AuthError,
         /Expired auth token/

@@ -79,8 +79,8 @@ export function isValid(f, ...args) {
 // if by default, if and only if when |iff| is true.
 function validatePresenceIf(key, value, item, conds, iff) {
   forOwn(conds, (v, k) => {
-    let exists = !validate.isEmpty(value);
-    let p = validate.isArray(v) ? v.includes(item[k]) : v === item[k];
+    const exists = !validate.isEmpty(value);
+    const p = validate.isArray(v) ? v.includes(item[k]) : v === item[k];
     if (iff && p && !exists) {
       throw new ValidationError(key, `required for "${k}" = "${item[k]}".`);
     } else if (!p && exists) {
@@ -90,7 +90,7 @@ function validatePresenceIf(key, value, item, conds, iff) {
 }
 
 function constraintToValidator(constraint, key) {
-  let validator = function(value, item) {
+  const validator = function(value, item) {
     if (item) {
       if (item.deleted && !constraint.validIfDeleted) {
         if (validate.isDefined(value)) {
@@ -117,7 +117,7 @@ function constraintToValidator(constraint, key) {
         throw new ValidationError(key, 'must be an array.');
       }
       forEach(value, (e, i) => {
-        let elementValidator = constraintToValidator(
+        const elementValidator = constraintToValidator(
           constraint.arrayOf,
           `${key}[${i}]`
         );
@@ -130,14 +130,14 @@ function constraintToValidator(constraint, key) {
       }
       forEach(value, (v, k) => {
         if (constraint.objectOf.key) {
-          let keyValidator = constraintToValidator(
+          const keyValidator = constraintToValidator(
             constraint.objectOf.key,
             `${key}.${k}`
           );
           keyValidator(k, item);
         }
         if (constraint.objectOf.value) {
-          let valueValidator = constraintToValidator(
+          const valueValidator = constraintToValidator(
             constraint.objectOf.value,
             `${key}.${k}`
           );
@@ -145,7 +145,7 @@ function constraintToValidator(constraint, key) {
         }
       });
     }
-    let errors = validate.single(value, omit(constraint, CUSTOM_VALIDATORS));
+    const errors = validate.single(value, omit(constraint, CUSTOM_VALIDATORS));
     if (errors) {
       throw new ValidationError(key, errors[0]);
     }
@@ -175,7 +175,7 @@ const commonConstraints = {
 const DATE_REGEX = /^(\d{4})(?:-(\d\d)(?:-(\d\d))?)?$/;
 
 function validateDate(s, key) {
-  let match = s.match(DATE_REGEX);
+  const match = s.match(DATE_REGEX);
   if (!match) {
     throw new ValidationError(key, 'must be formatted like YYYY[-MM[-DD]].');
   }
@@ -184,7 +184,7 @@ function validateDate(s, key) {
     throw new ValidationError(key, 'must be in the past.');
   }
   if (match[2]) {
-    let d = new Date(s);
+    const d = new Date(s);
     if (!d || d.getUTCMonth() + 1 !== Number(match[2])) {
       throw new ValidationError(key, 'must be a valid date.');
     }
@@ -192,14 +192,14 @@ function validateDate(s, key) {
 }
 
 function validateTable(t, key) {
-  let table = deserializeTable(t);
+  const table = deserializeTable(t);
   if (table.length < 2) {
     throw new ValidationError(key, 'must have a title and data.');
   }
   if (table[0].length !== 1) {
     throw new ValidationError(key, 'missing title.');
   }
-  let rows = table.slice(1);
+  const rows = table.slice(1);
   if (rows[0].length < 2) {
     throw new ValidationError(key, 'rows must have two columns.');
   }

@@ -9,7 +9,7 @@ export async function asyncForEach(xs, f) {
 // An async version of lodash's forOwn function.
 export async function asyncForOwn(obj, f) {
   const promises = [];
-  for (let k in obj) {
+  for (const k in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, k)) {
       promises.push(f(obj[k], k, obj));
     }
@@ -18,7 +18,7 @@ export async function asyncForOwn(obj, f) {
 }
 
 export function any(ls, f) {
-  for (let e of ls) {
+  for (const e of ls) {
     if (f(e)) {
       return true;
     }

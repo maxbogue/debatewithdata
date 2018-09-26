@@ -169,7 +169,7 @@ export default {
     },
     animateOpen() {
       this.$el.classList.add(this.$style.animating);
-      let height = this.$el.scrollHeight;
+      const height = this.$el.scrollHeight;
       this.$el.style.height = 0;
       this.$el.style.overflow = 'hidden';
 
@@ -181,13 +181,13 @@ export default {
     animateSlide() {
       this.$store.commit('itemBlockSliding');
 
-      let from = this.animateFrom;
-      let to = this.$el.getBoundingClientRect();
+      const from = this.animateFrom;
+      const to = this.$el.getBoundingClientRect();
 
-      let dx = from.left - to.left;
-      let dy = from.top - to.top;
-      let sx = from.width / to.width;
-      let sy = from.height / to.height;
+      const dx = from.left - to.left;
+      const dy = from.top - to.top;
+      const sx = from.width / to.width;
+      const sy = from.height / to.height;
 
       if (dx === 0 && dy === 0 && sx === 1 && sy === 1) {
         // Exit early if the item doesn't move, otherwise the animating class

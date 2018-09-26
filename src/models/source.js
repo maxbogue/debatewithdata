@@ -83,7 +83,7 @@ export default function(sequelize, DataTypes, knex) {
 
       validateSource(data);
 
-      let source = await Source.create({}, { transaction });
+      const source = await Source.create({}, { transaction });
       return models.SourceRev.createForApi(source, user, data, transaction);
     };
 
@@ -94,7 +94,7 @@ export default function(sequelize, DataTypes, knex) {
         });
       }
 
-      let source = await Source.findById(sourceId, Source.INCLUDE());
+      const source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
       }
@@ -105,7 +105,7 @@ export default function(sequelize, DataTypes, knex) {
       }
 
       if (data.baseRev !== source.headId) {
-        let newData = await Source.apiGet(sourceId, user);
+        const newData = await Source.apiGet(sourceId, user);
         throw new ConflictError('Base item changed.', newData);
       }
 
@@ -123,7 +123,7 @@ export default function(sequelize, DataTypes, knex) {
         });
       }
 
-      let source = await Source.findById(sourceId, Source.INCLUDE());
+      const source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
       }
@@ -136,7 +136,7 @@ export default function(sequelize, DataTypes, knex) {
         return source.head;
       }
 
-      let rev = await models.SourceRev.create(
+      const rev = await models.SourceRev.create(
         {
           userId: user.id,
           sourceId: source.id,
@@ -151,8 +151,8 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Source.prototype.toData = async function(user) {
-      let data = this.head.toCoreData();
-      let star = await this.toStarData(user);
+      const data = this.head.toCoreData();
+      const star = await this.toStarData(user);
       data.starCount = star.starCount;
       data.starred = star.starred;
       data.watched = star.watched;
@@ -181,8 +181,8 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Source.processQueryResults = function(sources) {
-      let data = {};
-      for (let source of sources) {
+      const data = {};
+      for (const source of sources) {
         source.chart = JSON.parse(source.chart);
         data[source.id] = source;
       }
@@ -190,13 +190,13 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Source.apiGet = async function(sourceId, user, hasTrail) {
-      let source = await Source.findById(sourceId, Source.INCLUDE());
+      const source = await Source.findById(sourceId, Source.INCLUDE());
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
       }
 
-      let sourceData = await source.toData(user);
-      let data = {
+      const sourceData = await source.toData(user);
+      const data = {
         sources: {
           [sourceId]: sourceData,
         },
@@ -205,7 +205,7 @@ export default function(sequelize, DataTypes, knex) {
 
       if (!hasTrail) {
         // Referenced by claims.
-        let claims = await models.Claim.findAll({
+        const claims = await models.Claim.findAll({
           include: [
             {
               association: models.Claim.Head,
@@ -230,18 +230,18 @@ export default function(sequelize, DataTypes, knex) {
     Source.apiGetAll = async function({ user, filters, sort, page } = {}) {
       page = page || 1;
 
-      let query = Source.itemQuery(user)
+      const query = Source.itemQuery(user)
         .where('deleted', false)
         .modify(q.sortAndFilter, sort, filters);
 
-      let countQuery = query
+      const countQuery = query
         .clone()
         .clearSelect()
         .clearOrder()
         .count('*');
       query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
 
-      let [sources, [{ count }]] = await Promise.all([query, countQuery]);
+      const [sources, [{ count }]] = await Promise.all([query, countQuery]);
       return {
         sources: Source.processQueryResults(sources),
         results: sources.map(source => source.id),
@@ -250,7 +250,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Source.apiGetRevs = async function(sourceId) {
-      let sourceRevs = await models.SourceRev.findAll({
+      const sourceRevs = await models.SourceRev.findAll({
         where: { sourceId },
         order: [['created_at', 'DESC']],
         ...models.SourceRev.INCLUDE(true),
@@ -260,12 +260,12 @@ export default function(sequelize, DataTypes, knex) {
         throw new NotFoundError('Data not found: ' + sourceId);
       }
 
-      let sourceRevData = sourceRevs.map(rev => rev.toRevData());
+      const sourceRevData = sourceRevs.map(rev => rev.toRevData());
       return { sourceRevs: sourceRevData };
     };
 
     Source.prototype.toStarData = async function(user) {
-      let starCount = await this.countStarredByUsers();
+      const starCount = await this.countStarredByUsers();
       let starred = false;
       let watched = false;
       if (user) {
@@ -276,11 +276,11 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Source.apiToggleStar = async function(sourceId, user) {
-      let source = await Source.findById(sourceId);
+      const source = await Source.findById(sourceId);
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
       }
-      let isStarred = await source.hasStarredByUser(user);
+      const isStarred = await source.hasStarredByUser(user);
       if (isStarred) {
         await source.removeStarredByUser(user);
       } else {
@@ -291,11 +291,11 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Source.apiToggleWatch = async function(sourceId, user) {
-      let source = await Source.findById(sourceId);
+      const source = await Source.findById(sourceId);
       if (!source) {
         throw new NotFoundError('Source not found: ' + sourceId);
       }
-      let isWatched = await source.hasWatchedByUser(user);
+      const isWatched = await source.hasWatchedByUser(user);
       if (isWatched) {
         await source.removeWatchedByUser(user);
       } else {

@@ -30,10 +30,10 @@ describe('Activity', function() {
     });
 
     it('variety', async function() {
-      let topicRev = await TestTopic.create(user);
-      let claimRev = await TestClaim.create(user);
-      let comment = await Comment.apiAdd(Claim, claimRev.claimId, user, FOO);
-      let sourceRev = await TestSource.create(user);
+      const topicRev = await TestTopic.create(user);
+      const claimRev = await TestClaim.create(user);
+      const comment = await Comment.apiAdd(Claim, claimRev.claimId, user, FOO);
+      const sourceRev = await TestSource.create(user);
       return request(app)
         .get('/api/activity')
         .expect(200, {
@@ -74,13 +74,13 @@ describe('Activity', function() {
     });
 
     it('lifecycle', async function() {
-      let r1 = await TestClaim.create(user);
-      let claimId = r1.claimId;
-      let r2 = await Claim.apiUpdate(claimId, user, {
+      const r1 = await TestClaim.create(user);
+      const claimId = r1.claimId;
+      const r2 = await Claim.apiUpdate(claimId, user, {
         baseRev: r1.id,
         text: BAR,
       });
-      let r3 = await Claim.apiDelete(claimId, user, 'is for test');
+      const r3 = await Claim.apiDelete(claimId, user, 'is for test');
       return request(app)
         .get('/api/activity')
         .expect(200, {

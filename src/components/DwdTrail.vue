@@ -35,7 +35,7 @@ export default {
       return this.ids.slice(this.topics.length);
     },
     items() {
-      let items = map(this.topics, topic => [ItemType.TOPIC, topic, null]);
+      const items = map(this.topics, topic => [ItemType.TOPIC, topic, null]);
       if (this.itemIds.length < 2) {
         return items;
       }
@@ -46,8 +46,8 @@ export default {
         if (!item) {
           return items;
         }
-        let nextId = this.itemIds[i];
-        let [nextType, next, nextIsFor] = this.findInside(item, nextId);
+        const nextId = this.itemIds[i];
+        const [nextType, next, nextIsFor] = this.findInside(item, nextId);
         if (!nextType) {
           console.warn('Broken link found in trail: ' + nextId);
           return items;
@@ -69,8 +69,8 @@ export default {
         if (!item) {
           return null;
         }
-        let nextId = this.itemIds[i];
-        let [nextType, next, nextIsFor] = this.findInside(item, nextId);
+        const nextId = this.itemIds[i];
+        const [nextType, next, nextIsFor] = this.findInside(item, nextId);
         if (!nextType) {
           return null;
         }
@@ -89,10 +89,10 @@ export default {
   methods: {
     findInside(item, id) {
       if (item.subClaimIds && typeof item.subClaimIds[id] === 'boolean') {
-        let claim = this.lookupClaim(id);
+        const claim = this.lookupClaim(id);
         return [ItemType.CLAIM, claim, item.subClaimIds[id]];
       } else if (item.sourceIds && typeof item.sourceIds[id] === 'boolean') {
-        let source = this.lookupSource(id);
+        const source = this.lookupSource(id);
         return [ItemType.SOURCE, source, item.sourceIds[id]];
       }
       return [''];

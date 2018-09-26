@@ -36,7 +36,7 @@ import DwdInput from './DwdInput.vue';
 import { validateTopic } from '@/common/validate';
 
 function fixWhitespace(text) {
-  let paragraphs = text.split(/\s*\n\s*\n\s*/);
+  const paragraphs = text.split(/\s*\n\s*\n\s*/);
   return paragraphs.map(p => p.replace(/(\s)\s*/g, ' ')).join('\n\n');
 }
 
@@ -56,7 +56,7 @@ export default {
   }),
   computed: {
     newTopic() {
-      let topic = {
+      const topic = {
         id: this.oldId || this.id,
         title: this.title,
         text: fixWhitespace(this.text),
@@ -74,8 +74,8 @@ export default {
       this.$emit('update', this.newTopic);
     },
     title(newTitle, oldTitle) {
-      let oldId = dashify(oldTitle);
-      let newId = dashify(newTitle);
+      const oldId = dashify(oldTitle);
+      const newId = dashify(newTitle);
       if (!this.id || this.id === oldId) {
         this.id = newId;
       }

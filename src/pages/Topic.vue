@@ -52,10 +52,10 @@ export default {
     ItemBlock,
   },
   async asyncData({ store, route }) {
-    let id = route.params.id;
-    let topic = store.state.topics[id];
+    const id = route.params.id;
+    const topic = store.state.topics[id];
     if (!topic || topic.depth < 3) {
-      let promise = store.dispatch('getItem', {
+      const promise = store.dispatch('getItem', {
         type: ItemType.TOPIC,
         id,
         trail: parseTrail(route.query.trail),

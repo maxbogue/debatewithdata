@@ -123,12 +123,12 @@ export default {
       ];
     },
     addPoint(si) {
-      let newPoint = emptyPoint();
+      const newPoint = emptyPoint();
       this.pointOrder[si].splice(0, 0, newPoint.tempId);
       this.points[si].splice(0, 0, newPoint);
     },
     updatePoint(si, point) {
-      let pi = findIndex(this.points[si], matchPoint(point));
+      const pi = findIndex(this.points[si], matchPoint(point));
       if (pi < 0) {
         this.points[si].push(point);
       } else {
@@ -141,7 +141,7 @@ export default {
       this.$emit('update', this.points);
     },
     deletePoint(si, point) {
-      let pi = findIndex(this.points[si], matchPoint(point));
+      const pi = findIndex(this.points[si], matchPoint(point));
       if (pi < 0) {
         this.points[si].push(point);
       } else {

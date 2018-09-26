@@ -128,8 +128,8 @@ export default {
     TopicLinkModal,
   },
   async asyncData({ store, route }) {
-    let id = route.params.id;
-    let topic = store.state.topics[id];
+    const id = route.params.id;
+    const topic = store.state.topics[id];
     if (id && (!topic || topic.depth < 2)) {
       await store.dispatch('getItem', {
         type: ItemType.TOPIC,
@@ -170,7 +170,7 @@ export default {
       return this.lookupTopic(this.id);
     },
     linkedSubTopics() {
-      let oldSubTopicIds = this.topic ? this.topic.subTopicIds : [];
+      const oldSubTopicIds = this.topic ? this.topic.subTopicIds : [];
       return diffIdLists(
         this.subTopicIds,
         oldSubTopicIds,
@@ -178,7 +178,7 @@ export default {
       );
     },
     linkedClaims() {
-      let oldClaimIds = this.topic ? this.topic.claimIds : [];
+      const oldClaimIds = this.topic ? this.topic.claimIds : [];
       return diffIdLists(this.claimIds, oldClaimIds, this.$store.state.claims);
     },
     newTopicLinks() {
@@ -243,7 +243,7 @@ export default {
       this.newClaims.splice(0, 0, newClaim);
     },
     toggleDeleted(ids, id) {
-      let i = ids.indexOf(id);
+      const i = ids.indexOf(id);
       if (i < 0) {
         ids.push(id);
       } else {
@@ -252,7 +252,7 @@ export default {
     },
     async submit() {
       let action = 'addItem';
-      let payload = {
+      const payload = {
         type: ItemType.TOPIC,
         item: this.newTopic,
       };
@@ -261,7 +261,7 @@ export default {
         payload.item.id = this.topic.id;
         payload.item.baseRev = this.topic.revId;
       }
-      let id = await this.$store.dispatch(action, payload);
+      const id = await this.$store.dispatch(action, payload);
       this.unloadOverride = true;
       this.$router.push(this.topicUrl(id, this.trail));
     },
@@ -275,22 +275,22 @@ export default {
       this.$router.push('/topics');
     },
     cancel() {
-      let url = this.topic ? this.topicUrl(this.id, this.trail) : '/topics';
+      const url = this.topic ? this.topicUrl(this.id, this.trail) : '/topics';
       this.$router.push(url);
     },
     initialize() {
-      let seed = this.seed || this.topic;
+      const seed = this.seed || this.topic;
       if (seed && !seed.deleted) {
         this.newTopicPartial = {
           title: seed.title || '',
           text: seed.text || '',
         };
 
-        let topicStarred = pipe(
+        const topicStarred = pipe(
           this.lookupTopic,
           starred
         );
-        let topicStarCount = pipe(
+        const topicStarCount = pipe(
           this.lookupTopic,
           starCount
         );
@@ -300,11 +300,11 @@ export default {
           stableRandom,
         ]);
 
-        let claimStarred = pipe(
+        const claimStarred = pipe(
           this.lookupClaim,
           starred
         );
-        let claimStarCount = pipe(
+        const claimStarCount = pipe(
           this.lookupClaim,
           starCount
         );

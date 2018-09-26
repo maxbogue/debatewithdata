@@ -80,10 +80,10 @@ export default {
     ItemBlock,
   },
   async asyncData({ store, route }) {
-    let id = route.params.id;
-    let claim = store.state.claims[id];
+    const id = route.params.id;
+    const claim = store.state.claims[id];
     if (!claim || claim.depth < 2) {
-      let promise = store.dispatch('getItem', {
+      const promise = store.dispatch('getItem', {
         type: ItemType.CLAIM,
         id,
         trail: parseTrail(route.query.trail),
@@ -135,11 +135,11 @@ export default {
         return [];
       }
 
-      let superTopics = map(this.claim.superTopicIds || [], id => [
+      const superTopics = map(this.claim.superTopicIds || [], id => [
         this.lookupTopic(id),
         ItemType.TOPIC,
       ]);
-      let superClaims = map(this.claim.superClaimIds || [], id => [
+      const superClaims = map(this.claim.superClaimIds || [], id => [
         this.lookupClaim(id),
         ItemType.CLAIM,
       ]);

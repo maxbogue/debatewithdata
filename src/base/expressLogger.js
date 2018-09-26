@@ -90,7 +90,7 @@ const INFO_FIELDS = {
     if (!req._startAt || !res._startAt) {
       return undefined;
     }
-    let ms =
+    const ms =
       (res._startAt[0] - req._startAt[0]) * 1e3 +
       (res._startAt[1] - req._startAt[1]) * 1e-6;
     return ms.toFixed(3);
@@ -111,8 +111,8 @@ export default function expressLogger(req, res, next) {
   recordStartTime.call(req);
   onHeaders(res, recordStartTime);
   onFinished(res, () => {
-    let info = mapValues(INFO_FIELDS, f => f(req, res));
-    let logLevel = statusToLogLevel(info.status);
+    const info = mapValues(INFO_FIELDS, f => f(req, res));
+    const logLevel = statusToLogLevel(info.status);
     logger.log(logLevel, info);
   });
   next();

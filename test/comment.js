@@ -13,13 +13,13 @@ describe('Comment', function() {
 
   beforeEach(async function() {
     user = await registerAndVerifyUser();
-    let claimRev = await Claim.apiCreate(user, { text: BAZ });
+    const claimRev = await Claim.apiCreate(user, { text: BAZ });
     claimId = claimRev.claimId;
   });
 
   describe('.apiAdd()', function() {
     it('happy', async function() {
-      let comment = await Comment.apiAdd(Claim, claimId, user, FOO);
+      const comment = await Comment.apiAdd(Claim, claimId, user, FOO);
       expect(comment.userId).to.equal(user.id);
       expect(comment.commentable).to.equal(ItemType.CLAIM);
       expect(comment.commentableId).to.equal(claimId);
@@ -30,7 +30,7 @@ describe('Comment', function() {
 
   describe('.apiDelete()', function() {
     it('happy', async function() {
-      let comment = await Comment.apiAdd(Claim, claimId, user, FOO);
+      const comment = await Comment.apiAdd(Claim, claimId, user, FOO);
       await Comment.apiDelete(Claim, claimId, user, comment.id);
       await comment.reload();
       expect(comment.deleted).to.be.true;
@@ -39,8 +39,8 @@ describe('Comment', function() {
 
   describe('.apiGet()', function() {
     it('happy', async function() {
-      let comment = await Comment.apiAdd(Claim, claimId, user, FOO);
-      let commentData = await Comment.apiGet(comment.id);
+      const comment = await Comment.apiAdd(Claim, claimId, user, FOO);
+      const commentData = await Comment.apiGet(comment.id);
       expect(commentData).to.deep.equal({
         id: comment.id,
         text: FOO,
@@ -54,16 +54,16 @@ describe('Comment', function() {
     it('happy', async function() {
       await Comment.apiAdd(Claim, claimId, user, FOO);
       await Comment.apiAdd(Claim, claimId, user, BAR);
-      let commentsData = await Comment.apiGetAll(Claim, claimId);
+      const commentsData = await Comment.apiGetAll(Claim, claimId);
       expect(commentsData).to.have.lengthOf(2);
       expect(commentsData[0].text).to.equal(FOO);
       expect(commentsData[1].text).to.equal(BAR);
     });
 
     it('excludes deleted', async function() {
-      let comment = await Comment.apiAdd(Claim, claimId, user, FOO);
+      const comment = await Comment.apiAdd(Claim, claimId, user, FOO);
       await Comment.apiDelete(Claim, claimId, user, comment.id);
-      let commentsData = await Comment.apiGetAll(Claim, claimId);
+      const commentsData = await Comment.apiGetAll(Claim, claimId);
       expect(commentsData).to.have.lengthOf(0);
     });
   });

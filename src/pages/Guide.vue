@@ -162,7 +162,7 @@ export default {
   },
   computed: {
     flags() {
-      let flagList = map(FlagData, (v, k) => [k, v]);
+      const flagList = map(FlagData, (v, k) => [k, v]);
       return sortBy(flagList, ([, v]) => v.name);
     },
   },

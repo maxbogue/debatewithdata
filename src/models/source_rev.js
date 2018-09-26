@@ -92,7 +92,7 @@ export default function(sequelize, DataTypes) {
 
   SourceRev.postAssociate = function(models) {
     SourceRev.INCLUDE = function(includeUser = false) {
-      let include = [
+      const include = [
         models.Blob,
         {
           association: SourceRev.Table,
@@ -105,12 +105,12 @@ export default function(sequelize, DataTypes) {
     };
 
     SourceRev.createForApi = async function(source, user, data, transaction) {
-      let blob = await models.Blob.fromText(data.text, transaction);
+      const blob = await models.Blob.fromText(data.text, transaction);
       let tableBlob = {};
       if (data.table) {
         tableBlob = await models.Blob.fromText(data.table, transaction);
       }
-      let rev = await SourceRev.create(
+      const rev = await SourceRev.create(
         {
           userId: user.id,
           sourceId: source.id,
@@ -139,7 +139,7 @@ export default function(sequelize, DataTypes) {
     };
 
     SourceRev.prototype.toCoreData = function() {
-      let data = {
+      const data = {
         id: this.sourceId,
         revId: this.id,
       };
@@ -176,7 +176,7 @@ export default function(sequelize, DataTypes) {
     };
 
     SourceRev.prototype.toRevData = function() {
-      let data = this.toCoreData();
+      const data = this.toCoreData();
       data.username = this.user.username;
       data.createdAt = this.created_at;
       return data;

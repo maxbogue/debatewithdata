@@ -21,15 +21,17 @@ export async function getNotifications(user) {
     throw new AuthError();
   }
 
-  let until = new Date();
+  const until = new Date();
 
-  let queries = [Topic, Claim, Source].map(Item =>
+  const queries = [Topic, Claim, Source].map(Item =>
     Item.itemQuery(user)
       .modify(getUpdated, until)
       .limit(100)
   );
 
-  let [topicResults, claimResults, sourceResults] = await Promise.all(queries);
+  const [topicResults, claimResults, sourceResults] = await Promise.all(
+    queries
+  );
 
   let items = sortBy(
     [
@@ -58,7 +60,7 @@ export async function getNotifications(user) {
 }
 
 export async function hasNotifications(user) {
-  let queries = [ItemType.TOPIC, ItemType.CLAIM, ItemType.SOURCE].map(type =>
+  const queries = [ItemType.TOPIC, ItemType.CLAIM, ItemType.SOURCE].map(type =>
     knex.queryBuilder().exists({
       exists: q
         .base(type)
@@ -67,6 +69,6 @@ export async function hasNotifications(user) {
         .where('h.created_at', '>', user.caughtUpAt),
     })
   );
-  let results = await Promise.all(queries);
+  const results = await Promise.all(queries);
   return results.reduce((acc, [{ exists }]) => acc || exists, false);
 }

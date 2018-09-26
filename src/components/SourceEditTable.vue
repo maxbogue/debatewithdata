@@ -69,7 +69,7 @@ export default {
     init() {
       if (!this.initialized && this.table) {
         this.initialized = true;
-        let rows = deserializeTable(this.table);
+        const rows = deserializeTable(this.table);
         if (rows[0].length === 1) {
           this.title = rows[0][0];
           this.rows = rows.slice(1);
@@ -87,7 +87,7 @@ export default {
       this.initialized = true;
     },
     addColumn() {
-      for (let row of this.rows) {
+      for (const row of this.rows) {
         row.push('');
       }
     },
@@ -100,15 +100,15 @@ export default {
       this.emitTable();
     },
     updateCell(i, j, text) {
-      let useTabs = text.includes('\t');
-      let newRows = text.split('\n');
+      const useTabs = text.includes('\t');
+      const newRows = text.split('\n');
       for (let m = 0; m < newRows.length; m += 1) {
         if (i + m === this.rows.length) {
           this.rows.push(this.rows[0].map(() => ''));
         }
-        let newCells = newRows[m].split(useTabs ? '\t' : ',');
+        const newCells = newRows[m].split(useTabs ? '\t' : ',');
         for (let n = 0; n < newCells.length; n += 1) {
-          let t = newCells[n].replace(/,/g, '');
+          const t = newCells[n].replace(/,/g, '');
           if (j + n === this.rows[0].length) {
             this.addColumn();
           }
@@ -134,7 +134,7 @@ export default {
       }
 
       // Add a new row if needed.
-      let lastRow = this.rows[this.rows.length - 1];
+      const lastRow = this.rows[this.rows.length - 1];
       if (lastRow.some(cell => cell)) {
         this.rows.push(this.rows[0].map(() => ''));
       }

@@ -39,19 +39,19 @@ function clean(obj, fields) {
 }
 
 export function sourcesAreEqual(s1, s2) {
-  let a = clean(s1, SOURCE_FIELDS);
-  let b = clean(s2, SOURCE_FIELDS);
+  const a = clean(s1, SOURCE_FIELDS);
+  const b = clean(s2, SOURCE_FIELDS);
   return isEqual(a, b);
 }
 
 export function claimsAreEqual(c1, c2) {
-  let a = clean(c1, CLAIM_FIELDS);
-  let b = clean(c2, CLAIM_FIELDS);
+  const a = clean(c1, CLAIM_FIELDS);
+  const b = clean(c2, CLAIM_FIELDS);
   return isEqual(a, b);
 }
 
 export function topicsAreEqual(t1, t2) {
-  let a = clean(t1, TOPIC_FIELDS);
-  let b = clean(t2, TOPIC_FIELDS);
+  const a = clean(t1, TOPIC_FIELDS);
+  const b = clean(t2, TOPIC_FIELDS);
   return isEqual(a, b);
 }

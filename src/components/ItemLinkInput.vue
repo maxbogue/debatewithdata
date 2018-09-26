@@ -80,7 +80,7 @@ export default {
       return '';
     },
     allowedTypes() {
-      let types = [];
+      const types = [];
       if (this.allowTopic) {
         types.push(ItemType.TOPIC);
       }
@@ -138,7 +138,7 @@ export default {
       }
     },
     select(i) {
-      let result = this.results[i];
+      const result = this.results[i];
       if (result) {
         this.$emit('input', result.item.id);
       }
@@ -151,9 +151,9 @@ export default {
     },
     queryServer: debounce(async function() {
       /* eslint no-invalid-this: "off" */
-      let query = this.value;
+      const query = this.value;
       this.loading = true;
-      let { results } = await this.$store.dispatch('search', {
+      const { results } = await this.$store.dispatch('search', {
         query,
         types: this.allowedTypes,
         limit: 5,

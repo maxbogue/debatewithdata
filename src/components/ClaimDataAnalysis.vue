@@ -29,7 +29,7 @@ export default {
       if (this.noColor) {
         return {};
       }
-      let needsData = this.claim.needsData || this.forCount === 0;
+      const needsData = this.claim.needsData || this.forCount === 0;
       return [needsData ? this.$style.bad : this.$style.good];
     },
     text() {

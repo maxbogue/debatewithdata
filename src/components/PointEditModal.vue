@@ -125,7 +125,7 @@ export default {
   },
   methods: {
     close() {
-      let p = this.makePoint();
+      const p = this.makePoint();
       this.$emit('update', p || {});
       this.$emit('update:show', false);
     },
@@ -133,7 +133,7 @@ export default {
       this.$emit('update:show', false);
     },
     makePoint() {
-      let pointType = this.pointType;
+      const pointType = this.pointType;
       switch (pointType) {
         case PointType.SOURCE:
           return { pointType, ...this.lookupSource(this.input) };

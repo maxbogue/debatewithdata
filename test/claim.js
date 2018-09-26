@@ -61,7 +61,7 @@ describe('Claim', function() {
 
   describe('.apiCreate()', function() {
     it('text only', async function() {
-      let rev = await Claim.apiCreate(user, {
+      const rev = await Claim.apiCreate(user, {
         text: FOO,
       });
       await rev.reload(ClaimRev.INCLUDE(1));
@@ -71,12 +71,12 @@ describe('Claim', function() {
       expect(rev.claimId).to.exist;
       expect(rev.flag).to.be.null;
 
-      let claim = await Claim.findById(rev.claimId);
+      const claim = await Claim.findById(rev.claimId);
       expect(claim.headId).to.equal(rev.id);
     });
 
     it('with flag', async function() {
-      let rev = await Claim.apiCreate(user, {
+      const rev = await Claim.apiCreate(user, {
         text: FOO,
         flag: Flag.AD_HOMINEM,
       });
@@ -86,7 +86,7 @@ describe('Claim', function() {
     });
 
     it('with claim for', async function() {
-      let rev = await Claim.apiCreate(user, {
+      const rev = await Claim.apiCreate(user, {
         text: FOO,
         newSubClaims: [
           {
@@ -102,14 +102,14 @@ describe('Claim', function() {
       expect(rev.claimId).to.exist;
 
       expect(rev.subClaims).to.have.lengthOf(1);
-      let subClaim = rev.subClaims[0];
+      const subClaim = rev.subClaims[0];
       expect(subClaim.head.userId).to.equal(user.id);
       expect(subClaim.head.blob.text).to.equal(BAR);
       expect(subClaim.claimClaim.isFor).to.be.true;
     });
 
     it('with claim against', async function() {
-      let rev = await Claim.apiCreate(user, {
+      const rev = await Claim.apiCreate(user, {
         text: FOO,
         newSubClaims: [
           {
@@ -125,7 +125,7 @@ describe('Claim', function() {
       expect(rev.claimId).to.exist;
 
       expect(rev.subClaims).to.have.lengthOf(1);
-      let subClaim = rev.subClaims[0];
+      const subClaim = rev.subClaims[0];
       expect(subClaim.head.userId).to.equal(user.id);
       expect(subClaim.head.blob.text).to.equal(BAR);
       expect(subClaim.claimClaim.isFor).to.be.false;
@@ -134,13 +134,13 @@ describe('Claim', function() {
 
   describe('.apiUpdate()', function() {
     it('change text', async function() {
-      let r1 = await Claim.apiCreate(user, {
+      const r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
       let claim = await Claim.findById(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
-      let r2 = await Claim.apiUpdate(r1.claimId, user, {
+      const r2 = await Claim.apiUpdate(r1.claimId, user, {
         baseRev: r1.id,
         text: BAR,
       });
@@ -157,13 +157,13 @@ describe('Claim', function() {
     });
 
     it('add claim', async function() {
-      let r1 = await Claim.apiCreate(user, {
+      const r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
-      let claim = await Claim.findById(r1.claimId);
+      const claim = await Claim.findById(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
-      let r2 = await Claim.apiUpdate(r1.claimId, user, {
+      const r2 = await Claim.apiUpdate(r1.claimId, user, {
         baseRev: r1.id,
         text: FOO,
         newSubClaims: [
@@ -176,14 +176,14 @@ describe('Claim', function() {
       await r2.reload(ClaimRev.INCLUDE(2));
 
       expect(r2.subClaims).to.have.lengthOf(1);
-      let subClaim = r2.subClaims[0];
+      const subClaim = r2.subClaims[0];
       expect(subClaim.head.userId).to.equal(user.id);
       expect(subClaim.head.blob.text).to.equal(BAR);
       expect(subClaim.claimClaim.isFor).to.be.true;
     });
 
     it('cycle fails', async function() {
-      let c1r = await Claim.apiCreate(user, {
+      const c1r = await Claim.apiCreate(user, {
         text: FOO,
         newSubClaims: [
           {
@@ -195,7 +195,7 @@ describe('Claim', function() {
       await c1r.reload(ClaimRev.INCLUDE(2));
 
       expect(c1r.subClaims).to.have.lengthOf(1);
-      let c2 = c1r.subClaims[0];
+      const c2 = c1r.subClaims[0];
 
       await expect(
         Claim.apiUpdate(c2.id, user, {
@@ -209,8 +209,8 @@ describe('Claim', function() {
     });
 
     it('no change no-op', async function() {
-      let r1 = await Claim.apiCreate(user, { text: FOO });
-      let r2 = await Claim.apiUpdate(r1.claimId, user, {
+      const r1 = await Claim.apiCreate(user, { text: FOO });
+      const r2 = await Claim.apiUpdate(r1.claimId, user, {
         baseRev: r1.id,
         text: FOO,
       });
@@ -219,10 +219,10 @@ describe('Claim', function() {
     });
 
     it('baseRev', async function() {
-      let r1 = await Claim.apiCreate(user, {
+      const r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
-      let claimId = r1.claimId;
+      const claimId = r1.claimId;
       await Claim.apiUpdate(claimId, user, {
         baseRev: r1.id,
         text: BAR,
@@ -253,13 +253,13 @@ describe('Claim', function() {
 
   describe('.apiDelete()', function() {
     it('happy', async function() {
-      let r1 = await Claim.apiCreate(user, {
+      const r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
-      let claim = await Claim.findById(r1.claimId);
+      const claim = await Claim.findById(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
-      let r2 = await Claim.apiDelete(claim.id, user, DELETE_MSG);
+      const r2 = await Claim.apiDelete(claim.id, user, DELETE_MSG);
       await r2.reload(ClaimRev.INCLUDE(2));
       expect(r2.deleted).to.be.true;
       expect(r2.deleteMessage).to.equal(DELETE_MSG);
@@ -274,17 +274,17 @@ describe('Claim', function() {
     });
 
     it('no-op', async function() {
-      let r1 = await Claim.apiCreate(user, {
+      const r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
-      let claim = await Claim.findById(r1.claimId);
+      const claim = await Claim.findById(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
-      let r2 = await Claim.apiDelete(claim.id, user, DELETE_MSG);
+      const r2 = await Claim.apiDelete(claim.id, user, DELETE_MSG);
       await claim.reload();
       expect(claim.headId).to.equal(r2.id);
 
-      let r3 = await Claim.apiDelete(claim.id, user, DELETE_MSG);
+      const r3 = await Claim.apiDelete(claim.id, user, DELETE_MSG);
       expect(r3.id).to.equal(r2.id);
       expect(r3.parentId).to.equal(r1.id);
     });
@@ -292,11 +292,11 @@ describe('Claim', function() {
 
   describe('.apiGet()', function() {
     it('no points', async function() {
-      let rev = await Claim.apiCreate(user, {
+      const rev = await Claim.apiCreate(user, {
         text: FOO,
         flag: Flag.AD_HOMINEM,
       });
-      let claimData = await Claim.apiGet(rev.claimId, user);
+      const claimData = await Claim.apiGet(rev.claimId, user);
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
@@ -313,11 +313,11 @@ describe('Claim', function() {
     });
 
     it('starred', async function() {
-      let rev = await Claim.apiCreate(user, {
+      const rev = await Claim.apiCreate(user, {
         text: FOO,
       });
       await Claim.apiToggleStar(rev.claimId, user);
-      let claimData = await Claim.apiGet(rev.claimId, user);
+      const claimData = await Claim.apiGet(rev.claimId, user);
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
@@ -332,7 +332,7 @@ describe('Claim', function() {
         topics: {},
         sources: {},
       });
-      let claimDataNoUser = await Claim.apiGet(rev.claimId);
+      const claimDataNoUser = await Claim.apiGet(rev.claimId);
       expect(claimDataNoUser).to.deep.equal({
         claims: {
           [rev.claimId]: {
@@ -351,7 +351,7 @@ describe('Claim', function() {
     });
 
     it('two points', async function() {
-      let rev = await Claim.apiCreate(user, {
+      const rev = await Claim.apiCreate(user, {
         text: FOO,
         newSubClaims: [
           {
@@ -366,9 +366,9 @@ describe('Claim', function() {
       });
       await rev.reload(ClaimRev.INCLUDE(2));
       expect(rev.subClaims).to.have.lengthOf(2);
-      let c1 = rev.subClaims[rev.subClaims[0].claimClaim.isFor ? 0 : 1];
-      let c2 = rev.subClaims[rev.subClaims[0].claimClaim.isFor ? 1 : 0];
-      let claimData = await Claim.apiGet(rev.claimId, user);
+      const c1 = rev.subClaims[rev.subClaims[0].claimClaim.isFor ? 0 : 1];
+      const c2 = rev.subClaims[rev.subClaims[0].claimClaim.isFor ? 1 : 0];
+      const claimData = await Claim.apiGet(rev.claimId, user);
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
@@ -401,7 +401,7 @@ describe('Claim', function() {
     });
 
     it('nested points', async function() {
-      let rev = await Claim.apiCreate(user, {
+      const rev = await Claim.apiCreate(user, {
         text: FOO,
         newSubClaims: [
           {
@@ -418,11 +418,11 @@ describe('Claim', function() {
       });
       await rev.reload(ClaimRev.INCLUDE(3));
       expect(rev.subClaims).to.have.lengthOf(1);
-      let c1 = rev.subClaims[0];
+      const c1 = rev.subClaims[0];
       expect(c1.head.subClaims).to.have.lengthOf(1);
-      let c1a = c1.head.subClaims[0];
+      const c1a = c1.head.subClaims[0];
 
-      let claimData = await Claim.apiGet(rev.claimId, user);
+      const claimData = await Claim.apiGet(rev.claimId, user);
       expect(claimData).to.deep.equal({
         claims: {
           [rev.claimId]: {
@@ -458,7 +458,7 @@ describe('Claim', function() {
     });
 
     it('includes supers', async function() {
-      let rev = await Claim.apiCreate(user, {
+      const rev = await Claim.apiCreate(user, {
         text: FOO,
         newSubClaims: [
           {
@@ -469,7 +469,7 @@ describe('Claim', function() {
       });
       await rev.reload(ClaimRev.INCLUDE(3));
       expect(rev.subClaims).to.have.lengthOf(1);
-      let c1 = rev.subClaims[0];
+      const c1 = rev.subClaims[0];
 
       let claimData = await Claim.apiGet(c1.id, user, false);
       expect(claimData).to.deep.equal({
@@ -514,11 +514,11 @@ describe('Claim', function() {
     });
 
     it('deleted', async function() {
-      let r1 = await Claim.apiCreate(user, {
+      const r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
-      let r2 = await Claim.apiDelete(r1.claimId, user, DELETE_MSG);
-      let claimData = await Claim.apiGet(r1.claimId, user);
+      const r2 = await Claim.apiDelete(r1.claimId, user, DELETE_MSG);
+      const claimData = await Claim.apiGet(r1.claimId, user);
       expect(claimData).to.deep.equal({
         claims: {
           [r2.claimId]: {
@@ -542,13 +542,13 @@ describe('Claim', function() {
 
   describe('.apiGetAll()', function() {
     it('two claims', async function() {
-      let c1r = await Claim.apiCreate(user, { text: FOO });
-      let c2r = await Claim.apiCreate(user, { text: BAR });
-      let c1Id = c1r.claimId;
-      let c2Id = c2r.claimId;
+      const c1r = await Claim.apiCreate(user, { text: FOO });
+      const c2r = await Claim.apiCreate(user, { text: BAR });
+      const c1Id = c1r.claimId;
+      const c2Id = c2r.claimId;
       await Claim.apiToggleStar(c2Id, user);
 
-      let c1Data = {
+      const c1Data = {
         [c1Id]: {
           ...CLAIM_DEPTH_1,
           id: c1Id,
@@ -556,7 +556,7 @@ describe('Claim', function() {
           text: FOO,
         },
       };
-      let c2Data = {
+      const c2Data = {
         [c2Id]: {
           ...CLAIM_DEPTH_1,
           id: c2Id,
@@ -640,10 +640,10 @@ describe('Claim', function() {
     });
 
     it('excludes deleted', async function() {
-      let c1r = await Claim.apiCreate(user, { text: FOO });
-      let c2r = await Claim.apiCreate(user, { text: BAR });
+      const c1r = await Claim.apiCreate(user, { text: FOO });
+      const c2r = await Claim.apiCreate(user, { text: BAR });
       await Claim.apiDelete(c2r.claimId, user, DELETE_MSG);
-      let claimsData = await Claim.apiGetAll({ user });
+      const claimsData = await Claim.apiGetAll({ user });
       expect(claimsData).to.deep.equal({
         results: [c1r.claimId],
         numPages: 1,
@@ -661,12 +661,12 @@ describe('Claim', function() {
 
   describe('.apiGetForTrail()', function() {
     it('happy', async function() {
-      let sourceRev = await TestSource.create(user);
-      let c2r = await Claim.apiCreate(user, {
+      const sourceRev = await TestSource.create(user);
+      const c2r = await Claim.apiCreate(user, {
         text: BAR,
         sourceIds: { [sourceRev.sourceId]: false },
       });
-      let c1r = await Claim.apiCreate(user, {
+      const c1r = await Claim.apiCreate(user, {
         text: FOO,
         subClaimIds: { [c2r.claimId]: true },
       });
@@ -674,7 +674,10 @@ describe('Claim', function() {
       // Extra claim to make sure they're selected by ID.
       await Claim.apiCreate(user, { text: BAZ });
 
-      let data = await Claim.apiGetForTrail([c1r.claimId, c2r.claim_id], user);
+      const data = await Claim.apiGetForTrail(
+        [c1r.claimId, c2r.claim_id],
+        user
+      );
       expect(data).to.deep.equal({
         claims: {
           [c1r.claimId]: {
@@ -702,7 +705,10 @@ describe('Claim', function() {
         },
       });
 
-      let noUserData = await Claim.apiGetForTrail([c1r.claimId, c2r.claim_id]);
+      const noUserData = await Claim.apiGetForTrail([
+        c1r.claimId,
+        c2r.claim_id,
+      ]);
       expect(noUserData).to.deep.equal({
         claims: {
           [c1r.claimId]: {
@@ -736,19 +742,19 @@ describe('Claim', function() {
 
   describe('apiGetRevs', function() {
     it('change text', async function() {
-      let r1 = await Claim.apiCreate(user, {
+      const r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
       await r1.reload(ClaimRev.INCLUDE(2));
-      let claimId = r1.claimId;
+      const claimId = r1.claimId;
 
-      let r2 = await Claim.apiUpdate(claimId, user, {
+      const r2 = await Claim.apiUpdate(claimId, user, {
         baseRev: r1.id,
         text: BAR,
       });
       await r2.reload(ClaimRev.INCLUDE(2));
 
-      let data = await Claim.apiGetRevs(claimId, user);
+      const data = await Claim.apiGetRevs(claimId, user);
       expect(data).to.deep.equal({
         claimRevs: [
           {
@@ -796,7 +802,7 @@ describe('Claim', function() {
 
   describe('.apiToggleStar()', function() {
     it('happy', async function() {
-      let rev = await Claim.apiCreate(user, {
+      const rev = await Claim.apiCreate(user, {
         text: FOO,
       });
       let star = await Claim.apiToggleStar(rev.claimId, user);

@@ -88,8 +88,8 @@ export default {
       }
     },
     title(newTitle, oldTitle) {
-      let oldId = dashify(oldTitle);
-      let newId = dashify(newTitle);
+      const oldId = dashify(oldTitle);
+      const newId = dashify(newTitle);
       if (!this.id || this.id === oldId) {
         this.id = newId;
       }

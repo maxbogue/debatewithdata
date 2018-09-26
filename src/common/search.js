@@ -3,8 +3,8 @@ import elasticlunr from 'elasticlunr';
 import { ItemType } from '@/common/constants';
 
 function unwrapResult(result) {
-  let [typeKey, id] = result.ref.split('|');
-  let type = {
+  const [typeKey, id] = result.ref.split('|');
+  const type = {
     t: ItemType.TOPIC,
     c: ItemType.CLAIM,
     s: ItemType.SOURCE,

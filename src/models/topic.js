@@ -144,7 +144,7 @@ export default function(sequelize, DataTypes, knex) {
       }
 
       if (data.baseRev !== topic.headId) {
-        let newData = await Topic.apiGet(id, user);
+        const newData = await Topic.apiGet(id, user);
         throw new ConflictError('Base item changed.', newData);
       }
 
@@ -162,7 +162,7 @@ export default function(sequelize, DataTypes, knex) {
         });
       }
 
-      let topic = await Topic.findById(id, Topic.INCLUDE(3));
+      const topic = await Topic.findById(id, Topic.INCLUDE(3));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
@@ -175,7 +175,7 @@ export default function(sequelize, DataTypes, knex) {
         return topic.head;
       }
 
-      let topicRev = await models.TopicRev.create({
+      const topicRev = await models.TopicRev.create({
         userId: user.id,
         topicId: topic.id,
         parentId: topic.headId,
@@ -195,9 +195,9 @@ export default function(sequelize, DataTypes, knex) {
         return;
       }
 
-      let thisData = this.head.toCoreData();
+      const thisData = this.head.toCoreData();
       thisData.depth = this.head.deleted ? 3 : depth;
-      let star = await this.toStarData(user);
+      const star = await this.toStarData(user);
       thisData.starCount = star.starCount;
       thisData.starred = star.starred;
       thisData.watched = star.watched;
@@ -207,16 +207,16 @@ export default function(sequelize, DataTypes, knex) {
       const promises = [];
 
       if (!this.head.deleted && depth > 1) {
-        for (let subTopic of this.head.subTopics) {
+        for (const subTopic of this.head.subTopics) {
           promises.push(subTopic.fillData(data, depth - 1, user));
         }
-        for (let claim of this.head.claims) {
+        for (const claim of this.head.claims) {
           promises.push(claim.fillData(data, depth - 1, user));
         }
       }
 
       if (depth === 3) {
-        let superTopics = await models.Topic.findAll({
+        const superTopics = await models.Topic.findAll({
           include: [
             {
               association: models.Topic.Head,
@@ -231,8 +231,8 @@ export default function(sequelize, DataTypes, knex) {
             },
           ],
         });
-        let superTopicIds = [];
-        for (let superTopic of superTopics) {
+        const superTopicIds = [];
+        for (const superTopic of superTopics) {
           superTopicIds.push(superTopic.id);
           promises.push(superTopic.fillData(data, 1, user));
         }
@@ -257,8 +257,8 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Topic.processQueryResults = function(topics) {
-      let data = {};
-      for (let topic of topics) {
+      const data = {};
+      for (const topic of topics) {
         topic.depth = 1;
         topic.childCount = graph.getCount(topic.id);
         data[topic.id] = topic;
@@ -267,38 +267,38 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Topic.apiGet = async function(id, user) {
-      let topic = await Topic.findById(id, Topic.INCLUDE(3));
+      const topic = await Topic.findById(id, Topic.INCLUDE(3));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
-      let data = { topics: {}, claims: {}, sources: {} };
+      const data = { topics: {}, claims: {}, sources: {} };
       await topic.fillData(data, 3, user);
       return data;
     };
 
     Topic.apiSetIsRoot = async function(id, isRoot) {
-      let topic = await Topic.findById(id);
+      const topic = await Topic.findById(id);
       await topic.update({ isRoot });
     };
 
     Topic.apiGetAll = async function({ user, filters, sort, page } = {}) {
       page = page || 1;
 
-      let query = Topic.itemQuery(user)
+      const query = Topic.itemQuery(user)
         .where({
           is_root: true,
           deleted: false,
         })
         .modify(q.sortAndFilter, sort, filters);
 
-      let countQuery = query
+      const countQuery = query
         .clone()
         .clearSelect()
         .clearOrder()
         .count('*');
       query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
 
-      let [topics, [{ count }]] = await Promise.all([query, countQuery]);
+      const [topics, [{ count }]] = await Promise.all([query, countQuery]);
       return {
         topics: Topic.processQueryResults(topics),
         results: topics.map(topic => topic.id),
@@ -327,7 +327,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Topic.apiGetRevs = async function(topicId, user) {
-      let topicRevs = await models.TopicRev.findAll({
+      const topicRevs = await models.TopicRev.findAll({
         where: { topicId },
         order: [['created_at', 'DESC']],
         ...models.TopicRev.INCLUDE(2, true),
@@ -337,7 +337,7 @@ export default function(sequelize, DataTypes, knex) {
         throw new NotFoundError('Topic not found: ' + topicId);
       }
 
-      let data = {
+      const data = {
         topicRevs: [],
         topics: {},
         claims: {},
@@ -349,7 +349,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Topic.prototype.toStarData = async function(user) {
-      let starCount = await this.countStarredByUsers();
+      const starCount = await this.countStarredByUsers();
       let starred = false;
       let watched = false;
       if (user) {
@@ -360,11 +360,11 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Topic.apiToggleStar = async function(id, user) {
-      let topic = await Topic.findById(id);
+      const topic = await Topic.findById(id);
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
-      let isStarred = await topic.hasStarredByUser(user);
+      const isStarred = await topic.hasStarredByUser(user);
       if (isStarred) {
         await topic.removeStarredByUser(user);
       } else {
@@ -375,11 +375,11 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Topic.apiToggleWatch = async function(topicId, user) {
-      let topic = await Topic.findById(topicId);
+      const topic = await Topic.findById(topicId);
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + topicId);
       }
-      let isWatched = await topic.hasWatchedByUser(user);
+      const isWatched = await topic.hasWatchedByUser(user);
       if (isWatched) {
         await topic.removeWatchedByUser(user);
       } else {
@@ -391,8 +391,8 @@ export default function(sequelize, DataTypes, knex) {
     Topic.prototype.updateGraph = function(subTopics, claims) {
       subTopics = subTopics || this.head.subTopics;
       claims = claims || this.head.claims;
-      let topicInfos = subTopics.map(Graph.toTopicInfo);
-      let claimInfos = claims.map(Graph.toClaimInfo);
+      const topicInfos = subTopics.map(Graph.toTopicInfo);
+      const claimInfos = claims.map(Graph.toClaimInfo);
       graph.updateTopicChildren(this.id, [...topicInfos, ...claimInfos]);
     };
 

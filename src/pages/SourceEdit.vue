@@ -68,8 +68,8 @@ export default {
     SourceRevContent,
   },
   async asyncData({ store, route }) {
-    let id = route.params.id;
-    let source = store.state.sources[id];
+    const id = route.params.id;
+    const source = store.state.sources[id];
     if (id && !source) {
       await store.dispatch('getItem', {
         type: ItemType.SOURCE,
@@ -135,7 +135,7 @@ export default {
     },
     async submit() {
       let action = 'addItem';
-      let payload = {
+      const payload = {
         type: ItemType.SOURCE,
         item: this.newSource,
       };
@@ -144,7 +144,7 @@ export default {
         payload.item.id = this.id;
         payload.item.baseRev = this.source.revId;
       }
-      let id = await this.$store.dispatch(action, payload);
+      const id = await this.$store.dispatch(action, payload);
       this.unloadOverride = true;
       this.$router.push(this.sourceUrl(id, this.trail));
     },
@@ -162,11 +162,11 @@ export default {
       this.$router.push('/datas');
     },
     cancel() {
-      let url = this.id ? this.sourceUrl(this.id, this.trail) : '/datas';
+      const url = this.id ? this.sourceUrl(this.id, this.trail) : '/datas';
       this.$router.push(url);
     },
     initialize() {
-      let seed = this.seed || this.source;
+      const seed = this.seed || this.source;
       if (seed && !seed.deleted) {
         this.newSource = seed;
       }

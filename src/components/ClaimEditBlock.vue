@@ -63,7 +63,7 @@ export default {
       return null;
     },
     newClaim() {
-      let claim = {
+      const claim = {
         text: this.text,
         needsData: this.needsData,
       };

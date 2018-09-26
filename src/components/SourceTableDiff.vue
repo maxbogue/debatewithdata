@@ -70,14 +70,14 @@ export default {
       );
     },
     diffRows() {
-      let diffs = [];
+      const diffs = [];
       for (let i = 0; i < this.numRows; i += 1) {
-        let prevRow = this.prevRows[i];
-        let currRow = this.currRows[i];
-        let newRow = [];
+        const prevRow = this.prevRows[i];
+        const currRow = this.currRows[i];
+        const newRow = [];
         for (let j = 0; j < this.numCols; j += 1) {
-          let prevCell = (prevRow && prevRow[j]) || '';
-          let currCell = (currRow && currRow[j]) || '';
+          const prevCell = (prevRow && prevRow[j]) || '';
+          const currCell = (currRow && currRow[j]) || '';
           newRow.push(diff(prevCell, currCell));
         }
         diffs.push(newRow);

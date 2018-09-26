@@ -74,7 +74,7 @@ const AUTHORITY = {
 const DELETE_MSG = 'Violates guidelines.';
 
 function createRandomTable() {
-  let tabData = [];
+  const tabData = [];
   for (let i = 0; i < 10; i += 1) {
     tabData.push(randomHexString(6));
   }
@@ -90,7 +90,7 @@ describe('Source', function() {
 
   describe('.apiCreate()', function() {
     it('happy misc', async function() {
-      let rev = await Source.apiCreate(user, MISC);
+      const rev = await Source.apiCreate(user, MISC);
       await rev.reload(SourceRev.INCLUDE());
       expect(rev.deleted).to.be.false;
       expect(rev.userId).to.equal(user.id);
@@ -103,7 +103,7 @@ describe('Source', function() {
       expect(rev.publication).to.be.null;
       expect(rev.parentId).to.be.null;
 
-      let source = await Source.findById(rev.sourceId);
+      const source = await Source.findById(rev.sourceId);
       expect(source.headId).to.equal(rev.id);
     });
 
@@ -132,7 +132,7 @@ describe('Source', function() {
     });
 
     it('happy research', async function() {
-      let rev = await Source.apiCreate(user, RESEARCH);
+      const rev = await Source.apiCreate(user, RESEARCH);
       await rev.reload(SourceRev.INCLUDE());
       expect(rev.deleted).to.be.false;
       expect(rev.userId).to.equal(user.id);
@@ -143,12 +143,12 @@ describe('Source', function() {
       expect(rev.publication).to.equal(PUBLICATION);
       expect(rev.parentId).to.be.null;
 
-      let source = await Source.findById(rev.sourceId);
+      const source = await Source.findById(rev.sourceId);
       expect(source.headId).to.equal(rev.id);
     });
 
     it('happy article', async function() {
-      let rev = await Source.apiCreate(user, ARTICLE);
+      const rev = await Source.apiCreate(user, ARTICLE);
       await rev.reload(SourceRev.INCLUDE());
       expect(rev.deleted).to.be.false;
       expect(rev.userId).to.equal(user.id);
@@ -159,12 +159,12 @@ describe('Source', function() {
       expect(rev.publication).to.equal(PUBLICATION);
       expect(rev.parentId).to.be.null;
 
-      let source = await Source.findById(rev.sourceId);
+      const source = await Source.findById(rev.sourceId);
       expect(source.headId).to.equal(rev.id);
     });
 
     it('happy authority', async function() {
-      let rev = await Source.apiCreate(user, AUTHORITY);
+      const rev = await Source.apiCreate(user, AUTHORITY);
       await rev.reload(SourceRev.INCLUDE());
       expect(rev.deleted).to.be.false;
       expect(rev.userId).to.equal(user.id);
@@ -175,18 +175,18 @@ describe('Source', function() {
       expect(rev.publication).to.be.null;
       expect(rev.parentId).to.be.null;
 
-      let source = await Source.findById(rev.sourceId);
+      const source = await Source.findById(rev.sourceId);
       expect(source.headId).to.equal(rev.id);
     });
   });
 
   describe('.apiUpdate()', function() {
     it('change', async function() {
-      let rev1 = await Source.apiCreate(user, MISC);
-      let source = await Source.findById(rev1.sourceId);
+      const rev1 = await Source.apiCreate(user, MISC);
+      const source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
-      let rev2 = await Source.apiUpdate(source.id, user, {
+      const rev2 = await Source.apiUpdate(source.id, user, {
         ...MISC2,
         baseRev: rev1.id,
       });
@@ -205,11 +205,11 @@ describe('Source', function() {
     });
 
     it('no change no-op', async function() {
-      let rev1 = await Source.apiCreate(user, MISC);
-      let source = await Source.findById(rev1.sourceId);
+      const rev1 = await Source.apiCreate(user, MISC);
+      const source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
-      let rev2 = await Source.apiUpdate(source.id, user, {
+      const rev2 = await Source.apiUpdate(source.id, user, {
         ...MISC,
         baseRev: rev1.id,
       });
@@ -218,8 +218,8 @@ describe('Source', function() {
     });
 
     it('baseRev', async function() {
-      let rev1 = await Source.apiCreate(user, MISC);
-      let sourceId = rev1.sourceId;
+      const rev1 = await Source.apiCreate(user, MISC);
+      const sourceId = rev1.sourceId;
       await Source.apiUpdate(sourceId, user, {
         ...MISC2,
         baseRev: rev1.id,
@@ -248,11 +248,11 @@ describe('Source', function() {
 
   describe('.apiDelete()', function() {
     it('normal delete', async function() {
-      let rev1 = await Source.apiCreate(user, MISC);
-      let source = await Source.findById(rev1.sourceId);
+      const rev1 = await Source.apiCreate(user, MISC);
+      const source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
-      let rev2 = await Source.apiDelete(source.id, user, DELETE_MSG);
+      const rev2 = await Source.apiDelete(source.id, user, DELETE_MSG);
       expect(rev2.deleted).to.be.true;
       expect(rev2.userId).to.equal(user.id);
       expect(rev2.blobHash).to.be.null;
@@ -267,17 +267,17 @@ describe('Source', function() {
     });
 
     it('already deleted no-op', async function() {
-      let rev1 = await Source.apiCreate(user, MISC);
-      let source = await Source.findById(rev1.sourceId);
+      const rev1 = await Source.apiCreate(user, MISC);
+      const source = await Source.findById(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
-      let rev2 = await Source.apiDelete(source.id, user, DELETE_MSG);
+      const rev2 = await Source.apiDelete(source.id, user, DELETE_MSG);
       expect(rev2.deleted).to.be.true;
       expect(rev2.parentId).to.equal(rev1.id);
       await source.reload();
       expect(source.headId).to.equal(rev2.id);
 
-      let rev3 = await Source.apiDelete(source.id, user, DELETE_MSG);
+      const rev3 = await Source.apiDelete(source.id, user, DELETE_MSG);
       expect(rev3.id).to.equal(rev2.id);
       expect(rev3.parentId).to.equal(rev1.id);
     });
@@ -285,8 +285,8 @@ describe('Source', function() {
 
   describe('.apiGet()', function() {
     it('source exists', async function() {
-      let rev = await Source.apiCreate(user, MISC);
-      let sourceData = await Source.apiGet(rev.sourceId, user);
+      const rev = await Source.apiCreate(user, MISC);
+      const sourceData = await Source.apiGet(rev.sourceId, user);
 
       expect(sourceData).to.deep.equal({
         sources: {
@@ -307,9 +307,9 @@ describe('Source', function() {
     });
 
     it('source deleted', async function() {
-      let r1 = await Source.apiCreate(user, MISC);
-      let r2 = await Source.apiDelete(r1.sourceId, user, DELETE_MSG);
-      let sourceData = await Source.apiGet(r1.sourceId, user);
+      const r1 = await Source.apiCreate(user, MISC);
+      const r2 = await Source.apiDelete(r1.sourceId, user, DELETE_MSG);
+      const sourceData = await Source.apiGet(r1.sourceId, user);
       expect(sourceData).to.deep.equal({
         sources: {
           [r2.sourceId]: {
@@ -326,14 +326,14 @@ describe('Source', function() {
     });
 
     it('with table', async function() {
-      let table = createRandomTable();
-      let sourceRev = await Source.apiCreate(user, {
+      const table = createRandomTable();
+      const sourceRev = await Source.apiCreate(user, {
         ...MISC,
         table,
       });
-      let sourceId = sourceRev.sourceId;
+      const sourceId = sourceRev.sourceId;
 
-      let sourceData = await Source.apiGet(sourceId, user);
+      const sourceData = await Source.apiGet(sourceId, user);
       expect(sourceData).to.deep.equal({
         sources: {
           [sourceId]: {
@@ -350,16 +350,16 @@ describe('Source', function() {
     });
 
     it('with claim', async function() {
-      let sourceRev = await Source.apiCreate(user, MISC);
-      let sourceId = sourceRev.sourceId;
-      let claimRev = await Claim.apiCreate(user, {
+      const sourceRev = await Source.apiCreate(user, MISC);
+      const sourceId = sourceRev.sourceId;
+      const claimRev = await Claim.apiCreate(user, {
         text: TEXT2,
         sourceIds: {
           [sourceId]: true,
         },
       });
 
-      let sourceData = await Source.apiGet(sourceId, user);
+      const sourceData = await Source.apiGet(sourceId, user);
       expect(sourceData).to.deep.equal({
         sources: {
           [sourceId]: {
@@ -389,9 +389,9 @@ describe('Source', function() {
 
   describe('.apiGetAll()', function() {
     it('two sources', async function() {
-      let s1r = await Source.apiCreate(user, RESEARCH);
-      let s2r = await Source.apiCreate(user, ARTICLE);
-      let sourcesData = await Source.apiGetAll({
+      const s1r = await Source.apiCreate(user, RESEARCH);
+      const s2r = await Source.apiCreate(user, ARTICLE);
+      const sourcesData = await Source.apiGetAll({
         user,
         sort: [Sort.RECENT, false],
       });
@@ -416,12 +416,12 @@ describe('Source', function() {
     });
 
     it('with table', async function() {
-      let table = createRandomTable();
-      let s1r = await Source.apiCreate(user, {
+      const table = createRandomTable();
+      const s1r = await Source.apiCreate(user, {
         ...MISC,
         table,
       });
-      let sourceData = await Source.apiGetAll({ user });
+      const sourceData = await Source.apiGetAll({ user });
       expect(sourceData).to.deep.equal({
         results: [s1r.sourceId],
         numPages: 1,
@@ -438,10 +438,10 @@ describe('Source', function() {
     });
 
     it('excludes deleted', async function() {
-      let s1r = await Source.apiCreate(user, RESEARCH);
-      let s2r = await Source.apiCreate(user, ARTICLE);
+      const s1r = await Source.apiCreate(user, RESEARCH);
+      const s2r = await Source.apiCreate(user, ARTICLE);
       await Source.apiDelete(s2r.sourceId, user, DELETE_MSG);
-      let sourcesData = await Source.apiGetAll({ user });
+      const sourcesData = await Source.apiGetAll({ user });
       expect(sourcesData).to.deep.equal({
         results: [s1r.sourceId],
         numPages: 1,
@@ -459,14 +459,14 @@ describe('Source', function() {
 
   describe('.apiGetRevs()', function() {
     it('change', async function() {
-      let r1 = await Source.apiCreate(user, MISC);
-      let sourceId = r1.sourceId;
-      let r2 = await Source.apiUpdate(sourceId, user, {
+      const r1 = await Source.apiCreate(user, MISC);
+      const sourceId = r1.sourceId;
+      const r2 = await Source.apiUpdate(sourceId, user, {
         ...MISC2,
         baseRev: r1.id,
       });
 
-      let data = await Source.apiGetRevs(sourceId);
+      const data = await Source.apiGetRevs(sourceId);
       expect(data).to.deep.equal({
         sourceRevs: [
           {
@@ -496,7 +496,7 @@ describe('Source', function() {
 
   describe('.apiToggleStar()', function() {
     it('happy', async function() {
-      let r1 = await Source.apiCreate(user, MISC);
+      const r1 = await Source.apiCreate(user, MISC);
       let star = await Source.apiToggleStar(r1.sourceId, user);
       expect(star).to.deep.equal({
         starCount: 1,

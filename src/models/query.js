@@ -11,11 +11,11 @@ function baseQuery(type) {
 }
 
 function joinWatched(query, type, user) {
-  let table = type + 's';
-  let idField = table + '.id';
+  const table = type + 's';
+  const idField = table + '.id';
 
   // Join table query to extract watched.
-  let watchQuery = knex(table)
+  const watchQuery = knex(table)
     .column({ id: idField })
     .exists({
       watched: knex('watches').where({
@@ -31,10 +31,10 @@ function joinWatched(query, type, user) {
 }
 
 function itemQuery(type, user) {
-  let table = type + 's';
-  let idField = table + '.id';
+  const table = type + 's';
+  const idField = table + '.id';
   // Join table query to extract starCount.
-  let starQuery = knex(table)
+  const starQuery = knex(table)
     .column({ id: idField })
     .exists({
       starred: knex('stars').where({
@@ -53,7 +53,7 @@ function itemQuery(type, user) {
     .groupBy(idField);
 
   // Join table query to extract commentCount.
-  let commentQuery = knex(table)
+  const commentQuery = knex(table)
     .column({ id: idField })
     .count({ count: 'comments.id' })
     .leftOuterJoin('comments', function() {
@@ -78,7 +78,7 @@ function itemQuery(type, user) {
 
 function sortQuery(query, sort) {
   if (sort) {
-    let [sortType, dir] = sort;
+    const [sortType, dir] = sort;
     if (sortType === Sort.STARS) {
       query.orderBy('starCount', dir ? 'desc' : 'asc');
       return;

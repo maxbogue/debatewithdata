@@ -99,7 +99,7 @@ export default function(sequelize, DataTypes) {
   User.postAssociate = function() {
     User.register = async function(username, password, email) {
       username = validateUsername(username);
-      let passwordHash = await hashPassword(password);
+      const passwordHash = await hashPassword(password);
       return sequelize.transaction(async function(transaction) {
         try {
           return await User.create(
@@ -126,7 +126,7 @@ export default function(sequelize, DataTypes) {
     };
 
     User.login = async function(username, password) {
-      let user = await User.findOne({ where: { username } });
+      const user = await User.findOne({ where: { username } });
       if (!user) {
         throw new AuthError('Invalid user.');
       } else if (user.emailVerificationToken) {
@@ -147,8 +147,8 @@ export default function(sequelize, DataTypes) {
         }
         throw new AuthError('Malformed auth token.');
       }
-      let username = decoded.sub;
-      let user = await User.findOne({ where: { username } });
+      const username = decoded.sub;
+      const user = await User.findOne({ where: { username } });
       if (!user) {
         throw new AuthError('User not found: ' + username);
       }
@@ -159,7 +159,7 @@ export default function(sequelize, DataTypes) {
       if (this.emailVerificationToken) {
         throw new AuthError('Email verification required.');
       }
-      let user = {
+      const user = {
         createdAt: this.created_at,
         email: this.email,
         admin: this.admin,
@@ -171,7 +171,8 @@ export default function(sequelize, DataTypes) {
     };
 
     User.prototype.sendVerificationEmail = async function(transport) {
-      let url = ROOT_URL + '/verify-email?token=' + this.emailVerificationToken;
+      const url =
+        ROOT_URL + '/verify-email?token=' + this.emailVerificationToken;
 
       if (!transport) {
         /* eslint no-console: "off" */
@@ -192,7 +193,7 @@ export default function(sequelize, DataTypes) {
       if (!emailVerificationToken) {
         throw new AuthError('Null email verification token.');
       }
-      let user = await User.findOne({ where: { emailVerificationToken } });
+      const user = await User.findOne({ where: { emailVerificationToken } });
       if (!user) {
         throw new AuthError('Invalid email verification token.');
       }
@@ -201,7 +202,7 @@ export default function(sequelize, DataTypes) {
     };
 
     User.forgotPassword = async function(email) {
-      let user = await User.findOne({ where: { email } });
+      const user = await User.findOne({ where: { email } });
       if (!user) {
         return null;
       }
@@ -213,7 +214,7 @@ export default function(sequelize, DataTypes) {
     };
 
     User.prototype.sendForgotPasswordEmail = async function(transport) {
-      let url = ROOT_URL + '/reset-password?token=' + this.passwordResetToken;
+      const url = ROOT_URL + '/reset-password?token=' + this.passwordResetToken;
 
       if (!transport) {
         /* eslint no-console: "off" */
@@ -233,7 +234,7 @@ export default function(sequelize, DataTypes) {
     };
 
     User.resetPassword = async function(passwordResetToken, password) {
-      let user = await User.findOne({
+      const user = await User.findOne({
         where: {
           passwordResetToken,
           passwordResetExpiration: {
@@ -244,7 +245,7 @@ export default function(sequelize, DataTypes) {
       if (!user) {
         throw new AuthError('Invalid password reset token.');
       }
-      let passwordHash = await hashPassword(password);
+      const passwordHash = await hashPassword(password);
       await user.update({
         passwordHash,
         passwordResetToken: null,

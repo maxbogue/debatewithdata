@@ -63,12 +63,12 @@ export default {
   },
   filters: {
     timestamp(isoDate) {
-      let date = new Date(isoDate);
+      const date = new Date(isoDate);
       return dateFormat(date, 'yyyy-mm-dd HH:MM');
     },
   },
   metaInfo() {
-    let { type, id } = this.$route.params;
+    const { type, id } = this.$route.params;
     return {
       title: `History for ${type} ${id}`,
     };
@@ -79,7 +79,7 @@ export default {
   }),
   computed: {
     itemType() {
-      let type = this.$route.params.type;
+      const type = this.$route.params.type;
       return type === 'data' ? ItemType.SOURCE : type;
     },
     itemId() {
@@ -103,7 +103,7 @@ export default {
       return [];
     },
     historyClasses() {
-      let itemTypeClass = {
+      const itemTypeClass = {
         [ItemType.TOPIC]: this.$style.topicHistory,
         [ItemType.CLAIM]: this.$style.claimHistory,
         [ItemType.SOURCE]: this.$style.sourceHistory,

@@ -52,12 +52,12 @@ function invoke(env) {
     webpackConfigs = [webpackConfigs];
   }
 
-  for (let webpackConfig of webpackConfigs) {
+  for (const webpackConfig of webpackConfigs) {
     webpackConfig.mode = 'development';
   }
 
-  let serverConfig = webpackConfigs.filter(c => c.name === 'server')[0];
-  let outputPath = path.join(
+  const serverConfig = webpackConfigs.filter(c => c.name === 'server')[0];
+  const outputPath = path.join(
     serverConfig.output.path,
     serverConfig.output.filename
   );
@@ -94,21 +94,21 @@ function invoke(env) {
 
   compiler.apply(
     new webpack.ProgressPlugin(p => {
-      let newPercentage = Math.floor(p * 100);
+      const newPercentage = Math.floor(p * 100);
       progressBar.tick(newPercentage - progressPercentage);
       progressPercentage = newPercentage;
     })
   );
 
   const watcher = compiler.watch({}, (errors, multiStats) => {
-    for (let stats of multiStats.stats) {
-      let name = stats.compilation.name;
+    for (const stats of multiStats.stats) {
+      const name = stats.compilation.name;
       if (name === 'server') {
         clearConsole();
         stopServer();
         startServer();
       }
-      let time = stats.endTime - stats.startTime;
+      const time = stats.endTime - stats.startTime;
       if (stats.hasErrors()) {
         logError(`Compiling ${name} failed in ${time}ms`);
       } else {

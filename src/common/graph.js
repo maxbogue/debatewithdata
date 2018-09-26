@@ -2,16 +2,16 @@ import { ItemType } from '@/common/constants';
 import { ValidationError } from './validate';
 
 function difference(a, b) {
-  let c = new Set(a);
-  for (let e of b) {
+  const c = new Set(a);
+  for (const e of b) {
     c.delete(e);
   }
   return c;
 }
 
 function union(a, b) {
-  let c = new Set(a);
-  for (let e of b) {
+  const c = new Set(a);
+  for (const e of b) {
     c.add(e);
   }
   return c;
@@ -36,7 +36,7 @@ class Node {
     if (path.includes(this.id)) {
       throw new ValidationError('Cycle found: ' + path.join(' -> '));
     }
-    for (let child of children) {
+    for (const child of children) {
       child.cycleCheck(child.getChildren(), path.concat(this.id));
     }
   }
@@ -46,7 +46,7 @@ class Node {
       return;
     }
     seen.add(this.id);
-    for (let child of this.getChildren()) {
+    for (const child of this.getChildren()) {
       child.walk(seen);
     }
   }
@@ -59,7 +59,7 @@ class Node {
     this.walk(seen);
     // The count is just the size of that set minus ourself.
     this.count = seen.size - 1;
-    for (let parent of this.parents) {
+    for (const parent of this.parents) {
       // Use the set to prevent scanning this entire subtree for the parent.
       parent.update(new Set(seen));
     }
@@ -69,13 +69,13 @@ class Node {
     // Check for cycles before changing anything.
     this.cycleCheck(newChildren);
 
-    let oldChildren = this.getChildren();
-    let added = difference(newChildren, oldChildren);
-    let removed = difference(oldChildren, newChildren);
-    for (let node of added) {
+    const oldChildren = this.getChildren();
+    const added = difference(newChildren, oldChildren);
+    const removed = difference(oldChildren, newChildren);
+    for (const node of added) {
       node.parents.add(this);
     }
-    for (let node of removed) {
+    for (const node of removed) {
       node.parents.delete(this);
     }
   }
@@ -92,7 +92,7 @@ class TopicNode extends Node {
   }
 
   setChildren(children) {
-    let newChildren = children;
+    const newChildren = children;
     this.updateParents(newChildren);
     this.children = children;
     this.update();
@@ -115,7 +115,7 @@ class ClaimNode extends Node {
   }
 
   setChildren(points) {
-    let newChildren = points.reduce(union);
+    const newChildren = points.reduce(union);
     this.updateParents(newChildren);
     this.points = points;
     this.update();
@@ -127,10 +127,10 @@ class ClaimNode extends Node {
   }
 
   updateDataCounts() {
-    let dataCounts = [0, 0];
+    const dataCounts = [0, 0];
     for (let i = 0; i < 2; i += 1) {
-      for (let child of this.points[i]) {
-        let [f, a] = child.getDataCounts();
+      for (const child of this.points[i]) {
+        const [f, a] = child.getDataCounts();
         dataCounts[i] += f;
         dataCounts[1 - i] += a;
       }
@@ -178,8 +178,8 @@ function getOrCreate(nodes, info) {
 }
 
 function infosToNodes(nodes, childInfos) {
-  let children = new Set();
-  for (let childInfo of childInfos) {
+  const children = new Set();
+  for (const childInfo of childInfos) {
     children.add(getOrCreate(nodes, childInfo));
   }
   return children;
@@ -191,40 +191,40 @@ export class Graph {
   }
 
   updateTopicChildren(id, childInfos) {
-    let node = getOrCreate(this.nodes, { id, type: ItemType.TOPIC });
+    const node = getOrCreate(this.nodes, { id, type: ItemType.TOPIC });
     node.setChildren(infosToNodes(this.nodes, childInfos));
   }
 
   updateClaimPoints(id, pointInfos) {
-    let node = getOrCreate(this.nodes, { id, type: ItemType.CLAIM });
-    let points = pointInfos.map(sideInfos =>
+    const node = getOrCreate(this.nodes, { id, type: ItemType.CLAIM });
+    const points = pointInfos.map(sideInfos =>
       infosToNodes(this.nodes, sideInfos)
     );
     node.setChildren(points);
   }
 
   getCount(id) {
-    let node = this.nodes.get(id);
+    const node = this.nodes.get(id);
     return node ? node.count : 0;
   }
 
   getDataCounts(id) {
-    let node = this.nodes.get(id);
+    const node = this.nodes.get(id);
     return node && node.dataCounts ? node.dataCounts : [0, 0];
   }
 
   static toTopicInfo(item) {
-    let id = typeof item === 'string' ? item : item.id;
+    const id = typeof item === 'string' ? item : item.id;
     return { id, type: ItemType.TOPIC };
   }
 
   static toClaimInfo(item) {
-    let id = typeof item === 'string' ? item : item.id;
+    const id = typeof item === 'string' ? item : item.id;
     return { id, type: ItemType.CLAIM };
   }
 
   static toSourceInfo(item) {
-    let id = typeof item === 'string' ? item : item.id;
+    const id = typeof item === 'string' ? item : item.id;
     return { id, type: ItemType.SOURCE };
   }
 }

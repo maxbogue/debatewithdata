@@ -76,7 +76,7 @@ export default function(sequelize, DataTypes) {
       if (n < 1) {
         throw new Error('Must include at least 1 tier.');
       }
-      let include = [models.Blob];
+      const include = [models.Blob];
       if (includeUser) {
         include.push(models.User);
       }
@@ -107,13 +107,13 @@ export default function(sequelize, DataTypes) {
         { transaction }
       );
 
-      let subClaimIds = data.subClaimIds ? { ...data.subClaimIds } : {};
-      let sourceIds = data.sourceIds ? { ...data.sourceIds } : {};
+      const subClaimIds = data.subClaimIds ? { ...data.subClaimIds } : {};
+      const sourceIds = data.sourceIds ? { ...data.sourceIds } : {};
 
       const promises = [];
 
       if (data.newSubClaims) {
-        for (let claimData of data.newSubClaims) {
+        for (const claimData of data.newSubClaims) {
           promises.push(
             models.Claim.apiCreate(user, claimData, transaction).then(rev => {
               subClaimIds[rev.claimId] = claimData.isFor;
@@ -123,7 +123,7 @@ export default function(sequelize, DataTypes) {
       }
 
       if (data.newSources) {
-        for (let sourceData of data.newSources) {
+        for (const sourceData of data.newSources) {
           promises.push(
             models.Source.apiCreate(user, sourceData, transaction).then(rev => {
               sourceIds[rev.sourceId] = sourceData.isFor;
@@ -159,7 +159,7 @@ export default function(sequelize, DataTypes) {
     };
 
     ClaimRev.prototype.toCoreData = function(recurse = true) {
-      let data = {
+      const data = {
         id: this.claimId,
         revId: this.id,
       };
@@ -176,11 +176,11 @@ export default function(sequelize, DataTypes) {
 
       if (recurse) {
         data.subClaimIds = {};
-        for (let claim of this.subClaims) {
+        for (const claim of this.subClaims) {
           data.subClaimIds[claim.id] = claim.claimClaim.isFor;
         }
         data.sourceIds = {};
-        for (let source of this.sources) {
+        for (const source of this.sources) {
           data.sourceIds[source.id] = source.claimSource.isFor;
         }
       }
@@ -190,16 +190,16 @@ export default function(sequelize, DataTypes) {
 
     // Only called for apiGetRevs.
     ClaimRev.prototype.fillData = async function(data) {
-      let thisData = this.toCoreData();
+      const thisData = this.toCoreData();
       thisData.username = this.user.username;
       thisData.createdAt = this.created_at;
 
       if (!thisData.deleted) {
         const promises = [];
-        for (let subClaim of this.subClaims) {
+        for (const subClaim of this.subClaims) {
           promises.push(subClaim.fillData(data, 1));
         }
-        for (let source of this.sources) {
+        for (const source of this.sources) {
           promises.push(
             source.toData().then(sourceData => {
               data.sources[source.id] = sourceData;

@@ -12,59 +12,59 @@ export async function search(user, query, types, page) {
   }
 
   let results = searchIndex.query(query, types);
-  let numPages = Math.ceil(results.length / PAGE_SIZE);
-  let start = PAGE_SIZE * ((parseInt(page) || 1) - 1);
+  const numPages = Math.ceil(results.length / PAGE_SIZE);
+  const start = PAGE_SIZE * ((parseInt(page) || 1) - 1);
   results = results.slice(start, start + PAGE_SIZE);
 
-  let promises = [];
-  let data = { results, numPages, topics: {}, claims: {}, sources: {} };
-  let maybeId = ANY_ID_REGEX.test(query);
+  const promises = [];
+  const data = { results, numPages, topics: {}, claims: {}, sources: {} };
+  const maybeId = ANY_ID_REGEX.test(query);
 
-  let topicItems = results.filter(item => item.type === ItemType.TOPIC);
+  const topicItems = results.filter(item => item.type === ItemType.TOPIC);
   if (topicItems.length > 0 || maybeId) {
-    let topicIds = topicItems.map(item => item.id);
+    const topicIds = topicItems.map(item => item.id);
     if (maybeId) {
       topicIds.push(query);
     }
-    let topics = await Topic.findAll({
+    const topics = await Topic.findAll({
       where: { id: topicIds },
       ...Topic.INCLUDE(1),
     });
-    for (let topic of topics) {
+    for (const topic of topics) {
       if (!topic.head.deleted) {
         promises.push(topic.fillData(data, 1, user));
       }
     }
   }
 
-  let claimItems = results.filter(item => item.type === ItemType.CLAIM);
+  const claimItems = results.filter(item => item.type === ItemType.CLAIM);
   if (claimItems.length > 0 || maybeId) {
-    let claimIds = claimItems.map(item => item.id);
+    const claimIds = claimItems.map(item => item.id);
     if (maybeId) {
       claimIds.push(query);
     }
-    let claims = await Claim.findAll({
+    const claims = await Claim.findAll({
       where: { id: claimIds },
       ...Claim.INCLUDE(1),
     });
-    for (let claim of claims) {
+    for (const claim of claims) {
       if (!claim.head.deleted) {
         promises.push(claim.fillData(data, 1, user));
       }
     }
   }
 
-  let sourceItems = results.filter(item => item.type === ItemType.SOURCE);
+  const sourceItems = results.filter(item => item.type === ItemType.SOURCE);
   if (sourceItems.length > 0 || maybeId) {
-    let sourceIds = sourceItems.map(item => item.id);
+    const sourceIds = sourceItems.map(item => item.id);
     if (maybeId) {
       sourceIds.push(query);
     }
-    let sources = await Source.findAll({
+    const sources = await Source.findAll({
       where: { id: sourceIds },
       ...Source.INCLUDE(1),
     });
-    for (let source of sources) {
+    for (const source of sources) {
       if (!source.head.deleted) {
         promises.push(async () => {
           data.sources[source.id] = await source.toData(user);

@@ -47,11 +47,11 @@ export default {
     ...mapState(['hasNotifications']),
   },
   async mounted() {
-    let results = await this.$store.dispatch('getNotifications');
+    const results = await this.$store.dispatch('getNotifications');
     this.until = results.until;
     this.readUntil = results.readUntil;
     this.items = results.items.map(this.lookupItemWithType);
-    let hasNotifications = any(
+    const hasNotifications = any(
       this.items,
       ({ item }) => !this.isItemRead(item)
     );

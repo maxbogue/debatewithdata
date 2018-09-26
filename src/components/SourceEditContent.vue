@@ -104,7 +104,7 @@ export default {
   }),
   computed: {
     newSource() {
-      let source = {
+      const source = {
         url: this.url,
         text: this.text,
         type: this.type,

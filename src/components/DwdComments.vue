@@ -96,7 +96,7 @@ export default {
         id: this.id,
         commentId,
       });
-      let i = this.comments.findIndex(c => c.id === commentId);
+      const i = this.comments.findIndex(c => c.id === commentId);
       if (i >= 0) {
         this.comments.splice(i, 1);
       }

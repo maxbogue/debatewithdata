@@ -66,7 +66,7 @@ export default {
           this.validate(this.value);
         } catch (e) {
           if (e instanceof ValidationError) {
-            let stripKey = e.message.match(/^"\w*" (.*)$/);
+            const stripKey = e.message.match(/^"\w*" (.*)$/);
             return uppercaseFirstLetter(stripKey ? stripKey[1] : e.message);
           }
           throw e;
@@ -78,7 +78,7 @@ export default {
       return !this.state && this.innerError && !this.maskError;
     },
     inputClasses() {
-      let classes = [];
+      const classes = [];
       if (this.mono) {
         classes.push('mono');
       }

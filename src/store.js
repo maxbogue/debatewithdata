@@ -19,7 +19,7 @@ function shouldStore(i1, i2) {
 }
 
 function cleanItem(item) {
-  let copy = cloneDeep(item);
+  const copy = cloneDeep(item);
   walk(copy, o => delete o.tempId);
   return copy;
 }
@@ -46,7 +46,7 @@ function singleColumnPlugin(store) {
 async function wrapLoading(commit, promise) {
   commit('setLoading', true);
   try {
-    let ret = await promise;
+    const ret = await promise;
     commit('setLoading', false);
     return ret;
   } catch (err) {
@@ -136,7 +136,7 @@ const makeStoreOptions = (auth, api) => ({
       state.itemBlocks.push(vm);
     },
     unregisterItemBlock(state, vm) {
-      let i = state.itemBlocks.indexOf(vm);
+      const i = state.itemBlocks.indexOf(vm);
       if (i < 0) {
         console.warn('Missing item block.');
       } else {

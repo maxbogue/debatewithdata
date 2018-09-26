@@ -65,7 +65,7 @@ export default {
     ItemBlock,
   },
   metaInfo() {
-    let title = {
+    const title = {
       [ItemType.TOPIC]: 'Topics',
       [ItemType.CLAIM]: 'Claims',
       [ItemType.SOURCE]: 'Data',
@@ -104,7 +104,7 @@ export default {
       throw new Error(`Invalid item type: ${this.type}`);
     },
     paramsWithoutPage() {
-      let filters = [];
+      const filters = [];
       if (this.filterStarred !== null) {
         filters.push([Filter.STARRED, this.filterStarred]);
       }
@@ -174,9 +174,9 @@ export default {
         this.getItems();
         return;
       }
-      let query = this.query;
+      const query = this.query;
       this.loading = true;
-      let { results, numPages } = await this.$store.dispatch('search', {
+      const { results, numPages } = await this.$store.dispatch('search', {
         ...this.queryParams,
         loader: this.$refs.loader,
       });
@@ -192,7 +192,7 @@ export default {
   methods: {
     async getItems() {
       this.results = null;
-      let { results, numPages } = await this.$store.dispatch('getItems', {
+      const { results, numPages } = await this.$store.dispatch('getItems', {
         ...this.params,
         page: this.page,
         loader: this.$refs.loader,

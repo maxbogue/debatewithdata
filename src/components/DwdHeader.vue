@@ -81,14 +81,14 @@ export default {
   computed: {
     ...mapState(['user', 'hasNotifications']),
     loginUrl() {
-      let path = this.$route.fullPath;
+      const path = this.$route.fullPath;
       if (path === '/' || path.startsWith('/login')) {
         return '/login';
       }
       return '/login?next=' + path;
     },
     logoutUrl() {
-      let path = this.$route.fullPath;
+      const path = this.$route.fullPath;
       if (path === '/' || path.startsWith('/logout')) {
         return '/logout';
       }

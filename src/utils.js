@@ -29,7 +29,7 @@ export function pipe(...fns) {
 }
 
 export function diff(text1, text2) {
-  let diffs = textDiff.main(text1, text2);
+  const diffs = textDiff.main(text1, text2);
   textDiff.cleanupSemantic(diffs);
   return textDiff.prettyHtml(diffs);
 }
@@ -44,7 +44,7 @@ export function walk(o, f) {
 }
 
 export function genId() {
-  let chars = [];
+  const chars = [];
   for (let i = 0; i < 16; i++) {
     chars.push(Math.floor(Math.random() * 16).toString(16));
   }
@@ -60,7 +60,7 @@ export function emptyPoints() {
 }
 
 function combinePoints(claim, state) {
-  let points = [{}, {}];
+  const points = [{}, {}];
   if (!claim || claim.deleted) {
     return points;
   }
@@ -77,7 +77,7 @@ function combinePoints(claim, state) {
     };
   });
   if (claim.newSubClaims) {
-    for (let subClaim of claim.newSubClaims) {
+    for (const subClaim of claim.newSubClaims) {
       points[subClaim.isFor ? 0 : 1][subClaim.tempId] = {
         ...subClaim,
         pointType: PointType.NEW_CLAIM,
@@ -85,7 +85,7 @@ function combinePoints(claim, state) {
     }
   }
   if (claim.newSources) {
-    for (let source of claim.newSources) {
+    for (const source of claim.newSources) {
       points[source.isFor ? 0 : 1][source.tempId] = {
         ...source,
         pointType: PointType.NEW_SOURCE,
@@ -96,12 +96,12 @@ function combinePoints(claim, state) {
 }
 
 export function splitPoints(points) {
-  let subClaimIds = {};
-  let sourceIds = {};
-  let newSubClaims = [];
-  let newSources = [];
+  const subClaimIds = {};
+  const sourceIds = {};
+  const newSubClaims = [];
+  const newSources = [];
   for (let i = 0; i < points.length; i += 1) {
-    for (let point of points[i]) {
+    for (const point of points[i]) {
       if (point.pointType === PointType.CLAIM) {
         subClaimIds[point.id] = i === 0;
       } else if (point.pointType === PointType.SOURCE) {
@@ -161,7 +161,7 @@ export function combineAndSortPoints(claim, state) {
 }
 
 export function rotateWithIndexes(lists) {
-  let retList = [];
+  const retList = [];
   for (let i = 0; i < Math.max(...map(lists, list => list.length)); i++) {
     for (let j = 0; j < lists.length; j++) {
       if (i < lists[j].length) {
@@ -175,8 +175,8 @@ export function rotateWithIndexes(lists) {
 // Takes two lists of IDs and an { id: item } map and computes the diff.
 // Returns [[item, diffClass]] where |diffClass| is '', 'ins', or 'del'.
 export function diffIdLists(newIds, oldIds, data) {
-  let inOld = id => oldIds.includes(id);
-  let notInNew = id => !newIds.includes(id);
+  const inOld = id => oldIds.includes(id);
+  const notInNew = id => !newIds.includes(id);
 
   let [inBoth, added] = partition(newIds, inOld);
   let removed = filter(oldIds, notInNew);
@@ -185,7 +185,7 @@ export function diffIdLists(newIds, oldIds, data) {
   removed.sort();
   inBoth.sort();
 
-  let zipWith = (ids, v) => map(ids, id => [data[id], v]);
+  const zipWith = (ids, v) => map(ids, id => [data[id], v]);
   added = zipWith(added, 'ins');
   removed = zipWith(removed, 'del');
   inBoth = zipWith(inBoth, '');
@@ -197,32 +197,34 @@ export function diffIdLists(newIds, oldIds, data) {
 // removed, modified, and unmodified.
 function diffItems(newItems, oldItems) {
   if (isArray(newItems)) {
-    let newItemMap = {};
-    for (let rev of newItems) {
+    const newItemMap = {};
+    for (const rev of newItems) {
       newItemMap[rev.id || rev.tempId] = rev;
     }
     newItems = newItemMap;
   }
-  let inOld = id => oldItems[id];
-  let notInNew = id => !newItems[id];
+  const inOld = id => oldItems[id];
+  const notInNew = id => !newItems[id];
 
-  let [inBoth, added] = partition(Object.keys(newItems), inOld);
-  let removed = Object.keys(oldItems).filter(notInNew);
+  const [inBoth, added] = partition(Object.keys(newItems), inOld);
+  const removed = Object.keys(oldItems).filter(notInNew);
 
   added.sort();
   removed.sort();
   inBoth.sort();
 
-  let ids = added.concat(removed, inBoth);
+  const ids = added.concat(removed, inBoth);
   return map(ids, id => [id, newItems[id], oldItems[id]]);
 }
 
 export function diffPoints(newItem, oldItem, state) {
-  let newPoints = (newItem && newItem.points) || combinePoints(newItem, state);
-  let oldPoints = (oldItem && oldItem.points) || combinePoints(oldItem, state);
-  let pointDiffs = [];
+  const newPoints =
+    (newItem && newItem.points) || combinePoints(newItem, state);
+  const oldPoints =
+    (oldItem && oldItem.points) || combinePoints(oldItem, state);
+  const pointDiffs = [];
 
-  for (let i of [0, 1]) {
+  for (const i of [0, 1]) {
     pointDiffs.push(diffItems(newPoints[i], oldPoints[i]));
   }
 
@@ -254,17 +256,17 @@ export function axiosErrorToString(error) {
   return error.response.data.message;
 }
 
-export var DwdUtilsMixin = {
+export const DwdUtilsMixin = {
   filters: {
     toSideString(isFor) {
       return isFor === null ? 'neutral' : isFor ? 'for' : 'against';
     },
     timestamp(isoDate, format = 'yyyy-mm-dd HH:MM') {
-      let date = new Date(isoDate);
+      const date = new Date(isoDate);
       return dateFormat(date, format);
     },
     shortTimestamp(isoDate) {
-      let date = new Date(isoDate);
+      const date = new Date(isoDate);
       if (Date.now() - date < ONE_DAY_MS) {
         return dateFormat(date, 'h:MMtt');
       }
@@ -303,7 +305,7 @@ export var DwdUtilsMixin = {
       throw new Error(`Invalid item type: ${type}`);
     },
     lookupItemWithType({ type, id }) {
-      let item = this.lookupItem(type, id);
+      const item = this.lookupItem(type, id);
       return { type, item };
     },
     displayItemType(type) {

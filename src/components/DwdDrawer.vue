@@ -47,11 +47,11 @@ export default {
   },
   methods: {
     open() {
-      let { drawer } = this.$refs;
+      const { drawer } = this.$refs;
 
       // Briefly override the v-show style to grab the height.
       drawer.style.display = 'block';
-      let height = drawer.scrollHeight;
+      const height = drawer.scrollHeight;
       drawer.style.display = '';
 
       this.height = height;
@@ -59,7 +59,7 @@ export default {
       this.innerShow = true;
     },
     close() {
-      let { drawer } = this.$refs;
+      const { drawer } = this.$refs;
       this.height = drawer.scrollHeight;
 
       // For some reason nextTick does not work correctly here. The new start
