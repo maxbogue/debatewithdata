@@ -19,9 +19,6 @@
         "sourceType": "module"
     },
     "rules": {
-        "no-prototype-builtins": ["error"],
-        "no-template-curly-in-string": ["error"],
-
         "block-scoped-var": ["error"],
         "complexity": ["error"],
         "consistent-return": ["error"],
@@ -30,11 +27,13 @@
         "eqeqeq": ["error"],
         "guard-for-in": ["error"],
         "linebreak-style": ["error", "unix"],
+        "max-depth": ["error", 5],
+        "no-await-in-loop": ["error"],
         "no-bitwise": ["error"],
         "no-caller": ["error"],
         "no-console": ["error", { "allow": ["warn", "error"] }],
-        "no-eq-null": ["error"],
         "no-else-return": ["error"],
+        "no-eq-null": ["error"],
         "no-eval": ["error"],
         "no-extend-native": ["error"],
         "no-extra-bind": ["error"],
@@ -42,11 +41,10 @@
         "no-implied-eval": ["error"],
         "no-invalid-this": ["error"],
         "no-loop-func": ["error"],
+        "no-prototype-builtins": ["error"],
         "no-sequences": ["error"],
-
         "no-shadow": ["error"],
-
-        "max-depth": ["error", 5],
+        "no-template-curly-in-string": ["error"],
 
         "sort-imports-es6-autofix/sort-imports-es6": [2, {
           "ignoreCase": false,

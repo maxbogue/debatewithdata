@@ -3,6 +3,7 @@ import search from '@/common/search';
 import { ConflictError, NotFoundError } from '@/api/error';
 import { ItemType, PAGE_SIZE } from '@/common/constants';
 import { ValidationError, validateSource } from '@/common/validate';
+import { asyncForEach } from '@/common/utils';
 import { genId } from './utils';
 import { sourcesAreEqual } from '@/common/equality';
 
@@ -220,9 +221,7 @@ export default function(sequelize, DataTypes, knex) {
           ],
         });
         sourceData.claimIds = claims.map(claim => claim.id);
-        for (let claim of claims) {
-          await claim.fillData(data, 1, user);
-        }
+        await asyncForEach(claims, claim => claim.fillData(data, 1, user));
       }
 
       return data;

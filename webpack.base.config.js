@@ -2,8 +2,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 
-const styleLoader = process.env.NODE_ENV !== 'production'
-  ? 'vue-style-loader' : MiniCssExtractPlugin.loader;
+const styleLoader =
+  process.env.NODE_ENV !== 'production'
+    ? 'vue-style-loader'
+    : MiniCssExtractPlugin.loader;
 
 const sassLoader = {
   loader: 'sass-loader',
@@ -28,7 +30,7 @@ const baseConfig = {
         exclude: /node_modules/,
         options: {
           appendTsSuffixTo: [/\.vue$/],
-        }
+        },
       },
       {
         test: /\.js$/,
@@ -45,21 +47,22 @@ const baseConfig = {
                 loader: 'css-loader',
                 options: {
                   modules: true,
-                  localIdentName: '[local]_[hash:base64:5]'
-                }
+                  localIdentName: '[local]_[hash:base64:5]',
+                },
               },
               sassLoader,
-            ]
-          }, {
-            use: [styleLoader, 'css-loader', sassLoader]
-          }
+            ],
+          },
+          {
+            use: [styleLoader, 'css-loader', sassLoader],
+          },
         ],
       },
       {
         test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-        use: 'url-loader?limit=100000'
-      }
-    ]
+        use: 'url-loader?limit=100000',
+      },
+    ],
   },
   plugins: [
     new VueLoaderPlugin(),
@@ -69,24 +72,24 @@ const baseConfig = {
   ],
   externals: {
     // Unused drivers for knex.
-    'sqlite3': 'sqlite3',
-    'mariasql': 'mariasql',
-    'mssql': 'mssql',
-    'mysql': 'mysql',
-    'oracle': 'oracle',
+    sqlite3: 'sqlite3',
+    mariasql: 'mariasql',
+    mssql: 'mssql',
+    mysql: 'mysql',
+    oracle: 'oracle',
     'strong-oracle': 'strong-oracle',
-    'oracledb': 'oracledb'
+    oracledb: 'oracledb',
   },
   resolve: {
     extensions: ['.ts', '.js', '.vue', '.json'],
     alias: {
-      'vue$': 'vue/dist/vue.esm.js',
+      vue$: 'vue/dist/vue.esm.js',
       '@': path.join(__dirname, 'src'),
-    }
+    },
   },
   devtool: 'source-map',
   performance: {
-    hints: false
+    hints: false,
   },
 };
 

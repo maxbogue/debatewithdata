@@ -7,9 +7,7 @@ const { baseConfig } = require('./webpack.base.config.js');
 module.exports = merge(baseConfig, {
   mode: 'development',
   target: 'node',
-  plugins: [
-    new EnvironmentPlugin({ NODE_ENV: 'test' }),
-  ],
+  plugins: [new EnvironmentPlugin({ NODE_ENV: 'test' })],
   externals: nodeExternals(),
   devtool: 'inline-cheap-module-source-map',
 });

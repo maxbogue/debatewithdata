@@ -13,11 +13,11 @@ module.exports = [
     entry: './src/server.js',
     output: {
       path: path.resolve(__dirname, 'build'),
-      filename: 'main.js'
+      filename: 'main.js',
     },
     node: {
       __filename: true,
-      __dirname: true
+      __dirname: true,
     },
     externals: nodeExternals(),
   }),
@@ -27,7 +27,7 @@ module.exports = [
     output: {
       path: path.resolve(__dirname, 'build/js'),
       publicPath: '/js/',
-      filename: '[name].js'
+      filename: '[name].js',
     },
   }),
 ];

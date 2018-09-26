@@ -16,6 +16,7 @@ export async function search(user, query, types, page) {
   let start = PAGE_SIZE * ((parseInt(page) || 1) - 1);
   results = results.slice(start, start + PAGE_SIZE);
 
+  let promises = [];
   let data = { results, numPages, topics: {}, claims: {}, sources: {} };
   let maybeId = ANY_ID_REGEX.test(query);
 
@@ -31,7 +32,7 @@ export async function search(user, query, types, page) {
     });
     for (let topic of topics) {
       if (!topic.head.deleted) {
-        await topic.fillData(data, 1, user);
+        promises.push(topic.fillData(data, 1, user));
       }
     }
   }
@@ -48,7 +49,7 @@ export async function search(user, query, types, page) {
     });
     for (let claim of claims) {
       if (!claim.head.deleted) {
-        await claim.fillData(data, 1, user);
+        promises.push(claim.fillData(data, 1, user));
       }
     }
   }
@@ -65,10 +66,13 @@ export async function search(user, query, types, page) {
     });
     for (let source of sources) {
       if (!source.head.deleted) {
-        data.sources[source.id] = await source.toData(user);
+        promises.push(async () => {
+          data.sources[source.id] = await source.toData(user);
+        });
       }
     }
   }
 
+  await Promise.all(promises);
   return data;
 }

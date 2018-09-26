@@ -115,20 +115,28 @@ export default function(sequelize, DataTypes) {
         );
       }
 
+      const promises = [];
+
       if (data.newSubTopics) {
         for (let subTopicData of data.newSubTopics) {
-          await models.Topic.apiCreate(user, subTopicData, false, transaction);
+          promises.push(
+            models.Topic.apiCreate(user, subTopicData, false, transaction)
+          );
           subTopicIds.push(subTopicData.id);
         }
       }
 
       if (data.newClaims) {
         for (let claimData of data.newClaims) {
-          let rev = await models.Claim.apiCreate(user, claimData, transaction);
-          claimIds.push(rev.claimId);
+          promises.push(
+            models.Claim.apiCreate(user, claimData, transaction).then(rev => {
+              claimIds.push(rev.claimId);
+            })
+          );
         }
       }
 
+      await Promise.all(promises);
       await topicRev.addClaims(claimIds, { transaction });
       await topicRev.addSubTopics(subTopicIds, { transaction });
       await topic.setHead(topicRev, { transaction });
@@ -174,15 +182,17 @@ export default function(sequelize, DataTypes) {
       thisData.createdAt = this.created_at;
 
       if (!this.deleted) {
+        const promises = [];
         for (let subTopic of this.subTopics) {
-          await subTopic.fillData(data, 1, user);
+          promises.push(subTopic.fillData(data, 1, user));
         }
         for (let claim of this.claims) {
-          await claim.fillData(data, 1, user);
+          promises.push(claim.fillData(data, 1, user));
         }
+        await Promise.all(promises);
       }
 
-      data.topicRevs.push(thisData);
+      return thisData;
     };
   };
 

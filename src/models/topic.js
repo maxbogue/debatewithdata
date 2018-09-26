@@ -204,12 +204,14 @@ export default function(sequelize, DataTypes, knex) {
       thisData.commentCount = await this.countComments();
       thisData.childCount = graph.getCount(this.id);
 
+      const promises = [];
+
       if (!this.head.deleted && depth > 1) {
         for (let subTopic of this.head.subTopics) {
-          await subTopic.fillData(data, depth - 1, user);
+          promises.push(subTopic.fillData(data, depth - 1, user));
         }
         for (let claim of this.head.claims) {
-          await claim.fillData(data, depth - 1, user);
+          promises.push(claim.fillData(data, depth - 1, user));
         }
       }
 
@@ -232,11 +234,12 @@ export default function(sequelize, DataTypes, knex) {
         let superTopicIds = [];
         for (let superTopic of superTopics) {
           superTopicIds.push(superTopic.id);
-          await superTopic.fillData(data, 1, user);
+          promises.push(superTopic.fillData(data, 1, user));
         }
         thisData.superTopicIds = superTopicIds;
       }
 
+      await Promise.all(promises);
       data.topics[this.id] = thisData;
     };
 
@@ -339,9 +342,9 @@ export default function(sequelize, DataTypes, knex) {
         topics: {},
         claims: {},
       };
-      for (let topicRev of topicRevs) {
-        await topicRev.fillData(data, user);
-      }
+      data.topicRevs = await Promise.all(
+        topicRevs.map(topicRev => topicRev.fillData(data, user))
+      );
       return data;
     };
 

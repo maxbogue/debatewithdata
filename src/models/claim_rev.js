@@ -110,23 +110,29 @@ export default function(sequelize, DataTypes) {
       let subClaimIds = data.subClaimIds ? { ...data.subClaimIds } : {};
       let sourceIds = data.sourceIds ? { ...data.sourceIds } : {};
 
+      const promises = [];
+
       if (data.newSubClaims) {
         for (let claimData of data.newSubClaims) {
-          let rev = await models.Claim.apiCreate(user, claimData, transaction);
-          subClaimIds[rev.claimId] = claimData.isFor;
-        }
-      }
-      if (data.newSources) {
-        for (let sourceData of data.newSources) {
-          let rev = await models.Source.apiCreate(
-            user,
-            sourceData,
-            transaction
+          promises.push(
+            models.Claim.apiCreate(user, claimData, transaction).then(rev => {
+              subClaimIds[rev.claimId] = claimData.isFor;
+            })
           );
-          sourceIds[rev.sourceId] = sourceData.isFor;
         }
       }
 
+      if (data.newSources) {
+        for (let sourceData of data.newSources) {
+          promises.push(
+            models.Source.apiCreate(user, sourceData, transaction).then(rev => {
+              sourceIds[rev.sourceId] = sourceData.isFor;
+            })
+          );
+        }
+      }
+
+      await Promise.all(promises);
       await asyncForOwn(subClaimIds, (isFor, subClaimId) =>
         claimRev.addSubClaim(subClaimId, {
           through: { isFor },
@@ -189,15 +195,21 @@ export default function(sequelize, DataTypes) {
       thisData.createdAt = this.created_at;
 
       if (!thisData.deleted) {
+        const promises = [];
         for (let subClaim of this.subClaims) {
-          await subClaim.fillData(data, 1);
+          promises.push(subClaim.fillData(data, 1));
         }
         for (let source of this.sources) {
-          data.sources[source.id] = await source.toData();
+          promises.push(
+            source.toData().then(sourceData => {
+              data.sources[source.id] = sourceData;
+            })
+          );
         }
+        await Promise.all(promises);
       }
 
-      data.claimRevs.push(thisData);
+      return thisData;
     };
   };
 

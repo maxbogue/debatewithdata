@@ -1,10 +1,20 @@
+export async function asyncForEach(xs, f) {
+  const promises = [];
+  for (const x of xs) {
+    promises.push(f(x));
+  }
+  await Promise.all(promises);
+}
+
 // An async version of lodash's forOwn function.
 export async function asyncForOwn(obj, f) {
+  const promises = [];
   for (let k in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, k)) {
-      await f(obj[k], k, obj);
+      promises.push(f(obj[k], k, obj));
     }
   }
+  await Promise.all(promises);
 }
 
 export function any(ls, f) {

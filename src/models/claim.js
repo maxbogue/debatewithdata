@@ -204,12 +204,18 @@ export default function(sequelize, DataTypes, knex) {
       thisData.childCount = graph.getCount(this.id);
       thisData.dataCounts = graph.getDataCounts(this.id);
 
+      const promises = [];
+
       if (!thisData.deleted && depth > 1) {
         for (let claim of this.head.subClaims) {
-          await claim.fillData(data, depth - 1, user);
+          promises.push(claim.fillData(data, depth - 1, user));
         }
         for (let source of this.head.sources) {
-          data.sources[source.id] = await source.toData();
+          promises.push(
+            source.toData().then(sourceData => {
+              data.sources[source.id] = sourceData;
+            })
+          );
         }
       }
 
@@ -233,7 +239,7 @@ export default function(sequelize, DataTypes, knex) {
         let superClaimIds = [];
         for (let superClaim of superClaims) {
           superClaimIds.push(superClaim.id);
-          await superClaim.fillData(data, 1, user);
+          promises.push(superClaim.fillData(data, 1, user));
         }
         thisData.superClaimIds = superClaimIds;
 
@@ -256,11 +262,12 @@ export default function(sequelize, DataTypes, knex) {
         let superTopicIds = [];
         for (let superTopic of superTopics) {
           superTopicIds.push(superTopic.id);
-          await superTopic.fillData(data, 1, user);
+          promises.push(superTopic.fillData(data, 1, user));
         }
         thisData.superTopicIds = superTopicIds;
       }
 
+      await Promise.all(promises);
       data.claims[this.id] = thisData;
     };
 
@@ -359,9 +366,9 @@ export default function(sequelize, DataTypes, knex) {
 
       // Include the claim itself for star/comment info.
       await claim.fillData(data, 1, user);
-      for (let claimRev of claimRevs) {
-        await claimRev.fillData(data);
-      }
+      data.claimRevs = await Promise.all(
+        claimRevs.map(rev => rev.fillData(data, user))
+      );
       return data;
     };
 
