@@ -22,11 +22,11 @@ export default {
     DwdModal,
   },
   computed: {
-    ...mapState(['modalError']),
+    ...mapState('substates', ['modalError']),
   },
   methods: {
     clearError() {
-      this.$store.commit('setModalError', '');
+      this.$store.commit('substates/setModalError', '');
     },
   },
 };

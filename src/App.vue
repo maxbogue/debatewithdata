@@ -11,10 +11,10 @@
 <script>
 import { mapState } from 'vuex';
 
-import DwdFooter from './components/DwdFooter.vue';
-import DwdHeader from './components/DwdHeader.vue';
-import DwdLoader from './components/DwdLoader.vue';
-import ErrorModal from './components/ErrorModal.vue';
+import DwdFooter from '@/components/DwdFooter.vue';
+import DwdHeader from '@/components/DwdHeader.vue';
+import DwdLoader from '@/components/DwdLoader.vue';
+import ErrorModal from '@/components/ErrorModal.vue';
 
 export default {
   components: {
@@ -28,7 +28,7 @@ export default {
     titleTemplate: '%s - DebateWithData',
   },
   computed: {
-    ...mapState(['loading', 'loadingError', 'suppressRoutes']),
+    ...mapState('substates', ['loading', 'loadingError', 'suppressRoutes']),
   },
 };
 </script>

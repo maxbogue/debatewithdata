@@ -20,9 +20,6 @@ const baseConfig = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: {
-          optimizeSSR: false,
-        },
       },
       {
         test: /\.ts$/,

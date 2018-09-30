@@ -135,7 +135,7 @@ export function createRouter(auth, store) {
   const router = new VueRouter(createRouterOptions(authRedirect));
 
   router.beforeEach((to, from, next) => {
-    store.commit('storeItemBlockLocations');
+    store.commit('itemBlocks/storeLocations');
     next();
   });
 
@@ -160,12 +160,12 @@ export function createRouter(auth, store) {
       return;
     }
 
-    store.commit('setSuppressRoutes', true);
+    store.commit('substates/setSuppressRoutes', true);
 
     Promise.all(promises)
       .then(() => {
         next();
-        store.commit('setSuppressRoutes', false);
+        store.commit('substates/setSuppressRoutes', false);
       })
       .catch(next);
   });

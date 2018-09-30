@@ -36,6 +36,7 @@
 
 <script>
 import isEmpty from 'lodash/isEmpty';
+import { mapState } from 'vuex';
 
 import ClaimDataAnalysis from './ClaimDataAnalysis.vue';
 import DwdComments from './DwdComments.vue';
@@ -83,6 +84,7 @@ export default {
     showComments: false,
   }),
   computed: {
+    ...mapState('itemBlocks', ['itemLocations', 'itemBlockSliding']),
     blockClasses() {
       return [
         this.type,
@@ -103,7 +105,7 @@ export default {
       return this.itemUrl(this.type, this.id, this.trail);
     },
     animateFrom() {
-      return this.$store.state.itemLocations[this.id];
+      return this.itemLocations[this.id];
     },
   },
   watch: {
@@ -112,7 +114,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('registerItemBlock', this);
+    this.$store.commit('itemBlocks/register', this);
     this.$el.addEventListener('transitionend', () => {
       this.$el.classList.remove(this.$style.animating);
       this.$el.style.overflow = '';
@@ -125,11 +127,11 @@ export default {
     this.$nextTick(this.animate);
   },
   beforeDestroy() {
-    this.$store.commit('unregisterItemBlock', this);
+    this.$store.commit('itemBlocks/unregister', this);
   },
   methods: {
     animate() {
-      if (isEmpty(this.$store.state.itemLocations)) {
+      if (isEmpty(this.itemLocations)) {
         return;
       }
 
@@ -145,7 +147,7 @@ export default {
 
       // Wait for nextTick to let any sliding blocks mark itemBlockSliding.
       this.$nextTick(() => {
-        if (this.mini && this.$store.state.itemBlockSliding) {
+        if (this.mini && this.itemBlockSliding) {
           this.animateOpen();
         } else {
           this.animateFade();
@@ -154,7 +156,7 @@ export default {
     },
     animateFade() {
       let delay = 0;
-      if (this.$store.state.itemBlockSliding) {
+      if (this.itemBlockSliding) {
         // Delay fade if a block is sliding.
         delay = ANIMATION_DURATION_MS;
       }
@@ -179,7 +181,7 @@ export default {
       }, ANIMATION_DURATION_MS);
     },
     animateSlide() {
-      this.$store.commit('itemBlockSliding');
+      this.$store.commit('itemBlocks/setSliding');
 
       const from = this.animateFrom;
       const to = this.$el.getBoundingClientRect();

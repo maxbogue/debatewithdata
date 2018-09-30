@@ -4,8 +4,11 @@ import cloneDeep from 'lodash/cloneDeep';
 import forEach from 'lodash/forEach';
 import forOwn from 'lodash/forOwn';
 
-import { axiosErrorToString, walk } from './utils';
-import { validateItem } from './common/validate';
+import { walk } from '@/utils';
+import { validateItem } from '@/common/validate';
+
+import createItemBlocksModule from './itemBlocks';
+import createSubstatesModule from './substates';
 
 Vue.use(Vuex);
 
@@ -15,7 +18,7 @@ const CONFLICT_ERROR_MESSAGE =
 
 // Whether i1 should be stored over i2.
 function shouldStore(i1, i2) {
-  return !i2 || i1.depth > i2.depth;
+  return !i2 || i1.revId !== i2.revId || i1.depth > i2.depth;
 }
 
 function cleanItem(item) {
@@ -32,11 +35,11 @@ function filterTrail(trail, state) {
 }
 
 function windowIsSingleColumn() {
-  return global.window ? window.innerWidth < 768 : false;
+  return typeof window !== 'undefined' ? window.innerWidth < 768 : false;
 }
 
 function singleColumnPlugin(store) {
-  if (global.window) {
+  if (typeof window !== 'undefined') {
     window.addEventListener('resize', () => {
       store.commit('setSingleColumn', windowIsSingleColumn());
     });
@@ -44,15 +47,14 @@ function singleColumnPlugin(store) {
 }
 
 async function wrapLoading(commit, promise) {
-  commit('setLoading', true);
+  commit('substates/setLoading', true);
   try {
-    const ret = await promise;
-    commit('setLoading', false);
-    return ret;
+    return await promise;
   } catch (err) {
-    commit('setLoading', false);
-    commit('setLoadingError', err);
+    commit('substates/setLoadingError', err);
     throw err;
+  } finally {
+    commit('substates/setLoading', false);
   }
 }
 
@@ -72,19 +74,16 @@ async function wrapLoader(loader, promise) {
 }
 
 const makeStoreOptions = (auth, api) => ({
+  modules: {
+    itemBlocks: createItemBlocksModule(),
+    substates: createSubstatesModule(),
+  },
   state: {
     topics: {},
     claims: {},
     sources: {},
     user: null,
-    suppressRoutes: false,
-    loading: false,
-    loadingError: '',
-    modalError: '',
     singleColumn: windowIsSingleColumn(),
-    itemBlocks: [],
-    itemLocations: {},
-    itemBlockSliding: false,
     hasNotifications: false,
   },
   mutations: {
@@ -117,41 +116,8 @@ const makeStoreOptions = (auth, api) => ({
       state.claims = {};
       state.source = {};
     },
-    setSuppressRoutes(state, suppressRoutes) {
-      state.suppressRoutes = suppressRoutes;
-    },
-    setLoading(state, loading) {
-      state.loading = loading;
-    },
-    setLoadingError(state, err) {
-      state.loadingError = axiosErrorToString(err);
-    },
-    setModalError(state, modalError) {
-      state.modalError = modalError;
-    },
     setSingleColumn(state, isSingleColumn) {
       state.singleColumn = isSingleColumn;
-    },
-    registerItemBlock(state, vm) {
-      state.itemBlocks.push(vm);
-    },
-    unregisterItemBlock(state, vm) {
-      const i = state.itemBlocks.indexOf(vm);
-      if (i < 0) {
-        console.warn('Missing item block.');
-      } else {
-        state.itemBlocks.splice(i, 1);
-      }
-    },
-    storeItemBlockLocations(state) {
-      state.itemLocations = {};
-      state.itemBlockSliding = false;
-      forEach(state.itemBlocks, vm => {
-        state.itemLocations[vm.id] = vm.$el.getBoundingClientRect();
-      });
-    },
-    itemBlockSliding(state) {
-      state.itemBlockSliding = true;
     },
     setHasNotifications(state, hasNotifications) {
       state.hasNotifications = hasNotifications;
@@ -224,7 +190,7 @@ const makeStoreOptions = (auth, api) => ({
         // TODO: Translate HTTP errors at the ApiClient level.
         if (err.response.status === 409) {
           commit('setData', err.response.data.data);
-          commit('setErrorMessage', CONFLICT_ERROR_MESSAGE);
+          commit('substates/setModalError', CONFLICT_ERROR_MESSAGE);
         }
         throw err;
       }
