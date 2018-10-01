@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import cloneDeep from 'lodash/cloneDeep';
-import forEach from 'lodash/forEach';
 import forOwn from 'lodash/forOwn';
 
-import { walk } from '@/utils';
+import { axiosErrorToString, walk } from '@/utils';
 import { validateItem } from '@/common/validate';
 
 import createItemBlocksModule from './itemBlocks';
+import createSortModule from './sort';
 import createSubstatesModule from './substates';
 
 Vue.use(Vuex);
@@ -76,6 +76,7 @@ async function wrapLoader(loader, promise) {
 const makeStoreOptions = (auth, api) => ({
   modules: {
     itemBlocks: createItemBlocksModule(),
+    sort: createSortModule(),
     substates: createSubstatesModule(),
   },
   state: {

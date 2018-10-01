@@ -40,11 +40,12 @@
 
 <script>
 import map from 'lodash/map';
+import { mapGetters } from 'vuex';
 
 import DwdTrail from '@/components/DwdTrail.vue';
 import ItemBlock from '@/components/ItemBlock.vue';
 import { ItemType } from '@/common/constants';
-import { parseTrail, sortByStars } from '@/utils';
+import { parseTrail } from '@/utils';
 
 export default {
   components: {
@@ -76,6 +77,7 @@ export default {
     showComments: false,
   }),
   computed: {
+    ...mapGetters('sort', ['sortByStars']),
     id() {
       return this.$route.params.id;
     },
@@ -86,13 +88,13 @@ export default {
       if (!this.topic || this.topic.deleted) {
         return [];
       }
-      return sortByStars(map(this.topic.subTopicIds, this.lookupTopic));
+      return this.sortByStars(map(this.topic.subTopicIds, this.lookupTopic));
     },
     claims() {
       if (!this.topic || this.topic.deleted) {
         return [];
       }
-      return sortByStars(map(this.topic.claimIds, this.lookupClaim));
+      return this.sortByStars(map(this.topic.claimIds, this.lookupClaim));
     },
     trail() {
       return this.parseTrail(this.$route.query.trail);

@@ -6,10 +6,8 @@ import forOwn from 'lodash/forOwn';
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import map from 'lodash/map';
-import md5 from 'md5';
 import omit from 'lodash/omit';
 import partition from 'lodash/partition';
-import sortBy from 'lodash/sortBy';
 
 import { ItemType, PointType } from './common/constants';
 
@@ -59,7 +57,7 @@ export function emptyPoints() {
   return [[emptyPoint()], [emptyPoint()]];
 }
 
-function combinePoints(claim, state) {
+export function combinePoints(claim, state) {
   const points = [{}, {}];
   if (!claim || claim.deleted) {
     return points;
@@ -129,35 +127,6 @@ export function splitPoints(points) {
 
 export function filterLiving(items) {
   return filter(items, item => !item.deleted);
-}
-
-// This random string acts as a seed to keep the sort stable.
-const sortSeed = genId();
-
-// Sorts randomly each page refresh. Requires a string or object with ID.
-export function stableRandom(item) {
-  if (typeof item === 'string') {
-    return md5(item + sortSeed);
-  } else if (item.id) {
-    return md5(item.id + sortSeed);
-  }
-  throw Error('stableRandom requires a string or object with an ID.');
-}
-
-export function starCount(item) {
-  return 'starCount' in item ? -item.starCount : 0;
-}
-
-export function starred(item) {
-  return 'starred' in item ? !item.starred : false;
-}
-
-export function sortByStars(items) {
-  return sortBy(items, [starred, starCount, stableRandom]);
-}
-
-export function combineAndSortPoints(claim, state) {
-  return combinePoints(claim, state).map(sortByStars);
 }
 
 export function rotateWithIndexes(lists) {

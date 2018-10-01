@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 import ClaimEditBlock from '@/components/ClaimEditBlock.vue';
 import ClaimRevBlock from '@/components/ClaimRevBlock.vue';
 import DeleteButton from '@/components/DeleteButton.vue';
@@ -42,7 +44,7 @@ import FixedBottom from '@/components/FixedBottom.vue';
 import PointsEdit from '@/components/PointsEdit.vue';
 import { ItemType } from '@/common/constants';
 import { claimsAreEqual } from '@/common/equality';
-import { combineAndSortPoints, parseTrail, splitPoints } from '@/utils';
+import { parseTrail, splitPoints } from '@/utils';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
 
@@ -99,6 +101,7 @@ export default {
     unloadOverride: false,
   }),
   computed: {
+    ...mapGetters('sort', ['combineAndSortPoints']),
     claim() {
       return this.$store.state.claims[this.id];
     },
@@ -172,7 +175,7 @@ export default {
       const seed = this.seed || this.claim;
       if (seed && !seed.deleted) {
         this.newClaimPartial = seed;
-        this.points = combineAndSortPoints(seed, this.$store.state);
+        this.points = this.combineAndSortPoints(seed);
       }
       if (!this.seed && this.initAddPoint < 0) {
         this.showEditBlock = true;

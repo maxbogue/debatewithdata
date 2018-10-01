@@ -61,17 +61,13 @@
 
 <script>
 import map from 'lodash/map';
+import { mapGetters } from 'vuex';
 
 import DwdTrail from '@/components/DwdTrail.vue';
 import IconAdd from '@/components/IconAdd.vue';
 import ItemBlock from '@/components/ItemBlock.vue';
 import { ItemType } from '@/common/constants';
-import {
-  combineAndSortPoints,
-  parseTrail,
-  rotateWithIndexes,
-  titleFromText,
-} from '@/utils';
+import { parseTrail, rotateWithIndexes, titleFromText } from '@/utils';
 
 export default {
   components: {
@@ -106,6 +102,7 @@ export default {
     isFor: null,
   }),
   computed: {
+    ...mapGetters('sort', ['combineAndSortPoints']),
     id() {
       return this.$route.params.id;
     },
@@ -119,7 +116,7 @@ export default {
       if (!this.claim || this.claim.deleted || this.claim.depth < 2) {
         return [];
       }
-      return combineAndSortPoints(this.claim, this.$store.state);
+      return this.combineAndSortPoints(this.claim);
     },
     zippedPoints() {
       return rotateWithIndexes(this.points);

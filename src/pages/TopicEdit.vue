@@ -80,7 +80,7 @@
 <script>
 import filter from 'lodash/filter';
 import sortBy from 'lodash/sortBy';
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import ClaimContent from '@/components/ClaimContent.vue';
 import ClaimLinkModal from '@/components/ClaimLinkModal.vue';
@@ -90,14 +90,7 @@ import FixedBottom from '@/components/FixedBottom.vue';
 import TopicEditAndReviewBlock from '@/components/TopicEditAndReviewBlock.vue';
 import TopicLinkModal from '@/components/TopicLinkModal.vue';
 import { ItemType } from '@/common/constants';
-import {
-  diffIdLists,
-  parseTrail,
-  pipe,
-  stableRandom,
-  starCount,
-  starred,
-} from '@/utils';
+import { diffIdLists, parseTrail, pipe } from '@/utils';
 import { topicsAreEqual } from '@/common/equality';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
@@ -163,6 +156,7 @@ export default {
   }),
   computed: {
     ...mapState(['user']),
+    ...mapGetters('sort', ['starred', 'starCount', 'stableRandom']),
     newId() {
       return this.newTopicPartial && this.newTopicPartial.id;
     },
@@ -288,30 +282,30 @@ export default {
 
         const topicStarred = pipe(
           this.lookupTopic,
-          starred
+          this.starred
         );
         const topicStarCount = pipe(
           this.lookupTopic,
-          starCount
+          this.starCount
         );
         this.subTopicIds = sortBy(seed.subTopicIds, [
           topicStarred,
           topicStarCount,
-          stableRandom,
+          this.stableRandom,
         ]);
 
         const claimStarred = pipe(
           this.lookupClaim,
-          starred
+          this.starred
         );
         const claimStarCount = pipe(
           this.lookupClaim,
-          starCount
+          this.starCount
         );
         this.claimIds = sortBy(seed.claimIds, [
           claimStarred,
           claimStarCount,
-          stableRandom,
+          this.stableRandom,
         ]);
       }
       if (!this.seed) {

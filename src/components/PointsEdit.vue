@@ -49,14 +49,10 @@
 import findIndex from 'lodash/findIndex';
 import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
+import { mapGetters } from 'vuex';
 
 import PointEdit from './PointEdit.vue';
-import {
-  combineAndSortPoints,
-  diffPoints,
-  emptyPoint,
-  rotateWithIndexes,
-} from '@/utils';
+import { diffPoints, emptyPoint, rotateWithIndexes } from '@/utils';
 
 function matchPoint(p) {
   return q => (p.id && p.id === q.id) || (p.tempId && p.tempId === q.tempId);
@@ -77,6 +73,7 @@ export default {
     pointOrder: null,
   }),
   computed: {
+    ...mapGetters('sort', ['combineAndSortPoints']),
     isSubPoints() {
       return this.isFor !== null;
     },
@@ -109,7 +106,7 @@ export default {
   mountedTriggersWatchers: true,
   mounted() {
     if (this.curr) {
-      this.points = combineAndSortPoints(this.curr, this.$store.state);
+      this.points = this.combineAndSortPoints(this.curr);
     }
     if (this.initAddPoint >= 0) {
       this.addPoint(this.initAddPoint);
