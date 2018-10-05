@@ -2,20 +2,13 @@
 
 <template>
 <div :class="blockClasses">
-  <router-link v-if="isLink"
-               :to="urlWithTrail"
-               class="bubble click">
-    <item-content :class="$style.contentSpacing"
-                  :item="item"
-                  :type="type"
-                  :abbreviated="abbreviated"
-                  is-link />
-  </router-link>
-  <item-content v-else
-                class="bubble"
+  <item-content class="bubble"
+                :class="{ click: isLink }"
                 :item="item"
                 :type="type"
-                :abbreviated="abbreviated" />
+                :abbreviated="abbreviated"
+                :is-link="isLink"
+                @click.native.stop="nav" />
   <template v-if="!abbreviated">
     <div class="info">
       <claim-data-analysis v-if="type === ItemType.CLAIM" :claim="item" />
@@ -130,6 +123,11 @@ export default {
     this.$store.commit('itemBlocks/unregister', this);
   },
   methods: {
+    nav() {
+      if (this.isLink) {
+        this.$router.push(this.urlWithTrail);
+      }
+    },
     animate() {
       if (isEmpty(this.itemLocations)) {
         return;
@@ -213,10 +211,6 @@ export default {
 
 <style lang="scss" module>
 @import '../style/constants';
-
-.contentSpacing > :not(:first-child) {
-  margin-top: $block-content-spacing;
-}
 
 .half {
   &:global(.topic),
