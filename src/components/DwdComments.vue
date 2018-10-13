@@ -35,7 +35,7 @@ export default {
   },
   props: {
     type: { type: String, required: true },
-    id: { type: String, required: true },
+    id: { type: String, default: null },
     show: { type: Boolean, required: true },
     // Triggers an eager load the first time it flips to true.
     hint: { type: Boolean, default: false },

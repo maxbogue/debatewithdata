@@ -1,10 +1,21 @@
+<!--
+  An input field that grows to fit its contents, trims
+  whitespace, handles validation with a customizable
+  function, and other state management.
+
+  This is a passthrough component; properties and events
+  bound on the component are passed to the inner
+  <textarea> element.</textarea>
+-->
+
 <template>
 <div>
   <textarea rows="1"
             autocomplete="off"
             ref="input"
             v-model="displayValue"
-            :placeholder="placeholder"
+            v-bind="$attrs"
+            v-on="listeners"
             :class="inputClasses"
             @invalid="maskError = false"
             @keydown.enter="handleEnter"></textarea>
@@ -29,9 +40,9 @@ export default {
   NORMAL,
   LOADING,
   SUCCESS,
+  inheritAttrs: false,
   props: {
     value: { type: String, required: true },
-    placeholder: { type: String, default: '' },
     // Error message to show for the input.
     error: { type: String, default: '' },
     // Alternative to |error|; performs input validation.
@@ -54,6 +65,12 @@ export default {
     };
   },
   computed: {
+    listeners() {
+      return {
+        ...this.$listeners,
+        input: event => this.$emit('input', event.target.value),
+      };
+    },
     trimmedValue() {
       return this.displayValue.trim();
     },
