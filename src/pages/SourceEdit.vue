@@ -105,8 +105,9 @@ export default {
     },
   },
   watch: {
-    id() {
-      this.initialize();
+    id: {
+      handler: 'initialize',
+      immediate: true,
     },
     showEditBlock() {
       if (this.showEditBlock) {
@@ -115,7 +116,6 @@ export default {
     },
   },
   mounted() {
-    this.initialize();
     window.addEventListener('beforeunload', this.beforeUnload);
   },
   beforeDestroy() {

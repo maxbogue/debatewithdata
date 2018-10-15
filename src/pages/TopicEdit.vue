@@ -197,15 +197,15 @@ export default {
     },
   },
   watch: {
-    id() {
-      this.initialize();
+    id: {
+      handler: 'initialize',
+      immediate: true,
     },
     newTopicLinks() {
       this.showEditBlock = false;
     },
   },
   mounted() {
-    this.initialize();
     window.addEventListener('beforeunload', this.beforeUnload);
   },
   beforeDestroy() {

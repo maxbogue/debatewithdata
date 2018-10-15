@@ -119,12 +119,12 @@ export default {
     },
   },
   watch: {
-    id() {
-      this.initialize();
+    id: {
+      handler: 'initialize',
+      immediate: true,
     },
   },
   mounted() {
-    this.initialize();
     window.addEventListener('beforeunload', this.beforeUnload);
   },
   beforeDestroy() {

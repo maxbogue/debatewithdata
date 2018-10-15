@@ -164,8 +164,8 @@ export function createRouter(auth, store) {
 
     Promise.all(promises)
       .then(() => {
-        next();
         store.commit('substates/setSuppressRoutes', false);
+        next();
       })
       .catch(next);
   });
