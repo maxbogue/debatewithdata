@@ -96,14 +96,16 @@ export default {
     },
   },
   watch: {
-    pointDiffs() {
-      if (!this.pointOrder) {
-        // Initialize pointOrder with the order from diffPoints.
-        this.pointOrder = map(this.pointDiffs, s => map(s, ([id]) => id));
-      }
+    pointDiffs: {
+      immediate: true,
+      handler() {
+        if (!this.pointOrder) {
+          // Initialize pointOrder with the order from diffPoints.
+          this.pointOrder = map(this.pointDiffs, s => map(s, ([id]) => id));
+        }
+      },
     },
   },
-  mountedTriggersWatchers: true,
   mounted() {
     if (this.curr) {
       this.points = this.combineAndSortPoints(this.curr);

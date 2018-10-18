@@ -81,11 +81,13 @@ export default {
     },
   },
   watch: {
-    lastIsFor() {
-      this.$emit('lastIsFor', this.lastIsFor);
+    lastIsFor: {
+      immediate: true,
+      handler() {
+        this.$emit('lastIsFor', this.lastIsFor);
+      },
     },
   },
-  mountedTriggersWatchers: true,
   methods: {
     findInside(item, id) {
       if (item.subClaimIds && typeof item.subClaimIds[id] === 'boolean') {

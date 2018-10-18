@@ -106,8 +106,8 @@ export default {
   },
   watch: {
     id: {
-      handler: 'initialize',
       immediate: true,
+      handler: 'initialize',
     },
     showEditBlock() {
       if (this.showEditBlock) {
@@ -170,9 +170,7 @@ export default {
       if (seed && !seed.deleted) {
         this.newSource = seed;
       }
-      if (!this.seed) {
-        this.showEditBlock = true;
-      }
+      this.showEditBlock = !this.seed;
     },
   },
 };

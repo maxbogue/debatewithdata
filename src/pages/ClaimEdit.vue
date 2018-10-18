@@ -120,8 +120,8 @@ export default {
   },
   watch: {
     id: {
-      handler: 'initialize',
       immediate: true,
+      handler: 'initialize',
     },
   },
   mounted() {

@@ -96,16 +96,16 @@ export default {
     },
   },
   watch: {
-    $route() {
-      this.collapse();
-    },
-    user() {
-      if (this.user) {
-        this.$store.dispatch('updateHasNotifications');
-      }
+    $route: 'collapse',
+    user: {
+      immediate: true,
+      handler() {
+        if (this.user) {
+          this.$store.dispatch('updateHasNotifications');
+        }
+      },
     },
   },
-  mountedTriggersWatchers: true,
   methods: {
     collapse() {
       this.collapsed = true;

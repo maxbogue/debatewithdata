@@ -198,8 +198,8 @@ export default {
   },
   watch: {
     id: {
-      handler: 'initialize',
       immediate: true,
+      handler: 'initialize',
     },
     newTopicLinks() {
       this.showEditBlock = false;
