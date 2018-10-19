@@ -250,6 +250,10 @@ $badge-radius: 3px;
   @extend .navbarNav;
 
   margin-left: auto !important;
+
+  li:last-child a {
+    padding-right: $block-spacing;
+  }
 }
 
 .alertBadge {
