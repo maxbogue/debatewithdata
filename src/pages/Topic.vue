@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import map from 'lodash/map';
 import { mapGetters } from 'vuex';
 
 import DwdTrail from '@/components/DwdTrail.vue';
@@ -88,13 +87,13 @@ export default {
       if (!this.topic || this.topic.deleted) {
         return [];
       }
-      return this.sortByStars(map(this.topic.subTopicIds, this.lookupTopic));
+      return this.sortByStars(this.topic.subTopicIds.map(this.lookupTopic));
     },
     claims() {
       if (!this.topic || this.topic.deleted) {
         return [];
       }
-      return this.sortByStars(map(this.topic.claimIds, this.lookupClaim));
+      return this.sortByStars(this.topic.claimIds.map(this.lookupClaim));
     },
     trail() {
       return this.parseTrail(this.$route.query.trail);
@@ -103,10 +102,10 @@ export default {
       return this.trail.concat(this.id);
     },
     superTopics() {
-      if (!this.topic) {
+      if (!this.topic || !this.topic.superTopicIds) {
         return [];
       }
-      return map(this.topic.superTopicIds || [], this.lookupTopic);
+      return this.topic.superTopicIds.map(this.lookupTopic);
     },
   },
 };

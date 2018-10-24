@@ -1,10 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import dropWhile from 'lodash/dropWhile';
 
-import About from './pages/About.vue';
-import Account from './pages/Account.vue';
-import Activity from './pages/Activity.vue';
+import About from '@/pages/About.vue';
+import Account from '@/pages/Account.vue';
+import Activity from '@/pages/Activity.vue';
 import Admin from './pages/Admin.vue';
 import Claim from './pages/Claim.vue';
 import Contact from './pages/Contact.vue';
@@ -24,6 +23,7 @@ import Topic from './pages/Topic.vue';
 import User from './pages/User.vue';
 import VerifyEmail from './pages/VerifyEmail.vue';
 import { ItemType } from './common/constants';
+import { dropWhile } from '@/utils';
 
 const History = () =>
   import(/* webpackChunkName: "history" */ './pages/History.vue');
@@ -142,7 +142,7 @@ export function createRouter(auth, store) {
   router.beforeResolve((to, from, next) => {
     const matched = router.getMatchedComponents(to);
     const prevMatched = router.getMatchedComponents(from);
-    const activated = dropWhile(matched, (c, i) => c === prevMatched[i]);
+    const activated = dropWhile((c, i) => c === prevMatched[i], matched);
 
     const promises = [];
 

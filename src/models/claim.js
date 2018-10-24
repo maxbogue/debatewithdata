@@ -1,7 +1,4 @@
-import _ from 'lodash';
-import flow from 'lodash/fp/flow';
-import groupBy from 'lodash/fp/groupBy';
-import map from 'lodash/fp/map';
+import _ from 'lodash/fp';
 
 import graph, { Graph } from '@/common/graph';
 import q from './query';
@@ -14,15 +11,13 @@ import { genId } from './utils';
 
 const CLAIM = ItemType.CLAIM;
 
-const hydrateClaims = flow(
-  groupBy('id'),
-  map(grouped => {
-    const claim = _.omit(grouped[0], [
-      'subClaimId',
-      'subClaimIsFor',
-      'sourceId',
-      'sourceIsFor',
-    ]);
+const hydrateClaims = _.flow(
+  _.groupBy('id'),
+  _.map(grouped => {
+    const claim = _.omit(
+      ['subClaimId', 'subClaimIsFor', 'sourceId', 'sourceIsFor'],
+      grouped[0]
+    );
     claim.subClaimIds = {};
     claim.sourceIds = {};
     for (const c of grouped) {
@@ -414,19 +409,21 @@ export default function(sequelize, DataTypes, knex) {
 
     Claim.prototype.updateGraph = function(subClaims, sources) {
       const partedSubClaims = subClaims
-        ? _.partition(_.keys(subClaims), id => subClaims[id])
-        : _.partition(this.head.subClaims, c => c.claimClaim.isFor);
+        ? _.partition(id => subClaims[id], _.keys(subClaims))
+        : _.partition(c => c.claimClaim.isFor, this.head.subClaims);
 
       const partedSources = sources
-        ? _.partition(_.keys(sources), id => sources[id])
-        : _.partition(this.head.sources, s => s.claimSource.isFor);
+        ? _.partition(id => sources[id], _.keys(sources))
+        : _.partition(s => s.claimSource.isFor, this.head.sources);
 
       const claimInfos = partedSubClaims.map(ls => ls.map(Graph.toClaimInfo));
       const sourceInfos = partedSources.map(ls => ls.map(Graph.toSourceInfo));
 
       // Merge together the claim and source nested arrays.
-      const pointInfos = _.zipWith(claimInfos, sourceInfos, (head, ...tail) =>
-        head.concat(...tail)
+      const pointInfos = _.zipWith(
+        (head, ...tail) => head.concat(...tail),
+        claimInfos,
+        sourceInfos
       );
 
       graph.updateClaimPoints(this.id, pointInfos);

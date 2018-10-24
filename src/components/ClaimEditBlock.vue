@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import clone from 'lodash/clone';
+import clone from 'lodash/fp/clone';
 
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';

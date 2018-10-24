@@ -1,19 +1,29 @@
 import Diff from 'text-diff';
 import dateFormat from 'dateformat';
-import filter from 'lodash/filter';
-import forEach from 'lodash/forEach';
-import forOwn from 'lodash/forOwn';
-import isArray from 'lodash/isArray';
-import isObject from 'lodash/isObject';
-import map from 'lodash/map';
-import omit from 'lodash/omit';
-import partition from 'lodash/partition';
+import dropWhile1 from 'lodash/fp/dropWhile';
+import filter from 'lodash/fp/filter';
+import forEach1 from 'lodash/fp/forEach';
+import forOwn1 from 'lodash/fp/forOwn';
+import isArray from 'lodash/fp/isArray';
+import isObject from 'lodash/fp/isObject';
+import map1 from 'lodash/fp/map';
+import mapValues1 from 'lodash/fp/mapValues';
+import omit from 'lodash/fp/omit';
+import partition from 'lodash/fp/partition';
+import template1 from 'lodash/fp/template';
 
 import { ItemType, PointType } from './common/constants';
 
 const textDiff = new Diff();
 const ONE_DAY_MS = 1000 * 60 * 60 * 24;
 const TITLE_TEXT_LENGTH = 75;
+
+export const dropWhile = dropWhile1.convert({ cap: false });
+export const forEach = forEach1.convert({ cap: false });
+export const forOwn = forOwn1.convert({ cap: false });
+export const map = map1.convert({ cap: false });
+export const mapValues = mapValues1.convert({ cap: false });
+export const template = template1.convert({ fixed: false });
 
 export function titleFromText(text) {
   if (text.length < TITLE_TEXT_LENGTH) {
@@ -35,9 +45,9 @@ export function diff(text1, text2) {
 export function walk(o, f) {
   if (isObject(o)) {
     f(o);
-    forOwn(o, v => walk(v, f));
+    forOwn(v => walk(v, f), o);
   } else if (isArray(o)) {
-    forEach(o, v => walk(v, f));
+    forEach(v => walk(v, f), o);
   }
 }
 
@@ -62,18 +72,18 @@ export function combinePoints(claim, state) {
   if (!claim || claim.deleted) {
     return points;
   }
-  forOwn(claim.subClaimIds, (isFor, id) => {
+  forOwn((isFor, id) => {
     points[isFor ? 0 : 1][id] = {
       ...state.claims[id],
       pointType: PointType.CLAIM,
     };
-  });
-  forOwn(claim.sourceIds, (isFor, id) => {
+  }, claim.subClaimIds);
+  forOwn((isFor, id) => {
     points[isFor ? 0 : 1][id] = {
       ...state.sources[id],
       pointType: PointType.SOURCE,
     };
-  });
+  }, claim.sourceIds);
   if (claim.newSubClaims) {
     for (const subClaim of claim.newSubClaims) {
       points[subClaim.isFor ? 0 : 1][subClaim.tempId] = {
@@ -106,12 +116,12 @@ export function splitPoints(points) {
         sourceIds[point.id] = i === 0;
       } else if (point.pointType === PointType.NEW_CLAIM) {
         newSubClaims.push({
-          ...omit(point, 'pointType'),
+          ...omit('pointType', point),
           isFor: i === 0,
         });
       } else if (point.pointType === PointType.NEW_SOURCE) {
         newSources.push({
-          ...omit(point, 'pointType'),
+          ...omit('pointType', point),
           isFor: i === 0,
         });
       }
@@ -125,13 +135,11 @@ export function splitPoints(points) {
   };
 }
 
-export function filterLiving(items) {
-  return filter(items, item => !item.deleted);
-}
+export const filterLiving = filter(item => !item.deleted);
 
 export function rotateWithIndexes(lists) {
   const retList = [];
-  for (let i = 0; i < Math.max(...map(lists, list => list.length)); i++) {
+  for (let i = 0; i < Math.max(...lists.map(list => list.length)); i++) {
     for (let j = 0; j < lists.length; j++) {
       if (i < lists[j].length) {
         retList.push([lists[j][i], j, i]);
@@ -147,14 +155,14 @@ export function diffIdLists(newIds, oldIds, data) {
   const inOld = id => oldIds.includes(id);
   const notInNew = id => !newIds.includes(id);
 
-  let [inBoth, added] = partition(newIds, inOld);
-  let removed = filter(oldIds, notInNew);
+  let [inBoth, added] = partition(inOld, newIds);
+  let removed = filter(notInNew, oldIds);
 
   added.sort();
   removed.sort();
   inBoth.sort();
 
-  const zipWith = (ids, v) => map(ids, id => [data[id], v]);
+  const zipWith = (ids, v) => ids.map(id => [data[id], v]);
   added = zipWith(added, 'ins');
   removed = zipWith(removed, 'del');
   inBoth = zipWith(inBoth, '');
@@ -175,7 +183,7 @@ function diffItems(newItems, oldItems) {
   const inOld = id => oldItems[id];
   const notInNew = id => !newItems[id];
 
-  const [inBoth, added] = partition(Object.keys(newItems), inOld);
+  const [inBoth, added] = partition(inOld, Object.keys(newItems));
   const removed = Object.keys(oldItems).filter(notInNew);
 
   added.sort();
@@ -183,7 +191,7 @@ function diffItems(newItems, oldItems) {
   inBoth.sort();
 
   const ids = added.concat(removed, inBoth);
-  return map(ids, id => [id, newItems[id], oldItems[id]]);
+  return ids.map(id => [id, newItems[id], oldItems[id]]);
 }
 
 export function diffPoints(newItem, oldItem, state) {
@@ -328,7 +336,7 @@ export const DwdUtilsMixin = {
   },
   mounted() {
     if (this.$options.mountedTriggersWatchers && this.$options.watch) {
-      forOwn(this.$options.watch, f => f.call(this));
+      forOwn(f => f.call(this), this.$options.watch);
     }
   },
 };

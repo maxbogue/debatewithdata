@@ -1,10 +1,11 @@
 import chalk from 'chalk';
-import mapValues from 'lodash/mapValues';
+import mapValues from 'lodash/fp/mapValues';
 import onFinished from 'on-finished';
 import onHeaders from 'on-headers';
-import template from 'lodash/template';
 import { MESSAGE } from 'triple-beam';
 import { createLogger, format, transports } from 'winston';
+
+import { template } from '@/utils';
 
 chalk.enabled = true;
 chalk.level = 2;
@@ -111,7 +112,7 @@ export default function expressLogger(req, res, next) {
   recordStartTime.call(req);
   onHeaders(res, recordStartTime);
   onFinished(res, () => {
-    const info = mapValues(INFO_FIELDS, f => f(req, res));
+    const info = mapValues(f => f(req, res), INFO_FIELDS);
     const logLevel = statusToLogLevel(info.status);
     logger.log(logLevel, info);
   });

@@ -1,4 +1,4 @@
-import sortBy from 'lodash/sortBy';
+import sortBy from 'lodash/fp/sortBy';
 
 import q from '@/models/query';
 import { AuthError } from '@/api/error';
@@ -33,14 +33,11 @@ export async function getNotifications(user) {
     queries
   );
 
-  let items = sortBy(
-    [
-      ...topicResults.map(item => ({ type: ItemType.TOPIC, item })),
-      ...claimResults.map(item => ({ type: ItemType.CLAIM, item })),
-      ...sourceResults.map(item => ({ type: ItemType.SOURCE, item })),
-    ],
-    'item.updatedAt'
-  );
+  let items = sortBy('item.updatedAt', [
+    ...topicResults.map(item => ({ type: ItemType.TOPIC, item })),
+    ...claimResults.map(item => ({ type: ItemType.CLAIM, item })),
+    ...sourceResults.map(item => ({ type: ItemType.SOURCE, item })),
+  ]);
 
   items = items
     .slice(0, 100)

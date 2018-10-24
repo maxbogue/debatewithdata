@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import clone from 'lodash/clone';
+import clone from 'lodash/fp/clone';
 
 import DeleteButton from '@/components/DeleteButton.vue';
 import FormValid from '@/components/FormValid.vue';

@@ -2,11 +2,10 @@
 // validate the core data fields of the three main item types: sources, claims,
 // and topics.
 
-import forEach from 'lodash/forEach';
-import forOwn from 'lodash/forOwn';
-import mapValues from 'lodash/mapValues';
-import omit from 'lodash/omit';
+import omit from 'lodash/fp/omit';
 import validate from 'validate.js';
+
+import { forEach, forOwn, mapValues } from '@/utils';
 
 import { FlagData } from './flag';
 import { ItemType, SOURCE_TYPES, SourceType } from './constants';
@@ -78,7 +77,7 @@ export function isValid(f, ...args) {
 // Validates that a key is only present under certain conditions. Check is only
 // if by default, if and only if when |iff| is true.
 function validatePresenceIf(key, value, item, conds, iff) {
-  forOwn(conds, (v, k) => {
+  forOwn((v, k) => {
     const exists = !validate.isEmpty(value);
     const p = validate.isArray(v) ? v.includes(item[k]) : v === item[k];
     if (iff && p && !exists) {
@@ -86,7 +85,7 @@ function validatePresenceIf(key, value, item, conds, iff) {
     } else if (!p && exists) {
       throw new ValidationError(key, `forbidden for "${k}" = "${item[k]}".`);
     }
-  });
+  }, conds);
 }
 
 function constraintToValidator(constraint, key) {
@@ -116,19 +115,19 @@ function constraintToValidator(constraint, key) {
       if (!validate.isArray(value)) {
         throw new ValidationError(key, 'must be an array.');
       }
-      forEach(value, (e, i) => {
+      forEach((e, i) => {
         const elementValidator = constraintToValidator(
           constraint.arrayOf,
           `${key}[${i}]`
         );
         elementValidator(e, item);
-      });
+      }, value);
     }
     if (validate.isDefined(value) && constraint.objectOf) {
       if (!validate.isObject(value)) {
         throw new ValidationError(key, 'must be an object.');
       }
-      forEach(value, (v, k) => {
+      forEach((v, k) => {
         if (constraint.objectOf.key) {
           const keyValidator = constraintToValidator(
             constraint.objectOf.key,
@@ -143,9 +142,9 @@ function constraintToValidator(constraint, key) {
           );
           valueValidator(v, item);
         }
-      });
+      }, value);
     }
-    const errors = validate.single(value, omit(constraint, CUSTOM_VALIDATORS));
+    const errors = validate.single(value, omit(CUSTOM_VALIDATORS, constraint));
     if (errors) {
       throw new ValidationError(key, errors[0]);
     }
@@ -252,16 +251,13 @@ export const sourceConstraints = {
   },
 };
 
-const sourceValidators = mapValues(
-  {
-    ...commonConstraints,
-    ...sourceConstraints,
-  },
-  constraintToValidator
-);
+const sourceValidators = mapValues(constraintToValidator, {
+  ...commonConstraints,
+  ...sourceConstraints,
+});
 
 export function validateSource(source) {
-  forOwn(sourceValidators, (f, k) => f(source[k], source));
+  forOwn((f, k) => f(source[k], source), sourceValidators);
 }
 validate.extend(validateSource, sourceValidators);
 
@@ -302,16 +298,13 @@ export const claimConstraints = {
   newSources: {},
 };
 
-const claimValidators = mapValues(
-  {
-    ...commonConstraints,
-    ...claimConstraints,
-  },
-  constraintToValidator
-);
+const claimValidators = mapValues(constraintToValidator, {
+  ...commonConstraints,
+  ...claimConstraints,
+});
 
 export function validateClaim(claim) {
-  forOwn(claimValidators, (f, k) => f(claim[k], claim));
+  forOwn((f, k) => f(claim[k], claim), claimValidators);
 }
 validate.extend(validateClaim, claimValidators);
 
@@ -356,16 +349,13 @@ export const topicConstraints = {
   newClaims: {},
 };
 
-const topicValidators = mapValues(
-  {
-    ...commonConstraints,
-    ...topicConstraints,
-  },
-  constraintToValidator
-);
+const topicValidators = mapValues(constraintToValidator, {
+  ...commonConstraints,
+  ...topicConstraints,
+});
 
 export function validateTopic(topic) {
-  forOwn(topicValidators, (f, k) => f(topic[k], topic));
+  forOwn((f, k) => f(topic[k], topic), topicValidators);
 }
 validate.extend(validateTopic, topicValidators);
 

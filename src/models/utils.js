@@ -1,8 +1,8 @@
 import crypto from 'crypto';
-import forOwn from 'lodash/forOwn';
 
 import { Claim, Topic } from '@/models';
 import { FlagData } from '@/common/flag';
+import { forOwn } from '@/utils';
 
 export function randomHexString(n) {
   if (n % 2 !== 0) {
@@ -36,27 +36,27 @@ export function addApiData(data, otherData) {
     if (!data.topics) {
       data.topics = {};
     }
-    forOwn(otherData.topics, (topic, id) => {
+    forOwn((topic, id) => {
       data.topics[id] = topic;
-    });
+    }, otherData.topics);
   }
   if (otherData.claims) {
     if (!data.claims) {
       data.claims = {};
     }
-    forOwn(otherData.claims, (claim, id) => {
+    forOwn((claim, id) => {
       if (!data.claims[id] || data.claims[id].depth <= claim.depth) {
         data.claims[id] = claim;
       }
-    });
+    }, otherData.claims);
   }
   if (otherData.sources) {
     if (!data.sources) {
       data.sources = {};
     }
-    forOwn(otherData.sources, (source, id) => {
+    forOwn((source, id) => {
       data.sources[id] = source;
-    });
+    }, otherData.sources);
   }
 }
 

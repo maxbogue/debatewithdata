@@ -1,7 +1,4 @@
-import flow from 'lodash/fp/flow';
-import groupBy from 'lodash/fp/groupBy';
-import map from 'lodash/fp/map';
-import omit from 'lodash/fp/omit';
+import _ from 'lodash/fp';
 
 import graph, { Graph } from '@/common/graph';
 import q from './query';
@@ -17,10 +14,10 @@ function notNull(thing) {
   return thing !== null;
 }
 
-const hydrateTopics = flow(
-  groupBy('id'),
-  map(grouped => {
-    const topic = omit(['subTopicId', 'claimId'], grouped[0]);
+const hydrateTopics = _.flow(
+  _.groupBy('id'),
+  _.map(grouped => {
+    const topic = _.omit(['subTopicId', 'claimId'], grouped[0]);
     topic.subTopicIds = grouped.map(t => t.subTopicId).filter(notNull);
     topic.claimIds = grouped.map(t => t.claimId).filter(notNull);
     return topic;

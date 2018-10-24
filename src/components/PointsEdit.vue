@@ -46,9 +46,8 @@
 </template>
 
 <script>
-import findIndex from 'lodash/findIndex';
-import map from 'lodash/map';
-import sortBy from 'lodash/sortBy';
+import findIndex from 'lodash/fp/findIndex';
+import sortBy from 'lodash/fp/sortBy';
 import { mapGetters } from 'vuex';
 
 import PointEdit from './PointEdit.vue';
@@ -85,8 +84,8 @@ export default {
       );
       if (this.pointOrder) {
         // Sort by the point order.
-        pointDiffs = map(pointDiffs, (ps, si) =>
-          sortBy(ps, p => this.pointOrder[si].indexOf(p[0]))
+        pointDiffs = pointDiffs.map((ps, si) =>
+          sortBy(p => this.pointOrder[si].indexOf(p[0]), ps)
         );
       }
       return pointDiffs;
@@ -101,7 +100,7 @@ export default {
       handler() {
         if (!this.pointOrder) {
           // Initialize pointOrder with the order from diffPoints.
-          this.pointOrder = map(this.pointDiffs, s => map(s, ([id]) => id));
+          this.pointOrder = this.pointDiffs.map(s => s.map(([id]) => id));
         }
       },
     },
@@ -127,7 +126,7 @@ export default {
       this.points[si].splice(0, 0, newPoint);
     },
     updatePoint(si, point) {
-      const pi = findIndex(this.points[si], matchPoint(point));
+      const pi = findIndex(matchPoint(point), this.points[si]);
       if (pi < 0) {
         this.points[si].push(point);
       } else {
@@ -140,7 +139,7 @@ export default {
       this.$emit('update', this.points);
     },
     deletePoint(si, point) {
-      const pi = findIndex(this.points[si], matchPoint(point));
+      const pi = findIndex(matchPoint(point), this.points[si]);
       if (pi < 0) {
         this.points[si].push(point);
       } else {

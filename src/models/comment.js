@@ -1,6 +1,5 @@
 import { ForbiddenError, NotFoundError } from '@/api/error';
 import { genRevId } from './utils';
-import { map } from 'lodash';
 
 export default function(sequelize, DataTypes) {
   const Comment = sequelize.define('comment', {
@@ -94,7 +93,7 @@ export default function(sequelize, DataTypes) {
         order: ['created_at'],
         include: [models.User],
       });
-      return map(comments, c => c.toData());
+      return comments.map(c => c.toData());
     };
   };
 

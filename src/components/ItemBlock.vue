@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import isEmpty from 'lodash/isEmpty';
+import isEmpty from 'lodash/fp/isEmpty';
 import { mapState } from 'vuex';
 
 import ClaimDataAnalysis from './ClaimDataAnalysis.vue';

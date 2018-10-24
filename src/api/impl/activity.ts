@@ -1,18 +1,16 @@
-import isArray from 'lodash/isArray';
-import mergeWith from 'lodash/mergeWith';
-import sortBy from 'lodash/sortBy';
+import isArray from 'lodash/fp/isArray';
+import mergeWith from 'lodash/fp/mergeWith';
+import sortBy from 'lodash/fp/sortBy';
 
 import { ItemType } from '@/common/constants';
 import { ClaimRev, Comment, SourceRev, TopicRev, User } from '@/models';
 
-function merge(obj, other) {
-  return mergeWith(obj, other, (a, b) => {
-    if (isArray(a)) {
-      return a.concat(b);
-    }
-    return undefined;
-  });
-}
+const merge = mergeWith((a, b) => {
+  if (isArray(a)) {
+    return a.concat(b);
+  }
+  return undefined;
+});
 
 function itemToAction(itemRev) {
   if (itemRev.deleted) {
@@ -104,7 +102,7 @@ export async function getActivity({ user = null, limit }) {
     sourceEntries,
     commentEntries
   );
-  activity = sortBy(activity, e => -e.timestamp.getTime());
+  activity = sortBy(e => -e.timestamp.getTime(), activity);
   if (limit) {
     activity = activity.slice(0, limit);
   }

@@ -1,8 +1,9 @@
-import forOwn from 'lodash/forOwn';
-import isArray from 'lodash/isArray';
-import isEqual from 'lodash/isEqual';
-import keys from 'lodash/keys';
-import pick from 'lodash/pick';
+import isArray from 'lodash/fp/isArray';
+import isEqual from 'lodash/fp/isEqual';
+import keys from 'lodash/fp/keys';
+import pick from 'lodash/fp/pick';
+
+import { forOwn } from '@/utils';
 
 import {
   claimConstraints,
@@ -17,7 +18,7 @@ const TOPIC_FIELDS = keys(topicConstraints);
 // This function relies on the object being a copy of the original.
 function adjustFields(obj) {
   delete obj.id;
-  forOwn(obj, (v, k) => {
+  forOwn((v, k) => {
     // All arrays are currently order-less.
     if (isArray(v)) {
       if (v.length > 0) {
@@ -30,12 +31,12 @@ function adjustFields(obj) {
     if (v === null || v === undefined) {
       delete obj[k];
     }
-  });
+  }, obj);
   return obj;
 }
 
 function clean(obj, fields) {
-  return adjustFields(pick(obj, fields));
+  return adjustFields(pick(fields, obj));
 }
 
 export function sourcesAreEqual(s1, s2) {

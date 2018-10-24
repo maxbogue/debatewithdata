@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce';
+import debounce from 'lodash/fp/debounce';
 import { mapState } from 'vuex';
 
 import DwdLoader from '@/components/DwdLoader.vue';
@@ -167,7 +167,7 @@ export default {
     query() {
       this.page = 1;
     },
-    queryParams: debounce(async function() {
+    queryParams: debounce(DEBOUNCE_DELAY_MS, async function() {
       /* eslint no-invalid-this: "off" */
       this.results = null;
       if (!this.queryParams) {
@@ -184,7 +184,7 @@ export default {
         this.results = results.map(result => result.id);
         this.numPages = numPages;
       }
-    }, DEBOUNCE_DELAY_MS),
+    }),
   },
   mounted() {
     this.getItems();

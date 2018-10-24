@@ -16,9 +16,6 @@
 </template>
 
 <script>
-import filter from 'lodash/filter';
-import map from 'lodash/map';
-
 import DwdLoader from '@/components/DwdLoader.vue';
 import DwdTrail from '@/components/DwdTrail.vue';
 import ItemBlock from '@/components/ItemBlock.vue';
@@ -70,11 +67,10 @@ export default {
       if (!this.source || !this.source.claimIds) {
         return [];
       }
-      const notInTrail = filter(
-        this.source.claimIds,
+      const notInTrail = this.source.claimIds.filter(
         id => !this.trail.includes(id)
       );
-      return map(notInTrail, this.lookupClaim);
+      return notInTrail.map(this.lookupClaim);
     },
   },
 };

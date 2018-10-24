@@ -12,10 +12,10 @@
 </template>
 
 <script>
-import map from 'lodash/map';
-import sortBy from 'lodash/sortBy';
+import sortBy from 'lodash/fp/sortBy';
 
 import { FlagData } from '@/common/flag';
+import { map } from '@/utils';
 
 export default {
   props: {
@@ -26,8 +26,8 @@ export default {
   }),
   computed: {
     flags() {
-      const flagList = map(FlagData, (v, k) => [k, v]);
-      return sortBy(flagList, ([, v]) => v.name);
+      const flagList = map((v, k) => [k, v], FlagData);
+      return sortBy(([, v]) => v.name, flagList);
     },
   },
   methods: {

@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import map from 'lodash/map';
 import { mapGetters } from 'vuex';
 
 import DwdTrail from '@/components/DwdTrail.vue';
@@ -132,11 +131,11 @@ export default {
         return [];
       }
 
-      const superTopics = map(this.claim.superTopicIds || [], id => [
+      const superTopics = (this.claim.superTopicIds || []).map(id => [
         this.lookupTopic(id),
         ItemType.TOPIC,
       ]);
-      const superClaims = map(this.claim.superClaimIds || [], id => [
+      const superClaims = (this.claim.superClaimIds || []).map(id => [
         this.lookupClaim(id),
         ItemType.CLAIM,
       ]);

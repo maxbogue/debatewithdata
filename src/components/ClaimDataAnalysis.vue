@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import some from 'lodash/some';
+import some from 'lodash/fp/some';
 
 export default {
   props: {

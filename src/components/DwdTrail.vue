@@ -14,8 +14,7 @@
 </template>
 
 <script>
-import map from 'lodash/map';
-import takeWhile from 'lodash/takeWhile';
+import takeWhile from 'lodash/fp/takeWhile';
 
 import ItemBlock from './ItemBlock.vue';
 import { ItemType } from '@/common/constants';
@@ -29,13 +28,13 @@ export default {
   },
   computed: {
     topics() {
-      return takeWhile(map(this.ids, this.lookupTopic), Boolean);
+      return takeWhile(Boolean, this.ids.map(this.lookupTopic));
     },
     itemIds() {
       return this.ids.slice(this.topics.length);
     },
     items() {
-      const items = map(this.topics, topic => [ItemType.TOPIC, topic, null]);
+      const items = this.topics.map(topic => [ItemType.TOPIC, topic, null]);
       if (this.itemIds.length < 2) {
         return items;
       }

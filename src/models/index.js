@@ -5,9 +5,8 @@ pg.types.setTypeParser(20, 'text', parseInt);
 import Knex from 'knex';
 import KnexQueryBuilder from 'knex/lib/query/builder';
 import Sequelize from 'sequelize';
+import _ from 'lodash/fp';
 import config from 'config';
-import forOwn from 'lodash/forOwn';
-import mapValues from 'lodash/mapValues';
 
 import makeBlob from './blob';
 import makeClaim from './claim';
@@ -28,8 +27,9 @@ import makeWatch from './watch';
 KnexQueryBuilder.prototype.exists = function(obj) {
   const raw = this.client.raw;
   this.column(
-    mapValues(obj, q =>
-      raw(q.select(raw('null')).limit(1)).wrap('exists (', ')')
+    _.mapValues(
+      q => raw(q.select(raw('null')).limit(1)).wrap('exists (', ')'),
+      obj
     )
   );
   return this;
@@ -68,17 +68,17 @@ export const TopicTopic = makeModel('TopicTopic', makeTopicTopic);
 export const User = makeModel('User', makeUser);
 export const Watch = makeModel('Watch', makeWatch);
 
-forOwn(models, model => {
+_.forOwn(model => {
   if ('associate' in model) {
     model.associate(models);
   }
-});
+}, models);
 
-forOwn(models, model => {
+_.forOwn(model => {
   if ('postAssociate' in model) {
     model.postAssociate(models);
   }
-});
+}, models);
 
 async function initGraph() {
   const topics = await Topic.findAll(Topic.INCLUDE(2));

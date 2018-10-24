@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce';
+import debounce from 'lodash/fp/debounce';
 
 import ClaimContent from './ClaimContent.vue';
 import DwdInput from './DwdInput.vue';
@@ -149,7 +149,7 @@ export default {
         e.stopPropagation();
       }
     },
-    queryServer: debounce(async function() {
+    queryServer: debounce(DEBOUNCE_DELAY_MS, async function() {
       /* eslint no-invalid-this: "off" */
       const query = this.value;
       this.loading = true;
@@ -163,7 +163,7 @@ export default {
         this.results = results.map(this.lookupItemWithType);
         this.loading = false;
       }
-    }, DEBOUNCE_DELAY_MS),
+    }),
     makeLoader() {
       return {
         setLoading: loading => {

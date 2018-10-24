@@ -1,9 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import cloneDeep from 'lodash/cloneDeep';
-import forOwn from 'lodash/forOwn';
+import cloneDeep from 'lodash/fp/cloneDeep';
 
-import { axiosErrorToString, walk } from '@/utils';
+import { axiosErrorToString, forOwn, walk } from '@/utils';
 import { validateItem } from '@/common/validate';
 
 import createItemBlocksModule from './itemBlocks';
@@ -90,23 +89,23 @@ const makeStoreOptions = (auth, api) => ({
   mutations: {
     setData(state, data) {
       if (data.topics) {
-        forOwn(data.topics, (topic, id) => {
+        forOwn((topic, id) => {
           if (shouldStore(topic, state.topics[id])) {
             Vue.set(state.topics, id, topic);
           }
-        });
+        }, data.topics);
       }
       if (data.claims) {
-        forOwn(data.claims, (claim, id) => {
+        forOwn((claim, id) => {
           if (shouldStore(claim, state.claims[id])) {
             Vue.set(state.claims, id, claim);
           }
-        });
+        }, data.claims);
       }
       if (data.sources) {
-        forOwn(data.sources, (source, id) => {
+        forOwn((source, id) => {
           Vue.set(state.sources, id, source);
-        });
+        }, data.sources);
       }
     },
     setUserFromToken(state, authToken) {

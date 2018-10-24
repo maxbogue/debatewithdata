@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import clone from 'lodash/clone';
+import clone from 'lodash/fp/clone';
 
 import FormValid from './FormValid.vue';
 import TopicEditContent from './TopicEditContent.vue';

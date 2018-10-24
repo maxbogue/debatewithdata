@@ -78,8 +78,8 @@
 </template>
 
 <script>
-import filter from 'lodash/filter';
-import sortBy from 'lodash/sortBy';
+import filter from 'lodash/fp/filter';
+import sortBy from 'lodash/fp/sortBy';
 import { mapGetters, mapState } from 'vuex';
 
 import ClaimContent from '@/components/ClaimContent.vue';
@@ -177,8 +177,8 @@ export default {
     },
     newTopicLinks() {
       return {
-        subTopicIds: filter(this.subTopicIds, this.lookupTopic),
-        claimIds: filter(this.claimIds, this.lookupClaim),
+        subTopicIds: filter(this.lookupTopic, this.subTopicIds),
+        claimIds: filter(this.lookupClaim, this.claimIds),
         newSubTopics: this.newSubTopics,
         newClaims: this.newClaims,
       };
@@ -288,11 +288,10 @@ export default {
           this.lookupTopic,
           this.starCount
         );
-        this.subTopicIds = sortBy(seed.subTopicIds, [
-          topicStarred,
-          topicStarCount,
-          this.stableRandom,
-        ]);
+        this.subTopicIds = sortBy(
+          [topicStarred, topicStarCount, this.stableRandom],
+          seed.subTopicIds
+        );
 
         const claimStarred = pipe(
           this.lookupClaim,
@@ -302,11 +301,10 @@ export default {
           this.lookupClaim,
           this.starCount
         );
-        this.claimIds = sortBy(seed.claimIds, [
-          claimStarred,
-          claimStarCount,
-          this.stableRandom,
-        ]);
+        this.claimIds = sortBy(
+          [claimStarred, claimStarCount, this.stableRandom],
+          seed.claimIds
+        );
       }
       if (!this.seed) {
         // Done next tick so it comes after newTopicLinks watcher.
