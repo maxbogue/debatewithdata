@@ -59,6 +59,8 @@ server.use(
   createApiRouter(authToken => new ApiImpl(new ServerAuth(authToken)))
 );
 
+server.use('/static', express.static('static'));
+
 server.get('*', async (req, res) => {
   const context = {
     url: req.url,
