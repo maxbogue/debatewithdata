@@ -24,7 +24,7 @@ export default {
     ErrorModal,
   },
   metaInfo: {
-    title: 'Default',
+    title: '',
     titleTemplate: '%s - DebateWithData',
   },
   computed: {

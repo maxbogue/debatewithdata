@@ -38,7 +38,8 @@
 <script>
 export default {
   metaInfo: {
-    title: 'Home',
+    title: 'DebateWithData',
+    titleTemplate: '',
   },
 };
 </script>

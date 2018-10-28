@@ -31,6 +31,7 @@ function createAppFromContext(context) {
         reject({ code: 404 });
       }
       context.state = store.state;
+      context.meta = app.$meta();
       resolve(app);
     }, reject);
   });

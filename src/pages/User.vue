@@ -21,7 +21,7 @@ export default {
   },
   metaInfo() {
     return {
-      title: `User ${this.username}`,
+      title: this.username,
     };
   },
   props: {
