@@ -90,11 +90,16 @@ export default {
     }
   },
   metaInfo() {
-    let title = `Claim ${this.id}`;
-    if (this.claim) {
-      title = titleFromText(this.claim.text);
-    }
-    return { title };
+    return {
+      title: titleFromText(this.claim.text),
+      meta: [
+        {
+          vmid: 'description',
+          name: 'description',
+          content: this.claim.text,
+        },
+      ],
+    };
   },
   data: () => ({
     showComments: false,

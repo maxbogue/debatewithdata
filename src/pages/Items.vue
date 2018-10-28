@@ -70,7 +70,16 @@ export default {
       [ItemType.CLAIM]: 'Claims',
       [ItemType.SOURCE]: 'Data',
     }[this.type];
-    return { title };
+    return {
+      title,
+      meta: [
+        {
+          vmid: 'description',
+          name: 'description',
+          content: this.headerText,
+        },
+      ],
+    };
   },
   props: {
     type: { type: String, required: true },

@@ -66,11 +66,16 @@ export default {
     }
   },
   metaInfo() {
-    let title = `Topic ${this.id}`;
-    if (this.topic) {
-      title = this.topic.title;
-    }
-    return { title };
+    return {
+      title: this.topic.title,
+      meta: [
+        {
+          vmid: 'description',
+          name: 'description',
+          content: this.topic.text,
+        },
+      ],
+    };
   },
   data: () => ({
     showComments: false,

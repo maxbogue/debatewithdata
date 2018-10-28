@@ -43,11 +43,16 @@ export default {
     }
   },
   metaInfo() {
-    let title = `Data ${this.id}`;
-    if (this.source) {
-      title = titleFromText(this.source.text);
-    }
-    return { title };
+    return {
+      title: titleFromText(this.source.text),
+      meta: [
+        {
+          vmid: 'description',
+          name: 'description',
+          content: this.source.text,
+        },
+      ],
+    };
   },
   data: () => ({
     showComments: false,

@@ -26,6 +26,14 @@ export default {
   metaInfo: {
     title: '',
     titleTemplate: '%s - DebateWithData',
+    meta: [
+      {
+        vmid: 'description',
+        name: 'description',
+        content:
+          "DebateWithData is a crowdsourced reference for the world's discussions.",
+      },
+    ],
   },
   computed: {
     ...mapState('substates', ['loading', 'loadingError', 'suppressRoutes']),
