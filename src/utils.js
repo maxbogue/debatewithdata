@@ -135,7 +135,8 @@ export function splitPoints(points) {
   };
 }
 
-export const filterLiving = filter(item => !item.deleted);
+export const isItemAlive = item => item && !item.deleted;
+export const filterLiving = filter(isItemAlive);
 
 export function rotateWithIndexes(lists) {
   const retList = [];

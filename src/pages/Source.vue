@@ -20,7 +20,7 @@ import DwdLoader from '@/components/DwdLoader.vue';
 import DwdTrail from '@/components/DwdTrail.vue';
 import ItemBlock from '@/components/ItemBlock.vue';
 import { ItemType } from '@/common/constants';
-import { parseTrail, titleFromText } from '@/utils';
+import { isItemAlive, parseTrail, titleFromText } from '@/utils';
 
 export default {
   components: {
@@ -43,6 +43,9 @@ export default {
     }
   },
   metaInfo() {
+    if (!isItemAlive(this.source)) {
+      return {};
+    }
     return {
       title: titleFromText(this.source.text),
       meta: [

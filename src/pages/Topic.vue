@@ -44,7 +44,7 @@ import { mapGetters } from 'vuex';
 import DwdTrail from '@/components/DwdTrail.vue';
 import ItemBlock from '@/components/ItemBlock.vue';
 import { ItemType } from '@/common/constants';
-import { parseTrail } from '@/utils';
+import { isItemAlive, parseTrail } from '@/utils';
 
 export default {
   components: {
@@ -66,6 +66,9 @@ export default {
     }
   },
   metaInfo() {
+    if (!isItemAlive(this.topic)) {
+      return {};
+    }
     return {
       title: this.topic.title,
       meta: [

@@ -66,7 +66,12 @@ import DwdTrail from '@/components/DwdTrail.vue';
 import IconAdd from '@/components/IconAdd.vue';
 import ItemBlock from '@/components/ItemBlock.vue';
 import { ItemType } from '@/common/constants';
-import { parseTrail, rotateWithIndexes, titleFromText } from '@/utils';
+import {
+  isItemAlive,
+  parseTrail,
+  rotateWithIndexes,
+  titleFromText,
+} from '@/utils';
 
 export default {
   components: {
@@ -90,6 +95,9 @@ export default {
     }
   },
   metaInfo() {
+    if (!isItemAlive(this.claim)) {
+      return {};
+    }
     return {
       title: titleFromText(this.claim.text),
       meta: [
