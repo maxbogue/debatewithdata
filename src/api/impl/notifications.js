@@ -1,4 +1,4 @@
-import sortBy from 'lodash/fp/sortBy';
+import _ from 'lodash/fp';
 
 import q from '@/models/query';
 import { AuthError } from '@/api/error';
@@ -7,14 +7,12 @@ import { ItemType } from '@/common/constants';
 
 function getUpdated(query, until) {
   query
-    .column({
-      updatedAt: 'h.created_at',
-      deleted: 'h.deleted',
-      deleteMessage: 'h.delete_message',
-    })
     .where('h.created_at', '<', until)
-    .where('w.watched', true);
+    .where('w.watched', true)
+    .limit(100);
 }
+
+const Items = [Topic, Claim, Source];
 
 export async function getNotifications(user) {
   if (!user) {
@@ -23,31 +21,28 @@ export async function getNotifications(user) {
 
   const until = new Date();
 
-  const queries = [Topic, Claim, Source].map(Item =>
-    Item.itemQuery(user)
-      .modify(getUpdated, until)
-      .limit(100)
+  const queries = Items.map(Item =>
+    Item.itemQuery(user, query => query.modify(getUpdated, until))
   );
 
-  const [topicResults, claimResults, sourceResults] = await Promise.all(
-    queries
+  const itemResults = await Promise.all(queries);
+  const [topics, claims, sources] = _.zip(Items, itemResults).map(
+    ([Item, flatItems]) => Item.processQueryResults(flatItems)
   );
 
-  let items = sortBy('item.updatedAt', [
-    ...topicResults.map(item => ({ type: ItemType.TOPIC, item })),
-    ...claimResults.map(item => ({ type: ItemType.CLAIM, item })),
-    ...sourceResults.map(item => ({ type: ItemType.SOURCE, item })),
-  ]);
-
-  items = items
+  const items = _.sortBy('item.updatedAt', [
+    ...topics.map(item => ({ type: ItemType.TOPIC, item })),
+    ...claims.map(item => ({ type: ItemType.CLAIM, item })),
+    ...sources.map(item => ({ type: ItemType.SOURCE, item })),
+  ])
     .slice(0, 100)
     .map(({ type, item }) => ({ type, id: item.id }))
     .reverse();
 
   return {
-    topics: Topic.processQueryResults(topicResults),
-    claims: Claim.processQueryResults(claimResults),
-    sources: Source.processQueryResults(sourceResults),
+    topics: _.keyBy('id', topics),
+    claims: _.keyBy('id', claims),
+    sources: _.keyBy('id', sources),
     results: {
       items,
       until,

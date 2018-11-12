@@ -1,7 +1,7 @@
 import _ from 'lodash/fp';
 
 import graph, { Graph } from '@/common/graph';
-import q from './query';
+import q, { ITEM_FIELDS } from './query';
 import search from '@/common/search';
 import { ConflictError, NotFoundError } from '@/api/error';
 import { ItemType, PAGE_SIZE } from '@/common/constants';
@@ -240,27 +240,54 @@ export default function(sequelize, DataTypes, knex) {
       data.topics[this.id] = thisData;
     };
 
-    function addTopicFields(query) {
-      query
+    const TOPIC_FIELDS = [...ITEM_FIELDS, 'title', 'text'];
+
+    Topic.innerQuery = function(user, filterFn, sortFn) {
+      const query = q
+        .item(TOPIC, user)
         .column({
           title: 'h.title',
           text: 'b.text',
         })
         .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash');
-    }
-
-    Topic.itemQuery = function(user) {
-      return q.item(TOPIC, user).modify(addTopicFields);
+      if (filterFn) {
+        query.modify(filterFn);
+      }
+      if (sortFn) {
+        query.modify(sortFn);
+      }
+      return query;
     };
 
-    Topic.processQueryResults = function(topics) {
-      const data = {};
+    Topic.wrapQueryWithJoins = function(query) {
+      return knex
+        .select(TOPIC_FIELDS)
+        .from(knex.raw(query).wrap('(', ') AS ignored'))
+        .column({
+          subTopicId: 'topic_topics.sub_topic_id',
+          claimId: 'topic_claims.claim_id',
+        })
+        .leftOuterJoin('topic_topics', 'revId', 'topic_topics.topic_rev_id')
+        .leftOuterJoin('topic_claims', 'revId', 'topic_claims.topic_rev_id');
+    };
+
+    Topic.itemQuery = function(user, filterFn, sortFn) {
+      const query = Topic.wrapQueryWithJoins(
+        Topic.innerQuery(user, filterFn, sortFn)
+      );
+      if (sortFn) {
+        query.modify(sortFn);
+      }
+      return query;
+    };
+
+    Topic.processQueryResults = function(flatTopics) {
+      const topics = hydrateTopics(flatTopics);
       for (const topic of topics) {
         topic.depth = 1;
         topic.childCount = graph.getCount(topic.id);
-        data[topic.id] = topic;
       }
-      return data;
+      return topics;
     };
 
     Topic.apiGet = async function(id, user) {
@@ -281,45 +308,42 @@ export default function(sequelize, DataTypes, knex) {
     Topic.apiGetAll = async function({ user, filters, sort, page } = {}) {
       page = page || 1;
 
-      const query = Topic.itemQuery(user)
+      const filterFn = query =>
+        query
+          .where({
+            is_root: true,
+            deleted: false,
+          })
+          .modify(q.filter, filters)
+          .offset(PAGE_SIZE * (page - 1))
+          .limit(PAGE_SIZE);
+      const sortFn = query => query.modify(q.sort, sort);
+
+      const query = Topic.itemQuery(user, filterFn, sortFn);
+      const countQuery = Topic.innerQuery(user)
         .where({
           is_root: true,
           deleted: false,
         })
-        .modify(q.sortAndFilter, sort, filters);
+        .modify(q.filter, filters)
+        .modify(q.count);
 
-      const countQuery = query
-        .clone()
-        .clearSelect()
-        .clearOrder()
-        .count('*');
-      query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
+      const [flatTopics, [{ count }]] = await Promise.all([query, countQuery]);
+      const topics = Topic.processQueryResults(flatTopics);
 
-      const [topics, [{ count }]] = await Promise.all([query, countQuery]);
       return {
-        topics: Topic.processQueryResults(topics),
+        topics: _.keyBy('id', topics),
         results: topics.map(topic => topic.id),
         numPages: Math.ceil(count / PAGE_SIZE),
       };
     };
 
     Topic.apiGetForTrail = async function(ids, user) {
-      const flatTopics = await Topic.itemQuery(user)
-        .column({
-          subTopicId: 'topic_topics.sub_topic_id',
-          claimId: 'topic_claims.claim_id',
-        })
-        .whereIn('i.id', ids)
-        .leftOuterJoin('topic_topics', 'i.head_id', 'topic_topics.topic_rev_id')
-        .leftOuterJoin(
-          'topic_claims',
-          'i.head_id',
-          'topic_claims.topic_rev_id'
-        );
-
-      const topics = hydrateTopics(flatTopics);
+      const filterFn = query => query.whereIn('i.id', ids);
+      const flatTopics = await Topic.itemQuery(user, filterFn);
+      const topics = Topic.processQueryResults(flatTopics);
       return {
-        topics: Topic.processQueryResults(topics),
+        topics: _.keyBy('id', topics),
       };
     };
 

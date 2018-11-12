@@ -1,3 +1,5 @@
+import _ from 'lodash/fp';
+
 import q from './query';
 import search from '@/common/search';
 import { ConflictError, NotFoundError } from '@/api/error';
@@ -160,8 +162,9 @@ export default function(sequelize, DataTypes, knex) {
       return data;
     };
 
-    function addSourceFields(query) {
-      query
+    Source.itemQuery = function(user, filterFn, sortFn) {
+      const query = q
+        .item(SOURCE, user)
         .column({
           text: 'b.text',
           url: 'h.url',
@@ -174,19 +177,20 @@ export default function(sequelize, DataTypes, knex) {
         })
         .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
         .leftOuterJoin(knex.raw('blobs AS t'), 'h.table_hash', 't.hash');
-    }
-
-    Source.itemQuery = function(user) {
-      return q.item(SOURCE, user).modify(addSourceFields);
+      if (filterFn) {
+        query.modify(filterFn);
+      }
+      if (sortFn) {
+        query.modify(sortFn);
+      }
+      return query;
     };
 
     Source.processQueryResults = function(sources) {
-      const data = {};
       for (const source of sources) {
         source.chart = JSON.parse(source.chart);
-        data[source.id] = source;
       }
-      return data;
+      return sources;
     };
 
     Source.apiGet = async function(sourceId, user, hasTrail) {
@@ -230,20 +234,25 @@ export default function(sequelize, DataTypes, knex) {
     Source.apiGetAll = async function({ user, filters, sort, page } = {}) {
       page = page || 1;
 
-      const query = Source.itemQuery(user)
+      const filterFn = query =>
+        query
+          .where('deleted', false)
+          .modify(q.filter, filters)
+          .offset(PAGE_SIZE * (page - 1))
+          .limit(PAGE_SIZE);
+      const sortFn = query => query.modify(q.sort, sort);
+
+      const query = Source.itemQuery(user, filterFn, sortFn);
+      const countQuery = Source.itemQuery(user)
         .where('deleted', false)
-        .modify(q.sortAndFilter, sort, filters);
+        .modify(q.filter, filters)
+        .modify(q.count);
 
-      const countQuery = query
-        .clone()
-        .clearSelect()
-        .clearOrder()
-        .count('*');
-      query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
+      const [flatSources, [{ count }]] = await Promise.all([query, countQuery]);
+      const sources = Source.processQueryResults(flatSources);
 
-      const [sources, [{ count }]] = await Promise.all([query, countQuery]);
       return {
-        sources: Source.processQueryResults(sources),
+        sources: _.keyBy('id', sources),
         results: sources.map(source => source.id),
         numPages: Math.ceil(count / PAGE_SIZE),
       };

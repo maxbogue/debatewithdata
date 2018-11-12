@@ -1,7 +1,7 @@
 import _ from 'lodash/fp';
 
 import graph, { Graph } from '@/common/graph';
-import q from './query';
+import q, { ITEM_FIELDS } from './query';
 import search from '@/common/search';
 import { ConflictError, NotFoundError } from '@/api/error';
 import { ItemType, PAGE_SIZE } from '@/common/constants';
@@ -266,29 +266,58 @@ export default function(sequelize, DataTypes, knex) {
       data.claims[this.id] = thisData;
     };
 
-    function addClaimFields(query) {
-      query
+    const CLAIM_FIELDS = [...ITEM_FIELDS, 'text', 'flag', 'needsData'];
+
+    Claim.innerQuery = function(user, filterFn, sortFn) {
+      const query = q
+        .item(CLAIM, user)
         .column({
           text: 'b.text',
           flag: 'h.flag',
           needsData: 'h.needs_data',
         })
         .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash');
-    }
-
-    Claim.itemQuery = function(user) {
-      return q.item(CLAIM, user).modify(addClaimFields);
+      if (filterFn) {
+        query.modify(filterFn);
+      }
+      if (sortFn) {
+        query.modify(sortFn);
+      }
+      return query;
     };
 
-    Claim.processQueryResults = function(claims, depth = 1) {
-      const data = {};
+    Claim.wrapQueryWithJoins = function(query) {
+      return knex
+        .select(CLAIM_FIELDS)
+        .from(knex.raw(query).wrap('(', ') AS ignored'))
+        .column({
+          subClaimId: 'claim_claims.claim_id',
+          subClaimIsFor: 'claim_claims.is_for',
+          sourceId: 'claim_sources.source_id',
+          sourceIsFor: 'claim_sources.is_for',
+        })
+        .leftOuterJoin('claim_claims', 'revId', 'claim_claims.claim_rev_id')
+        .leftOuterJoin('claim_sources', 'revId', 'claim_sources.claim_rev_id');
+    };
+
+    Claim.itemQuery = function(user, filterFn, sortFn) {
+      const query = Claim.wrapQueryWithJoins(
+        Claim.innerQuery(user, filterFn, sortFn)
+      );
+      if (sortFn) {
+        query.modify(sortFn);
+      }
+      return query;
+    };
+
+    Claim.processQueryResults = function(flatClaims) {
+      const claims = hydrateClaims(flatClaims);
       for (const claim of claims) {
-        claim.depth = depth;
+        claim.depth = 1;
         claim.childCount = graph.getCount(claim.id);
         claim.dataCounts = graph.getDataCounts(claim.id);
-        data[claim.id] = claim;
       }
-      return data;
+      return claims;
     };
 
     Claim.apiGet = async function(id, user, hasTrail) {
@@ -304,44 +333,36 @@ export default function(sequelize, DataTypes, knex) {
     Claim.apiGetAll = async function({ user, filters, sort, page } = {}) {
       page = page || 1;
 
-      const query = Claim.itemQuery(user)
+      const filterFn = query =>
+        query
+          .where('deleted', false)
+          .modify(q.filter, filters)
+          .offset(PAGE_SIZE * (page - 1))
+          .limit(PAGE_SIZE);
+      const sortFn = query => query.modify(q.sort, sort);
+
+      const query = Claim.itemQuery(user, filterFn, sortFn);
+      const countQuery = Claim.innerQuery(user)
         .where('deleted', false)
-        .modify(q.sortAndFilter, sort, filters);
+        .modify(q.filter, filters)
+        .modify(q.count);
 
-      const countQuery = query
-        .clone()
-        .clearSelect()
-        .clearOrder()
-        .count('*');
-      query.offset(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
+      const [flatClaims, [{ count }]] = await Promise.all([query, countQuery]);
+      const claims = Claim.processQueryResults(flatClaims);
 
-      const [claims, [{ count }]] = await Promise.all([query, countQuery]);
       return {
-        claims: Claim.processQueryResults(claims),
+        claims: _.keyBy('id', claims),
         results: claims.map(claim => claim.id),
         numPages: Math.ceil(count / PAGE_SIZE),
       };
     };
 
     Claim.apiGetForTrail = async function(ids, user) {
-      const flatClaims = await Claim.itemQuery(user)
-        .column({
-          subClaimId: 'claim_claims.claim_id',
-          subClaimIsFor: 'claim_claims.is_for',
-          sourceId: 'claim_sources.source_id',
-          sourceIsFor: 'claim_sources.is_for',
-        })
-        .whereIn('i.id', ids)
-        .leftOuterJoin('claim_claims', 'i.head_id', 'claim_claims.claim_rev_id')
-        .leftOuterJoin(
-          'claim_sources',
-          'i.head_id',
-          'claim_sources.claim_rev_id'
-        );
-
-      const claims = hydrateClaims(flatClaims);
+      const filterFn = query => query.whereIn('i.id', ids);
+      const flatClaims = await Claim.itemQuery(user, filterFn);
+      const claims = Claim.processQueryResults(flatClaims);
       return {
-        claims: Claim.processQueryResults(claims, 1.5),
+        claims: _.keyBy('id', claims),
       };
     };
 

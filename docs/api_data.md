@@ -32,6 +32,7 @@ Always present.
 
     id: String
     revId: String
+    updatedAt: Date
     // Only set if deleted.
     deleted?: Boolean
     deleteMessage?: String

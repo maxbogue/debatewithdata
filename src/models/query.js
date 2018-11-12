@@ -1,11 +1,30 @@
 import { Filter, Sort } from '@/common/constants';
 import { knex } from '@/models';
 
+export const COMMON_FIELDS = [
+  'id',
+  'revId',
+  'updatedAt',
+  'deleted',
+  'deleteMessage',
+];
+
+export const ITEM_FIELDS = [
+  ...COMMON_FIELDS,
+  'watched',
+  'starred',
+  'starCount',
+  'commentCount',
+];
+
 function baseQuery(type) {
   return knex(knex.raw(type + 's AS i'))
     .column({
       id: 'i.id',
       revId: 'h.id',
+      updatedAt: 'h.created_at',
+      deleted: 'h.deleted',
+      deleteMessage: 'h.delete_message',
     })
     .leftOuterJoin(knex.raw(type + '_revs AS h'), 'i.head_id', 'h.id');
 }
@@ -83,7 +102,7 @@ function sortQuery(query, sort) {
       query.orderBy('starCount', dir ? 'desc' : 'asc');
       return;
     } else if (sortType === Sort.RECENT) {
-      query.orderBy('h.created_at', dir ? 'desc' : 'asc');
+      query.orderBy('updatedAt', dir ? 'desc' : 'asc');
       return;
     }
   }
@@ -92,7 +111,7 @@ function sortQuery(query, sort) {
 
 function filterQuery(query, filters) {
   if (filters && Filter.STARRED in filters) {
-    query.where('s.starred', filters[Filter.STARRED]);
+    query.where('starred', filters[Filter.STARRED]);
   }
 }
 
@@ -111,6 +130,8 @@ function countQuery(query) {
 export default {
   base: baseQuery,
   item: itemQuery,
+  sort: sortQuery,
+  filter: filterQuery,
   sortAndFilter: sortAndFilterQuery,
   count: countQuery,
   joinWatched,

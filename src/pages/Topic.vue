@@ -92,13 +92,13 @@ export default {
       return this.lookupTopic(this.id);
     },
     subTopics() {
-      if (!this.topic || this.topic.deleted) {
+      if (!this.topic || this.topic.deleted || this.topic.depth < 2) {
         return [];
       }
       return this.sortByStars(this.topic.subTopicIds.map(this.lookupTopic));
     },
     claims() {
-      if (!this.topic || this.topic.deleted) {
+      if (!this.topic || this.topic.deleted || this.topic.depth < 2) {
         return [];
       }
       return this.sortByStars(this.topic.claimIds.map(this.lookupClaim));

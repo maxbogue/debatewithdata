@@ -402,12 +402,18 @@ describe('Source', function() {
           [s1r.sourceId]: {
             id: s1r.sourceId,
             revId: s1r.id,
+            updatedAt: s1r.created_at,
+            deleted: false,
+            deleteMessage: null,
             ...RESEARCH,
             ...STARS_AND_COMMENTS,
           },
           [s2r.sourceId]: {
             id: s2r.sourceId,
             revId: s2r.id,
+            updatedAt: s2r.created_at,
+            deleted: false,
+            deleteMessage: null,
             ...ARTICLE,
             ...STARS_AND_COMMENTS,
           },
@@ -429,6 +435,9 @@ describe('Source', function() {
           [s1r.sourceId]: {
             id: s1r.sourceId,
             revId: s1r.id,
+            updatedAt: s1r.created_at,
+            deleted: false,
+            deleteMessage: null,
             ...MISC,
             table,
             ...STARS_AND_COMMENTS,
@@ -449,6 +458,9 @@ describe('Source', function() {
           [s1r.sourceId]: {
             id: s1r.sourceId,
             revId: s1r.id,
+            updatedAt: s1r.created_at,
+            deleted: false,
+            deleteMessage: null,
             ...RESEARCH,
             ...STARS_AND_COMMENTS,
           },
