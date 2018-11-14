@@ -25,13 +25,10 @@ export default {
       if (!this.user) {
         return;
       }
-      const data = await this.$store.dispatch('toggleStar', {
+      await this.$store.dispatch('toggleStar', {
         type: this.type,
         id: this.item.id,
       });
-      this.item.starCount = data.starCount;
-      this.item.starred = data.starred;
-      this.item.watched = data.watched;
     },
   },
 };

@@ -207,7 +207,7 @@ export default function(sequelize, DataTypes, knex) {
         }
         for (const source of this.head.sources) {
           promises.push(
-            source.toData().then(sourceData => {
+            source.toData(user).then(sourceData => {
               data.sources[source.id] = sourceData;
             })
           );

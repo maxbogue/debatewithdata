@@ -14,11 +14,10 @@ export default {
   },
   methods: {
     async toggle() {
-      const data = await this.$store.dispatch('toggleWatch', {
+      await this.$store.dispatch('toggleWatch', {
         type: this.type,
         id: this.item.id,
       });
-      this.item.watched = data.watched;
     },
   },
 };

@@ -108,6 +108,13 @@ const makeStoreOptions = (auth, api) => ({
         }, data.sources);
       }
     },
+    patchItem(state, { type, id, patch }) {
+      const typeKey = `${type}s`;
+      Vue.set(state[typeKey], id, {
+        ...state[typeKey][id],
+        ...patch,
+      });
+    },
     setUserFromToken(state, authToken) {
       auth.setAuthToken(authToken);
       // User will be null here if the auth token has expired.
@@ -204,11 +211,13 @@ const makeStoreOptions = (auth, api) => ({
       commit('setData', data);
       return data;
     },
-    async toggleStar(_, { type, id }) {
-      return await api.toggleStar(type, id);
+    async toggleStar({ commit }, { type, id }) {
+      const starData = await api.toggleStar(type, id);
+      commit('patchItem', { type, id, patch: starData });
     },
-    async toggleWatch(_, { type, id }) {
-      return await api.toggleWatch(type, id);
+    async toggleWatch({ commit }, { type, id }) {
+      const watchData = await api.toggleWatch(type, id);
+      commit('patchItem', { type, id, patch: watchData });
     },
     async getComments(_, { type, id }) {
       return await api.getComments(type, id);

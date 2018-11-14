@@ -2,7 +2,7 @@ import chai from 'chai';
 
 import { Claim, ClaimRev } from '@/models';
 import { ConflictError, NotFoundError } from '@/api/error';
-import { Filter, Sort } from '@/common/constants';
+import { Filter, Sort, SourceType } from '@/common/constants';
 import { Flag } from '@/common/flag';
 import { ValidationError } from '@/common/validate';
 
@@ -454,6 +454,57 @@ describe('Claim', function() {
         },
         topics: {},
         sources: {},
+      });
+    });
+
+    it('nested source', async function() {
+      const URL = 'https://debatewithdata.org';
+      const rev = await Claim.apiCreate(user, {
+        text: FOO,
+        newSources: [
+          {
+            isFor: true,
+            url: URL,
+            text: BAR,
+            type: SourceType.MISC,
+          },
+        ],
+      });
+      await rev.reload(ClaimRev.INCLUDE(3));
+      expect(rev.sources).to.have.lengthOf(1);
+      const s1 = rev.sources[0];
+
+      const claimData = await Claim.apiGet(rev.claimId, user);
+      expect(claimData).to.deep.equal({
+        claims: {
+          [rev.claimId]: {
+            ...CLAIM_DEPTH_3,
+            id: rev.claimId,
+            revId: rev.id,
+            text: FOO,
+            sourceIds: {
+              [s1.id]: true,
+            },
+            childCount: 1,
+            dataCounts: [1, 0],
+          },
+        },
+        topics: {},
+        sources: {
+          [s1.id]: {
+            ...STARS_AND_COMMENTS,
+            id: s1.id,
+            revId: s1.headId,
+            type: SourceType.MISC,
+            url: URL,
+            text: BAR,
+            date: null,
+            table: null,
+            chart: null,
+            institution: null,
+            publication: null,
+          },
+        },
       });
     });
 
