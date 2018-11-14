@@ -60,6 +60,7 @@ server.use(
   createApiRouter(authToken => new ApiImpl(new ServerAuth(authToken)))
 );
 
+server.use('/robots.txt', express.static('static/robots.txt'));
 server.use('/static', express.static('static'));
 
 server.get('*', async (req, res) => {
