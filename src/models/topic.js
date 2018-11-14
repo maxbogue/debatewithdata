@@ -242,25 +242,18 @@ export default function(sequelize, DataTypes, knex) {
 
     const TOPIC_FIELDS = [...ITEM_FIELDS, 'title', 'text'];
 
-    Topic.innerQuery = function(user, filterFn, sortFn) {
-      const query = q
+    Topic.innerQuery = (user, modFn = _.identity) =>
+      q
         .item(TOPIC, user)
         .column({
           title: 'h.title',
           text: 'b.text',
         })
-        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash');
-      if (filterFn) {
-        query.modify(filterFn);
-      }
-      if (sortFn) {
-        query.modify(sortFn);
-      }
-      return query;
-    };
+        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
+        .modify(modFn);
 
-    Topic.wrapQueryWithJoins = function(query) {
-      return knex
+    Topic.wrapQueryWithJoins = query =>
+      knex
         .select(TOPIC_FIELDS)
         .from(knex.raw(query).wrap('(', ') AS ignored'))
         .column({
@@ -269,26 +262,25 @@ export default function(sequelize, DataTypes, knex) {
         })
         .leftOuterJoin('topic_topics', 'revId', 'topic_topics.topic_rev_id')
         .leftOuterJoin('topic_claims', 'revId', 'topic_claims.topic_rev_id');
-    };
 
-    Topic.itemQuery = function(user, filterFn, sortFn) {
-      const query = Topic.wrapQueryWithJoins(
-        Topic.innerQuery(user, filterFn, sortFn)
-      );
-      if (sortFn) {
-        query.modify(sortFn);
-      }
-      return query;
-    };
+    Topic.itemQuery = (user, filterFn = _.identity, sortFn = _.identity) =>
+      Topic.wrapQueryWithJoins(
+        Topic.innerQuery(
+          user,
+          _.flow(
+            filterFn,
+            sortFn
+          )
+        )
+      ).modify(sortFn);
 
-    Topic.processQueryResults = function(flatTopics) {
-      const topics = hydrateTopics(flatTopics);
-      for (const topic of topics) {
+    Topic.processQueryResults = _.flow(
+      hydrateTopics,
+      _.forEach(topic => {
         topic.depth = 1;
         topic.childCount = graph.getCount(topic.id);
-      }
-      return topics;
-    };
+      })
+    );
 
     Topic.apiGet = async function(id, user) {
       const topic = await Topic.findByPk(id, Topic.INCLUDE(3));

@@ -268,26 +268,19 @@ export default function(sequelize, DataTypes, knex) {
 
     const CLAIM_FIELDS = [...ITEM_FIELDS, 'text', 'flag', 'needsData'];
 
-    Claim.innerQuery = function(user, filterFn, sortFn) {
-      const query = q
+    Claim.innerQuery = (user, modFn = _.identity) =>
+      q
         .item(CLAIM, user)
         .column({
           text: 'b.text',
           flag: 'h.flag',
           needsData: 'h.needs_data',
         })
-        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash');
-      if (filterFn) {
-        query.modify(filterFn);
-      }
-      if (sortFn) {
-        query.modify(sortFn);
-      }
-      return query;
-    };
+        .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
+        .modify(modFn);
 
-    Claim.wrapQueryWithJoins = function(query) {
-      return knex
+    Claim.wrapQueryWithJoins = query =>
+      knex
         .select(CLAIM_FIELDS)
         .from(knex.raw(query).wrap('(', ') AS ignored'))
         .column({
@@ -298,27 +291,26 @@ export default function(sequelize, DataTypes, knex) {
         })
         .leftOuterJoin('claim_claims', 'revId', 'claim_claims.claim_rev_id')
         .leftOuterJoin('claim_sources', 'revId', 'claim_sources.claim_rev_id');
-    };
 
-    Claim.itemQuery = function(user, filterFn, sortFn) {
-      const query = Claim.wrapQueryWithJoins(
-        Claim.innerQuery(user, filterFn, sortFn)
-      );
-      if (sortFn) {
-        query.modify(sortFn);
-      }
-      return query;
-    };
+    Claim.itemQuery = (user, filterFn = _.identity, sortFn = _.identity) =>
+      Claim.wrapQueryWithJoins(
+        Claim.innerQuery(
+          user,
+          _.flow(
+            filterFn,
+            sortFn
+          )
+        )
+      ).modify(sortFn);
 
-    Claim.processQueryResults = function(flatClaims) {
-      const claims = hydrateClaims(flatClaims);
-      for (const claim of claims) {
+    Claim.processQueryResults = _.flow(
+      hydrateClaims,
+      _.forEach(claim => {
         claim.depth = 1;
         claim.childCount = graph.getCount(claim.id);
         claim.dataCounts = graph.getDataCounts(claim.id);
-      }
-      return claims;
-    };
+      })
+    );
 
     Claim.apiGet = async function(id, user, hasTrail) {
       const claim = await Claim.findByPk(id, Claim.INCLUDE(3));

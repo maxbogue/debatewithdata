@@ -162,8 +162,8 @@ export default function(sequelize, DataTypes, knex) {
       return data;
     };
 
-    Source.itemQuery = function(user, filterFn, sortFn) {
-      const query = q
+    Source.itemQuery = (user, filterFn = _.identity, sortFn = _.identity) =>
+      q
         .item(SOURCE, user)
         .column({
           text: 'b.text',
@@ -176,22 +176,13 @@ export default function(sequelize, DataTypes, knex) {
           publication: 'h.publication',
         })
         .leftOuterJoin(knex.raw('blobs AS b'), 'h.blob_hash', 'b.hash')
-        .leftOuterJoin(knex.raw('blobs AS t'), 'h.table_hash', 't.hash');
-      if (filterFn) {
-        query.modify(filterFn);
-      }
-      if (sortFn) {
-        query.modify(sortFn);
-      }
-      return query;
-    };
+        .leftOuterJoin(knex.raw('blobs AS t'), 'h.table_hash', 't.hash')
+        .modify(filterFn)
+        .modify(sortFn);
 
-    Source.processQueryResults = function(sources) {
-      for (const source of sources) {
-        source.chart = JSON.parse(source.chart);
-      }
-      return sources;
-    };
+    Source.processQueryResults = _.forEach(source => {
+      source.chart = JSON.parse(source.chart);
+    });
 
     Source.apiGet = async function(sourceId, user, hasTrail) {
       const source = await Source.findByPk(sourceId, Source.INCLUDE());
