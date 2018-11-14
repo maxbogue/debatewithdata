@@ -122,7 +122,7 @@ export default function(sequelize, DataTypes, knex) {
         });
       }
 
-      const claim = await Claim.findById(claimId, Claim.INCLUDE(2));
+      const claim = await Claim.findByPk(claimId, Claim.INCLUDE(2));
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
       }
@@ -151,7 +151,7 @@ export default function(sequelize, DataTypes, knex) {
         });
       }
 
-      const claim = await Claim.findById(claimId, Claim.INCLUDE(1));
+      const claim = await Claim.findByPk(claimId, Claim.INCLUDE(1));
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
       }
@@ -321,7 +321,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Claim.apiGet = async function(id, user, hasTrail) {
-      const claim = await Claim.findById(id, Claim.INCLUDE(3));
+      const claim = await Claim.findByPk(id, Claim.INCLUDE(3));
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + id);
       }
@@ -367,7 +367,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Claim.apiGetRevs = async function(claimId, user) {
-      const claim = await Claim.findById(claimId, Claim.INCLUDE(1));
+      const claim = await Claim.findByPk(claimId, Claim.INCLUDE(1));
       const claimRevs = await models.ClaimRev.findAll({
         where: { claimId },
         order: [['created_at', 'DESC']],
@@ -400,7 +400,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Claim.apiToggleStar = async function(claimId, user) {
-      const claim = await Claim.findById(claimId);
+      const claim = await Claim.findByPk(claimId);
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
       }
@@ -415,7 +415,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Claim.apiToggleWatch = async function(claimId, user) {
-      const claim = await Claim.findById(claimId);
+      const claim = await Claim.findByPk(claimId);
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
       }

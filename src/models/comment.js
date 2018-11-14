@@ -51,7 +51,7 @@ export default function(sequelize, DataTypes) {
     };
 
     Comment.apiAdd = async function(Item, itemId, user, text) {
-      const item = await Item.findById(itemId);
+      const item = await Item.findByPk(itemId);
       if (!item) {
         throw new NotFoundError(Item.name + ' not found: ' + itemId);
       }
@@ -62,11 +62,11 @@ export default function(sequelize, DataTypes) {
     };
 
     Comment.apiDelete = async function(Item, itemId, user, commentId) {
-      const item = await Item.findById(itemId);
+      const item = await Item.findByPk(itemId);
       if (!item) {
         throw new NotFoundError(Item.name + ' not found: ' + itemId);
       }
-      const comment = await models.Comment.findById(commentId);
+      const comment = await models.Comment.findByPk(commentId);
       if (!(await item.hasComment(comment))) {
         throw new NotFoundError('Comment not found.');
       }
@@ -77,14 +77,14 @@ export default function(sequelize, DataTypes) {
     };
 
     Comment.apiGet = async function(commentId) {
-      const comment = await Comment.findById(commentId, {
+      const comment = await Comment.findByPk(commentId, {
         include: [models.User],
       });
       return comment.toData();
     };
 
     Comment.apiGetAll = async function(Item, itemId) {
-      const item = await Item.findById(itemId);
+      const item = await Item.findByPk(itemId);
       if (!item) {
         throw new NotFoundError(Item.name + ' not found: ' + itemId);
       }

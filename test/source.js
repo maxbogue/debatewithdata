@@ -103,7 +103,7 @@ describe('Source', function() {
       expect(rev.publication).to.be.null;
       expect(rev.parentId).to.be.null;
 
-      const source = await Source.findById(rev.sourceId);
+      const source = await Source.findByPk(rev.sourceId);
       expect(source.headId).to.equal(rev.id);
     });
 
@@ -143,7 +143,7 @@ describe('Source', function() {
       expect(rev.publication).to.equal(PUBLICATION);
       expect(rev.parentId).to.be.null;
 
-      const source = await Source.findById(rev.sourceId);
+      const source = await Source.findByPk(rev.sourceId);
       expect(source.headId).to.equal(rev.id);
     });
 
@@ -159,7 +159,7 @@ describe('Source', function() {
       expect(rev.publication).to.equal(PUBLICATION);
       expect(rev.parentId).to.be.null;
 
-      const source = await Source.findById(rev.sourceId);
+      const source = await Source.findByPk(rev.sourceId);
       expect(source.headId).to.equal(rev.id);
     });
 
@@ -175,7 +175,7 @@ describe('Source', function() {
       expect(rev.publication).to.be.null;
       expect(rev.parentId).to.be.null;
 
-      const source = await Source.findById(rev.sourceId);
+      const source = await Source.findByPk(rev.sourceId);
       expect(source.headId).to.equal(rev.id);
     });
   });
@@ -183,7 +183,7 @@ describe('Source', function() {
   describe('.apiUpdate()', function() {
     it('change', async function() {
       const rev1 = await Source.apiCreate(user, MISC);
-      const source = await Source.findById(rev1.sourceId);
+      const source = await Source.findByPk(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
       const rev2 = await Source.apiUpdate(source.id, user, {
@@ -206,7 +206,7 @@ describe('Source', function() {
 
     it('no change no-op', async function() {
       const rev1 = await Source.apiCreate(user, MISC);
-      const source = await Source.findById(rev1.sourceId);
+      const source = await Source.findByPk(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
       const rev2 = await Source.apiUpdate(source.id, user, {
@@ -249,7 +249,7 @@ describe('Source', function() {
   describe('.apiDelete()', function() {
     it('normal delete', async function() {
       const rev1 = await Source.apiCreate(user, MISC);
-      const source = await Source.findById(rev1.sourceId);
+      const source = await Source.findByPk(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
       const rev2 = await Source.apiDelete(source.id, user, DELETE_MSG);
@@ -268,7 +268,7 @@ describe('Source', function() {
 
     it('already deleted no-op', async function() {
       const rev1 = await Source.apiCreate(user, MISC);
-      const source = await Source.findById(rev1.sourceId);
+      const source = await Source.findByPk(rev1.sourceId);
       expect(source.headId).to.equal(rev1.id);
 
       const rev2 = await Source.apiDelete(source.id, user, DELETE_MSG);

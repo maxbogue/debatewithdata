@@ -75,7 +75,7 @@ describe('Topic', function() {
       expect(claim.id).to.equal(claimRev.claimId);
       expect(claim.head.blob.text).to.equal(BAR);
 
-      const topic = await Topic.findById(topicRev.topicId);
+      const topic = await Topic.findByPk(topicRev.topicId);
       expect(topic.headId).to.equal(topicRev.id);
     });
 
@@ -106,7 +106,7 @@ describe('Topic', function() {
       expect(subTopic.head.title).to.equal(TITLE2);
       expect(subTopic.head.blob.text).to.equal(BAR);
 
-      const topic = await Topic.findById(topicRev.topicId);
+      const topic = await Topic.findByPk(topicRev.topicId);
       expect(topic.headId).to.equal(topicRev.id);
     });
 
@@ -140,7 +140,7 @@ describe('Topic', function() {
       expect(subTopic.head.title).to.equal(TITLE2);
       expect(subTopic.head.blob.text).to.equal(BAR);
 
-      const topic = await Topic.findById(topicRev.topicId);
+      const topic = await Topic.findByPk(topicRev.topicId);
       expect(topic.headId).to.equal(topicRev.id);
     });
 
@@ -168,7 +168,7 @@ describe('Topic', function() {
       const claim = topicRev.claims[0];
       expect(claim.head.blob.text).to.equal(BAR);
 
-      const topic = await Topic.findById(topicRev.topicId);
+      const topic = await Topic.findByPk(topicRev.topicId);
       expect(topic.headId).to.equal(topicRev.id);
     });
   });
@@ -206,7 +206,7 @@ describe('Topic', function() {
       expect(r2.claims[0].id).to.equal(c2r.claimId);
       expect(r2.subTopics).to.have.lengthOf(0);
 
-      const topic = await Topic.findById(ID);
+      const topic = await Topic.findByPk(ID);
       expect(topic.headId).to.equal(r2.id);
     });
 
@@ -245,7 +245,7 @@ describe('Topic', function() {
       expect(subTopic.head.title).to.equal(TITLE2);
       expect(subTopic.head.blob.text).to.equal(BAR);
 
-      const topic = await Topic.findById(r2.topicId);
+      const topic = await Topic.findByPk(r2.topicId);
       expect(topic.headId).to.equal(r2.id);
     });
 
@@ -278,7 +278,7 @@ describe('Topic', function() {
       const claim = r2.claims[0];
       expect(claim.head.blob.text).to.equal(BAR);
 
-      const topic = await Topic.findById(r2.topicId);
+      const topic = await Topic.findByPk(r2.topicId);
       expect(topic.headId).to.equal(r2.id);
     });
 
@@ -355,7 +355,7 @@ describe('Topic', function() {
       expect(r2.claims).to.have.lengthOf(0);
       expect(r2.subTopics).to.have.lengthOf(0);
 
-      const topic = await Topic.findById(ID);
+      const topic = await Topic.findByPk(ID);
       expect(topic.headId).to.equal(r2.id);
     });
 

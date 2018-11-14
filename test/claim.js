@@ -71,7 +71,7 @@ describe('Claim', function() {
       expect(rev.claimId).to.exist;
       expect(rev.flag).to.be.null;
 
-      const claim = await Claim.findById(rev.claimId);
+      const claim = await Claim.findByPk(rev.claimId);
       expect(claim.headId).to.equal(rev.id);
     });
 
@@ -137,7 +137,7 @@ describe('Claim', function() {
       const r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
-      let claim = await Claim.findById(r1.claimId);
+      let claim = await Claim.findByPk(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
       const r2 = await Claim.apiUpdate(r1.claimId, user, {
@@ -152,7 +152,7 @@ describe('Claim', function() {
       expect(r2.subClaims).to.have.lengthOf(0);
       expect(r2.sources).to.have.lengthOf(0);
 
-      claim = await Claim.findById(r1.claimId);
+      claim = await Claim.findByPk(r1.claimId);
       expect(claim.headId).to.equal(r2.id);
     });
 
@@ -160,7 +160,7 @@ describe('Claim', function() {
       const r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
-      const claim = await Claim.findById(r1.claimId);
+      const claim = await Claim.findByPk(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
       const r2 = await Claim.apiUpdate(r1.claimId, user, {
@@ -256,7 +256,7 @@ describe('Claim', function() {
       const r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
-      const claim = await Claim.findById(r1.claimId);
+      const claim = await Claim.findByPk(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
       const r2 = await Claim.apiDelete(claim.id, user, DELETE_MSG);
@@ -277,7 +277,7 @@ describe('Claim', function() {
       const r1 = await Claim.apiCreate(user, {
         text: FOO,
       });
-      const claim = await Claim.findById(r1.claimId);
+      const claim = await Claim.findByPk(r1.claimId);
       expect(claim.headId).to.equal(r1.id);
 
       const r2 = await Claim.apiDelete(claim.id, user, DELETE_MSG);

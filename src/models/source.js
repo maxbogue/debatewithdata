@@ -96,7 +96,7 @@ export default function(sequelize, DataTypes, knex) {
         });
       }
 
-      const source = await Source.findById(sourceId, Source.INCLUDE());
+      const source = await Source.findByPk(sourceId, Source.INCLUDE());
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
       }
@@ -125,7 +125,7 @@ export default function(sequelize, DataTypes, knex) {
         });
       }
 
-      const source = await Source.findById(sourceId, Source.INCLUDE());
+      const source = await Source.findByPk(sourceId, Source.INCLUDE());
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
       }
@@ -194,7 +194,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Source.apiGet = async function(sourceId, user, hasTrail) {
-      const source = await Source.findById(sourceId, Source.INCLUDE());
+      const source = await Source.findByPk(sourceId, Source.INCLUDE());
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
       }
@@ -285,7 +285,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Source.apiToggleStar = async function(sourceId, user) {
-      const source = await Source.findById(sourceId);
+      const source = await Source.findByPk(sourceId);
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
       }
@@ -300,7 +300,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Source.apiToggleWatch = async function(sourceId, user) {
-      const source = await Source.findById(sourceId);
+      const source = await Source.findByPk(sourceId);
       if (!source) {
         throw new NotFoundError('Source not found: ' + sourceId);
       }

@@ -130,7 +130,7 @@ export default function(sequelize, DataTypes, knex) {
         });
       }
 
-      const topic = await Topic.findById(id, Topic.INCLUDE(2));
+      const topic = await Topic.findByPk(id, Topic.INCLUDE(2));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
@@ -159,7 +159,7 @@ export default function(sequelize, DataTypes, knex) {
         });
       }
 
-      const topic = await Topic.findById(id, Topic.INCLUDE(3));
+      const topic = await Topic.findByPk(id, Topic.INCLUDE(3));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
@@ -291,7 +291,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Topic.apiGet = async function(id, user) {
-      const topic = await Topic.findById(id, Topic.INCLUDE(3));
+      const topic = await Topic.findByPk(id, Topic.INCLUDE(3));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
@@ -301,7 +301,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Topic.apiSetIsRoot = async function(id, isRoot) {
-      const topic = await Topic.findById(id);
+      const topic = await Topic.findByPk(id);
       await topic.update({ isRoot });
     };
 
@@ -381,7 +381,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Topic.apiToggleStar = async function(id, user) {
-      const topic = await Topic.findById(id);
+      const topic = await Topic.findByPk(id);
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
       }
@@ -396,7 +396,7 @@ export default function(sequelize, DataTypes, knex) {
     };
 
     Topic.apiToggleWatch = async function(topicId, user) {
-      const topic = await Topic.findById(topicId);
+      const topic = await Topic.findByPk(topicId);
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + topicId);
       }
