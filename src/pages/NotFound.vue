@@ -1,10 +1,10 @@
 <template>
-<div>
-  <div class="block center error">
-    <h1 class="mono">404</h1>
-    <p>Page could not be found.</p>
+  <div>
+    <div class="block center error">
+      <h1 class="mono">404</h1>
+      <p>Page could not be found.</p>
+    </div>
   </div>
-</div>
 </template>
 
 <script>

@@ -1,8 +1,8 @@
 <template>
-<div>
-  <h2 v-html="titleDiff"></h2>
-  <div v-html="textDiff"></div>
-</div>
+  <div>
+    <h2 v-html="titleDiff"></h2>
+    <div v-html="textDiff"></div>
+  </div>
 </template>
 
 <script>

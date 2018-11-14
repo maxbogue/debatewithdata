@@ -1,17 +1,17 @@
 <template>
-<transition v-if="show" name="dwd-modal">
-  <div class="dwd-modal-mask"
-       @click="submit"
-       @keydown.esc="cancel">
-    <form-valid ref="form"
-                class="dwd-modal-container"
-                :style="maxWidth ? { maxWidth } : {}"
-                @submit="close"
-                @click.native.stop>
-      <slot></slot>
-    </form-valid>
-  </div>
-</transition>
+  <transition v-if="show" name="dwd-modal">
+    <div class="dwd-modal-mask" @click="submit" @keydown.esc="cancel">
+      <form-valid
+        ref="form"
+        class="dwd-modal-container"
+        :style="maxWidth ? { maxWidth } : {}"
+        @submit="close"
+        @click.native.stop
+      >
+        <slot></slot>
+      </form-valid>
+    </div>
+  </transition>
 </template>
 
 <script>

@@ -1,53 +1,74 @@
 <template>
-<div>
-  <h3 class="center">{{ headerText }}</h3>
-  <div class="flex-block" :class="$style.bar">
-    <template v-if="!query">
-      <select v-model="sortBy" aria-label="Sort By">
-        <option :value="Sort.STARS">Stars</option>
-        <option :value="Sort.RECENT">Recent</option>
-      </select>
-      <span class="fas click"
-            :class="'fa-sort-alpha-' + (sortDesc ? 'down' : 'up')"
-            @click="sortDesc = !sortDesc"></span>
-      <span v-if="user"
-            class="fa-star click"
-            :class="starFilterClasses"
-            @click="cycleStarFilter"></span>
-    </template>
-    <input v-model="query"
-           type="text"
-           placeholder="search"
-           aria-label="Search">
-    <router-link v-if="type === ItemType.TOPIC && user && user.admin"
-                 to="/topics/add"
-                 class="dwd-btn pink-dark">New Topic</router-link>
-    <router-link v-else-if="type === ItemType.CLAIM"
-                 to="/claims/add"
-                 class="dwd-btn blue-dark">New Claim</router-link>
-    <router-link v-else-if="type === ItemType.SOURCE"
-                 to="/datas/add"
-                 class="dwd-btn green-dark">New Data</router-link>
+  <div>
+    <h3 class="center">{{ headerText }}</h3>
+    <div class="flex-block" :class="$style.bar">
+      <template v-if="!query">
+        <select v-model="sortBy" aria-label="Sort By">
+          <option :value="Sort.STARS">Stars</option>
+          <option :value="Sort.RECENT">Recent</option>
+        </select>
+        <span
+          class="fas click"
+          :class="'fa-sort-alpha-' + (sortDesc ? 'down' : 'up')"
+          @click="sortDesc = !sortDesc;"
+        ></span>
+        <span
+          v-if="user"
+          class="fa-star click"
+          :class="starFilterClasses"
+          @click="cycleStarFilter"
+        ></span>
+      </template>
+      <input
+        v-model="query"
+        type="text"
+        placeholder="search"
+        aria-label="Search"
+      />
+      <router-link
+        v-if="type === ItemType.TOPIC && user && user.admin"
+        to="/topics/add"
+        class="dwd-btn pink-dark"
+        >New Topic</router-link
+      >
+      <router-link
+        v-else-if="type === ItemType.CLAIM"
+        to="/claims/add"
+        class="dwd-btn blue-dark"
+        >New Claim</router-link
+      >
+      <router-link
+        v-else-if="type === ItemType.SOURCE"
+        to="/datas/add"
+        class="dwd-btn green-dark"
+        >New Data</router-link
+      >
+    </div>
+    <dwd-loader ref="loader" />
+    <div v-if="results && results.length === 0" class="block no-pad">
+      No results.
+    </div>
+    <item-block
+      v-for="item in items"
+      :key="item.id"
+      :item="item"
+      :type="type"
+      abbreviated
+      is-link
+      mini
+      fade-only
+    />
+    <div v-if="numPages" class="block no-pad mono" :class="$style.pages">
+      <span
+        v-for="p in numPages"
+        :key="`page-${p}`"
+        class="click"
+        :class="{ [$style.active]: p === page }"
+        @click="page = p;"
+        >{{ p }}</span
+      >
+    </div>
   </div>
-  <dwd-loader ref="loader" />
-  <div v-if="results && results.length === 0"
-       class="block no-pad">No results.</div>
-  <item-block v-for="item in items"
-              :key="item.id"
-              :item="item"
-              :type="type"
-              abbreviated
-              is-link
-              mini
-              fade-only />
-  <div v-if="numPages" class="block no-pad mono" :class="$style.pages">
-    <span v-for="p in numPages"
-          :key="`page-${p}`"
-          class="click"
-          :class="{ [$style.active]: p === page }"
-          @click="page = p">{{ p }}</span>
-  </div>
-</div>
 </template>
 
 <script>

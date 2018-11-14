@@ -1,12 +1,12 @@
 <template>
-<span :class="[$style.star, { click: user }]"
-      :title="item.starCount + ' stars'"
-      @click="toggle">
-  <span class="fa-star"
-        :class="item.starred ? 'fas' : 'far'"></span>
-  <span class="mono"
-        :class="$style.count">{{ item.starCount }}</span>
-</span>
+  <span
+    :class="[$style.star, { click: user }]"
+    :title="item.starCount + ' stars'"
+    @click="toggle"
+  >
+    <span class="fa-star" :class="item.starred ? 'fas' : 'far'"></span>
+    <span class="mono" :class="$style.count">{{ item.starCount }}</span>
+  </span>
 </template>
 
 <script>

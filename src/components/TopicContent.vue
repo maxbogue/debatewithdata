@@ -1,18 +1,18 @@
 <template>
-<div>
-  <template v-if="topic && !topic.deleted">
-    <template v-if="abbreviated">
-      <child-count v-if="isLink" :item="topic" />
-      <span>{{ topic.title }}</span>
+  <div>
+    <template v-if="topic && !topic.deleted">
+      <template v-if="abbreviated">
+        <child-count v-if="isLink" :item="topic" />
+        <span>{{ topic.title }}</span>
+      </template>
+      <template v-else>
+        <child-count v-if="isLink" :item="topic" />
+        <h2>{{ topic.title }}</h2>
+        <dwd-markdown :text="topic.text" />
+      </template>
     </template>
-    <template v-else>
-      <child-count v-if="isLink" :item="topic" />
-      <h2>{{ topic.title }}</h2>
-      <dwd-markdown :text="topic.text" />
-    </template>
-  </template>
-  <em v-else class="error">{{ errorMessage }}</em>
-</div>
+    <em v-else class="error">{{ errorMessage }}</em>
+  </div>
 </template>
 
 <script>

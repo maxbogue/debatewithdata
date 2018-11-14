@@ -1,41 +1,44 @@
 <template>
-<div>
-  <dwd-trail :ids="trail" />
-  <div v-if="trail.length === 0">
-    <item-block v-for="superTopic in superTopics"
-                :key="superTopic.id"
-                :item="superTopic"
-                type="topic"
-                abbreviated
-                is-link
-                mini
-                half />
+  <div>
+    <dwd-trail :ids="trail" />
+    <div v-if="trail.length === 0">
+      <item-block
+        v-for="superTopic in superTopics"
+        :key="superTopic.id"
+        :item="superTopic"
+        type="topic"
+        abbreviated
+        is-link
+        mini
+        half
+      />
+    </div>
+    <item-block :item="topic" :trail="trail" type="topic" show-info />
+    <template v-if="subTopics.length > 0">
+      <h3>Sub-Topics</h3>
+      <item-block
+        v-for="subTopic in subTopics"
+        :key="subTopic.id"
+        :item="subTopic"
+        :trail="newTrail"
+        type="topic"
+        is-link
+        abbreviated
+      />
+    </template>
+    <template v-if="claims.length > 0">
+      <h3>Key Claims</h3>
+      <item-block
+        v-for="claim in claims"
+        :key="claim.id"
+        :item="claim"
+        :trail="newTrail"
+        type="claim"
+        is-link
+        abbreviated
+      />
+    </template>
   </div>
-  <item-block :item="topic"
-              :trail="trail"
-              type="topic"
-              show-info />
-  <template v-if="subTopics.length > 0">
-    <h3>Sub-Topics</h3>
-    <item-block v-for="subTopic in subTopics"
-                :key="subTopic.id"
-                :item="subTopic"
-                :trail="newTrail"
-                type="topic"
-                is-link
-                abbreviated />
-  </template>
-  <template v-if="claims.length > 0">
-    <h3>Key Claims</h3>
-    <item-block v-for="claim in claims"
-                :key="claim.id"
-                :item="claim"
-                :trail="newTrail"
-                type="claim"
-                is-link
-                abbreviated />
-  </template>
-</div>
 </template>
 
 <script>

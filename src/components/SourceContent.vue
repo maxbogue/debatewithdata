@@ -1,37 +1,38 @@
 <template>
-<div>
   <div>
-    <span v-if="sourceHasContent">{{ source.text }}</span>
-    <em v-else class="error">{{ errorMessage }}</em>
-  </div>
-  <template v-if="sourceHasContent">
-    <div :class="$style.metadata">
-      <template v-if="!abbreviated">
-        <div v-if="source.date">{{ source.date }}</div>
-        <template v-if="source.type === SourceType.ARTICLE">
-          <div><strong>Article in:</strong> {{ source.publication }}</div>
-        </template>
-        <template v-else-if="source.type === SourceType.AUTHORITY">
-          <div><strong>Authority:</strong> {{ source.institution }}</div>
-        </template>
-        <template v-else-if="source.type === SourceType.RESEARCH">
-          <div><strong>Research by:</strong> {{ source.institution }}</div>
-          <div><strong>Published in:</strong> {{ source.publication }}</div>
-        </template>
-      </template>
-      <a :href="source.url"
-         target="_blank"
-         rel="noopener"
-         @click.stop>{{ source.url }}</a>
+    <div>
+      <span v-if="sourceHasContent">{{ source.text }}</span>
+      <em v-else class="error">{{ errorMessage }}</em>
     </div>
-    <template v-if="!abbreviated">
-      <source-chart v-if="source.table && source.chart"
-                    :chart="source.chart"
-                    :table="source.table" />
-      <source-table v-else-if="source.table" :table="source.table" />
+    <template v-if="sourceHasContent">
+      <div :class="$style.metadata">
+        <template v-if="!abbreviated">
+          <div v-if="source.date">{{ source.date }}</div>
+          <template v-if="source.type === SourceType.ARTICLE">
+            <div><strong>Article in:</strong> {{ source.publication }}</div>
+          </template>
+          <template v-else-if="source.type === SourceType.AUTHORITY">
+            <div><strong>Authority:</strong> {{ source.institution }}</div>
+          </template>
+          <template v-else-if="source.type === SourceType.RESEARCH">
+            <div><strong>Research by:</strong> {{ source.institution }}</div>
+            <div><strong>Published in:</strong> {{ source.publication }}</div>
+          </template>
+        </template>
+        <a :href="source.url" target="_blank" rel="noopener" @click.stop>{{
+          source.url
+        }}</a>
+      </div>
+      <template v-if="!abbreviated">
+        <source-chart
+          v-if="source.table && source.chart"
+          :chart="source.chart"
+          :table="source.table"
+        />
+        <source-table v-else-if="source.table" :table="source.table" />
+      </template>
     </template>
-  </template>
-</div>
+  </div>
 </template>
 
 <script>

@@ -1,8 +1,10 @@
 <template>
-<a :name="name"
-   :href="'#' + name"
-   :class="$style.anchor"
-   class="fas fa-link"></a>
+  <a
+    :name="name"
+    :href="'#' + name"
+    :class="$style.anchor"
+    class="fas fa-link"
+  ></a>
 </template>
 
 <script>

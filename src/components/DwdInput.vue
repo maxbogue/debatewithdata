@@ -9,20 +9,22 @@
 -->
 
 <template>
-<div>
-  <textarea rows="1"
-            autocomplete="off"
-            ref="input"
-            v-model="displayValue"
-            v-bind="$attrs"
-            v-on="listeners"
-            :class="inputClasses"
-            @invalid="maskError = false"
-            @keydown.enter="handleEnter"></textarea>
-  <div v-if="showError"
-       class="error"
-       :class="$style.error">{{ innerError }}</div>
-</div>
+  <div>
+    <textarea
+      rows="1"
+      autocomplete="off"
+      ref="input"
+      v-model="displayValue"
+      v-bind="$attrs"
+      v-on="listeners"
+      :class="inputClasses"
+      @invalid="maskError = false;"
+      @keydown.enter="handleEnter"
+    ></textarea>
+    <div v-if="showError" class="error" :class="$style.error">
+      {{ innerError }}
+    </div>
+  </div>
 </template>
 
 <script>

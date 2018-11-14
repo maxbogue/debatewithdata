@@ -1,7 +1,5 @@
 <template>
-<div :class="$style.chart">
-  <canvas ref="chart" height="200"></canvas>
-</div>
+  <div :class="$style.chart"><canvas ref="chart" height="200"></canvas></div>
 </template>
 
 <script>
@@ -194,7 +192,7 @@ export default {
 };
 </script>
 
-<style lang="scss" module >
+<style lang="scss" module>
 .chart {
   position: relative;
   max-width: 600px;

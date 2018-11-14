@@ -1,7 +1,5 @@
 <template>
-<div :class="$style.fixedBottom">
-  <slot></slot>
-</div>
+  <div :class="$style.fixedBottom"><slot></slot></div>
 </template>
 
 <style lang="scss" module>

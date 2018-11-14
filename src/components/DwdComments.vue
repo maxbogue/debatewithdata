@@ -1,27 +1,35 @@
 <template>
-<dwd-drawer :show="show">
-  <div :class="$style.comments">
-    <template v-if="loaded">
-      <ul>
-        <li v-for="comment in comments" class="flex-row" :key="comment.id">
-          <div><strong>{{ comment.author }}</strong>: {{ comment.text }}</div>
-          <div :class="$style.timestamp"
-               >{{ comment.created | shortTimestamp }}</div>
-          <div v-if="user && comment.author === user.username"
-               :class="$style.delete"
-               class="click fas fa-trash"
-               @click="deleteComment(comment.id)"></div>
-        </li>
-        <li v-if="comments.length === 0">No comments yet.</li>
-      </ul>
-      <dwd-input v-if="$store.state.user"
-                 v-model="newComment"
-                 placeholder="new comment"
-                 @keyup.enter.native="submit" />
-    </template>
-    <div v-else>Loading...</div>
-  </div>
-</dwd-drawer>
+  <dwd-drawer :show="show">
+    <div :class="$style.comments">
+      <template v-if="loaded">
+        <ul>
+          <li v-for="comment in comments" class="flex-row" :key="comment.id">
+            <div>
+              <strong>{{ comment.author }}</strong
+              >: {{ comment.text }}
+            </div>
+            <div :class="$style.timestamp">
+              {{ comment.created | shortTimestamp }}
+            </div>
+            <div
+              v-if="user && comment.author === user.username"
+              :class="$style.delete"
+              class="click fas fa-trash"
+              @click="deleteComment(comment.id);"
+            ></div>
+          </li>
+          <li v-if="comments.length === 0">No comments yet.</li>
+        </ul>
+        <dwd-input
+          v-if="$store.state.user"
+          v-model="newComment"
+          placeholder="new comment"
+          @keyup.enter.native="submit"
+        />
+      </template>
+      <div v-else>Loading...</div>
+    </div>
+  </dwd-drawer>
 </template>
 
 <script>

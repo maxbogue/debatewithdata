@@ -1,18 +1,17 @@
 <template>
-<div>
-  <dwd-trail :ids="trail.concat(id)" @lastIsFor="(v) => isFor = v" />
-  <item-block :item="source"
-              :is-for="isFor"
-              :trail="trail"
-              type="source" />
-  <h3 v-if="claims.length > 0">Referenced In</h3>
-  <item-block v-for="claim in claims"
-              :key="claim.id"
-              :item="claim"
-              type="claim"
-              is-link
-              abbreviated />
-</div>
+  <div>
+    <dwd-trail :ids="trail.concat(id)" @lastIsFor="v => (isFor = v)" />
+    <item-block :item="source" :is-for="isFor" :trail="trail" type="source" />
+    <h3 v-if="claims.length > 0">Referenced In</h3>
+    <item-block
+      v-for="claim in claims"
+      :key="claim.id"
+      :item="claim"
+      type="claim"
+      is-link
+      abbreviated
+    />
+  </div>
 </template>
 
 <script>

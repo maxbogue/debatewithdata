@@ -1,13 +1,13 @@
 <template>
-<div>
-  <h1>{{ username }}</h1>
-  <dwd-loader ref="loader" />
-  <template v-if="user">
-    <div :class="$style.timestamp">{{ user.createdAt | shortTimestamp }}</div>
-    <h2>Activity</h2>
-    <activity-list :activity="user.activity" hide-username />
-  </template>
-</div>
+  <div>
+    <h1>{{ username }}</h1>
+    <dwd-loader ref="loader" />
+    <template v-if="user">
+      <div :class="$style.timestamp">{{ user.createdAt | shortTimestamp }}</div>
+      <h2>Activity</h2>
+      <activity-list :activity="user.activity" hide-username />
+    </template>
+  </div>
 </template>
 
 <script>

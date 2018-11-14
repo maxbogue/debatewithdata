@@ -1,9 +1,7 @@
 <template>
-<div>
-  <div class="block center">
-    <loading-animation />
+  <div>
+    <div class="block center"><loading-animation /></div>
   </div>
-</div>
 </template>
 
 <script>

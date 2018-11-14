@@ -1,18 +1,16 @@
 <template>
-<div :class="$style.account" class="center">
-  <div>
-    <strong>user</strong>
-    <span>{{ user.username }}</span>
+  <div :class="$style.account" class="center">
+    <div>
+      <strong>user</strong> <span>{{ user.username }}</span>
+    </div>
+    <div>
+      <strong>created</strong>
+      <span>{{ user.createdAt | shortTimestamp }}</span>
+    </div>
+    <div>
+      <strong>email</strong> <span>{{ user.email }}</span>
+    </div>
   </div>
-  <div>
-    <strong>created</strong>
-    <span>{{ user.createdAt | shortTimestamp }}</span>
-  </div>
-  <div>
-    <strong>email</strong>
-    <span>{{ user.email }}</span>
-  </div>
-</div>
 </template>
 
 <script>

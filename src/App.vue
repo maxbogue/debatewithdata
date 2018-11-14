@@ -1,11 +1,11 @@
 <template>
-<div id="app">
-  <dwd-header />
-  <error-modal />
-  <router-view v-if="!suppressRoutes" class="dwd-container" />
-  <dwd-loader :loading="loading" :error="loadingError" />
-  <dwd-footer v-if="!loading" />
-</div>
+  <div id="app">
+    <dwd-header />
+    <error-modal />
+    <router-view v-if="!suppressRoutes" class="dwd-container" />
+    <dwd-loader :loading="loading" :error="loadingError" />
+    <dwd-footer v-if="!loading" />
+  </div>
 </template>
 
 <script>

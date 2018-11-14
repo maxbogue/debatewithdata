@@ -1,33 +1,26 @@
 <template>
   <header :class="$style.navbar" v-on-clickaway="collapse">
     <div class="dwd-container">
-      <router-link to="/"
-                   title="Home"
-                   :class="$style.navbarBrand"
-                   exact>DebateWithData</router-link>
-      <button :class="$style.navbarToggler"
-              type="button"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-              @click="collapsed = !collapsed">
+      <router-link to="/" title="Home" :class="$style.navbarBrand" exact
+        >DebateWithData</router-link
+      >
+      <button
+        :class="$style.navbarToggler"
+        type="button"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        @click="collapsed = !collapsed;"
+      >
         <span :class="$style.iconBar"></span>
         <span :class="$style.iconBar"></span>
         <span :class="$style.iconBar"></span>
       </button>
-      <nav :class="[$style.navbarCollapse, {[$style.collapse]:collapsed}]">
+      <nav :class="[$style.navbarCollapse, { [$style.collapse]: collapsed }]">
         <ul :class="$style.navbarNav">
-          <li>
-            <router-link to="/topics" title="Topics">Topics</router-link>
-          </li>
-          <li>
-            <router-link to="/claims" title="Claims">Claims</router-link>
-          </li>
-          <li>
-            <router-link to="/datas" title="Data">Data</router-link>
-          </li>
-          <li>
-            <router-link to="/guide" title="Guide">Guide</router-link>
-          </li>
+          <li><router-link to="/topics" title="Topics">Topics</router-link></li>
+          <li><router-link to="/claims" title="Claims">Claims</router-link></li>
+          <li><router-link to="/datas" title="Data">Data</router-link></li>
+          <li><router-link to="/guide" title="Guide">Guide</router-link></li>
         </ul>
         <ul :class="$style.navbarNavRight">
           <template v-if="user">
@@ -35,15 +28,13 @@
               <router-link to="/admin" title="Admin">Admin</router-link>
             </li>
             <li>
-              <router-link to="/account"
-                           title="Account">
+              <router-link to="/account" title="Account">
                 <span class="fas fa-user"></span>
                 <span> {{ user.username }}</span>
               </router-link>
             </li>
             <li>
-              <router-link to="/notifications"
-                           title="Notifications">
+              <router-link to="/notifications" title="Notifications">
                 <span class="fas fa-bell" :class="$style.alertBadge">
                   <span v-if="hasNotifications"></span>
                 </span>
@@ -59,8 +50,9 @@
               <router-link :to="loginUrl" title="Login">Login</router-link>
             </li>
             <li>
-              <router-link to="/register"
-                           title="Register">Register</router-link>
+              <router-link to="/register" title="Register"
+                >Register</router-link
+              >
             </li>
           </template>
         </ul>

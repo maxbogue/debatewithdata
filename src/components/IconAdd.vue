@@ -1,5 +1,5 @@
 <template>
-<router-link :to="addTo" class="fas fa-plus-square" />
+  <router-link :to="addTo" class="fas fa-plus-square" />
 </template>
 
 <script>

@@ -1,28 +1,32 @@
 <template>
-<div class="block no-pad center">
-  <h3 class="mono">{{ curr.revId }}</h3>
-  <div>
-    <strong>by</strong>
-    <router-link :to="'/user/' + curr.username"
-                 >{{ curr.username }}</router-link>
+  <div class="block no-pad center">
+    <h3 class="mono">{{ curr.revId }}</h3>
+    <div>
+      <strong>by</strong>
+      <router-link :to="'/user/' + curr.username">{{
+        curr.username
+      }}</router-link>
+    </div>
+    <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
+    <div :class="$style.nav">
+      <router-link
+        :to="prevUrl"
+        :class="[buttonClasses, { [$style.hidden]: !prevUrl }]"
+        >Prev</router-link
+      >
+      <router-link :to="historyUrl" :class="buttonClasses">History</router-link>
+      <router-link
+        :to="nextUrl"
+        :class="[buttonClasses, { [$style.hidden]: !nextUrl }]"
+        >Next</router-link
+      >
+    </div>
+    <div>
+      <router-link v-if="revertTo" :to="revertTo" class="click-text"
+        >Revert To This Revision</router-link
+      >
+    </div>
   </div>
-  <div><strong>created</strong> {{ curr.createdAt | timestamp }}</div>
-  <div :class="$style.nav">
-    <router-link :to="prevUrl"
-                 :class="[buttonClasses, { [$style.hidden]: !prevUrl }]"
-                 >Prev</router-link>
-    <router-link :to="historyUrl"
-                 :class="buttonClasses">History</router-link>
-    <router-link :to="nextUrl"
-                 :class="[buttonClasses, { [$style.hidden]: !nextUrl }]"
-                 >Next</router-link>
-  </div>
-  <div>
-    <router-link v-if="revertTo"
-                 :to="revertTo"
-                 class="click-text">Revert To This Revision</router-link>
-  </div>
-</div>
 </template>
 
 <script>

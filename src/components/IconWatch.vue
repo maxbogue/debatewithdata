@@ -1,7 +1,9 @@
 <template>
-<span class="fa-bell click"
-      :class="item.watched ? 'fas' : 'far'"
-      @click="toggle"></span>
+  <span
+    class="fa-bell click"
+    :class="item.watched ? 'fas' : 'far'"
+    @click="toggle"
+  ></span>
 </template>
 
 <script>

@@ -1,12 +1,12 @@
 <template>
-<div>
-  <template v-if="claim && !claim.deleted">
-    <dwd-flag v-if="claim.flag" :flag="claim.flag" />
-    <child-count v-if="isLink" :item="claim" />
-    <span>{{ claim.text }}</span>
-  </template>
-  <em v-else class="error">{{ errorMessage }}</em>
-</div>
+  <div>
+    <template v-if="claim && !claim.deleted">
+      <dwd-flag v-if="claim.flag" :flag="claim.flag" />
+      <child-count v-if="isLink" :item="claim" />
+      <span>{{ claim.text }}</span>
+    </template>
+    <em v-else class="error">{{ errorMessage }}</em>
+  </div>
 </template>
 
 <script>

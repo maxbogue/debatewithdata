@@ -1,28 +1,35 @@
 <template>
-<div>
-  <h2>
-    Notifications
-    <button class="dwd-btn dwd-btn-primary"
-            :class="$style.markRead"
-            :disabled="!hasNotifications"
-            @click="markRead">Mark Read</button>
-  </h2>
-  <ul v-if="items" :class="$style.activity">
-    <li v-for="{ type, item } in items"
+  <div>
+    <h2>
+      Notifications
+      <button
+        class="dwd-btn dwd-btn-primary"
+        :class="$style.markRead"
+        :disabled="!hasNotifications"
+        @click="markRead"
+      >
+        Mark Read
+      </button>
+    </h2>
+    <ul v-if="items" :class="$style.activity">
+      <li
+        v-for="{ type, item } in items"
         :key="item.id"
-        :class="{ [$style.read]: isItemRead(item) }">
-      <div :class="$style.timestamp">{{ item.updatedAt | timestamp }}</div>
-      <item-block :class="$style.item"
-                  :type="type"
-                  :item="item"
-                  is-link
-                  abbreviated
-                  mini />
-    </li>
-    <li v-if="items.length === 0"
-        class="block no-pad">All caught up!</li>
-  </ul>
-</div>
+        :class="{ [$style.read]: isItemRead(item) }"
+      >
+        <div :class="$style.timestamp">{{ item.updatedAt | timestamp }}</div>
+        <item-block
+          :class="$style.item"
+          :type="type"
+          :item="item"
+          is-link
+          abbreviated
+          mini
+        />
+      </li>
+      <li v-if="items.length === 0" class="block no-pad">All caught up!</li>
+    </ul>
+  </div>
 </template>
 
 <script>

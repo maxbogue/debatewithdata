@@ -1,42 +1,34 @@
 <template>
-<div :class="$style.editChart">
-  <div>
-    <span v-if="!chart" @click="addChart">Add Chart</span>
-    <span v-else @click="removeChart">Remove Chart</span>
+  <div :class="$style.editChart">
+    <div>
+      <span v-if="!chart" @click="addChart">Add Chart</span>
+      <span v-else @click="removeChart">Remove Chart</span>
+    </div>
+    <template v-if="chart">
+      <label for="chartType" class="hint"> The type of chart. </label>
+      <select v-model="type" id="chartType">
+        <option value="line">Line</option>
+        <option value="bar">Bar</option>
+      </select>
+      <label for="byRow" class="hint"
+        >Should the data be combined by row or column?</label
+      >
+      <select v-model="by" id="byRow">
+        <option value=""
+          >{{ defaultByRow ? 'Row' : 'Column' }} (default)</option
+        >
+        <option value="row">Row</option>
+        <option value="col">Column</option>
+      </select>
+      <label for="title" class="hint">Chart title.</label>
+      <dwd-input v-model="title" id="title" :placeholder="defaultTitle" />
+      <label for="xAxis" class="hint">Label for the x-axis.</label>
+      <dwd-input v-model="xAxis" id="xAxis" :placeholder="defaultXAxis" />
+      <label for="yAxis" class="hint">Label for the y-axis.</label>
+      <dwd-input v-model="yAxis" id="yAxis" :placeholder="defaultYAxis" />
+      <source-chart v-if="chart" :table="table" :chart="chart" />
+    </template>
   </div>
-  <template v-if="chart">
-    <label for="chartType" class="hint">
-      The type of chart.
-    </label>
-    <select v-model="type" id="chartType">
-      <option value="line">Line</option>
-      <option value="bar">Bar</option>
-    </select>
-    <label for="byRow"
-           class="hint"
-           >Should the data be combined by row or column?</label>
-    <select v-model="by" id="byRow">
-      <option value="">{{ defaultByRow ? 'Row' : 'Column' }} (default)</option>
-      <option value="row">Row</option>
-      <option value="col">Column</option>
-    </select>
-    <label for="title" class="hint">Chart title.</label>
-    <dwd-input v-model="title"
-               id="title"
-               :placeholder="defaultTitle" />
-    <label for="xAxis" class="hint">Label for the x-axis.</label>
-    <dwd-input v-model="xAxis"
-               id="xAxis"
-               :placeholder="defaultXAxis" />
-    <label for="yAxis" class="hint">Label for the y-axis.</label>
-    <dwd-input v-model="yAxis"
-               id="yAxis"
-               :placeholder="defaultYAxis" />
-    <source-chart v-if="chart"
-                  :table="table"
-                  :chart="chart" />
-  </template>
-</div>
 </template>
 
 <script>

@@ -1,62 +1,76 @@
 <template>
-<div>
-  <dwd-trail :ids="newTrail" @lastIsFor="(v) => isFor = v" />
-  <div v-if="trail.length === 0">
-    <item-block v-for="[item, type] in superItems"
-                :key="item.id"
-                :item="item"
-                :type="type"
-                abbreviated
-                is-link
-                mini
-                half />
-  </div>
-  <item-block :item="claim"
-              :is-for="isFor"
-              :trail="trail"
-              type="claim"
-              show-info />
-  <template v-if="$store.state.singleColumn">
-    <div class="block no-pad"
-         :class="$style.pointHeader"
-         :key="id + '-side-text'">
-      <div :class="sideClass(0)">
-        <span>For</span>
-        <icon-add :id="id" :extras="{ initAddPoint: 0 }" type="claim" />
+  <div>
+    <dwd-trail :ids="newTrail" @lastIsFor="v => (isFor = v)" />
+    <div v-if="trail.length === 0">
+      <item-block
+        v-for="[item, type] in superItems"
+        :key="item.id"
+        :item="item"
+        :type="type"
+        abbreviated
+        is-link
+        mini
+        half
+      />
+    </div>
+    <item-block
+      :item="claim"
+      :is-for="isFor"
+      :trail="trail"
+      type="claim"
+      show-info
+    />
+    <template v-if="$store.state.singleColumn">
+      <div
+        class="block no-pad"
+        :class="$style.pointHeader"
+        :key="id + '-side-text'"
+      >
+        <div :class="sideClass(0)">
+          <span>For</span>
+          <icon-add :id="id" :extras="{ initAddPoint: 0 }" type="claim" />
+        </div>
+        <div :class="sideClass(1)">
+          <span>Against</span>
+          <icon-add :id="id" :extras="{ initAddPoint: 1 }" type="claim" />
+        </div>
       </div>
-      <div :class="sideClass(1)">
-        <span>Against</span>
-        <icon-add :id="id" :extras="{ initAddPoint: 1 }" type="claim" />
+      <item-block
+        v-for="[point, side] in zippedPoints"
+        :item="point"
+        :type="point.pointType"
+        :is-for="claimIsFor === !side"
+        :trail="newTrail"
+        :key="point.id"
+        is-link
+      />
+    </template>
+    <div v-else class="dwd-cols">
+      <div
+        v-for="(sidePoints, side) in points"
+        class="dwd-col"
+        :key="'side-' + side"
+      >
+        <div
+          class="block no-pad"
+          :class="[$style.pointHeader, sideClass(side)]"
+          :key="id + 'side-text-' + side"
+        >
+          <span>{{ !side ? 'For' : 'Against' }}</span>
+          <icon-add :id="id" :extras="{ initAddPoint: side }" type="claim" />
+        </div>
+        <item-block
+          v-for="point in sidePoints"
+          :item="point"
+          :type="point.pointType"
+          :is-for="claimIsFor === !side"
+          :trail="newTrail"
+          :key="point.id"
+          is-link
+        />
       </div>
     </div>
-    <item-block v-for="[point, side] in zippedPoints"
-                :item="point"
-                :type="point.pointType"
-                :is-for="claimIsFor === !side"
-                :trail="newTrail"
-                :key="point.id"
-                is-link />
-  </template>
-  <div v-else class="dwd-cols">
-    <div v-for="(sidePoints, side) in points"
-         class="dwd-col"
-         :key="'side-' + side">
-      <div class="block no-pad"
-           :class="[$style.pointHeader, sideClass(side)]"
-           :key="id + 'side-text-' + side">
-        <span>{{ !side ? 'For' : 'Against' }}</span>
-        <icon-add :id="id" :extras="{ initAddPoint: side }" type="claim" />
-      </div>
-      <item-block v-for="point in sidePoints"
-                  :item="point"
-                  :type="point.pointType"
-                  :is-for="claimIsFor === !side"
-                  :trail="newTrail"
-                  :key="point.id"
-                  is-link />
-    </div>
   </div>
-</div>
 </template>
 
 <script>

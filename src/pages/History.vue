@@ -1,48 +1,62 @@
 <template>
-<div :class="historyClasses">
-  <template v-if="data && !revId">
-    <h3 class="center">
-      History for {{ $route.params.type }}
-      <router-link :to="urlWithTrail"
-                   class="mono click-text">{{ itemId }}</router-link>
-    </h3>
-    <ul class="mono">
-      <li v-for="rev in revs" :key="rev.revId">
-        <router-link :to="revUrl(rev)"
-                     class="click-text">{{ rev.revId }}</router-link>
-        <span>
-          at
-          <span :class="$style.timestamp">{{ rev.createdAt | timestamp }}</span>
-        </span>
-        <span>
-          by
-          <router-link :to="'/user/' + rev.username"
-                       :class="$style.username"
-                       class="click-text"
-                       >{{ rev.username }}</router-link>
-        </span>
-      </li>
-    </ul>
-  </template>
-  <template v-if="data && revId">
-    <rev-nav :item-type="itemType"
-             :curr="curr"
-             :prev="prev"
-             :next="next"
-             :trail="trail" />
-    <topic-rev v-if="itemType === ItemType.TOPIC"
-               :curr="curr"
-               :prev="prev"
-               :trail="newTrail" />
-    <claim-rev v-else-if="itemType === ItemType.CLAIM"
-               :curr="curr"
-               :prev="prev"
-               :trail="newTrail" />
-    <source-rev v-else-if="itemType === ItemType.SOURCE"
-                :curr="curr"
-                :prev="prev" />
-  </template>
-</div>
+  <div :class="historyClasses">
+    <template v-if="data && !revId">
+      <h3 class="center">
+        History for {{ $route.params.type }}
+        <router-link :to="urlWithTrail" class="mono click-text">{{
+          itemId
+        }}</router-link>
+      </h3>
+      <ul class="mono">
+        <li v-for="rev in revs" :key="rev.revId">
+          <router-link :to="revUrl(rev)" class="click-text">{{
+            rev.revId
+          }}</router-link>
+          <span>
+            at
+            <span :class="$style.timestamp">{{
+              rev.createdAt | timestamp
+            }}</span>
+          </span>
+          <span>
+            by
+            <router-link
+              :to="'/user/' + rev.username"
+              :class="$style.username"
+              class="click-text"
+              >{{ rev.username }}</router-link
+            >
+          </span>
+        </li>
+      </ul>
+    </template>
+    <template v-if="data && revId">
+      <rev-nav
+        :item-type="itemType"
+        :curr="curr"
+        :prev="prev"
+        :next="next"
+        :trail="trail"
+      />
+      <topic-rev
+        v-if="itemType === ItemType.TOPIC"
+        :curr="curr"
+        :prev="prev"
+        :trail="newTrail"
+      />
+      <claim-rev
+        v-else-if="itemType === ItemType.CLAIM"
+        :curr="curr"
+        :prev="prev"
+        :trail="newTrail"
+      />
+      <source-rev
+        v-else-if="itemType === ItemType.SOURCE"
+        :curr="curr"
+        :prev="prev"
+      />
+    </template>
+  </div>
 </template>
 
 <script>

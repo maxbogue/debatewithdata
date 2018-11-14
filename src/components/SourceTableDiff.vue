@@ -1,22 +1,23 @@
 <template>
-<source-table v-if="curr && prev && curr === prev" :table="curr" />
-<table v-else-if="curr && prev" :class="$style.table">
-  <tr v-if="diffTitle">
-    <th :colspan="numCols" v-html="diffTitle"></th>
-  </tr>
-  <tr>
-    <th v-for="(headerDiff, i) in diffRows[0]"
+  <source-table v-if="curr && prev && curr === prev" :table="curr" />
+  <table v-else-if="curr && prev" :class="$style.table">
+    <tr v-if="diffTitle">
+      <th :colspan="numCols" v-html="diffTitle"></th>
+    </tr>
+    <tr>
+      <th
+        v-for="(headerDiff, i) in diffRows[0]"
         :key="'header' + i"
-        v-html="headerDiff"></th>
-  </tr>
-  <tr v-for="(diffRow, i) in diffRows.slice(1)" :key="'row' + i">
-    <td v-for="(diff, j) in diffRow"
-        :key="i + ',' + j"
-        v-html="diff"></td>
-  </tr>
-</table>
-<source-table v-else-if="prev" :table="prev" class="del" />
-<source-table v-else-if="curr" :table="curr" class="ins" />
+        v-html="headerDiff"
+      ></th>
+    </tr>
+    <tr v-for="(diffRow, i) in diffRows.slice(1)" :key="'row' + i">
+      <td v-for="(diff, j) in diffRow" :key="i + ',' + j" v-html="diff"></td>
+    </tr>
+  </table>
+
+  <source-table v-else-if="prev" :table="prev" class="del" />
+  <source-table v-else-if="curr" :table="curr" class="ins" />
 </template>
 
 <script>

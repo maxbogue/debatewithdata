@@ -1,36 +1,50 @@
 <template>
-<div>
-  <claim-edit-block v-if="showEditBlock"
-                    :claim.sync="newClaimPartial"
-                    @close="showEditBlock = false" />
-  <claim-rev-block v-else
-                   :prev="claim"
-                   :curr="newClaimPartial"
-                   can-edit
-                   @start-editing="showEditBlock = true" />
-  <points-edit v-if="initialized"
-               :curr="newClaim"
-               :prev="claim"
-               :init-add-point="initAddPoint"
-               @update="updatePoints" />
-  <div v-if="id" class="block center">
-    <delete-button noun="Claim" @delete="remove" />
+  <div>
+    <claim-edit-block
+      v-if="showEditBlock"
+      :claim.sync="newClaimPartial"
+      @close="showEditBlock = false;"
+    />
+    <claim-rev-block
+      v-else
+      :prev="claim"
+      :curr="newClaimPartial"
+      can-edit
+      @start-editing="showEditBlock = true;"
+    />
+    <points-edit
+      v-if="initialized"
+      :curr="newClaim"
+      :prev="claim"
+      :init-add-point="initAddPoint"
+      @update="updatePoints"
+    />
+    <div v-if="id" class="block center">
+      <delete-button noun="Claim" @delete="remove" />
+    </div>
+    <fixed-bottom class="center blue">
+      <button type="button" class="dwd-btn white" @click="cancel">
+        Cancel
+      </button>
+      <button
+        v-if="showEditBlock"
+        type="button"
+        class="dwd-btn blue-dark"
+        @click="showEditBlock = false;"
+      >
+        Review
+      </button>
+      <button
+        v-else
+        :disabled="noChange"
+        type="button"
+        class="dwd-btn blue-dark"
+        @click="submit"
+      >
+        Submit
+      </button>
+    </fixed-bottom>
   </div>
-  <fixed-bottom class="center blue">
-    <button type="button"
-            class="dwd-btn white"
-            @click="cancel">Cancel</button>
-    <button v-if="showEditBlock"
-            type="button"
-            class="dwd-btn blue-dark"
-            @click="showEditBlock = false">Review</button>
-    <button v-else
-            :disabled="noChange"
-            type="button"
-            class="dwd-btn blue-dark"
-            @click="submit">Submit</button>
-  </fixed-bottom>
-</div>
 </template>
 
 <script>

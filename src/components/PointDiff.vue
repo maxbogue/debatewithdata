@@ -1,11 +1,11 @@
 <template>
-<div>
-  <point-content v-if="hasBoth" :point="curr" />
-  <template v-else>
-    <point-content v-if="hasPrev" :point="prev" class="del" />
-    <point-content v-if="hasCurr" :point="curr" class="ins" />
-  </template>
-</div>
+  <div>
+    <point-content v-if="hasBoth" :point="curr" />
+    <template v-else>
+      <point-content v-if="hasPrev" :point="prev" class="del" />
+      <point-content v-if="hasCurr" :point="curr" class="ins" />
+    </template>
+  </div>
 </template>
 
 <script>

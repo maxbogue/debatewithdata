@@ -1,45 +1,57 @@
 <template>
-<div>
-  <div v-if="showReviewMode" :class="$style.reviewMode">
-    <span :class="{ [$style.active]: reviewMode === PREVIEW }"
-          @click="reviewMode = PREVIEW"
-          >Preview</span>
-    |
-    <span :class="{ [$style.active]: reviewMode === DIFF }"
-          @click="reviewMode = DIFF"
-          >Diff</span>
-  </div>
-  <dwd-modal v-if="useModal"
-             :show="editMode"
-             @close="editMode = false">
-    <topic-edit-block :topic="topic"
-                      @update:topic="(t) => $emit('update:topic', t)"
-                      @close="editMode = false" />
-  </dwd-modal>
-  <topic-edit-block v-if="!useModal && editMode"
-                    :topic="topic"
-                    :old-id="prev ? prev.id : ''"
-                    @update:topic="(t) => $emit('update:topic', t)"
-                    @close="editMode = false" />
-  <div v-else class="topic">
-    <topic-content v-if="reviewMode === PREVIEW"
-                   class="bubble click"
-                   :topic="topic"
-                   @click.native="editMode = true" />
-    <topic-rev-content v-else
-                       class="bubble click"
-                       :prev="prev"
-                       :curr="topic"
-                       @click.native="editMode = true" />
-    <div v-if="useModal" class="info">
-      <span class="id mono">{{ topic.id }}</span>
-      <span class="controls">
-        <span class="delete click fas fa-trash-alt"
-              @click="$emit('delete')"></span>
-      </span>
+  <div>
+    <div v-if="showReviewMode" :class="$style.reviewMode">
+      <span
+        :class="{ [$style.active]: reviewMode === PREVIEW }"
+        @click="reviewMode = PREVIEW;"
+        >Preview</span
+      >
+      |
+      <span
+        :class="{ [$style.active]: reviewMode === DIFF }"
+        @click="reviewMode = DIFF;"
+        >Diff</span
+      >
+    </div>
+    <dwd-modal v-if="useModal" :show="editMode" @close="editMode = false;">
+      <topic-edit-block
+        :topic="topic"
+        @update:topic="t => $emit('update:topic', t)"
+        @close="editMode = false;"
+      />
+    </dwd-modal>
+    <topic-edit-block
+      v-if="!useModal && editMode"
+      :topic="topic"
+      :old-id="prev ? prev.id : ''"
+      @update:topic="t => $emit('update:topic', t)"
+      @close="editMode = false;"
+    />
+    <div v-else class="topic">
+      <topic-content
+        v-if="reviewMode === PREVIEW"
+        class="bubble click"
+        :topic="topic"
+        @click.native="editMode = true;"
+      />
+      <topic-rev-content
+        v-else
+        class="bubble click"
+        :prev="prev"
+        :curr="topic"
+        @click.native="editMode = true;"
+      />
+      <div v-if="useModal" class="info">
+        <span class="id mono">{{ topic.id }}</span>
+        <span class="controls">
+          <span
+            class="delete click fas fa-trash-alt"
+            @click="$emit('delete');"
+          ></span>
+        </span>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>

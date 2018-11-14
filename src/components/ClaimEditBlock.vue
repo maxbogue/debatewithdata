@@ -1,30 +1,27 @@
 <template>
-<form-valid class="claim"
-            @submit="close"
-            @keydown.native.esc="cancel">
-  <div class="bubble">
-    <label for="text" class="hint">
-      A claim should be a short, simple statement about the world.
-    </label>
-    <dwd-input v-model="text"
-               id="text"
-               placeholder="claim"
-               :focus="true"
-               :validate="validate.text" />
-    <dwd-flag v-if="flag" :flag="flag" />
-  </div>
-  <div class="info">
-    <needs-data-edit v-model="needsData" />
-    <button type="button"
-            class="dwd-btn white"
-            @click="cancel">Cancel</button>
-    <button type="submit"
-            class="dwd-btn dwd-btn-primary">Review</button>
-    <div class="controls">
-      <dwd-flag-dropdown v-model="flag" />
+  <form-valid class="claim" @submit="close" @keydown.native.esc="cancel">
+    <div class="bubble">
+      <label for="text" class="hint">
+        A claim should be a short, simple statement about the world.
+      </label>
+      <dwd-input
+        v-model="text"
+        id="text"
+        placeholder="claim"
+        :focus="true"
+        :validate="validate.text"
+      />
+      <dwd-flag v-if="flag" :flag="flag" />
     </div>
-  </div>
-</form-valid>
+    <div class="info">
+      <needs-data-edit v-model="needsData" />
+      <button type="button" class="dwd-btn white" @click="cancel">
+        Cancel
+      </button>
+      <button type="submit" class="dwd-btn dwd-btn-primary">Review</button>
+      <div class="controls"><dwd-flag-dropdown v-model="flag" /></div>
+    </div>
+  </form-valid>
 </template>
 
 <script>

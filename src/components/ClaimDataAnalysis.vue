@@ -1,7 +1,7 @@
 <template>
-<div class="data-analysis">
-  <span :class="classes">{{ text }}</span>
-</div>
+  <div class="data-analysis">
+    <span :class="classes">{{ text }}</span>
+  </div>
 </template>
 
 <script>

@@ -1,17 +1,19 @@
 <template>
-<transition name="drawer"
-            :enter-active-class="$style.drawerActive"
-            :leave-active-class="$style.drawerActive"
-            @after-enter="afterEnter">
-  <div v-show="innerShow"
-       ref="drawer"
-       :class="$style.drawer"
-       :style="{ maxHeight }">
-    <div :style="{ transform }">
-      <slot></slot>
+  <transition
+    name="drawer"
+    :enter-active-class="$style.drawerActive"
+    :leave-active-class="$style.drawerActive"
+    @after-enter="afterEnter"
+  >
+    <div
+      v-show="innerShow"
+      ref="drawer"
+      :class="$style.drawer"
+      :style="{ maxHeight }"
+    >
+      <div :style="{ transform }"><slot></slot></div>
     </div>
-  </div>
-</transition>
+  </transition>
 </template>
 
 <script>

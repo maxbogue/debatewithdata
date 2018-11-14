@@ -57,19 +57,9 @@
         }],
 
         "vue/attributes-order": ["off"],
-        "vue/html-closing-bracket-spacing": ["error"],
+        "vue/html-closing-bracket-spacing": ["off"],
         "vue/html-indent": ["off"],
-        "vue/html-self-closing": ["error", {
-            "html": {
-                "normal": "never"
-            }
-        }],
-        "vue/max-attributes-per-line": ["error", {
-            "singleline": 99,
-            "multiline": {
-                "max": 1,
-                "allowFirstLine": true
-            }
-        }]
+        "vue/html-self-closing": ["off"],
+        "vue/max-attributes-per-line": ["off"]
     }
 }

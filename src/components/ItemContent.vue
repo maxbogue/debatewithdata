@@ -1,16 +1,22 @@
 <template>
-<topic-content v-if="type === ItemType.TOPIC"
-               :topic="item"
-               :abbreviated="abbreviated"
-               :is-link="isLink" />
-<claim-content v-else-if="type === ItemType.CLAIM"
-               :claim="item"
-               :abbreviated="abbreviated"
-               :is-link="isLink" />
-<source-content v-else-if="type === ItemType.SOURCE"
-                :source="item"
-                :abbreviated="abbreviated" />
-<div v-else>Invalid item type.</div>
+  <topic-content
+    v-if="type === ItemType.TOPIC"
+    :topic="item"
+    :abbreviated="abbreviated"
+    :is-link="isLink"
+  />
+  <claim-content
+    v-else-if="type === ItemType.CLAIM"
+    :claim="item"
+    :abbreviated="abbreviated"
+    :is-link="isLink"
+  />
+  <source-content
+    v-else-if="type === ItemType.SOURCE"
+    :source="item"
+    :abbreviated="abbreviated"
+  />
+  <div v-else>Invalid item type.</div>
 </template>
 
 <script>

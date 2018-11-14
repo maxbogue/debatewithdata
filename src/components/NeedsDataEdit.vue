@@ -1,11 +1,11 @@
 <template>
-<div :class="$style.needsData">
-  <select v-model="needsData">
-    <option value="null">Analyze Points (default)</option>
-    <option value="true">Needs Data (override)</option>
-    <option value="false">Self-Evident (override)</option>
-  </select>
-</div>
+  <div :class="$style.needsData">
+    <select v-model="needsData">
+      <option value="null">Analyze Points (default)</option>
+      <option value="true">Needs Data (override)</option>
+      <option value="false">Self-Evident (override)</option>
+    </select>
+  </div>
 </template>
 
 <script>

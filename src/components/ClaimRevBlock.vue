@@ -1,35 +1,45 @@
 <template>
-<div class="claim">
-  <slot></slot>
-  <div class="bubble"
-       :class="{ click: canEdit }"
-       @click="$emit('start-editing')">
-    <dwd-flag v-if="safeCurr.flag && safeCurr.flag === safePrev.flag"
-              :flag="safeCurr.flag" />
-    <template v-else>
-      <dwd-flag v-if="safePrev.flag" :flag="safePrev.flag" class="del" />
-      <dwd-flag v-if="safeCurr.flag" :flag="safeCurr.flag" class="ins" />
-    </template>
-    <span v-html="textDiff"></span>
-  </div>
-  <div class="info">
-    <div v-if="safeCurr.needsData !== safePrev.needsData"
-         class="data-analysis">
-      <span class="del">{{ needsDataString(safePrev.needsData) }}</span>
-      <span class="ins">{{ needsDataString(safeCurr.needsData) }}</span>
+  <div class="claim">
+    <slot></slot>
+    <div
+      class="bubble"
+      :class="{ click: canEdit }"
+      @click="$emit('start-editing');"
+    >
+      <dwd-flag
+        v-if="safeCurr.flag && safeCurr.flag === safePrev.flag"
+        :flag="safeCurr.flag"
+      />
+      <template v-else>
+        <dwd-flag v-if="safePrev.flag" :flag="safePrev.flag" class="del" />
+        <dwd-flag v-if="safeCurr.flag" :flag="safeCurr.flag" class="ins" />
+      </template>
+      <span v-html="textDiff"></span>
     </div>
-    <claim-data-analysis v-else :claim="safeCurr" no-color />
-    <span class="controls">
-      <span v-if="canDelete"
-            class="delete click fas fa-trash-alt"
-            @click="$emit('delete')"></span>
-      <icon-comment v-else-if="id"
-                    :count="commentCount"
-                    @click.native="showComments = !showComments" />
-    </span>
+    <div class="info">
+      <div
+        v-if="safeCurr.needsData !== safePrev.needsData"
+        class="data-analysis"
+      >
+        <span class="del">{{ needsDataString(safePrev.needsData) }}</span>
+        <span class="ins">{{ needsDataString(safeCurr.needsData) }}</span>
+      </div>
+      <claim-data-analysis v-else :claim="safeCurr" no-color />
+      <span class="controls">
+        <span
+          v-if="canDelete"
+          class="delete click fas fa-trash-alt"
+          @click="$emit('delete');"
+        ></span>
+        <icon-comment
+          v-else-if="id"
+          :count="commentCount"
+          @click.native="showComments = !showComments;"
+        />
+      </span>
+    </div>
+    <dwd-comments :type="ItemType.CLAIM" :id="id" :show="showComments" />
   </div>
-  <dwd-comments :type="ItemType.CLAIM" :id="id" :show="showComments" />
-</div>
 </template>
 
 <script>

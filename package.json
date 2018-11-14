@@ -103,7 +103,7 @@
     "mocha": "^5.2.0",
     "mocha-webpack": "git+https://github.com/thomasmichaelwallace/mocha-webpack.git#build",
     "pre-commit": "^1.2.2",
-    "prettier": "^1.14.3",
+    "prettier": "^1.15.2",
     "progress": "^2.0.1",
     "sequelize-cli": "^5.1.0",
     "sinon": "^7.0.0",

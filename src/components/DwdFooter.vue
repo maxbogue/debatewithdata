@@ -1,28 +1,28 @@
 <template>
-<footer class="dwd-container center" :class="$style.footer">
+  <footer class="dwd-container center" :class="$style.footer">
     <ul>
+      <li><router-link to="/about" title="About">About</router-link></li>
+      <li><router-link to="/contact" title="Contact">Contact</router-link></li>
       <li>
-        <router-link to="/about" title="About">About</router-link>
+        <a
+          href="https://twitter.com/debatewithdata"
+          title="Twitter"
+          target="_blank"
+          rel="noopener"
+          class="fab fa-twitter"
+        ></a>
       </li>
       <li>
-        <router-link to="/contact" title="Contact">Contact</router-link>
-      </li>
-      <li>
-        <a href="https://twitter.com/debatewithdata"
-           title="Twitter"
-           target="_blank"
-           rel="noopener"
-           class="fab fa-twitter"></a>
-      </li>
-      <li>
-        <a href="https://github.com/maxbogue/debatewithdata"
-           title="GitHub Repo"
-           target="_blank"
-           rel="noopener"
-           class="fab fa-github"></a>
+        <a
+          href="https://github.com/maxbogue/debatewithdata"
+          title="GitHub Repo"
+          target="_blank"
+          rel="noopener"
+          class="fab fa-github"
+        ></a>
       </li>
     </ul>
-</footer>
+  </footer>
 </template>
 
 <style lang="scss" module>

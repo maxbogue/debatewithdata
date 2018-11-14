@@ -1,9 +1,9 @@
 <template>
-<div class="point" :class="isFor | toSideString">
-  <router-link :to="url" class="bubble click">
-    <point-diff :curr="curr" :prev="prev" />
-  </router-link>
-</div>
+  <div class="point" :class="isFor | toSideString">
+    <router-link :to="url" class="bubble click">
+      <point-diff :curr="curr" :prev="prev" />
+    </router-link>
+  </div>
 </template>
 
 <script>

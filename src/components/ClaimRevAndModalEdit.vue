@@ -1,16 +1,19 @@
 <template>
-<claim-rev-block :curr="claim"
-                 can-edit
-                 can-delete
-                 @start-editing="showModal = true"
-                 @delete="$emit('delete')">
-  <dwd-modal :show="showModal"
-             @close="showModal = false">
-    <claim-edit-block :claim="claim"
-                      @update:claim="(c) => $emit('update', c)"
-                      @close="showModal = false" />
-  </dwd-modal>
-</claim-rev-block>
+  <claim-rev-block
+    :curr="claim"
+    can-edit
+    can-delete
+    @start-editing="showModal = true;"
+    @delete="$emit('delete');"
+  >
+    <dwd-modal :show="showModal" @close="showModal = false;">
+      <claim-edit-block
+        :claim="claim"
+        @update:claim="c => $emit('update', c)"
+        @close="showModal = false;"
+      />
+    </dwd-modal>
+  </claim-rev-block>
 </template>
 
 <script>

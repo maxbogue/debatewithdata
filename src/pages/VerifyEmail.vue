@@ -1,8 +1,8 @@
 <template>
-<div>
-  <h1 class="center">{{ text }}</h1>
-  <dwd-loader ref="loader" />
-</div>
+  <div>
+    <h1 class="center">{{ text }}</h1>
+    <dwd-loader ref="loader" />
+  </div>
 </template>
 
 <script>

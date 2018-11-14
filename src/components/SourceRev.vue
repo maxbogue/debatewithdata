@@ -1,7 +1,7 @@
 <template>
-<div>
-  <source-rev-content class="source block" :curr="curr" :prev="prev" />
-</div>
+  <div>
+    <source-rev-content class="source block" :curr="curr" :prev="prev" />
+  </div>
 </template>
 
 <script>

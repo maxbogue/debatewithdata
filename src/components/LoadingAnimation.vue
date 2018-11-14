@@ -1,11 +1,11 @@
 <template>
-<div :class="$style.animation">
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-</div>
+  <div :class="$style.animation">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
 </template>
 
 <style lang="scss" module>

@@ -1,11 +1,9 @@
 <template>
-<div v-if="innerLoading" :class="$style.loader">
-  <loading-animation />
-</div>
-<div v-else-if="innerError" :class="[$style.loader, $style.error]">
-  {{ innerError }}
-</div>
-<div v-else></div>
+  <div v-if="innerLoading" :class="$style.loader"><loading-animation /></div>
+  <div v-else-if="innerError" :class="[$style.loader, $style.error]">
+    {{ innerError }}
+  </div>
+  <div v-else></div>
 </template>
 
 <script>

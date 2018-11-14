@@ -1,30 +1,34 @@
 <!-- Renders blocks for all item types. -->
 
 <template>
-<div :class="blockClasses">
-  <item-content class="bubble"
-                :class="{ click: isLink }"
-                :item="item"
-                :type="type"
-                :abbreviated="abbreviated"
-                :is-link="isLink"
-                @click.native.stop="nav" />
-  <template v-if="!abbreviated">
-    <div class="info">
-      <claim-data-analysis v-if="type === ItemType.CLAIM" :claim="item" />
-      <span v-else class="id mono">{{ id }}</span>
-      <span class="controls">
-        <icon-star :type="type" :item="item" />
-        <icon-watch v-if="$store.state.user" :type="type" :item="item" />
-        <icon-comment @click.native="showComments = !showComments"
-                      :count="item.commentCount" />
-        <icon-history :url="urlWithTrail" />
-        <icon-edit :url="urlWithTrail" />
-      </span>
-    </div>
-    <dwd-comments :type="type" :id="id" :show="showComments" />
-  </template>
-</div>
+  <div :class="blockClasses">
+    <item-content
+      class="bubble"
+      :class="{ click: isLink }"
+      :item="item"
+      :type="type"
+      :abbreviated="abbreviated"
+      :is-link="isLink"
+      @click.native.stop="nav"
+    />
+    <template v-if="!abbreviated">
+      <div class="info">
+        <claim-data-analysis v-if="type === ItemType.CLAIM" :claim="item" />
+        <span v-else class="id mono">{{ id }}</span>
+        <span class="controls">
+          <icon-star :type="type" :item="item" />
+          <icon-watch v-if="$store.state.user" :type="type" :item="item" />
+          <icon-comment
+            @click.native="showComments = !showComments;"
+            :count="item.commentCount"
+          />
+          <icon-history :url="urlWithTrail" />
+          <icon-edit :url="urlWithTrail" />
+        </span>
+      </div>
+      <dwd-comments :type="type" :id="id" :show="showComments" />
+    </template>
+  </div>
 </template>
 
 <script>

@@ -1,31 +1,36 @@
 <template>
-<div :class="$style.input">
-  <div>
-    <dwd-input :value="value"
-               @input="(val) => $emit('input', val)"
-               @keydown.up.native.prevent="highlight(highlighted - 1)"
-               @keydown.down.native.prevent="highlight(highlighted + 1)"
-               @keydown.enter.native="onEnter"
-               :placeholder="placeholder"
-               :validate="validate"
-               :error="inputError"
-               :state="inputState"
-               :focus="true"
-               :mono="!!itemType" />
-    <ul v-if="!itemType" :class="$style.results">
-      <li v-for="(result, i) in results"
+  <div :class="$style.input">
+    <div>
+      <dwd-input
+        :value="value"
+        @input="val => $emit('input', val)"
+        @keydown.up.native.prevent="highlight(highlighted - 1);"
+        @keydown.down.native.prevent="highlight(highlighted + 1);"
+        @keydown.enter.native="onEnter"
+        :placeholder="placeholder"
+        :validate="validate"
+        :error="inputError"
+        :state="inputState"
+        :focus="true"
+        :mono="!!itemType"
+      />
+      <ul v-if="!itemType" :class="$style.results">
+        <li
+          v-for="(result, i) in results"
           :class="resultClass(result, i)"
           :key="result.item.id"
-          @click="select(i)"
-          @mousemove="highlight(i)"
-          @mouseleave="highlighted = -1"
-          >{{ result.item.title || result.item.text }}</li>
-    </ul>
+          @click="select(i);"
+          @mousemove="highlight(i);"
+          @mouseleave="highlighted = -1;"
+        >
+          {{ result.item.title || result.item.text }}
+        </li>
+      </ul>
+    </div>
+    <topic-content v-if="topic" :topic="topic" />
+    <claim-content v-if="claim" :claim="claim" />
+    <source-content v-if="source" :source="source" />
   </div>
-  <topic-content v-if="topic" :topic="topic" />
-  <claim-content v-if="claim" :claim="claim" />
-  <source-content v-if="source" :source="source" />
-</div>
 </template>
 
 <script>

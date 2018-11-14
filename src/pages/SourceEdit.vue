@@ -1,35 +1,46 @@
 <template>
-<form-valid @submit="review"
-            @keydown.native.esc="revert">
-  <div v-if="showEditBlock" class="source">
-    <source-edit-content v-if="showEditBlock"
-                         class="bubble"
-                         :source.sync="newSource" />
-  </div>
-  <div v-else class="source neutral">
-    <source-rev-content class="bubble click"
-                        :prev="source"
-                        :curr="newSource"
-                        @click.native="showEditBlock = true" />
-  </div>
-  <div class="block no-pad center">
-    <button type="button"
-            class="dwd-btn white"
-            @click="cancel">Cancel</button>
-    <button v-if="showEditBlock"
-            type="button"
-            class="dwd-btn green-dark"
-            @click="review">Review</button>
-    <button v-else
-            :disabled="noChange"
-            type="button"
-            class="dwd-btn green-dark"
-            @click="submit">Submit</button>
-  </div>
-  <div v-if="id" class="block no-pad center">
-    <delete-button noun="Source" @delete="remove" />
-  </div>
-</form-valid>
+  <form-valid @submit="review" @keydown.native.esc="revert">
+    <div v-if="showEditBlock" class="source">
+      <source-edit-content
+        v-if="showEditBlock"
+        class="bubble"
+        :source.sync="newSource"
+      />
+    </div>
+    <div v-else class="source neutral">
+      <source-rev-content
+        class="bubble click"
+        :prev="source"
+        :curr="newSource"
+        @click.native="showEditBlock = true;"
+      />
+    </div>
+    <div class="block no-pad center">
+      <button type="button" class="dwd-btn white" @click="cancel">
+        Cancel
+      </button>
+      <button
+        v-if="showEditBlock"
+        type="button"
+        class="dwd-btn green-dark"
+        @click="review"
+      >
+        Review
+      </button>
+      <button
+        v-else
+        :disabled="noChange"
+        type="button"
+        class="dwd-btn green-dark"
+        @click="submit"
+      >
+        Submit
+      </button>
+    </div>
+    <div v-if="id" class="block no-pad center">
+      <delete-button noun="Source" @delete="remove" />
+    </div>
+  </form-valid>
 </template>
 
 <script>

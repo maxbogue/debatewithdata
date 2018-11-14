@@ -1,26 +1,27 @@
 <template>
-<div>
-  <button type="button"
-          class="dwd-btn red-dark"
-          @click="show = true">{{ text }}</button>
-  <dwd-modal :show="show" @close="close" @cancel="cancel">
-    <div :class="$style.block">
-      <div class="bubble">
-        <dwd-input v-model="message"
-                   :validate="validate"
-                   focus
-                   placeholder="delete reason" />
+  <div>
+    <button type="button" class="dwd-btn red-dark" @click="show = true;">
+      {{ text }}
+    </button>
+    <dwd-modal :show="show" @close="close" @cancel="cancel">
+      <div :class="$style.block">
+        <div class="bubble">
+          <dwd-input
+            v-model="message"
+            :validate="validate"
+            focus
+            placeholder="delete reason"
+          />
+        </div>
+        <div class="info">
+          <button type="submit" class="dwd-btn red-dark">Confirm</button>
+          <button type="button" class="dwd-btn white" @click="cancel">
+            Cancel
+          </button>
+        </div>
       </div>
-      <div class="info">
-        <button type="submit"
-                class="dwd-btn red-dark">Confirm</button>
-        <button type="button"
-                class="dwd-btn white"
-                @click="cancel">Cancel</button>
-      </div>
-    </div>
-  </dwd-modal>
-</div>
+    </dwd-modal>
+  </div>
 </template>
 
 <script>

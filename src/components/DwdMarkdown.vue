@@ -4,21 +4,23 @@
 -->
 
 <template>
-<div :class="$style.md">
-  <p v-for="(paragraph, i) in paragraphs" :key="`p-${i}`">
-  <template v-for="([text, url], j) in paragraph">
-    <a v-if="url"
-       :href="url"
-       :key="`p-${i}-${j}`"
-       target="_blank"
-       rel="noopener">
-      <span :class="$style.text">{{ text }}</span>
-      <span :class="$style.link" class="fas fa-external-link-alt"></span>
-    </a>
-    <template v-else>{{ text }}</template>
-  </template>
-  </p>
-</div>
+  <div :class="$style.md">
+    <p v-for="(paragraph, i) in paragraphs" :key="`p-${i}`">
+      <template v-for="([text, url], j) in paragraph">
+        <a
+          v-if="url"
+          :href="url"
+          :key="`p-${i}-${j}`"
+          target="_blank"
+          rel="noopener"
+        >
+          <span :class="$style.text">{{ text }}</span>
+          <span :class="$style.link" class="fas fa-external-link-alt"></span>
+        </a>
+        <template v-else>{{ text }}</template>
+      </template>
+    </p>
+  </div>
 </template>
 
 <script>

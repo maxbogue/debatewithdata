@@ -1,10 +1,8 @@
 <template>
-<div>
-  <claim-content v-if="isClaim"
-                 :claim="point" />
-  <source-content v-else-if="isSource"
-                  :source="point" />
-</div>
+  <div>
+    <claim-content v-if="isClaim" :claim="point" />
+    <source-content v-else-if="isSource" :source="point" />
+  </div>
 </template>
 
 <script>

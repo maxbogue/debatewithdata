@@ -1,32 +1,34 @@
 <template>
-<div>
-  <label for="title" class="hint">
-    The title of this topic.
-  </label>
-  <dwd-input v-model="title"
-             id="title"
-             placeholder="title"
-             :validate="validate.title"
-             :focus="true" />
-  <template v-if="!oldId">
-    <label for="id" class="hint">
-      The ID shows up in the URL and cannot be changed.
-    </label>
-    <dwd-input v-model="id"
-               id="id"
-               class="mono"
-               placeholder="id"
-               :validate="validate.id" />
-  </template>
-  <label for="text" class="hint">
-    Describe this topic.
-  </label>
-  <dwd-input v-model="text"
-             id="text"
-             placeholder="description"
-             allow-newlines
-             :validate="validate.text" />
-</div>
+  <div>
+    <label for="title" class="hint"> The title of this topic. </label>
+    <dwd-input
+      v-model="title"
+      id="title"
+      placeholder="title"
+      :validate="validate.title"
+      :focus="true"
+    />
+    <template v-if="!oldId">
+      <label for="id" class="hint">
+        The ID shows up in the URL and cannot be changed.
+      </label>
+      <dwd-input
+        v-model="id"
+        id="id"
+        class="mono"
+        placeholder="id"
+        :validate="validate.id"
+      />
+    </template>
+    <label for="text" class="hint"> Describe this topic. </label>
+    <dwd-input
+      v-model="text"
+      id="text"
+      placeholder="description"
+      allow-newlines
+      :validate="validate.text"
+    />
+  </div>
 </template>
 
 <script>

@@ -1,43 +1,46 @@
 <template>
-<dwd-modal :show="show" @close="close" @cancel="cancel">
-  <div class="topic">
-    <div class="bubble">
-      <label for="title" class="hint">
-        New title or search for a topic to link.
-      </label>
-      <item-link-input v-model="title"
-                       id="title"
-                       allow-topic
-                       placeholder="title or link"
-                       :validate="validate.title"
-                       @itemType="updateIsLink" />
-      <template v-if="title && !isLink">
-        <label for="id" class="hint">
-          The ID shows up in the URL and cannot be changed.
+  <dwd-modal :show="show" @close="close" @cancel="cancel">
+    <div class="topic">
+      <div class="bubble">
+        <label for="title" class="hint">
+          New title or search for a topic to link.
         </label>
-        <dwd-input v-model="id"
-                   id="id"
-                   class="mono"
-                   placeholder="id"
-                   :validate="validate.id" />
-        <label for="text" class="hint">
-          Describe this topic.
-        </label>
-        <dwd-input v-model="text"
-                   id="text"
-                   placeholder="description"
-                   :validate="validate.text" />
-      </template>
+        <item-link-input
+          v-model="title"
+          id="title"
+          allow-topic
+          placeholder="title or link"
+          :validate="validate.title"
+          @itemType="updateIsLink"
+        />
+        <template v-if="title && !isLink">
+          <label for="id" class="hint">
+            The ID shows up in the URL and cannot be changed.
+          </label>
+          <dwd-input
+            v-model="id"
+            id="id"
+            class="mono"
+            placeholder="id"
+            :validate="validate.id"
+          />
+          <label for="text" class="hint"> Describe this topic. </label>
+          <dwd-input
+            v-model="text"
+            id="text"
+            placeholder="description"
+            :validate="validate.text"
+          />
+        </template>
+      </div>
+      <div class="info">
+        <button type="button" class="dwd-btn white" @click="cancel">
+          Cancel
+        </button>
+        <button type="submit" class="dwd-btn pink-dark">Review</button>
+      </div>
     </div>
-    <div class="info">
-      <button type="button"
-              class="dwd-btn white"
-              @click="cancel">Cancel</button>
-      <button type="submit"
-              class="dwd-btn pink-dark">Review</button>
-    </div>
-  </div>
-</dwd-modal>
+  </dwd-modal>
 </template>
 
 <script>

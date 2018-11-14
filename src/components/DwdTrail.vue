@@ -1,16 +1,18 @@
 <template>
-<div v-if="items.length > 0" :class="$style.trail">
-  <item-block v-for="([type, item, isFor], i) in items"
-              :key="item.id"
-              :item="item"
-              :type="type"
-              :trail="ids.slice(0, i)"
-              :is-for="isFor"
-              is-link
-              abbreviated
-              mini
-              half />
-</div>
+  <div v-if="items.length > 0" :class="$style.trail">
+    <item-block
+      v-for="([type, item, isFor], i) in items"
+      :key="item.id"
+      :item="item"
+      :type="type"
+      :trail="ids.slice(0, i)"
+      :is-for="isFor"
+      is-link
+      abbreviated
+      mini
+      half
+    />
+  </div>
 </template>
 
 <script>

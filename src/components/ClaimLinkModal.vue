@@ -1,31 +1,32 @@
 <template>
-<dwd-modal :show="show" @close="close" @cancel="cancel">
-  <div class="claim">
-    <div class="bubble">
-      <label for="text" class="hint">
-        A claim should be a short, simple statement about the world.
-      </label>
-      <item-link-input v-model="text"
-                       id="text"
-                       allow-claim
-                       placeholder="claim"
-                       :validate="validate.text"
-                       @itemType="updateIsLink" />
-      <dwd-flag v-if="text && flag && !isLink" :flag="flag" />
-    </div>
-    <div class="info">
-      <needs-data-edit v-if="!isLink" v-model="needsData" />
-      <button type="button"
-              class="dwd-btn white"
-              @click="cancel">Cancel</button>
-      <button type="submit"
-              class="dwd-btn dwd-btn-primary">Review</button>
-      <div v-if="!isLink" class="controls">
-        <dwd-flag-dropdown v-model="flag" />
+  <dwd-modal :show="show" @close="close" @cancel="cancel">
+    <div class="claim">
+      <div class="bubble">
+        <label for="text" class="hint">
+          A claim should be a short, simple statement about the world.
+        </label>
+        <item-link-input
+          v-model="text"
+          id="text"
+          allow-claim
+          placeholder="claim"
+          :validate="validate.text"
+          @itemType="updateIsLink"
+        />
+        <dwd-flag v-if="text && flag && !isLink" :flag="flag" />
+      </div>
+      <div class="info">
+        <needs-data-edit v-if="!isLink" v-model="needsData" />
+        <button type="button" class="dwd-btn white" @click="cancel">
+          Cancel
+        </button>
+        <button type="submit" class="dwd-btn dwd-btn-primary">Review</button>
+        <div v-if="!isLink" class="controls">
+          <dwd-flag-dropdown v-model="flag" />
+        </div>
       </div>
     </div>
-  </div>
-</dwd-modal>
+  </dwd-modal>
 </template>
 
 <script>

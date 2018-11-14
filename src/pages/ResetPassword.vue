@@ -1,15 +1,13 @@
 <template>
-<div class="center">
-  <h2>Reset Password</h2>
-  <div>Enter a new password for your account.</div>
-  <form class="auth" @submit.prevent="submit">
-    <input type="password"
-           placeholder="password"
-           v-model="password">
-    <dwd-loader ref="loader" />
-    <button type="submit" class="dwd-btn dwd-btn-primary">Submit</button>
-  </form>
-</div>
+  <div class="center">
+    <h2>Reset Password</h2>
+    <div>Enter a new password for your account.</div>
+    <form class="auth" @submit.prevent="submit">
+      <input type="password" placeholder="password" v-model="password" />
+      <dwd-loader ref="loader" />
+      <button type="submit" class="dwd-btn dwd-btn-primary">Submit</button>
+    </form>
+  </div>
 </template>
 
 <script>

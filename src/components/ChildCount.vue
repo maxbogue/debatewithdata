@@ -1,7 +1,7 @@
 <template>
-<span v-if="item.childCount > 0"
-      class="mono"
-      :class="$style.count">+{{ item.childCount }}</span>
+  <span v-if="item.childCount > 0" class="mono" :class="$style.count"
+    >+{{ item.childCount }}</span
+  >
 </template>
 
 <script>

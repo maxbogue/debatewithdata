@@ -1,14 +1,17 @@
 <template>
-<div :class="$style.flagDropdown">
-  <ul :class="[$style.flags, { [$style.open]: showFlags }]">
-    <li v-for="[k, v] in flags"
+  <div :class="$style.flagDropdown">
+    <ul :class="[$style.flags, { [$style.open]: showFlags }]">
+      <li
+        v-for="[k, v] in flags"
         :class="{ [$style.selected]: k === value }"
         :key="k"
-        @click="selectFlag(k)">{{ v.name }}</li>
-  </ul>
-  <span class="click fas fa-flag"
-        @click="showFlags = !showFlags"></span>
-</div>
+        @click="selectFlag(k);"
+      >
+        {{ v.name }}
+      </li>
+    </ul>
+    <span class="click fas fa-flag" @click="showFlags = !showFlags;"></span>
+  </div>
 </template>
 
 <script>

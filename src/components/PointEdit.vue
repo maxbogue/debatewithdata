@@ -1,25 +1,31 @@
 <template>
-<div :class="pointClass">
-  <point-edit-modal v-if="point"
-                    :show.sync="showModal"
-                    :point="point"
-                    :is-for="isFor"
-                    @update="emitPoint" />
-  <point-diff class="bubble"
-              :class="{ click: isEditable }"
-              :curr="point"
-              :prev="prev"
-              @click.native="showModal = isEditable" />
-  <div class="info">
-    <span class="id mono">{{ id || 'new' }}</span>
-    <span class="delete click fas fa-trash" @click="$emit('delete')"></span>
+  <div :class="pointClass">
+    <point-edit-modal
+      v-if="point"
+      :show.sync="showModal"
+      :point="point"
+      :is-for="isFor"
+      @update="emitPoint"
+    />
+    <point-diff
+      class="bubble"
+      :class="{ click: isEditable }"
+      :curr="point"
+      :prev="prev"
+      @click.native="showModal = isEditable;"
+    />
+    <div class="info">
+      <span class="id mono">{{ id || 'new' }}</span>
+      <span class="delete click fas fa-trash" @click="$emit('delete');"></span>
+    </div>
+    <points-edit
+      v-if="hasSubPoints"
+      :curr="point"
+      :prev="prev"
+      :is-for="isFor"
+      @update="updateSubPoints"
+    />
   </div>
-  <points-edit v-if="hasSubPoints"
-               :curr="point"
-               :prev="prev"
-               :is-for="isFor"
-               @update="updateSubPoints" />
-</div>
 </template>
 
 <script>

@@ -1,21 +1,20 @@
 <template>
-<form-valid class="topic"
-            @submit="close"
-            @keydown.native.esc="cancel">
-  <topic-edit-content class="bubble"
-                      :topic="topic"
-                      :old-id="oldId"
-                      @update="update" />
-  <div class="info">
-    <div class="id mono">{{ oldId || 'new' }}</div>
-    <button type="button"
-            class="dwd-btn white"
-            @click="cancel">Cancel</button>
-    <button type="submit"
-            class="dwd-btn pink-dark">Review</button>
-    <div class="controls"></div>
-  </div>
-</form-valid>
+  <form-valid class="topic" @submit="close" @keydown.native.esc="cancel">
+    <topic-edit-content
+      class="bubble"
+      :topic="topic"
+      :old-id="oldId"
+      @update="update"
+    />
+    <div class="info">
+      <div class="id mono">{{ oldId || 'new' }}</div>
+      <button type="button" class="dwd-btn white" @click="cancel">
+        Cancel
+      </button>
+      <button type="submit" class="dwd-btn pink-dark">Review</button>
+      <div class="controls"></div>
+    </div>
+  </form-valid>
 </template>
 
 <script>

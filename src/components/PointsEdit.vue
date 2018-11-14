@@ -1,48 +1,54 @@
 <template>
-<div v-if="isSubPoints || $store.state.singleColumn">
-  <div class="block click"
-       :class="pointClass(isFor)"
-       @click="addPoint(0)">
-    <strong v-if="isSubPoints">Add a sub-point for this point.</strong>
-    <strong v-else>Add a point for this claim.</strong>
-  </div>
-  <div class="block click"
-       :class="pointClass(!isFor)"
-       @click="addPoint(1)">
-    <strong v-if="isSubPoints">Add a sub-point against this point.</strong>
-    <strong v-else>Add a point against this claim.</strong>
-  </div>
-  <point-edit v-for="[[pointId, point, prev], side] in zippedPointDiffs"
-              :key="pointId"
-              :point="point"
-              :prev="prev"
-              :is-for="isSubPoints ? isFor === !side : !side"
-              :is-parent-for="isFor"
-              @update="(p) => updatePoint(side, p)"
-              @delete="deletePoint(side, point || prev)" />
-</div>
-<div v-else class="dwd-cols">
-  <div v-for="(sidePoints, side) in pointDiffs"
-       class="dwd-col"
-       :key="'side-' + side">
-    <div class="block click"
-         :class="pointClass(!side)"
-         @click="addPoint(side)">
-      <strong v-if="isSubPoints"
-              >Add a sub-point {{ !side | toSideString }} this point.</strong>
-      <strong v-else
-              >Add a point {{ !side | toSideString }} this claim.</strong>
+  <div v-if="isSubPoints || $store.state.singleColumn">
+    <div class="block click" :class="pointClass(isFor)" @click="addPoint(0);">
+      <strong v-if="isSubPoints">Add a sub-point for this point.</strong>
+      <strong v-else>Add a point for this claim.</strong>
     </div>
-    <point-edit v-for="[pointId, point, prev] in sidePoints"
-                :key="pointId"
-                :point="point"
-                :prev="prev"
-                :is-for="isSubPoints ? isFor === !side : !side"
-                :is-parent-for="isFor"
-                @update="(p) => updatePoint(side, p)"
-                @delete="deletePoint(side, point || prev)" />
+    <div class="block click" :class="pointClass(!isFor)" @click="addPoint(1);">
+      <strong v-if="isSubPoints">Add a sub-point against this point.</strong>
+      <strong v-else>Add a point against this claim.</strong>
+    </div>
+    <point-edit
+      v-for="[[pointId, point, prev], side] in zippedPointDiffs"
+      :key="pointId"
+      :point="point"
+      :prev="prev"
+      :is-for="isSubPoints ? isFor === !side : !side"
+      :is-parent-for="isFor"
+      @update="p => updatePoint(side, p)"
+      @delete="deletePoint(side, point || prev);"
+    />
   </div>
-</div>
+  <div v-else class="dwd-cols">
+    <div
+      v-for="(sidePoints, side) in pointDiffs"
+      class="dwd-col"
+      :key="'side-' + side"
+    >
+      <div
+        class="block click"
+        :class="pointClass(!side)"
+        @click="addPoint(side);"
+      >
+        <strong v-if="isSubPoints"
+          >Add a sub-point {{ !side | toSideString }} this point.</strong
+        >
+        <strong v-else
+          >Add a point {{ !side | toSideString }} this claim.</strong
+        >
+      </div>
+      <point-edit
+        v-for="[pointId, point, prev] in sidePoints"
+        :key="pointId"
+        :point="point"
+        :prev="prev"
+        :is-for="isSubPoints ? isFor === !side : !side"
+        :is-parent-for="isFor"
+        @update="p => updatePoint(side, p)"
+        @delete="deletePoint(side, point || prev);"
+      />
+    </div>
+  </div>
 </template>
 
 <script>

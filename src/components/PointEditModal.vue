@@ -1,41 +1,45 @@
 <template>
-<dwd-modal :show="show" @close="close" @cancel="cancel">
-  <div class="point" :class="isFor | toSideString">
-    <source-edit-content v-if="isNewSource"
-                         class="bubble"
-                         :source="source"
-                         :force.sync="forceSource"
-                         @update:source="updateNewSource" />
-    <div v-else class="bubble">
-      <div v-if="isNewClaim" class="hint">
-        This will create a new claim.
-        <span class="click-text"
-              @click="forceSource = true">Convert to data.</span>
+  <dwd-modal :show="show" @close="close" @cancel="cancel">
+    <div class="point" :class="isFor | toSideString">
+      <source-edit-content
+        v-if="isNewSource"
+        class="bubble"
+        :source="source"
+        :force.sync="forceSource"
+        @update:source="updateNewSource"
+      />
+      <div v-else class="bubble">
+        <div v-if="isNewClaim" class="hint">
+          This will create a new claim.
+          <span class="click-text" @click="forceSource = true;"
+            >Convert to data.</span
+          >
+        </div>
+        <label v-else-if="!pointType" class="hint">
+          Add a point {{ isFor | toSideString }} the claim.
+        </label>
+        <item-link-input
+          v-model="input"
+          allow-claim
+          allow-source
+          placeholder="Text, URL, or ID"
+          :validate="validate"
+          @itemType="updateLinkType"
+        />
+        <dwd-flag v-if="isNewClaim && flag" :flag="flag" />
       </div>
-      <label v-else-if="!pointType" class="hint">
-        Add a point {{ isFor | toSideString }} the claim.
-      </label>
-      <item-link-input v-model="input"
-                       allow-claim
-                       allow-source
-                       placeholder="Text, URL, or ID"
-                       :validate="validate"
-                       @itemType="updateLinkType" />
-      <dwd-flag v-if="isNewClaim && flag" :flag="flag" />
-    </div>
-    <div class="info">
-      <div class="id mono">{{ point.id || 'new' }}</div>
-      <button type="button"
-              class="dwd-btn white"
-              @click="cancel">Cancel</button>
-      <button type="submit"
-              class="dwd-btn dwd-btn-primary">Review</button>
-      <div class="controls">
-        <dwd-flag-dropdown v-if="isNewClaim" v-model="flag" />
+      <div class="info">
+        <div class="id mono">{{ point.id || 'new' }}</div>
+        <button type="button" class="dwd-btn white" @click="cancel">
+          Cancel
+        </button>
+        <button type="submit" class="dwd-btn dwd-btn-primary">Review</button>
+        <div class="controls">
+          <dwd-flag-dropdown v-if="isNewClaim" v-model="flag" />
+        </div>
       </div>
     </div>
-  </div>
-</dwd-modal>
+  </dwd-modal>
 </template>
 
 <script>
