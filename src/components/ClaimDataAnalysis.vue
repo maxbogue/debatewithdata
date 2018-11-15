@@ -14,7 +14,7 @@ export default {
   },
   computed: {
     hasDirectFor() {
-      return some(this.claim.sourceIds);
+      return some(Boolean, this.claim.sourceIds);
     },
     forCount() {
       if (!this.claim.dataCounts) {
