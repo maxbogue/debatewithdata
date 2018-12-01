@@ -4,6 +4,7 @@ import dropWhile1 from 'lodash/fp/dropWhile';
 import filter from 'lodash/fp/filter';
 import forEach1 from 'lodash/fp/forEach';
 import forOwn1 from 'lodash/fp/forOwn';
+import identity from 'lodash/fp/identity';
 import isArray from 'lodash/fp/isArray';
 import isObject from 'lodash/fp/isObject';
 import map1 from 'lodash/fp/map';
@@ -35,6 +36,25 @@ export function titleFromText(text) {
 export function pipe(...fns) {
   return fns.reduce((f, g) => (...args) => g(f(...args)));
 }
+
+export const mapQueryParams = mapValues(
+  ({ param, defaultVal = '', parse = identity, alsoSet = {} } = {}, key) => ({
+    get() {
+      const value = this.$route.query[param || key];
+      return value !== undefined ? parse(value) : defaultVal;
+    },
+    set(newValue) {
+      this.$router.replace({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          ...alsoSet,
+          [param || key]: newValue === defaultVal ? undefined : newValue,
+        },
+      });
+    },
+  })
+);
 
 export function diff(text1, text2) {
   const diffs = textDiff.main(text1, text2);

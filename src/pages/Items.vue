@@ -79,6 +79,7 @@ import DwdLoader from '@/components/DwdLoader.vue';
 import ItemBlock from '@/components/ItemBlock.vue';
 import { DEBOUNCE_DELAY_MS } from '@/constants';
 import { Filter, ItemType, Sort } from '@/common/constants';
+import { mapQueryParams } from '@/utils';
 
 export default {
   components: {
@@ -109,16 +110,29 @@ export default {
     ItemType,
     Sort,
     Filter,
-    sortBy: Sort.STARS,
-    sortDesc: true,
-    filterStarred: null,
-    query: '',
     results: null,
     numPages: 0,
-    page: 1,
   }),
   computed: {
     ...mapState(['user']),
+    ...mapQueryParams({
+      query: { param: 'q', alsoSet: { page: undefined } },
+      sortBy: {
+        defaultVal: Sort.STARS,
+        alsoSet: { page: undefined },
+      },
+      sortDesc: {
+        defaultVal: true,
+        parse: JSON.parse,
+        alsoSet: { page: undefined },
+      },
+      filterStarred: {
+        defaultVal: null,
+        parse: JSON.parse,
+        alsoSet: { page: undefined },
+      },
+      page: { defaultVal: 1, parse: Number },
+    }),
     headerText() {
       switch (this.type) {
         case ItemType.TOPIC:
@@ -133,7 +147,7 @@ export default {
       }
       throw new Error(`Invalid item type: ${this.type}`);
     },
-    paramsWithoutPage() {
+    params() {
       const filters = [];
       if (this.filterStarred !== null) {
         filters.push([Filter.STARRED, this.filterStarred]);
@@ -142,11 +156,6 @@ export default {
         type: this.type,
         sort: [this.sortBy, this.sortDesc],
         filters,
-      };
-    },
-    params() {
-      return {
-        ...this.paramsWithoutPage,
         page: this.page,
       };
     },
@@ -177,25 +186,14 @@ export default {
   },
   watch: {
     type() {
-      this.sortBy = Sort.STARS;
-      this.sortDesc = true;
-      this.filterStarred = null;
-      this.query = '';
       this.results = null;
       this.numPages = 0;
-      this.page = 1;
-    },
-    paramsWithoutPage() {
-      this.page = 1;
     },
     params() {
       if (this.query) {
         return;
       }
       this.getItems();
-    },
-    query() {
-      this.page = 1;
     },
     queryParams: debounce(DEBOUNCE_DELAY_MS, async function() {
       /* eslint no-invalid-this: "off" */
