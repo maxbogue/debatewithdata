@@ -33,10 +33,6 @@ export function titleFromText(text) {
   return text.slice(0, TITLE_TEXT_LENGTH - 3) + '...';
 }
 
-export function pipe(...fns) {
-  return fns.reduce((f, g) => (...args) => g(f(...args)));
-}
-
 export const mapQueryParams = mapValues(
   ({ param, defaultVal = '', parse = identity, alsoSet = {} } = {}, key) => ({
     get() {

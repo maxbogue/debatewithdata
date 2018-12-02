@@ -98,6 +98,7 @@
 
 <script>
 import filter from 'lodash/fp/filter';
+import flow from 'lodash/fp/flow';
 import sortBy from 'lodash/fp/sortBy';
 import { mapGetters, mapState } from 'vuex';
 
@@ -109,7 +110,7 @@ import FixedBottom from '@/components/FixedBottom.vue';
 import TopicEditAndReviewBlock from '@/components/TopicEditAndReviewBlock.vue';
 import TopicLinkModal from '@/components/TopicLinkModal.vue';
 import { ItemType } from '@/common/constants';
-import { diffIdLists, parseTrail, pipe } from '@/utils';
+import { diffIdLists, parseTrail } from '@/utils';
 import { topicsAreEqual } from '@/common/equality';
 
 const BEFORE_UNLOAD_MESSAGE = 'Discard changes?';
@@ -299,11 +300,11 @@ export default {
           text: seed.text || '',
         };
 
-        const topicStarred = pipe(
+        const topicStarred = flow(
           this.lookupTopic,
           this.starred
         );
-        const topicStarCount = pipe(
+        const topicStarCount = flow(
           this.lookupTopic,
           this.starCount
         );
@@ -312,11 +313,11 @@ export default {
           seed.subTopicIds
         );
 
-        const claimStarred = pipe(
+        const claimStarred = flow(
           this.lookupClaim,
           this.starred
         );
-        const claimStarCount = pipe(
+        const claimStarCount = flow(
           this.lookupClaim,
           this.starCount
         );
