@@ -37,6 +37,42 @@
       "why not".
     </p>
 
+    <h3>Data Analysis</h3>
+    <p>
+      Claims display an analysis of the data that supports them in their bottom
+      left corner. This analysis is currently extremely simple and only displays
+      three states by default:
+    </p>
+
+    <ul>
+      <li>
+        <strong>Needs Data</strong> - Displayed when no data objects exist on
+        the "for" side of the claim.
+      </li>
+      <li>
+        <strong>Has Data</strong> - Displayed when a data object exists as a
+        direct child on the "for" side of the claim.
+      </li>
+      <li>
+        <strong>Has Data (nested)</strong> - Displayed when a data object exists
+        as an indirect child on the "for" side of the claim.
+      </li>
+    </ul>
+    <p>
+      Additionally, the analysis may be overriden manually when editing a claim:
+    </p>
+
+    <ul>
+      <li>
+        <strong>Needs Data (forced)</strong> - Should be used when the claim
+        needs additional data to be compelling.
+      </li>
+      <li>
+        <strong>Self-Evident</strong> - Should be used when it wouldn't make
+        sense for a claim to have data.
+      </li>
+    </ul>
+
     <h3>Guidelines</h3>
     <ol>
       <li>
@@ -176,8 +212,9 @@ export default {
     margin-top: 2.5rem;
   }
 
-  ol {
-    margin: 1rem 0 0 0;
+  ol,
+  ul {
+    margin: 1em 0;
   }
 }
 
