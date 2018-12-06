@@ -2,8 +2,41 @@ import isArray from 'lodash/fp/isArray';
 import mergeWith from 'lodash/fp/mergeWith';
 import sortBy from 'lodash/fp/sortBy';
 
+import { ActivityAction, ActivityEntry } from '@/api/interface';
 import { ItemType } from '@/common/constants';
 import { ClaimRev, Comment, SourceRev, TopicRev, User } from '@/models';
+
+interface User {
+  id: string;
+  username: string;
+}
+
+interface ItemRev {
+  id: string;
+  deleted: boolean;
+  parentId: string;
+  user: User;
+  created_at: string;
+}
+
+interface TopicRev extends ItemRev {
+  topicId: string;
+}
+
+interface ClaimRev extends ItemRev {
+  claimId: string;
+}
+
+interface SourceRev extends ItemRev {
+  sourceId: string;
+}
+
+interface Comment {
+  created_at: string;
+  user: User;
+  commentable: string;
+  commentableId: string;
+}
 
 const merge = mergeWith((a, b) => {
   if (isArray(a)) {
@@ -12,50 +45,56 @@ const merge = mergeWith((a, b) => {
   return undefined;
 });
 
-function itemToAction(itemRev) {
+function itemToAction(itemRev: ItemRev): ActivityAction {
   if (itemRev.deleted) {
-    return 'deleted';
+    return ActivityAction.Deleted;
   }
   if (!itemRev.parentId) {
-    return 'added';
+    return ActivityAction.Added;
   }
-  return 'edited';
+  return ActivityAction.Edited;
 }
 
-const itemToEntry = itemRev => ({
+const itemToEntry = (itemRev: ItemRev) => ({
   timestamp: itemRev.created_at,
   username: itemRev.user.username,
   action: itemToAction(itemRev),
   revId: itemRev.id,
 });
 
-const topicRevToEntry = topicRev => ({
+const topicRevToEntry = (topicRev: TopicRev): ActivityEntry => ({
   ...itemToEntry(topicRev),
   type: ItemType.TOPIC,
   id: topicRev.topicId,
 });
 
-const claimRevToEntry = claimRev => ({
+const claimRevToEntry = (claimRev: ClaimRev): ActivityEntry => ({
   ...itemToEntry(claimRev),
   type: ItemType.CLAIM,
   id: claimRev.claimId,
 });
 
-const sourceRevToEntry = sourceRev => ({
+const sourceRevToEntry = (sourceRev: SourceRev): ActivityEntry => ({
   ...itemToEntry(sourceRev),
   type: ItemType.SOURCE,
   id: sourceRev.sourceId,
 });
 
-const commentToEntry = comment => ({
+const commentToEntry = (comment: Comment): ActivityEntry => ({
   timestamp: comment.created_at,
   username: comment.user.username,
-  action: 'commented on',
+  action: ActivityAction.Commented,
   type: comment.commentable,
   id: comment.commentableId,
 });
 
-export async function getActivity({ user = null, limit }) {
+export async function getActivity({
+  user = null,
+  limit,
+}: {
+  user?: User | null;
+  limit: number;
+}) {
   const QUERY: any = {
     include: {
       model: User,

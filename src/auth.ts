@@ -8,38 +8,59 @@ import jwtDecode from 'jwt-decode';
 
 const SESSION_COOKIE_NAME = 'session';
 
-class Auth {
-  getUserFromToken(authToken) {
+interface User {
+  createdAt: Date,
+  email: string,
+  admin: boolean,
+  username: string,
+}
+
+interface AuthToken {
+  sub: string,
+  exp: number,
+  user: {
+    createdAt: number,
+    email: string,
+    admin: boolean,
+  },
+}
+
+export default abstract class Auth {
+  getUserFromToken(authToken: string): User | null {
     if (!authToken) {
       return null;
     }
 
-    const decoded = jwtDecode(authToken);
+    const decoded = jwtDecode<AuthToken>(authToken);
 
     // Check for an expired token.
     if (Date.now() / 1000 > decoded.exp) {
       return null;
     }
 
-    const user = decoded.user;
-    user.createdAt = new Date(user.createdAt);
-    user.username = decoded.sub;
-    return user;
+    return {
+      ...decoded.user,
+      createdAt: new Date(decoded.user.createdAt),
+      username: decoded.sub,
+    };
   }
 
-  getUser() {
+  getUser(): User | null {
     const token = this.getAuthToken();
     const user = this.getUserFromToken(token);
     if (token && !user) {
       // Token must be expired.
-      this.setAuthToken(null);
+      this.setAuthToken('');
     }
     return user;
   }
+
+  abstract getAuthToken(): string;
+  abstract setAuthToken(authToken: string): void;
 }
 
 export class BrowserAuth extends Auth {
-  setAuthToken(authToken) {
+  setAuthToken(authToken: string): void {
     if (authToken) {
       const encodedSession = window.btoa(JSON.stringify({ authToken }));
       Cookies.set(SESSION_COOKIE_NAME, encodedSession);
@@ -48,7 +69,7 @@ export class BrowserAuth extends Auth {
     }
   }
 
-  getAuthToken() {
+  getAuthToken(): string {
     const encodedSession = Cookies.get(SESSION_COOKIE_NAME);
     if (!encodedSession) {
       return '';
@@ -59,16 +80,15 @@ export class BrowserAuth extends Auth {
 }
 
 export class ServerAuth extends Auth {
-  constructor(authToken) {
+  constructor(public authToken: string) {
     super();
+  }
+
+  setAuthToken(authToken: string): void {
     this.authToken = authToken;
   }
 
-  setAuthToken(authToken) {
-    this.authToken = authToken;
-  }
-
-  getAuthToken() {
+  getAuthToken(): string {
     return this.authToken;
   }
 }

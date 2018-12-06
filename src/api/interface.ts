@@ -1,3 +1,19 @@
+export enum ActivityAction {
+  Deleted = 'deleted',
+  Added = 'added',
+  Edited = 'edited',
+  Commented = 'commented on',
+}
+
+export interface ActivityEntry {
+  type: string;
+  id: string;
+  timestamp: string;
+  username: string;
+  action: ActivityAction;
+  revId?: string;
+}
+
 export default interface Api {
   register(username: string, password: string, email: string): Promise<object>;
   verifyEmail(verificationToken: string): Promise<string>;
