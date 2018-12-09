@@ -9,7 +9,7 @@
         type="button"
         aria-expanded="false"
         aria-label="Toggle navigation"
-        @click="collapsed = !collapsed;"
+        @click="collapsed = !collapsed"
       >
         <span :class="$style.iconBar"></span>
         <span :class="$style.iconBar"></span>

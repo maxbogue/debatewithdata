@@ -19,7 +19,7 @@
           <icon-star :type="type" :item="item" />
           <icon-watch v-if="$store.state.user" :type="type" :item="item" />
           <icon-comment
-            @click.native="showComments = !showComments;"
+            @click.native="showComments = !showComments"
             :count="item.commentCount"
           />
           <icon-history :url="urlWithTrail" />

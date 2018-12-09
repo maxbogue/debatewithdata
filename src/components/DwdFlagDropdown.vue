@@ -5,12 +5,12 @@
         v-for="[k, v] in flags"
         :class="{ [$style.selected]: k === value }"
         :key="k"
-        @click="selectFlag(k);"
+        @click="selectFlag(k)"
       >
         {{ v.name }}
       </li>
     </ul>
-    <span class="click fas fa-flag" @click="showFlags = !showFlags;"></span>
+    <span class="click fas fa-flag" @click="showFlags = !showFlags"></span>
   </div>
 </template>
 

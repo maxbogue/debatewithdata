@@ -4,7 +4,7 @@
     <div
       class="bubble"
       :class="{ click: canEdit }"
-      @click="$emit('start-editing');"
+      @click="$emit('start-editing')"
     >
       <dwd-flag
         v-if="safeCurr.flag && safeCurr.flag === safePrev.flag"
@@ -29,12 +29,12 @@
         <span
           v-if="canDelete"
           class="delete click fas fa-trash-alt"
-          @click="$emit('delete');"
+          @click="$emit('delete')"
         ></span>
         <icon-comment
           v-else-if="id"
           :count="commentCount"
-          @click.native="showComments = !showComments;"
+          @click.native="showComments = !showComments"
         />
       </span>
     </div>

@@ -1,10 +1,10 @@
 <template>
   <div v-if="isSubPoints || $store.state.singleColumn">
-    <div class="block click" :class="pointClass(isFor)" @click="addPoint(0);">
+    <div class="block click" :class="pointClass(isFor)" @click="addPoint(0)">
       <strong v-if="isSubPoints">Add a sub-point for this point.</strong>
       <strong v-else>Add a point for this claim.</strong>
     </div>
-    <div class="block click" :class="pointClass(!isFor)" @click="addPoint(1);">
+    <div class="block click" :class="pointClass(!isFor)" @click="addPoint(1)">
       <strong v-if="isSubPoints">Add a sub-point against this point.</strong>
       <strong v-else>Add a point against this claim.</strong>
     </div>
@@ -16,7 +16,7 @@
       :is-for="isSubPoints ? isFor === !side : !side"
       :is-parent-for="isFor"
       @update="p => updatePoint(side, p)"
-      @delete="deletePoint(side, point || prev);"
+      @delete="deletePoint(side, point || prev)"
     />
   </div>
   <div v-else class="dwd-cols">
@@ -28,7 +28,7 @@
       <div
         class="block click"
         :class="pointClass(!side)"
-        @click="addPoint(side);"
+        @click="addPoint(side)"
       >
         <strong v-if="isSubPoints"
           >Add a sub-point {{ !side | toSideString }} this point.</strong
@@ -45,7 +45,7 @@
         :is-for="isSubPoints ? isFor === !side : !side"
         :is-parent-for="isFor"
         @update="p => updatePoint(side, p)"
-        @delete="deletePoint(side, point || prev);"
+        @delete="deletePoint(side, point || prev)"
       />
     </div>
   </div>

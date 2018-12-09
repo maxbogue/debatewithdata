@@ -12,7 +12,7 @@
         class="bubble click"
         :prev="source"
         :curr="newSource"
-        @click.native="showEditBlock = true;"
+        @click.native="showEditBlock = true"
       />
     </div>
     <div class="block no-pad center">

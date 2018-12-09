@@ -4,8 +4,8 @@
       <dwd-input
         :value="value"
         @input="val => $emit('input', val)"
-        @keydown.up.native.prevent="highlight(highlighted - 1);"
-        @keydown.down.native.prevent="highlight(highlighted + 1);"
+        @keydown.up.native.prevent="highlight(highlighted - 1)"
+        @keydown.down.native.prevent="highlight(highlighted + 1)"
         @keydown.enter.native="onEnter"
         :placeholder="placeholder"
         :validate="validate"
@@ -19,9 +19,9 @@
           v-for="(result, i) in results"
           :class="resultClass(result, i)"
           :key="result.item.id"
-          @click="select(i);"
-          @mousemove="highlight(i);"
-          @mouseleave="highlighted = -1;"
+          @click="select(i)"
+          @mousemove="highlight(i)"
+          @mouseleave="highlighted = -1"
         >
           {{ result.item.title || result.item.text }}
         </li>

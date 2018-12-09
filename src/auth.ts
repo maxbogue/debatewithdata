@@ -9,24 +9,24 @@ import jwtDecode from 'jwt-decode';
 const SESSION_COOKIE_NAME = 'session';
 
 interface User {
-  createdAt: Date,
-  email: string,
-  admin: boolean,
-  username: string,
+  createdAt: Date;
+  email: string;
+  admin: boolean;
+  username: string;
 }
 
 interface AuthToken {
-  sub: string,
-  exp: number,
+  sub: string;
+  exp: number;
   user: {
-    createdAt: number,
-    email: string,
-    admin: boolean,
-  },
+    createdAt: number;
+    email: string;
+    admin: boolean;
+  };
 }
 
 export default abstract class Auth {
-  getUserFromToken(authToken: string): User | null {
+  public getUserFromToken(authToken: string): User | null {
     if (!authToken) {
       return null;
     }
@@ -45,7 +45,7 @@ export default abstract class Auth {
     };
   }
 
-  getUser(): User | null {
+  public getUser(): User | null {
     const token = this.getAuthToken();
     const user = this.getUserFromToken(token);
     if (token && !user) {
@@ -55,12 +55,12 @@ export default abstract class Auth {
     return user;
   }
 
-  abstract getAuthToken(): string;
-  abstract setAuthToken(authToken: string): void;
+  public abstract getAuthToken(): string;
+  public abstract setAuthToken(authToken: string): void;
 }
 
 export class BrowserAuth extends Auth {
-  setAuthToken(authToken: string): void {
+  public setAuthToken(authToken: string): void {
     if (authToken) {
       const encodedSession = window.btoa(JSON.stringify({ authToken }));
       Cookies.set(SESSION_COOKIE_NAME, encodedSession);
@@ -69,7 +69,7 @@ export class BrowserAuth extends Auth {
     }
   }
 
-  getAuthToken(): string {
+  public getAuthToken(): string {
     const encodedSession = Cookies.get(SESSION_COOKIE_NAME);
     if (!encodedSession) {
       return '';
@@ -84,11 +84,11 @@ export class ServerAuth extends Auth {
     super();
   }
 
-  setAuthToken(authToken: string): void {
+  public setAuthToken(authToken: string): void {
     this.authToken = authToken;
   }
 
-  getAuthToken(): string {
+  public getAuthToken(): string {
     return this.authToken;
   }
 }

@@ -11,7 +11,7 @@
       <div v-else class="bubble">
         <div v-if="isNewClaim" class="hint">
           This will create a new claim.
-          <span class="click-text" @click="forceSource = true;"
+          <span class="click-text" @click="forceSource = true"
             >Convert to data.</span
           >
         </div>

@@ -17,7 +17,7 @@ fi
 
 TS_FILES=$($GIT_CMD | egrep "\.(ts)$")
 if [ "$TS_FILES" != "" ]; then
-  tslint $TS_FILES --fix || STATUS=1
+  tslint -t verbose $TS_FILES --fix || STATUS=1
 fi
 
 CSS_FILES=$($GIT_CMD | egrep "\.(scss|vue)$")

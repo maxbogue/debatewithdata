@@ -3,14 +3,14 @@
     <claim-edit-block
       v-if="showEditBlock"
       :claim.sync="newClaimPartial"
-      @close="showEditBlock = false;"
+      @close="showEditBlock = false"
     />
     <claim-rev-block
       v-else
       :prev="claim"
       :curr="newClaimPartial"
       can-edit
-      @start-editing="showEditBlock = true;"
+      @start-editing="showEditBlock = true"
     />
     <points-edit
       v-if="initialized"
@@ -30,7 +30,7 @@
         v-if="showEditBlock"
         type="button"
         class="dwd-btn blue-dark"
-        @click="showEditBlock = false;"
+        @click="showEditBlock = false"
       >
         Review
       </button>

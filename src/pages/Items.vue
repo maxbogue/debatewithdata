@@ -10,7 +10,7 @@
         <span
           class="fas click"
           :class="'fa-sort-alpha-' + (sortDesc ? 'down' : 'up')"
-          @click="sortDesc = !sortDesc;"
+          @click="sortDesc = !sortDesc"
         ></span>
         <span
           v-if="user"
@@ -64,7 +64,7 @@
         :key="`page-${p}`"
         class="click"
         :class="{ [$style.active]: p === page }"
-        @click="page = p;"
+        @click="page = p"
         >{{ p }}</span
       >
     </div>

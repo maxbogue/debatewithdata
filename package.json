@@ -101,7 +101,7 @@
     "eslint-plugin-lodash-fp": "^2.2.0-a1",
     "eslint-plugin-prettier": "^3.0.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.3.0",
-    "eslint-plugin-vue": "^5.0.0",
+    "eslint-plugin-vue": "^4.7.1",
     "jsdom": "^13.0.0",
     "jsdom-global": "^3.0.2",
     "liftoff": "^2.5.0",

@@ -12,11 +12,11 @@
       :class="{ click: isEditable }"
       :curr="point"
       :prev="prev"
-      @click.native="showModal = isEditable;"
+      @click.native="showModal = isEditable"
     />
     <div class="info">
       <span class="id mono">{{ id || 'new' }}</span>
-      <span class="delete click fas fa-trash" @click="$emit('delete');"></span>
+      <span class="delete click fas fa-trash" @click="$emit('delete')"></span>
     </div>
     <points-edit
       v-if="hasSubPoints"

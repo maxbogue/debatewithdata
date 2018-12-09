@@ -12,7 +12,7 @@
             type="text"
             placeholder="title (default units)"
             :value="title"
-            @input="updateTitle($event.target.value);"
+            @input="updateTitle($event.target.value)"
             @keydown.188.prevent
           ></textarea>
         </th>
@@ -23,7 +23,7 @@
             type="text"
             :placeholder="headerPlaceholder(i)"
             :value="rows[0][i]"
-            @input="updateCell(0, i, $event.target.value);"
+            @input="updateCell(0, i, $event.target.value)"
             @keydown.188.prevent
           ></textarea>
         </th>
@@ -34,7 +34,7 @@
             type="text"
             :placeholder="j === 0 ? 'row label' : 'data'"
             :value="rows[i + 1][j]"
-            @input="updateCell(i + 1, j, $event.target.value);"
+            @input="updateCell(i + 1, j, $event.target.value)"
             @keydown.188.prevent
           ></textarea>
         </td>

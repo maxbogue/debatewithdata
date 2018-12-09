@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button type="button" class="dwd-btn red-dark" @click="show = true;">
+    <button type="button" class="dwd-btn red-dark" @click="show = true">
       {{ text }}
     </button>
     <dwd-modal :show="show" @close="close" @cancel="cancel">

@@ -5,7 +5,7 @@
       <span
         v-if="force"
         class="click-text"
-        @click="$emit('update:force', false);"
+        @click="$emit('update:force', false)"
         >Convert to claim.</span
       >
     </label>

@@ -10,7 +10,7 @@
     />
     <h3>Sub-Topics</h3>
     <div class="topic">
-      <div class="bubble click" @click="showSubTopicModal = true;">
+      <div class="bubble click" @click="showSubTopicModal = true">
         <strong>Add or link a sub-topic.</strong>
       </div>
     </div>
@@ -25,7 +25,7 @@
       :topic="subTopic"
       use-modal
       @update:topic="t => $set(newSubTopics, i, t)"
-      @delete="newSubTopics.splice(i, 1);"
+      @delete="newSubTopics.splice(i, 1)"
     />
     <div
       v-for="[subTopic, diffClass] in linkedSubTopics"
@@ -39,13 +39,13 @@
         <span class="id mono">{{ subTopic.id }}</span>
         <span
           class="delete click fas fa-trash-alt"
-          @click="toggleDeleted(subTopicIds, subTopic.id);"
+          @click="toggleDeleted(subTopicIds, subTopic.id)"
         ></span>
       </div>
     </div>
     <h3>Key Claims</h3>
     <div class="claim">
-      <div class="bubble click" @click="showClaimModal = true;">
+      <div class="bubble click" @click="showClaimModal = true">
         <strong>Add or link a claim.</strong>
       </div>
     </div>
@@ -59,7 +59,7 @@
       :key="claim.id"
       :claim="claim"
       @update="c => $set(newClaims, i, c)"
-      @delete="newClaims.splice(i, 1);"
+      @delete="newClaims.splice(i, 1)"
     />
     <div
       v-for="[claim, diffClass] in linkedClaims"
@@ -73,7 +73,7 @@
         <span class="id mono">{{ claim.id }}</span>
         <span
           class="delete click fas fa-trash-alt"
-          @click="toggleDeleted(claimIds, claim.id);"
+          @click="toggleDeleted(claimIds, claim.id)"
         ></span>
       </div>
     </div>

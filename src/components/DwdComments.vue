@@ -15,7 +15,7 @@
               v-if="user && comment.author === user.username"
               :class="$style.delete"
               class="click fas fa-trash"
-              @click="deleteComment(comment.id);"
+              @click="deleteComment(comment.id)"
             ></div>
           </li>
           <li v-if="comments.length === 0">No comments yet.</li>
