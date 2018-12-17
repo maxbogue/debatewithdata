@@ -23,17 +23,33 @@ export default {
     DwdLoader,
     ErrorModal,
   },
-  metaInfo: {
-    title: '',
-    titleTemplate: '%s - DebateWithData',
-    meta: [
-      {
-        vmid: 'description',
-        name: 'description',
-        content:
-          "DebateWithData is a crowdsourced reference for the world's discussions.",
-      },
-    ],
+  metaInfo() {
+    return {
+      title: '',
+      titleTemplate: '%s - DebateWithData',
+      meta: [
+        {
+          vmid: 'description',
+          name: 'description',
+          content: "A crowdsourced reference for the world's discussions.",
+        },
+        {
+          vmid: 'og:title',
+          name: 'og:title',
+          content: 'DebateWithData',
+        },
+        {
+          vmid: 'og:url',
+          name: 'og:url',
+          content: `https://debatewithdata.org${this.$route.fullPath}`,
+        },
+        {
+          vmid: 'og:description',
+          name: 'og:description',
+          content: "A crowdsourced reference for the world's discussions.",
+        },
+      ],
+    };
   },
   computed: {
     ...mapState('substates', ['loading', 'loadingError', 'suppressRoutes']),

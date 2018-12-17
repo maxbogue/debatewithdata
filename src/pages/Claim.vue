@@ -120,6 +120,11 @@ export default {
           name: 'description',
           content: this.claim.text,
         },
+        {
+          vmid: 'og:description',
+          name: 'og:description',
+          content: `Claim: ${this.claim.text}`,
+        },
       ],
     };
   },

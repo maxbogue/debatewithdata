@@ -80,6 +80,11 @@ export default {
           name: 'description',
           content: this.topic.text,
         },
+        {
+          vmid: 'og:description',
+          name: 'og:description',
+          content: `Topic: ${this.topic.text}`,
+        },
       ],
     };
   },

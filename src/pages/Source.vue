@@ -53,6 +53,11 @@ export default {
           name: 'description',
           content: this.source.text,
         },
+        {
+          vmid: 'og:description',
+          name: 'og:description',
+          content: `Data: ${this.source.text}`,
+        },
       ],
     };
   },

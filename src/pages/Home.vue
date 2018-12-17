@@ -48,6 +48,13 @@ export default {
   metaInfo: {
     title: 'DebateWithData',
     titleTemplate: '',
+    meta: [
+      {
+        vmid: 'og:url',
+        name: 'og:url',
+        content: `https://debatewithdata.org`,
+      },
+    ],
   },
 };
 </script>
