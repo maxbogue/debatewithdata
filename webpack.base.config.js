@@ -27,6 +27,7 @@ const baseConfig = {
         exclude: /node_modules/,
         options: {
           appendTsSuffixTo: [/\.vue$/],
+          silent: true,
         },
       },
       {

@@ -200,7 +200,7 @@ export default class ApiImpl implements Api {
   private async requireUser() {
     const user = await this.optionalUser();
     if (!user) {
-      throw new AuthError();
+      throw new AuthError('Authentication required.');
     }
     return user;
   }
