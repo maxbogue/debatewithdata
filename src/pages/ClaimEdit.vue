@@ -53,7 +53,6 @@ import { mapGetters } from 'vuex';
 import ClaimEditBlock from '@/components/ClaimEditBlock.vue';
 import ClaimRevBlock from '@/components/ClaimRevBlock.vue';
 import DeleteButton from '@/components/DeleteButton.vue';
-import DwdLoader from '@/components/DwdLoader.vue';
 import FixedBottom from '@/components/FixedBottom.vue';
 import PointsEdit from '@/components/PointsEdit.vue';
 import { ItemType } from '@/common/constants';
@@ -82,7 +81,6 @@ export default {
     ClaimEditBlock,
     ClaimRevBlock,
     DeleteButton,
-    DwdLoader,
     FixedBottom,
     PointsEdit,
   },

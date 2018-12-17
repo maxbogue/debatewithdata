@@ -6,7 +6,7 @@
 <template>
   <div :class="$style.md">
     <p v-for="(paragraph, i) in paragraphs" :key="`p-${i}`">
-      <template v-for="([text, url], j) in paragraph">
+      <template v-for="([content, url], j) in paragraph">
         <a
           v-if="url"
           :href="url"
@@ -14,10 +14,10 @@
           target="_blank"
           rel="noopener"
         >
-          <span :class="$style.text">{{ text }}</span>
+          <span :class="$style.text">{{ content }}</span>
           <span :class="$style.link" class="fas fa-external-link-alt"></span>
         </a>
-        <template v-else>{{ text }}</template>
+        <template v-else>{{ content }}</template>
       </template>
     </p>
   </div>

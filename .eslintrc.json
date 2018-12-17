@@ -57,9 +57,14 @@
         }],
 
         "vue/attributes-order": ["off"],
+        "vue/component-name-in-template-casing": ["error", "kebab-case"],
         "vue/html-closing-bracket-spacing": ["off"],
+        "vue/html-closing-bracket-newline": ["off"],
         "vue/html-indent": ["off"],
         "vue/html-self-closing": ["off"],
-        "vue/max-attributes-per-line": ["off"]
+        "vue/max-attributes-per-line": ["off"],
+        "vue/multiline-html-element-content-newline": ["off"],
+        "vue/no-v-html": ["off"],
+        "vue/singleline-html-element-content-newline": ["off"]
     }
 }

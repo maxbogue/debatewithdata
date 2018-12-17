@@ -9,14 +9,14 @@
       <strong v-else>Add a point against this claim.</strong>
     </div>
     <point-edit
-      v-for="[[pointId, point, prev], side] in zippedPointDiffs"
+      v-for="[[pointId, point, prevPoint], side] in zippedPointDiffs"
       :key="pointId"
       :point="point"
-      :prev="prev"
+      :prev="prevPoint"
       :is-for="isSubPoints ? isFor === !side : !side"
       :is-parent-for="isFor"
       @update="p => updatePoint(side, p)"
-      @delete="deletePoint(side, point || prev)"
+      @delete="deletePoint(side, point || prevPoint)"
     />
   </div>
   <div v-else class="dwd-cols">
@@ -38,14 +38,14 @@
         >
       </div>
       <point-edit
-        v-for="[pointId, point, prev] in sidePoints"
+        v-for="[pointId, point, prevPoint] in sidePoints"
         :key="pointId"
         :point="point"
-        :prev="prev"
+        :prev="prevPoint"
         :is-for="isSubPoints ? isFor === !side : !side"
         :is-parent-for="isFor"
         @update="p => updatePoint(side, p)"
-        @delete="deletePoint(side, point || prev)"
+        @delete="deletePoint(side, point || prevPoint)"
       />
     </div>
   </div>

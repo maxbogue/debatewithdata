@@ -1,5 +1,5 @@
 import { ValidationError } from '@/common/validate';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 class ApiError extends Error {
   constructor(message: string, public httpStatus: number, public name: string) {
@@ -39,7 +39,7 @@ export class ConflictError extends ApiError {
     super(message, 409, 'ConflictError');
   }
 
-  toJson(): object {
+  public toJson(): object {
     return {
       ...super.toJson(),
       data: this.data,
@@ -47,7 +47,12 @@ export class ConflictError extends ApiError {
   }
 }
 
-export function apiErrorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
+export function apiErrorHandler(
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   if (err instanceof ApiError) {
     res.status(err.httpStatus).json(err.toJson());
   } else if (err instanceof ValidationError) {

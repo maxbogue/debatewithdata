@@ -45,7 +45,6 @@
 <script>
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
-import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
 import SourceEditContent from './SourceEditContent.vue';
@@ -58,7 +57,6 @@ export default {
   components: {
     DwdFlag,
     DwdFlagDropdown,
-    DwdInput,
     DwdModal,
     ItemLinkInput,
     SourceEditContent,
