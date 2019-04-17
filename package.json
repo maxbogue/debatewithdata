@@ -9,7 +9,7 @@
     "dev": "node bin/dev-server.js",
     "build": "NODE_ENV=production webpack -p --progress --hide-modules",
     "prod": "NODE_ENV=production node build/main.js",
-    "test": "mocha-webpack --opts test/mocha-webpack.opts \"test/**/*.js\"",
+    "test": "mochapack \"test/**/*.js\"",
     "lint": "./bin/lint; exit 0;",
     "lint-all": "./bin/lint all; exit 0;",
     "lint-precommit": "./bin/lint staged"
@@ -108,7 +108,7 @@
     "liftoff": "^2.5.0",
     "minimist": "^1.2.0",
     "mocha": "^5.2.0",
-    "mocha-webpack": "git+https://github.com/thomasmichaelwallace/mocha-webpack.git#build",
+    "mochapack": "^1.1.1",
     "pre-commit": "^1.2.2",
     "prettier": "^1.17.0",
     "progress": "^2.0.3",
