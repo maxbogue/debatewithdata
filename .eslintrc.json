@@ -65,6 +65,30 @@
         "vue/max-attributes-per-line": ["off"],
         "vue/multiline-html-element-content-newline": ["off"],
         "vue/no-v-html": ["off"],
+        "vue/order-in-components": ["error", {
+          "order": [
+            "el",
+            "name",
+            "parent",
+            "functional",
+            ["delimiters", "comments"],
+            ["components", "directives", "filters"],
+            "extends",
+            "mixins",
+            "inheritAttrs",
+            "model",
+            "asyncData",
+            "metaInfo",
+            ["props", "propsData"],
+            "data",
+            "computed",
+            "watch",
+            "LIFECYCLE_HOOKS",
+            "methods",
+            ["template", "render"],
+            "renderError"
+          ]
+        }],
         "vue/singleline-html-element-content-newline": ["off"]
     }
 }
