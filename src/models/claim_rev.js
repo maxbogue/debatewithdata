@@ -162,6 +162,7 @@ export default function(sequelize, DataTypes) {
       const data = {
         id: this.claimId,
         revId: this.id,
+        updatedAt: this.created_at,
       };
 
       if (this.deleted) {

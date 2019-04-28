@@ -293,6 +293,7 @@ describe('Source', function() {
           [rev.sourceId]: {
             id: rev.sourceId,
             revId: rev.id,
+            updatedAt: rev.created_at,
             claimIds: [],
             ...MISC,
             ...STARS_AND_COMMENTS,
@@ -315,6 +316,7 @@ describe('Source', function() {
           [r2.sourceId]: {
             id: r2.sourceId,
             revId: r2.id,
+            updatedAt: r2.created_at,
             deleted: true,
             deleteMessage: DELETE_MSG,
             claimIds: [],
@@ -339,6 +341,7 @@ describe('Source', function() {
           [sourceId]: {
             id: sourceId,
             revId: sourceRev.id,
+            updatedAt: sourceRev.created_at,
             ...MISC,
             table,
             claimIds: [],
@@ -365,6 +368,7 @@ describe('Source', function() {
           [sourceId]: {
             id: sourceId,
             revId: sourceRev.id,
+            updatedAt: sourceRev.created_at,
             claimIds: [claimRev.claimId],
             ...MISC,
             ...STARS_AND_COMMENTS,
@@ -374,6 +378,7 @@ describe('Source', function() {
           [claimRev.claimId]: {
             id: claimRev.claimId,
             revId: claimRev.id,
+            updatedAt: claimRev.created_at,
             text: TEXT2,
             flag: null,
             needsData: null,
@@ -486,6 +491,7 @@ describe('Source', function() {
             revId: r2.id,
             username: user.username,
             createdAt: r2.created_at,
+            updatedAt: r2.created_at,
             ...MISC2,
           },
           {
@@ -493,6 +499,7 @@ describe('Source', function() {
             revId: r1.id,
             username: user.username,
             createdAt: r1.created_at,
+            updatedAt: r1.created_at,
             ...MISC,
           },
         ],

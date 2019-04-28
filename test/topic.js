@@ -391,6 +391,7 @@ describe('Topic', function() {
           [ID]: {
             ...TOPIC_DEPTH_3,
             revId: r1.id,
+            updatedAt: r1.created_at,
             claimIds: [c1r.claimId],
             childCount: 1,
           },
@@ -399,6 +400,7 @@ describe('Topic', function() {
           [c1r.claimId]: {
             id: c1r.claimId,
             revId: c1r.id,
+            updatedAt: c1r.created_at,
             text: BAZ,
             flag: null,
             needsData: null,
@@ -431,6 +433,7 @@ describe('Topic', function() {
           [ID]: {
             id: ID,
             revId: r2.id,
+            updatedAt: r2.created_at,
             deleted: true,
             deleteMessage: DELETE_MSG,
             superTopicIds: [],
@@ -699,6 +702,7 @@ describe('Topic', function() {
             revId: r2.id,
             username: user.username,
             createdAt: r2.created_at,
+            updatedAt: r2.created_at,
             title: TITLE,
             text: BAR,
             subTopicIds: [ID2],
@@ -709,6 +713,7 @@ describe('Topic', function() {
             revId: r1.id,
             username: user.username,
             createdAt: r1.created_at,
+            updatedAt: r1.created_at,
             title: TITLE,
             text: FOO,
             subTopicIds: [],
@@ -720,6 +725,7 @@ describe('Topic', function() {
             ...TOPIC_DEPTH_1,
             id: ID2,
             revId: subTopic.headId,
+            updatedAt: subTopic.head.created_at,
             title: TITLE2,
             text: BAZ,
           },
@@ -728,6 +734,7 @@ describe('Topic', function() {
           [claim.id]: {
             id: claim.id,
             revId: claim.headId,
+            updatedAt: claim.head.created_at,
             text: BAZ,
             flag: null,
             needsData: null,

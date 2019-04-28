@@ -156,6 +156,7 @@ export default function(sequelize, DataTypes) {
       const data = {
         id: this.topicId,
         revId: this.id,
+        updatedAt: this.created_at,
       };
 
       if (this.deleted) {
