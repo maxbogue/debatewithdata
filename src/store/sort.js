@@ -1,5 +1,5 @@
-import md5 from 'md5';
 import sortBy from 'lodash/fp/sortBy';
+import md5 from 'md5';
 
 import { combinePoints, genId } from '@/utils';
 

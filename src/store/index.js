@@ -1,9 +1,9 @@
+import cloneDeep from 'lodash/fp/cloneDeep';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import cloneDeep from 'lodash/fp/cloneDeep';
 
-import { axiosErrorToString, forOwn, walk } from '@/utils';
 import { validateItem } from '@/common/validate';
+import { axiosErrorToString, forOwn, walk } from '@/utils';
 
 import createItemBlocksModule from './itemBlocks';
 import createSortModule from './sort';

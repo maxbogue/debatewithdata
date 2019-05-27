@@ -30,13 +30,14 @@
 </template>
 
 <script>
+import { ItemType } from '@/common/constants';
+import { validateClaim } from '@/common/validate';
+
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
 import NeedsDataEdit from './NeedsDataEdit.vue';
-import { ItemType } from '@/common/constants';
-import { validateClaim } from '@/common/validate';
 
 export default {
   components: {

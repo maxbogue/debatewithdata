@@ -1,4 +1,3 @@
-import Diff from 'text-diff';
 import dateFormat from 'dateformat';
 import dropWhile1 from 'lodash/fp/dropWhile';
 import filter from 'lodash/fp/filter';
@@ -12,6 +11,7 @@ import mapValues1 from 'lodash/fp/mapValues';
 import omit from 'lodash/fp/omit';
 import partition from 'lodash/fp/partition';
 import template1 from 'lodash/fp/template';
+import Diff from 'text-diff';
 
 import { ItemType, PointType } from './common/constants';
 

@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
-import { Claim, Topic } from '@/models';
 import { FlagData } from '@/common/flag';
+import { Claim, Topic } from '@/models';
 import { forOwn } from '@/utils';
 
 export function randomHexString(n) {

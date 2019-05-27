@@ -1,9 +1,9 @@
 import chai from 'chai';
 
-import { Claim, Topic, TopicRev } from '@/models';
 import { ConflictError, NotFoundError } from '@/api/error';
 import { Sort } from '@/common/constants';
 import { ValidationError } from '@/common/validate';
+import { Claim, Topic, TopicRev } from '@/models';
 
 import {
   BAR,

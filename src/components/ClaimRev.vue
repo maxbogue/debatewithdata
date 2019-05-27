@@ -31,9 +31,10 @@
 </template>
 
 <script>
+import { diffPoints, rotateWithIndexes } from '@/utils';
+
 import ClaimRevBlock from './ClaimRevBlock.vue';
 import PointRev from './PointRev.vue';
-import { diffPoints, rotateWithIndexes } from '@/utils';
 
 export default {
   components: {

@@ -1,8 +1,8 @@
-import Router from 'express-promise-router';
 import bodyParser from 'body-parser';
+import Router from 'express-promise-router';
 
-import { ItemType } from '@/common/constants';
 import { apiErrorHandler } from '@/api/error';
+import { ItemType } from '@/common/constants';
 
 import { createAuthRouter } from './auth';
 import { createItemRouter } from './item';

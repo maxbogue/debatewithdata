@@ -1,13 +1,14 @@
 import _ from 'lodash/fp';
 
-import q from './query';
-import search from '@/common/search';
 import { ConflictError, NotFoundError } from '@/api/error';
 import { ItemType, PAGE_SIZE } from '@/common/constants';
-import { ValidationError, validateSource } from '@/common/validate';
-import { asyncForEach } from '@/common/utils';
-import { genId } from './utils';
 import { sourcesAreEqual } from '@/common/equality';
+import search from '@/common/search';
+import { asyncForEach } from '@/common/utils';
+import { ValidationError, validateSource } from '@/common/validate';
+
+import q from './query';
+import { genId } from './utils';
 
 const SOURCE = ItemType.SOURCE;
 

@@ -8,6 +8,7 @@
 
 <script>
 import '../style/point.scss';
+
 import PointDiff from './PointDiff.vue';
 
 export default {

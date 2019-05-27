@@ -1,9 +1,9 @@
 import _ from 'lodash/fp';
 
-import q from '@/models/query';
 import { AuthError } from '@/api/error';
-import { Claim, Source, Topic, knex } from '@/models';
 import { ItemType } from '@/common/constants';
+import { Claim, Source, Topic, knex } from '@/models';
+import q from '@/models/query';
 
 function getUpdated(query, until) {
   query

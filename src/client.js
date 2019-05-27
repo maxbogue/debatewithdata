@@ -1,9 +1,10 @@
 import 'normalize.css/normalize.css';
+
 import axios from 'axios';
 
 import ApiClient from './api/client';
-import { BrowserAuth } from './auth';
 import { createApp } from './app';
+import { BrowserAuth } from './auth';
 
 const http = axios.create({ baseURL: '/api' });
 const auth = new BrowserAuth();

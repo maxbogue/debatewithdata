@@ -1,10 +1,10 @@
 import chai from 'chai';
 
-import { Claim, ClaimRev } from '@/models';
 import { ConflictError, NotFoundError } from '@/api/error';
 import { Filter, Sort, SourceType } from '@/common/constants';
 import { Flag } from '@/common/flag';
 import { ValidationError } from '@/common/validate';
+import { Claim, ClaimRev } from '@/models';
 
 import {
   BAR,

@@ -62,11 +62,11 @@
 <script>
 import dateFormat from 'dateformat';
 
+import { ItemType } from '@/common/constants';
 import ClaimRev from '@/components/ClaimRev.vue';
 import RevNav from '@/components/RevNav.vue';
 import SourceRev from '@/components/SourceRev.vue';
 import TopicRev from '@/components/TopicRev.vue';
-import { ItemType } from '@/common/constants';
 
 export default {
   components: {

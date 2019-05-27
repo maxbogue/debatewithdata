@@ -80,9 +80,10 @@
 </template>
 
 <script>
-import SourceTableDiff from './SourceTableDiff.vue';
 import { SourceType } from '@/common/constants';
 import { diff } from '@/utils';
+
+import SourceTableDiff from './SourceTableDiff.vue';
 
 const SourceChart = () =>
   import(/* webpackChunkName: "chart" */ './SourceChart.vue');

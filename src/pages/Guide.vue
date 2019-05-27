@@ -186,8 +186,8 @@
 <script>
 import sortBy from 'lodash/fp/sortBy';
 
-import DwdAnchor from '@/components/DwdAnchor.vue';
 import { FlagData } from '@/common/flag';
+import DwdAnchor from '@/components/DwdAnchor.vue';
 import { map } from '@/utils';
 
 export default {

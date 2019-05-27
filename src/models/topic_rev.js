@@ -1,4 +1,5 @@
 import { ValidationError, validateTopic } from '@/common/validate';
+
 import { genRevId } from './utils';
 
 export default function(sequelize, DataTypes) {

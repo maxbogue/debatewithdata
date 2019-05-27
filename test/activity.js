@@ -1,8 +1,8 @@
 import request from 'supertest';
 
-import app from '@/server';
-import { Claim, Comment } from '@/models';
 import { ItemType } from '@/common/constants';
+import { Claim, Comment } from '@/models';
+import app from '@/server';
 
 import {
   BAR,

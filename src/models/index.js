@@ -2,11 +2,11 @@
 import pg from 'pg';
 pg.types.setTypeParser(20, 'text', parseInt);
 
+import config from 'config';
 import Knex from 'knex';
 import KnexQueryBuilder from 'knex/lib/query/builder';
-import Sequelize from 'sequelize';
 import _ from 'lodash/fp';
-import config from 'config';
+import Sequelize from 'sequelize';
 
 import makeBlob from './blob';
 import makeClaim from './claim';

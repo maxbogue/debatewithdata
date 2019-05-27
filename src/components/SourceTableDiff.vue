@@ -21,9 +21,10 @@
 </template>
 
 <script>
-import SourceTable from './SourceTable.vue';
 import { deserializeTable } from '@/common/utils';
 import { diff } from '@/utils';
+
+import SourceTable from './SourceTable.vue';
 
 export default {
   components: {

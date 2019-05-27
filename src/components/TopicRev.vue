@@ -27,9 +27,10 @@
 </template>
 
 <script>
+import { diffIdLists } from '@/utils';
+
 import ClaimContent from './ClaimContent.vue';
 import TopicRevContent from './TopicRevContent.vue';
-import { diffIdLists } from '@/utils';
 
 export default {
   components: {

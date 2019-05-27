@@ -15,9 +15,9 @@
 </template>
 
 <script>
+import { ItemType } from '@/common/constants';
 import DwdTrail from '@/components/DwdTrail.vue';
 import ItemBlock from '@/components/ItemBlock.vue';
-import { ItemType } from '@/common/constants';
 import { isItemAlive, parseTrail, titleFromText } from '@/utils';
 
 export default {

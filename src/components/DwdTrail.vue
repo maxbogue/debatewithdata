@@ -18,8 +18,9 @@
 <script>
 import takeWhile from 'lodash/fp/takeWhile';
 
-import ItemBlock from './ItemBlock.vue';
 import { ItemType } from '@/common/constants';
+
+import ItemBlock from './ItemBlock.vue';
 
 export default {
   components: {

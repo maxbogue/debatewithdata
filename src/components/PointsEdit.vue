@@ -56,8 +56,9 @@ import findIndex from 'lodash/fp/findIndex';
 import sortBy from 'lodash/fp/sortBy';
 import { mapGetters } from 'vuex';
 
-import PointEdit from './PointEdit.vue';
 import { diffPoints, emptyPoint, rotateWithIndexes } from '@/utils';
+
+import PointEdit from './PointEdit.vue';
 
 function matchPoint(p) {
   return q => (p.id && p.id === q.id) || (p.tempId && p.tempId === q.tempId);

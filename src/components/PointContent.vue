@@ -6,9 +6,10 @@
 </template>
 
 <script>
+import { PointType } from '@/common/constants';
+
 import ClaimContent from './ClaimContent.vue';
 import SourceContent from './SourceContent.vue';
-import { PointType } from '@/common/constants';
 
 export default {
   components: {

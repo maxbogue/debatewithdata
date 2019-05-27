@@ -1,12 +1,12 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { Claim, Source, SourceRev } from '@/models';
 import { ConflictError, NotFoundError } from '@/api/error';
 import { Sort, SourceType } from '@/common/constants';
-import { ValidationError } from '@/common/validate';
-import { randomHexString } from '@/models/utils';
 import { serializeTable } from '@/common/utils';
+import { ValidationError } from '@/common/validate';
+import { Claim, Source, SourceRev } from '@/models';
+import { randomHexString } from '@/models/utils';
 
 import { STARS_AND_COMMENTS, registerAndVerifyUser } from './utils';
 

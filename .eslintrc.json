@@ -12,7 +12,7 @@
         "plugin:lodash-fp/recommended"
     ],
     "plugins": [
-      "sort-imports-es6-autofix"
+      "simple-import-sort"
     ],
     "parserOptions": {
         "parser": "babel-eslint",
@@ -50,11 +50,7 @@
         "prefer-const": ["error"],
         "require-atomic-updates": ["error"],
 
-        "sort-imports-es6-autofix/sort-imports-es6": [2, {
-          "ignoreCase": false,
-          "ignoreMemberSort": false,
-          "memberSyntaxSortOrder": ["none", "all", "single", "multiple"]
-        }],
+        "simple-import-sort/sort": "error",
 
         "vue/attributes-order": ["off"],
         "vue/component-name-in-template-casing": ["error", "kebab-case"],

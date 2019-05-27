@@ -4,6 +4,9 @@ import VueRouter from 'vue-router';
 import About from '@/pages/About.vue';
 import Account from '@/pages/Account.vue';
 import Activity from '@/pages/Activity.vue';
+import { dropWhile } from '@/utils';
+
+import { ItemType } from './common/constants';
 import Admin from './pages/Admin.vue';
 import Claim from './pages/Claim.vue';
 import Contact from './pages/Contact.vue';
@@ -22,8 +25,6 @@ import Source from './pages/Source.vue';
 import Topic from './pages/Topic.vue';
 import User from './pages/User.vue';
 import VerifyEmail from './pages/VerifyEmail.vue';
-import { ItemType } from './common/constants';
-import { dropWhile } from '@/utils';
 
 const History = () =>
   import(/* webpackChunkName: "history" */ './pages/History.vue');

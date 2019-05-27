@@ -1,4 +1,5 @@
 import { ForbiddenError, NotFoundError } from '@/api/error';
+
 import { genRevId } from './utils';
 
 export default function(sequelize, DataTypes) {

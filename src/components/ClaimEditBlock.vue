@@ -27,12 +27,13 @@
 <script>
 import clone from 'lodash/fp/clone';
 
+import { validateClaim } from '@/common/validate';
+
 import DwdFlag from './DwdFlag.vue';
 import DwdFlagDropdown from './DwdFlagDropdown.vue';
 import DwdInput from './DwdInput.vue';
 import FormValid from './FormValid.vue';
 import NeedsDataEdit from './NeedsDataEdit.vue';
-import { validateClaim } from '@/common/validate';
 
 export default {
   components: {

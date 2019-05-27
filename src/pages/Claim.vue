@@ -76,10 +76,10 @@
 <script>
 import { mapGetters } from 'vuex';
 
+import { ItemType } from '@/common/constants';
 import DwdTrail from '@/components/DwdTrail.vue';
 import IconAdd from '@/components/IconAdd.vue';
 import ItemBlock from '@/components/ItemBlock.vue';
-import { ItemType } from '@/common/constants';
 import {
   isItemAlive,
   parseTrail,

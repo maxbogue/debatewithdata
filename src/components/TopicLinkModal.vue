@@ -46,11 +46,12 @@
 <script>
 import dashify from 'dashify';
 
+import { ItemType } from '@/common/constants';
+import { validateTopic } from '@/common/validate';
+
 import DwdInput from './DwdInput.vue';
 import DwdModal from './DwdModal.vue';
 import ItemLinkInput from './ItemLinkInput.vue';
-import { ItemType } from '@/common/constants';
-import { validateTopic } from '@/common/validate';
 
 export default {
   components: {

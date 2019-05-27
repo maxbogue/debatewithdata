@@ -1,5 +1,5 @@
-import { Claim, Source, Topic, User } from '@/models';
 import { SourceType } from '@/common/constants';
+import { Claim, Source, Topic, User } from '@/models';
 
 export const FOO = 'foo is too short';
 export const BAR = 'bar is too short';

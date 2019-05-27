@@ -1,12 +1,13 @@
 import _ from 'lodash/fp';
 
-import graph, { Graph } from '@/common/graph';
-import q, { ITEM_FIELDS } from './query';
-import search from '@/common/search';
 import { ConflictError, NotFoundError } from '@/api/error';
 import { ItemType, PAGE_SIZE } from '@/common/constants';
-import { ValidationError, validateClaim } from '@/common/validate';
 import { claimsAreEqual } from '@/common/equality';
+import graph, { Graph } from '@/common/graph';
+import search from '@/common/search';
+import { ValidationError, validateClaim } from '@/common/validate';
+
+import q, { ITEM_FIELDS } from './query';
 import { genId } from './utils';
 
 const CLAIM = ItemType.CLAIM;

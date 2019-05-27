@@ -75,10 +75,10 @@
 import debounce from 'lodash/fp/debounce';
 import { mapState } from 'vuex';
 
+import { Filter, ItemType, Sort } from '@/common/constants';
 import DwdLoader from '@/components/DwdLoader.vue';
 import ItemBlock from '@/components/ItemBlock.vue';
 import { DEBOUNCE_DELAY_MS } from '@/constants';
-import { Filter, ItemType, Sort } from '@/common/constants';
 import { mapQueryParams } from '@/utils';
 
 export default {

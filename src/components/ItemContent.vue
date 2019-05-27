@@ -20,10 +20,11 @@
 </template>
 
 <script>
+import { ItemType } from '@/common/constants';
+
 import ClaimContent from './ClaimContent.vue';
 import SourceContent from './SourceContent.vue';
 import TopicContent from './TopicContent.vue';
-import { ItemType } from '@/common/constants';
 
 export default {
   components: {

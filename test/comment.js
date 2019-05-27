@@ -1,7 +1,7 @@
 import chai from 'chai';
 
-import { Claim, Comment } from '@/models';
 import { ItemType } from '@/common/constants';
+import { Claim, Comment } from '@/models';
 
 import { BAR, BAZ, FOO, registerAndVerifyUser } from './utils';
 

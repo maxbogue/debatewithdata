@@ -1,4 +1,5 @@
 import 'systemd';
+
 import config from 'config';
 import cookieSession from 'cookie-session';
 import express from 'express';
@@ -7,10 +8,10 @@ import path from 'path';
 import { createRenderer } from 'vue-server-renderer';
 
 import ApiImpl from './api/impl';
-import expressLogger from './base/expressLogger';
-import { ServerAuth } from './auth';
 import { createApiRouter } from './api/router';
 import { createApp } from './app';
+import { ServerAuth } from './auth';
+import expressLogger from './base/expressLogger';
 
 const JS_PATH = path.resolve(__dirname, '..', 'build', 'js');
 

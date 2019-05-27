@@ -32,6 +32,7 @@
 
 <script>
 import '../style/auth.scss';
+
 import DwdLoader from '@/components/DwdLoader.vue';
 
 export default {

@@ -7,8 +7,8 @@ import validate from 'validate.js';
 
 import { forEach, forOwn, mapValues } from '@/utils';
 
-import { FlagData } from './flag';
 import { ItemType, SOURCE_TYPES, SourceType } from './constants';
+import { FlagData } from './flag';
 import { deserializeTable } from './utils';
 
 validate.validators.format.message = 'has invalid format: "%{value}"';

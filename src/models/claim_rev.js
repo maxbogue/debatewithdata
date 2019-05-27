@@ -1,6 +1,7 @@
 import { asyncForOwn } from '@/common/utils';
-import { genRevId } from './utils';
 import { validateClaim } from '@/common/validate';
+
+import { genRevId } from './utils';
 
 export default function(sequelize, DataTypes) {
   const ClaimRev = sequelize.define('claim_rev', {

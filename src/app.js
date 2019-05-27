@@ -1,11 +1,12 @@
-import Meta from 'vue-meta';
-import Vue from 'vue';
-
 import './style/index.scss';
+
+import Vue from 'vue';
+import Meta from 'vue-meta';
+
 import App from './App.vue';
-import { DwdUtilsMixin } from './utils';
 import { createRouter } from './router';
 import { createStore } from './store';
+import { DwdUtilsMixin } from './utils';
 
 Vue.use(Meta);
 Vue.mixin(DwdUtilsMixin);
