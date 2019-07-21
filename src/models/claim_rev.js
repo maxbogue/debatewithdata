@@ -163,7 +163,7 @@ export default function(sequelize, DataTypes) {
       const data = {
         id: this.claimId,
         revId: this.id,
-        updatedAt: this.created_at,
+        updatedAt: this.createdAt,
       };
 
       if (this.deleted) {
@@ -194,7 +194,7 @@ export default function(sequelize, DataTypes) {
     ClaimRev.prototype.fillData = async function(data) {
       const thisData = this.toCoreData();
       thisData.username = this.user.username;
-      thisData.createdAt = this.created_at;
+      thisData.createdAt = this.createdAt;
 
       if (!thisData.deleted) {
         const promises = [];

@@ -178,7 +178,7 @@ export default class ApiImpl implements Api {
     }
     const activity = await getActivity({ user, limit: 100 });
     return {
-      createdAt: user.created_at,
+      createdAt: user.createdAt,
       admin: user.admin,
       activity,
     };

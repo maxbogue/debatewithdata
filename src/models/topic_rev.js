@@ -1,4 +1,4 @@
-import { ValidationError, validateTopic } from '@/common/validate';
+import { validateTopic, ValidationError } from '@/common/validate';
 
 import { genRevId } from './utils';
 
@@ -157,7 +157,7 @@ export default function(sequelize, DataTypes) {
       const data = {
         id: this.topicId,
         revId: this.id,
-        updatedAt: this.created_at,
+        updatedAt: this.createdAt,
       };
 
       if (this.deleted) {
@@ -181,7 +181,7 @@ export default function(sequelize, DataTypes) {
     TopicRev.prototype.fillData = async function(data, user) {
       const thisData = this.toCoreData();
       thisData.username = this.user.username;
-      thisData.createdAt = this.created_at;
+      thisData.createdAt = this.createdAt;
 
       if (!this.deleted) {
         const promises = [];

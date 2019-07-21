@@ -40,7 +40,7 @@ export const TestTopic = {
       id: this.ID,
       isRoot: false,
       revId: topicRev.id,
-      updatedAt: topicRev.created_at,
+      updatedAt: topicRev.createdAt,
       text: this.TEXT,
       title: this.TITLE,
       subTopicIds: [],
@@ -64,7 +64,7 @@ export const TestClaim = {
     return {
       id: claimRev.claimId,
       revId: claimRev.id,
-      updatedAt: claimRev.created_at,
+      updatedAt: claimRev.createdAt,
       text: this.TEXT,
       flag: null,
       needsData: null,
@@ -94,7 +94,7 @@ export const TestSource = {
     return {
       id: sourceRev.sourceId,
       revId: sourceRev.id,
-      updatedAt: sourceRev.created_at,
+      updatedAt: sourceRev.createdAt,
       text: this.TEXT,
       url: this.URL,
       type: SourceType.MISC,

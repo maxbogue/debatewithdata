@@ -5,7 +5,7 @@ import { ItemType, PAGE_SIZE } from '@/common/constants';
 import { claimsAreEqual } from '@/common/equality';
 import graph, { Graph } from '@/common/graph';
 import search from '@/common/search';
-import { ValidationError, validateClaim } from '@/common/validate';
+import { validateClaim, ValidationError } from '@/common/validate';
 
 import q, { ITEM_FIELDS } from './query';
 import { genId } from './utils';
@@ -363,7 +363,7 @@ export default function(sequelize, DataTypes, knex) {
       const claim = await Claim.findByPk(claimId, Claim.INCLUDE(1));
       const claimRevs = await models.ClaimRev.findAll({
         where: { claimId },
-        order: [['created_at', 'DESC']],
+        order: [['createdAt', 'DESC']],
         ...models.ClaimRev.INCLUDE(2, true),
       });
 

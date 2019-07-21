@@ -143,7 +143,7 @@ export default function(sequelize, DataTypes) {
       const data = {
         id: this.sourceId,
         revId: this.id,
-        updatedAt: this.created_at,
+        updatedAt: this.createdAt,
       };
 
       if (this.deleted) {
@@ -180,7 +180,7 @@ export default function(sequelize, DataTypes) {
     SourceRev.prototype.toRevData = function() {
       const data = this.toCoreData();
       data.username = this.user.username;
-      data.createdAt = this.created_at;
+      data.createdAt = this.createdAt;
       return data;
     };
   };

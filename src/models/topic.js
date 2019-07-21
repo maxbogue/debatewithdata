@@ -5,7 +5,7 @@ import { ItemType, PAGE_SIZE } from '@/common/constants';
 import { topicsAreEqual } from '@/common/equality';
 import graph, { Graph } from '@/common/graph';
 import search from '@/common/search';
-import { ValidationError, validateTopic } from '@/common/validate';
+import { validateTopic, ValidationError } from '@/common/validate';
 
 import q, { ITEM_FIELDS } from './query';
 
@@ -343,7 +343,7 @@ export default function(sequelize, DataTypes, knex) {
     Topic.apiGetRevs = async function(topicId, user) {
       const topicRevs = await models.TopicRev.findAll({
         where: { topicId },
-        order: [['created_at', 'DESC']],
+        order: [['createdAt', 'DESC']],
         ...models.TopicRev.INCLUDE(2, true),
       });
 

@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt';
 import config from 'config';
 import jwt from 'jsonwebtoken';
+import Sequelize from 'sequelize';
 
 import { AuthError, ClientError } from '@/api/error';
 import { ItemType } from '@/common/constants';
 
-import { ROOT_URL, randomHexString } from './utils';
+import { randomHexString, ROOT_URL } from './utils';
 
 const VALID_USERNAME = /^[a-z][a-z0-9]+$/;
 
@@ -110,7 +111,7 @@ export default function(sequelize, DataTypes) {
             }
           );
         } catch (err) {
-          if (err instanceof sequelize.UniqueConstraintError) {
+          if (err instanceof Sequelize.UniqueConstraintError) {
             if (err.fields.username) {
               throw new ClientError(
                 `Username '${err.fields.username}' already exists.`
@@ -161,7 +162,7 @@ export default function(sequelize, DataTypes) {
         throw new AuthError('Email verification required.');
       }
       const user = {
-        createdAt: this.created_at,
+        createdAt: this.createdAt,
         email: this.email,
         admin: this.admin,
       };
@@ -239,7 +240,7 @@ export default function(sequelize, DataTypes) {
         where: {
           passwordResetToken,
           passwordResetExpiration: {
-            [sequelize.Op.gt]: new Date(),
+            [Sequelize.Op.gt]: new Date(),
           },
         },
       });

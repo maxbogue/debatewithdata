@@ -16,7 +16,7 @@ interface ItemRev {
   deleted: boolean;
   parentId: string;
   user: User;
-  created_at: string;
+  createdAt: string;
 }
 
 interface TopicRev extends ItemRev {
@@ -32,7 +32,7 @@ interface SourceRev extends ItemRev {
 }
 
 interface Comment {
-  created_at: string;
+  createdAt: string;
   user: User;
   commentable: string;
   commentableId: string;
@@ -56,7 +56,7 @@ function itemToAction(itemRev: ItemRev): ActivityAction {
 }
 
 const itemToEntry = (itemRev: ItemRev) => ({
-  timestamp: itemRev.created_at,
+  timestamp: itemRev.createdAt,
   username: itemRev.user.username,
   action: itemToAction(itemRev),
   revId: itemRev.id,
@@ -81,7 +81,7 @@ const sourceRevToEntry = (sourceRev: SourceRev): ActivityEntry => ({
 });
 
 const commentToEntry = (comment: Comment): ActivityEntry => ({
-  timestamp: comment.created_at,
+  timestamp: comment.createdAt,
   username: comment.user.username,
   action: ActivityAction.Commented,
   type: comment.commentable,
@@ -100,14 +100,14 @@ export async function getActivity({
       model: User,
       attributes: ['username'],
     },
-    order: [['created_at', 'DESC']],
+    order: [['createdAt', 'DESC']],
     limit,
   };
   if (user) {
     QUERY.where = { userId: user.id };
   }
 
-  const ITEM_ATTRS = ['id', 'deleted', 'parentId', 'created_at'];
+  const ITEM_ATTRS = ['id', 'deleted', 'parentId', 'createdAt'];
   const topicRevs = await TopicRev.findAll({
     ...QUERY,
     attributes: [...ITEM_ATTRS, 'topicId'],
@@ -124,7 +124,7 @@ export async function getActivity({
   const comments = await Comment.findAll(
     merge(
       {
-        attributes: ['commentable', 'commentableId', 'created_at'],
+        attributes: ['commentable', 'commentableId', 'createdAt'],
         where: { deleted: false },
       },
       QUERY

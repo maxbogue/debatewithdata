@@ -15,7 +15,7 @@
           <span>
             at
             <span :class="$style.timestamp">{{
-              rev.createdAt | timestamp
+              rev.updatedAt | timestamp
             }}</span>
           </span>
           <span>

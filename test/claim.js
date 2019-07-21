@@ -10,9 +10,9 @@ import {
   BAR,
   BAZ,
   FOO,
+  registerAndVerifyUser,
   STARS_AND_COMMENTS,
   TestSource,
-  registerAndVerifyUser,
 } from './utils';
 
 const expect = chai.expect;
@@ -303,7 +303,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_3,
             id: rev.claimId,
             revId: rev.id,
-            updatedAt: rev.created_at,
+            updatedAt: rev.createdAt,
             text: FOO,
             flag: Flag.AD_HOMINEM,
           },
@@ -325,7 +325,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_3,
             id: rev.claimId,
             revId: rev.id,
-            updatedAt: rev.created_at,
+            updatedAt: rev.createdAt,
             text: FOO,
             starCount: 1,
             starred: true,
@@ -341,7 +341,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_3,
             id: rev.claimId,
             revId: rev.id,
-            updatedAt: rev.created_at,
+            updatedAt: rev.createdAt,
             text: FOO,
             starCount: 1,
             starred: false,
@@ -378,7 +378,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_3,
             id: rev.claimId,
             revId: rev.id,
-            updatedAt: rev.created_at,
+            updatedAt: rev.createdAt,
             text: FOO,
             subClaimIds: {
               [c1.id]: true,
@@ -390,14 +390,14 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_2,
             id: c1.id,
             revId: c1.headId,
-            updatedAt: c1.head.created_at,
+            updatedAt: c1.head.createdAt,
             text: BAR,
           },
           [c2.id]: {
             ...CLAIM_DEPTH_2,
             id: c2.id,
             revId: c2.headId,
-            updatedAt: c2.head.created_at,
+            updatedAt: c2.head.createdAt,
             text: BAZ,
           },
         },
@@ -435,7 +435,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_3,
             id: rev.claimId,
             revId: rev.id,
-            updatedAt: rev.created_at,
+            updatedAt: rev.createdAt,
             text: FOO,
             subClaimIds: {
               [c1.id]: true,
@@ -446,7 +446,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_2,
             id: c1.id,
             revId: c1.headId,
-            updatedAt: c1.head.created_at,
+            updatedAt: c1.head.createdAt,
             text: BAR,
             subClaimIds: {
               [c1a.id]: true,
@@ -457,7 +457,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_1,
             id: c1a.id,
             revId: c1a.headId,
-            updatedAt: c1a.head.created_at,
+            updatedAt: c1a.head.createdAt,
             text: BAZ,
           },
         },
@@ -490,7 +490,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_3,
             id: rev.claimId,
             revId: rev.id,
-            updatedAt: rev.created_at,
+            updatedAt: rev.createdAt,
             text: FOO,
             sourceIds: {
               [s1.id]: true,
@@ -505,7 +505,7 @@ describe('Claim', function() {
             ...STARS_AND_COMMENTS,
             id: s1.id,
             revId: s1.headId,
-            updatedAt: s1.head.created_at,
+            updatedAt: s1.head.createdAt,
             type: SourceType.MISC,
             url: URL,
             text: BAR,
@@ -540,7 +540,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_1,
             id: rev.claimId,
             revId: rev.id,
-            updatedAt: rev.created_at,
+            updatedAt: rev.createdAt,
             text: FOO,
             childCount: 1,
           },
@@ -548,7 +548,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_3,
             id: c1.id,
             revId: c1.headId,
-            updatedAt: c1.head.created_at,
+            updatedAt: c1.head.createdAt,
             text: BAR,
             superClaimIds: [rev.claimId],
           },
@@ -565,7 +565,7 @@ describe('Claim', function() {
             depth: 3,
             id: c1.id,
             revId: c1.headId,
-            updatedAt: c1.head.created_at,
+            updatedAt: c1.head.createdAt,
             text: BAR,
           },
         },
@@ -589,7 +589,7 @@ describe('Claim', function() {
           [r2.claimId]: {
             id: r2.claimId,
             revId: r2.id,
-            updatedAt: r2.created_at,
+            updatedAt: r2.createdAt,
             deleted: true,
             deleteMessage: DELETE_MSG,
             superTopicIds: [],
@@ -619,7 +619,7 @@ describe('Claim', function() {
           ...CLAIM_DEPTH_1,
           id: c1Id,
           revId: c1r.id,
-          updatedAt: c1r.created_at,
+          updatedAt: c1r.createdAt,
           deleted: false,
           deleteMessage: null,
           text: FOO,
@@ -632,7 +632,7 @@ describe('Claim', function() {
           ...CLAIM_DEPTH_1,
           id: c2Id,
           revId: c2r.id,
-          updatedAt: c2r.created_at,
+          updatedAt: c2r.createdAt,
           deleted: false,
           deleteMessage: null,
           text: BAR,
@@ -728,7 +728,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_1,
             id: c1r.claimId,
             revId: c1r.id,
-            updatedAt: c1r.created_at,
+            updatedAt: c1r.createdAt,
             deleted: false,
             deleteMessage: null,
             text: FOO,
@@ -755,17 +755,14 @@ describe('Claim', function() {
       // Extra claim to make sure they're selected by ID.
       await Claim.apiCreate(user, { text: BAZ });
 
-      const data = await Claim.apiGetForTrail(
-        [c1r.claimId, c2r.claim_id],
-        user
-      );
+      const data = await Claim.apiGetForTrail([c1r.claimId, c2r.claimId], user);
       expect(data).to.deep.equal({
         claims: {
           [c1r.claimId]: {
             ...CLAIM_DEPTH_1,
             id: c1r.claimId,
             revId: c1r.id,
-            updatedAt: c1r.created_at,
+            updatedAt: c1r.createdAt,
             deleted: false,
             deleteMessage: null,
             childCount: 2,
@@ -778,7 +775,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_1,
             id: c2r.claimId,
             revId: c2r.id,
-            updatedAt: c2r.created_at,
+            updatedAt: c2r.createdAt,
             deleted: false,
             deleteMessage: null,
             childCount: 1,
@@ -790,17 +787,14 @@ describe('Claim', function() {
         },
       });
 
-      const noUserData = await Claim.apiGetForTrail([
-        c1r.claimId,
-        c2r.claim_id,
-      ]);
+      const noUserData = await Claim.apiGetForTrail([c1r.claimId, c2r.claimId]);
       expect(noUserData).to.deep.equal({
         claims: {
           [c1r.claimId]: {
             ...CLAIM_DEPTH_1,
             id: c1r.claimId,
             revId: c1r.id,
-            updatedAt: c1r.created_at,
+            updatedAt: c1r.createdAt,
             deleted: false,
             deleteMessage: null,
             childCount: 2,
@@ -814,7 +808,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_1,
             id: c2r.claimId,
             revId: c2r.id,
-            updatedAt: c2r.created_at,
+            updatedAt: c2r.createdAt,
             deleted: false,
             deleteMessage: null,
             childCount: 1,
@@ -850,8 +844,8 @@ describe('Claim', function() {
             id: claimId,
             revId: r2.id,
             username: user.username,
-            createdAt: r2.created_at,
-            updatedAt: r2.created_at,
+            createdAt: r2.createdAt,
+            updatedAt: r2.createdAt,
             text: BAR,
             flag: null,
             needsData: null,
@@ -862,8 +856,8 @@ describe('Claim', function() {
             id: claimId,
             revId: r1.id,
             username: user.username,
-            createdAt: r1.created_at,
-            updatedAt: r1.created_at,
+            createdAt: r1.createdAt,
+            updatedAt: r1.createdAt,
             text: FOO,
             flag: null,
             needsData: null,
@@ -876,7 +870,7 @@ describe('Claim', function() {
             ...CLAIM_DEPTH_1,
             id: r2.claimId,
             revId: r2.id,
-            updatedAt: r2.created_at,
+            updatedAt: r2.createdAt,
             text: BAR,
           },
         },

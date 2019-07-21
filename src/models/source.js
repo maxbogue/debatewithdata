@@ -5,7 +5,7 @@ import { ItemType, PAGE_SIZE } from '@/common/constants';
 import { sourcesAreEqual } from '@/common/equality';
 import search from '@/common/search';
 import { asyncForEach } from '@/common/utils';
-import { ValidationError, validateSource } from '@/common/validate';
+import { validateSource, ValidationError } from '@/common/validate';
 
 import q from './query';
 import { genId } from './utils';
@@ -253,7 +253,7 @@ export default function(sequelize, DataTypes, knex) {
     Source.apiGetRevs = async function(sourceId) {
       const sourceRevs = await models.SourceRev.findAll({
         where: { sourceId },
-        order: [['created_at', 'DESC']],
+        order: [['createdAt', 'DESC']],
         ...models.SourceRev.INCLUDE(true),
       });
 

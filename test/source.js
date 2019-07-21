@@ -8,7 +8,7 @@ import { ValidationError } from '@/common/validate';
 import { Claim, Source, SourceRev } from '@/models';
 import { randomHexString } from '@/models/utils';
 
-import { STARS_AND_COMMENTS, registerAndVerifyUser } from './utils';
+import { registerAndVerifyUser, STARS_AND_COMMENTS } from './utils';
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -293,7 +293,7 @@ describe('Source', function() {
           [rev.sourceId]: {
             id: rev.sourceId,
             revId: rev.id,
-            updatedAt: rev.created_at,
+            updatedAt: rev.createdAt,
             claimIds: [],
             ...MISC,
             ...STARS_AND_COMMENTS,
@@ -316,7 +316,7 @@ describe('Source', function() {
           [r2.sourceId]: {
             id: r2.sourceId,
             revId: r2.id,
-            updatedAt: r2.created_at,
+            updatedAt: r2.createdAt,
             deleted: true,
             deleteMessage: DELETE_MSG,
             claimIds: [],
@@ -341,7 +341,7 @@ describe('Source', function() {
           [sourceId]: {
             id: sourceId,
             revId: sourceRev.id,
-            updatedAt: sourceRev.created_at,
+            updatedAt: sourceRev.createdAt,
             ...MISC,
             table,
             claimIds: [],
@@ -368,7 +368,7 @@ describe('Source', function() {
           [sourceId]: {
             id: sourceId,
             revId: sourceRev.id,
-            updatedAt: sourceRev.created_at,
+            updatedAt: sourceRev.createdAt,
             claimIds: [claimRev.claimId],
             ...MISC,
             ...STARS_AND_COMMENTS,
@@ -378,7 +378,7 @@ describe('Source', function() {
           [claimRev.claimId]: {
             id: claimRev.claimId,
             revId: claimRev.id,
-            updatedAt: claimRev.created_at,
+            updatedAt: claimRev.createdAt,
             text: TEXT2,
             flag: null,
             needsData: null,
@@ -407,7 +407,7 @@ describe('Source', function() {
           [s1r.sourceId]: {
             id: s1r.sourceId,
             revId: s1r.id,
-            updatedAt: s1r.created_at,
+            updatedAt: s1r.createdAt,
             deleted: false,
             deleteMessage: null,
             ...RESEARCH,
@@ -416,7 +416,7 @@ describe('Source', function() {
           [s2r.sourceId]: {
             id: s2r.sourceId,
             revId: s2r.id,
-            updatedAt: s2r.created_at,
+            updatedAt: s2r.createdAt,
             deleted: false,
             deleteMessage: null,
             ...ARTICLE,
@@ -440,7 +440,7 @@ describe('Source', function() {
           [s1r.sourceId]: {
             id: s1r.sourceId,
             revId: s1r.id,
-            updatedAt: s1r.created_at,
+            updatedAt: s1r.createdAt,
             deleted: false,
             deleteMessage: null,
             ...MISC,
@@ -463,7 +463,7 @@ describe('Source', function() {
           [s1r.sourceId]: {
             id: s1r.sourceId,
             revId: s1r.id,
-            updatedAt: s1r.created_at,
+            updatedAt: s1r.createdAt,
             deleted: false,
             deleteMessage: null,
             ...RESEARCH,
@@ -490,16 +490,16 @@ describe('Source', function() {
             id: sourceId,
             revId: r2.id,
             username: user.username,
-            createdAt: r2.created_at,
-            updatedAt: r2.created_at,
+            createdAt: r2.createdAt,
+            updatedAt: r2.createdAt,
             ...MISC2,
           },
           {
             id: sourceId,
             revId: r1.id,
             username: user.username,
-            createdAt: r1.created_at,
-            updatedAt: r1.created_at,
+            createdAt: r1.createdAt,
+            updatedAt: r1.createdAt,
             ...MISC,
           },
         ],

@@ -7,10 +7,10 @@ import app from '@/server';
 import {
   BAR,
   FOO,
+  registerAndVerifyUser,
   TestClaim,
   TestSource,
   TestTopic,
-  registerAndVerifyUser,
 } from './utils';
 
 describe('Activity', function() {
@@ -39,7 +39,7 @@ describe('Activity', function() {
         .expect(200, {
           activity: [
             {
-              timestamp: sourceRev.created_at.toISOString(),
+              timestamp: sourceRev.createdAt.toISOString(),
               username: user.username,
               action: 'added',
               type: ItemType.SOURCE,
@@ -47,14 +47,14 @@ describe('Activity', function() {
               revId: sourceRev.id,
             },
             {
-              timestamp: comment.created_at.toISOString(),
+              timestamp: comment.createdAt.toISOString(),
               username: user.username,
               action: 'commented on',
               type: ItemType.CLAIM,
               id: claimRev.claimId,
             },
             {
-              timestamp: claimRev.created_at.toISOString(),
+              timestamp: claimRev.createdAt.toISOString(),
               username: user.username,
               action: 'added',
               type: ItemType.CLAIM,
@@ -62,7 +62,7 @@ describe('Activity', function() {
               revId: claimRev.id,
             },
             {
-              timestamp: topicRev.created_at.toISOString(),
+              timestamp: topicRev.createdAt.toISOString(),
               username: user.username,
               action: 'added',
               type: ItemType.TOPIC,
@@ -86,7 +86,7 @@ describe('Activity', function() {
         .expect(200, {
           activity: [
             {
-              timestamp: r3.created_at.toISOString(),
+              timestamp: r3.createdAt.toISOString(),
               username: user.username,
               action: 'deleted',
               type: ItemType.CLAIM,
@@ -94,7 +94,7 @@ describe('Activity', function() {
               revId: r3.id,
             },
             {
-              timestamp: r2.created_at.toISOString(),
+              timestamp: r2.createdAt.toISOString(),
               username: user.username,
               action: 'edited',
               type: ItemType.CLAIM,
@@ -102,7 +102,7 @@ describe('Activity', function() {
               revId: r2.id,
             },
             {
-              timestamp: r1.created_at.toISOString(),
+              timestamp: r1.createdAt.toISOString(),
               username: user.username,
               action: 'added',
               type: ItemType.CLAIM,

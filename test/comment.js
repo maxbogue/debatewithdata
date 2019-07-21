@@ -45,7 +45,7 @@ describe('Comment', function() {
         id: comment.id,
         text: FOO,
         author: user.username,
-        created: comment.created_at,
+        created: comment.createdAt,
       });
     });
   });

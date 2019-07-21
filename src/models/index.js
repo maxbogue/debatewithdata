@@ -4,7 +4,7 @@ pg.types.setTypeParser(20, 'text', parseInt);
 
 import config from 'config';
 import Knex from 'knex';
-import KnexQueryBuilder from 'knex/lib/query/builder';
+import KnexQueryBuilder from 'knex/src/query/builder';
 import _ from 'lodash/fp';
 import Sequelize from 'sequelize';
 
@@ -39,10 +39,8 @@ export const knex = Knex({ client: 'pg', connection: config.get('db') });
 export const sequelize = new Sequelize(config.get('db'), {
   define: {
     underscored: true,
-    underscoredAll: true,
   },
   logging: null,
-  operatorsAliases: false,
 });
 
 const models = {};

@@ -47,7 +47,7 @@ export default function(sequelize, DataTypes) {
         id: this.id,
         text: this.text,
         author: this.user.username,
-        created: this.created_at,
+        created: this.createdAt,
       };
     };
 
@@ -91,7 +91,7 @@ export default function(sequelize, DataTypes) {
       }
       const comments = await item.getComments({
         where: { deleted: false },
-        order: ['created_at'],
+        order: ['createdAt'],
         include: [models.User],
       });
       return comments.map(c => c.toData());
