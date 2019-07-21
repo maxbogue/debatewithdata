@@ -4,7 +4,7 @@ pg.types.setTypeParser(20, 'text', parseInt);
 
 import config from 'config';
 import Knex from 'knex';
-import KnexQueryBuilder from 'knex/src/query/builder';
+import KnexQueryBuilder from 'knex/lib/query/builder';
 import _ from 'lodash/fp';
 import Sequelize from 'sequelize';
 
