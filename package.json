@@ -48,7 +48,7 @@
     "pg-hstore": "^2.3.3",
     "pg-query-stream": "^2.0.0",
     "properties": "^1.2.1",
-    "sequelize": "^5.10.1",
+    "sequelize": "^5.15.1",
     "systemd": "^0.3.1",
     "text-diff": "^1.0.1",
     "url-search-params": "^1.1.0",
