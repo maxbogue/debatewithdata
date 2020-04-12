@@ -2,7 +2,7 @@ import { validateTopic, ValidationError } from '@/common/validate';
 
 import { genRevId } from './utils';
 
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
   const TopicRev = sequelize.define('topic_rev', {
     id: {
       type: DataTypes.TEXT,
@@ -25,7 +25,7 @@ export default function(sequelize, DataTypes) {
     },
   });
 
-  TopicRev.associate = function(models) {
+  TopicRev.associate = function (models) {
     TopicRev.belongsTo(models.User, {
       foreignKey: {
         name: 'userId',
@@ -69,8 +69,8 @@ export default function(sequelize, DataTypes) {
     });
   };
 
-  TopicRev.postAssociate = function(models) {
-    TopicRev.INCLUDE = function(n, includeUser = false) {
+  TopicRev.postAssociate = function (models) {
+    TopicRev.INCLUDE = function (n, includeUser = false) {
       const include = [models.Blob];
       if (includeUser) {
         include.push(models.User);
@@ -88,7 +88,7 @@ export default function(sequelize, DataTypes) {
       return { include };
     };
 
-    TopicRev.createForApi = async function(topic, user, data, transaction) {
+    TopicRev.createForApi = async function (topic, user, data, transaction) {
       const blob = await models.Blob.fromText(data.text, transaction);
       const topicRev = await models.TopicRev.create(
         {
@@ -149,11 +149,11 @@ export default function(sequelize, DataTypes) {
       return topicRev;
     };
 
-    TopicRev.prototype.getItemId = function() {
+    TopicRev.prototype.getItemId = function () {
       return this.topicId;
     };
 
-    TopicRev.prototype.toCoreData = function() {
+    TopicRev.prototype.toCoreData = function () {
       const data = {
         id: this.topicId,
         revId: this.id,
@@ -178,7 +178,7 @@ export default function(sequelize, DataTypes) {
     };
 
     // Only called for apiGetRevs.
-    TopicRev.prototype.fillData = async function(data, user) {
+    TopicRev.prototype.fillData = async function (data, user) {
       const thisData = this.toCoreData();
       thisData.username = this.user.username;
       thisData.createdAt = this.createdAt;

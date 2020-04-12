@@ -13,23 +13,21 @@ import {
   TestTopic,
 } from './utils';
 
-describe('Activity', function() {
+describe('Activity', function () {
   let user;
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     user = await registerAndVerifyUser();
   });
 
-  describe('get activity', function() {
-    it('none', async function() {
-      return request(app)
-        .get('/api/activity')
-        .expect(200, {
-          activity: [],
-        });
+  describe('get activity', function () {
+    it('none', async function () {
+      return request(app).get('/api/activity').expect(200, {
+        activity: [],
+      });
     });
 
-    it('variety', async function() {
+    it('variety', async function () {
       const topicRev = await TestTopic.create(user);
       const claimRev = await TestClaim.create(user);
       const comment = await Comment.apiAdd(Claim, claimRev.claimId, user, FOO);
@@ -73,7 +71,7 @@ describe('Activity', function() {
         });
     });
 
-    it('lifecycle', async function() {
+    it('lifecycle', async function () {
       const r1 = await TestClaim.create(user);
       const claimId = r1.claimId;
       const r2 = await Claim.apiUpdate(claimId, user, {

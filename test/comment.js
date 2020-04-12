@@ -7,18 +7,18 @@ import { BAR, BAZ, FOO, registerAndVerifyUser } from './utils';
 
 const expect = chai.expect;
 
-describe('Comment', function() {
+describe('Comment', function () {
   let user;
   let claimId;
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     user = await registerAndVerifyUser();
     const claimRev = await Claim.apiCreate(user, { text: BAZ });
     claimId = claimRev.claimId;
   });
 
-  describe('.apiAdd()', function() {
-    it('happy', async function() {
+  describe('.apiAdd()', function () {
+    it('happy', async function () {
       const comment = await Comment.apiAdd(Claim, claimId, user, FOO);
       expect(comment.userId).to.equal(user.id);
       expect(comment.commentable).to.equal(ItemType.CLAIM);
@@ -28,8 +28,8 @@ describe('Comment', function() {
     });
   });
 
-  describe('.apiDelete()', function() {
-    it('happy', async function() {
+  describe('.apiDelete()', function () {
+    it('happy', async function () {
       const comment = await Comment.apiAdd(Claim, claimId, user, FOO);
       await Comment.apiDelete(Claim, claimId, user, comment.id);
       await comment.reload();
@@ -37,8 +37,8 @@ describe('Comment', function() {
     });
   });
 
-  describe('.apiGet()', function() {
-    it('happy', async function() {
+  describe('.apiGet()', function () {
+    it('happy', async function () {
       const comment = await Comment.apiAdd(Claim, claimId, user, FOO);
       const commentData = await Comment.apiGet(comment.id);
       expect(commentData).to.deep.equal({
@@ -50,8 +50,8 @@ describe('Comment', function() {
     });
   });
 
-  describe('.apiGetAll()', function() {
-    it('happy', async function() {
+  describe('.apiGetAll()', function () {
+    it('happy', async function () {
       await Comment.apiAdd(Claim, claimId, user, FOO);
       await Comment.apiAdd(Claim, claimId, user, BAR);
       const commentsData = await Comment.apiGetAll(Claim, claimId);
@@ -60,7 +60,7 @@ describe('Comment', function() {
       expect(commentsData[1].text).to.equal(BAR);
     });
 
-    it('excludes deleted', async function() {
+    it('excludes deleted', async function () {
       const comment = await Comment.apiAdd(Claim, claimId, user, FOO);
       await Comment.apiDelete(Claim, claimId, user, comment.id);
       const commentsData = await Comment.apiGetAll(Claim, claimId);

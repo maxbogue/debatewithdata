@@ -14,7 +14,7 @@ function unwrapResult(result) {
 
 export class Search {
   constructor() {
-    this.index = elasticlunr(function() {
+    this.index = elasticlunr(function () {
       /* eslint no-invalid-this: "off" */
       this.addField('title');
       this.addField('text');

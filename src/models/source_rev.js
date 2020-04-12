@@ -3,7 +3,7 @@ import { validateSource } from '@/common/validate';
 
 import { genRevId } from './utils';
 
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
   const SourceRev = sequelize.define('source_rev', {
     id: {
       type: DataTypes.TEXT,
@@ -49,7 +49,7 @@ export default function(sequelize, DataTypes) {
     },
   });
 
-  SourceRev.associate = function(models) {
+  SourceRev.associate = function (models) {
     SourceRev.belongsTo(models.User, {
       foreignKey: {
         name: 'userId',
@@ -91,8 +91,8 @@ export default function(sequelize, DataTypes) {
     });
   };
 
-  SourceRev.postAssociate = function(models) {
-    SourceRev.INCLUDE = function(includeUser = false) {
+  SourceRev.postAssociate = function (models) {
+    SourceRev.INCLUDE = function (includeUser = false) {
       const include = [
         models.Blob,
         {
@@ -105,7 +105,7 @@ export default function(sequelize, DataTypes) {
       return { include };
     };
 
-    SourceRev.createForApi = async function(source, user, data, transaction) {
+    SourceRev.createForApi = async function (source, user, data, transaction) {
       const blob = await models.Blob.fromText(data.text, transaction);
       let tableBlob = {};
       if (data.table) {
@@ -135,11 +135,11 @@ export default function(sequelize, DataTypes) {
       return rev;
     };
 
-    SourceRev.prototype.getItemId = function() {
+    SourceRev.prototype.getItemId = function () {
       return this.sourceId;
     };
 
-    SourceRev.prototype.toCoreData = function() {
+    SourceRev.prototype.toCoreData = function () {
       const data = {
         id: this.sourceId,
         revId: this.id,
@@ -177,7 +177,7 @@ export default function(sequelize, DataTypes) {
       return data;
     };
 
-    SourceRev.prototype.toRevData = function() {
+    SourceRev.prototype.toRevData = function () {
       const data = this.toCoreData();
       data.username = this.user.username;
       data.createdAt = this.createdAt;

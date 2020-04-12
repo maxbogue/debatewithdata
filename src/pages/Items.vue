@@ -195,7 +195,7 @@ export default {
       }
       this.getItems();
     },
-    queryParams: debounce(DEBOUNCE_DELAY_MS, async function() {
+    queryParams: debounce(DEBOUNCE_DELAY_MS, async function () {
       /* eslint no-invalid-this: "off" */
       this.results = null;
       if (!this.queryParams) {

@@ -155,7 +155,7 @@ export default {
         e.stopPropagation();
       }
     },
-    queryServer: debounce(DEBOUNCE_DELAY_MS, async function() {
+    queryServer: debounce(DEBOUNCE_DELAY_MS, async function () {
       /* eslint no-invalid-this: "off" */
       const query = this.value;
       this.loading = true;

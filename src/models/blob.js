@@ -6,7 +6,7 @@ function hashText(text) {
   return h.digest().toString('hex');
 }
 
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
   const Blob = sequelize.define('blob', {
     hash: {
       type: DataTypes.TEXT,
@@ -18,7 +18,7 @@ export default function(sequelize, DataTypes) {
     },
   });
 
-  Blob.fromText = async function(text, transaction) {
+  Blob.fromText = async function (text, transaction) {
     const hash = hashText(text);
     const [blob] = await Blob.findOrCreate({
       where: { hash },

@@ -12,7 +12,7 @@ import { genId } from './utils';
 
 const SOURCE = ItemType.SOURCE;
 
-export default function(sequelize, DataTypes, knex) {
+export default function (sequelize, DataTypes, knex) {
   const Source = sequelize.define('source', {
     id: {
       type: DataTypes.TEXT,
@@ -21,7 +21,7 @@ export default function(sequelize, DataTypes, knex) {
     },
   });
 
-  Source.associate = function(models) {
+  Source.associate = function (models) {
     Source.Head = Source.belongsTo(models.SourceRev, {
       as: 'head',
       foreignKey: {
@@ -65,8 +65,8 @@ export default function(sequelize, DataTypes, knex) {
     });
   };
 
-  Source.postAssociate = function(models) {
-    Source.INCLUDE = function() {
+  Source.postAssociate = function (models) {
+    Source.INCLUDE = function () {
       return {
         include: [
           {
@@ -77,9 +77,9 @@ export default function(sequelize, DataTypes, knex) {
       };
     };
 
-    Source.apiCreate = async function(user, data, transaction) {
+    Source.apiCreate = async function (user, data, transaction) {
       if (!transaction) {
-        return await sequelize.transaction(function(t) {
+        return await sequelize.transaction(function (t) {
           return Source.apiCreate(user, data, t);
         });
       }
@@ -90,9 +90,9 @@ export default function(sequelize, DataTypes, knex) {
       return models.SourceRev.createForApi(source, user, data, transaction);
     };
 
-    Source.apiUpdate = async function(sourceId, user, data, transaction) {
+    Source.apiUpdate = async function (sourceId, user, data, transaction) {
       if (!transaction) {
-        return await sequelize.transaction(function(t) {
+        return await sequelize.transaction(function (t) {
           return Source.apiUpdate(sourceId, user, data, t);
         });
       }
@@ -119,9 +119,9 @@ export default function(sequelize, DataTypes, knex) {
       return models.SourceRev.createForApi(source, user, data, transaction);
     };
 
-    Source.apiDelete = async function(sourceId, user, msg, transaction) {
+    Source.apiDelete = async function (sourceId, user, msg, transaction) {
       if (!transaction) {
-        return await sequelize.transaction(function(t) {
+        return await sequelize.transaction(function (t) {
           return Source.apiDelete(sourceId, user, msg, t);
         });
       }
@@ -153,7 +153,7 @@ export default function(sequelize, DataTypes, knex) {
       return rev;
     };
 
-    Source.prototype.toData = async function(user) {
+    Source.prototype.toData = async function (user) {
       const data = this.head.toCoreData();
       const star = await this.toStarData(user);
       data.starCount = star.starCount;
@@ -185,7 +185,7 @@ export default function(sequelize, DataTypes, knex) {
       source.chart = JSON.parse(source.chart);
     });
 
-    Source.apiGet = async function(sourceId, user, hasTrail) {
+    Source.apiGet = async function (sourceId, user, hasTrail) {
       const source = await Source.findByPk(sourceId, Source.INCLUDE());
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
@@ -223,7 +223,7 @@ export default function(sequelize, DataTypes, knex) {
       return data;
     };
 
-    Source.apiGetAll = async function({ user, filters, sort, page } = {}) {
+    Source.apiGetAll = async function ({ user, filters, sort, page } = {}) {
       page = page || 1;
 
       const filterFn = query =>
@@ -250,7 +250,7 @@ export default function(sequelize, DataTypes, knex) {
       };
     };
 
-    Source.apiGetRevs = async function(sourceId) {
+    Source.apiGetRevs = async function (sourceId) {
       const sourceRevs = await models.SourceRev.findAll({
         where: { sourceId },
         order: [['createdAt', 'DESC']],
@@ -265,7 +265,7 @@ export default function(sequelize, DataTypes, knex) {
       return { sourceRevs: sourceRevData };
     };
 
-    Source.prototype.toStarData = async function(user) {
+    Source.prototype.toStarData = async function (user) {
       const starCount = await this.countStarredByUsers();
       let starred = false;
       let watched = false;
@@ -276,7 +276,7 @@ export default function(sequelize, DataTypes, knex) {
       return { starCount, starred, watched };
     };
 
-    Source.apiToggleStar = async function(sourceId, user) {
+    Source.apiToggleStar = async function (sourceId, user) {
       const source = await Source.findByPk(sourceId);
       if (!source) {
         throw new NotFoundError('Data not found: ' + sourceId);
@@ -291,7 +291,7 @@ export default function(sequelize, DataTypes, knex) {
       return await source.toStarData(user);
     };
 
-    Source.apiToggleWatch = async function(sourceId, user) {
+    Source.apiToggleWatch = async function (sourceId, user) {
       const source = await Source.findByPk(sourceId);
       if (!source) {
         throw new NotFoundError('Source not found: ' + sourceId);
@@ -305,7 +305,7 @@ export default function(sequelize, DataTypes, knex) {
       return { watched: !isWatched };
     };
 
-    Source.prototype.updateIndex = function(data) {
+    Source.prototype.updateIndex = function (data) {
       data = data || this.head.toCoreData();
       search.updateSource(data);
     };

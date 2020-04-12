@@ -89,7 +89,7 @@ function validatePresenceIf(key, value, item, conds, iff) {
 }
 
 function constraintToValidator(constraint, key) {
-  const validator = function(value, item) {
+  const validator = function (value, item) {
     if (item) {
       if (item.deleted && !constraint.validIfDeleted) {
         if (validate.isDefined(value)) {

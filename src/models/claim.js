@@ -33,7 +33,7 @@ const hydrateClaims = _.flow(
   })
 );
 
-export default function(sequelize, DataTypes, knex) {
+export default function (sequelize, DataTypes, knex) {
   const Claim = sequelize.define('claim', {
     id: {
       type: DataTypes.TEXT,
@@ -42,7 +42,7 @@ export default function(sequelize, DataTypes, knex) {
     },
   });
 
-  Claim.associate = function(models) {
+  Claim.associate = function (models) {
     Claim.Head = Claim.belongsTo(models.ClaimRev, {
       as: 'head',
       foreignKey: {
@@ -88,8 +88,8 @@ export default function(sequelize, DataTypes, knex) {
     });
   };
 
-  Claim.postAssociate = function(models) {
-    Claim.INCLUDE = function(n) {
+  Claim.postAssociate = function (models) {
+    Claim.INCLUDE = function (n) {
       if (n < 1) {
         throw new Error('Must include at least 1 tier.');
       }
@@ -103,9 +103,9 @@ export default function(sequelize, DataTypes, knex) {
       };
     };
 
-    Claim.apiCreate = async function(user, data, transaction) {
+    Claim.apiCreate = async function (user, data, transaction) {
       if (!transaction) {
-        return await sequelize.transaction(function(t) {
+        return await sequelize.transaction(function (t) {
           return Claim.apiCreate(user, data, t);
         });
       }
@@ -116,9 +116,9 @@ export default function(sequelize, DataTypes, knex) {
       return models.ClaimRev.createForApi(claim, user, data, transaction);
     };
 
-    Claim.apiUpdate = async function(claimId, user, data, transaction) {
+    Claim.apiUpdate = async function (claimId, user, data, transaction) {
       if (!transaction) {
-        return await sequelize.transaction(function(t) {
+        return await sequelize.transaction(function (t) {
           return Claim.apiUpdate(claimId, user, data, t);
         });
       }
@@ -145,9 +145,9 @@ export default function(sequelize, DataTypes, knex) {
       return models.ClaimRev.createForApi(claim, user, data, transaction);
     };
 
-    Claim.apiDelete = async function(claimId, user, msg, transaction) {
+    Claim.apiDelete = async function (claimId, user, msg, transaction) {
       if (!transaction) {
-        return await sequelize.transaction(function(t) {
+        return await sequelize.transaction(function (t) {
           return Claim.apiDelete(claimId, user, msg, t);
         });
       }
@@ -179,7 +179,7 @@ export default function(sequelize, DataTypes, knex) {
       return claimRev;
     };
 
-    Claim.prototype.fillData = async function(
+    Claim.prototype.fillData = async function (
       data,
       depth,
       user,
@@ -307,7 +307,7 @@ export default function(sequelize, DataTypes, knex) {
       })
     );
 
-    Claim.apiGet = async function(id, user, hasTrail) {
+    Claim.apiGet = async function (id, user, hasTrail) {
       const claim = await Claim.findByPk(id, Claim.INCLUDE(3));
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + id);
@@ -317,7 +317,7 @@ export default function(sequelize, DataTypes, knex) {
       return data;
     };
 
-    Claim.apiGetAll = async function({ user, filters, sort, page } = {}) {
+    Claim.apiGetAll = async function ({ user, filters, sort, page } = {}) {
       page = page || 1;
 
       const filterFn = query =>
@@ -344,7 +344,7 @@ export default function(sequelize, DataTypes, knex) {
       };
     };
 
-    Claim.apiGetForTrail = async function(ids, user) {
+    Claim.apiGetForTrail = async function (ids, user) {
       const filterFn = query => query.whereIn('i.id', ids);
       const flatClaims = await Claim.itemQuery(user, filterFn);
       const claims = Claim.processQueryResults(flatClaims);
@@ -353,7 +353,7 @@ export default function(sequelize, DataTypes, knex) {
       };
     };
 
-    Claim.apiGetRevs = async function(claimId, user) {
+    Claim.apiGetRevs = async function (claimId, user) {
       const claim = await Claim.findByPk(claimId, Claim.INCLUDE(1));
       const claimRevs = await models.ClaimRev.findAll({
         where: { claimId },
@@ -375,7 +375,7 @@ export default function(sequelize, DataTypes, knex) {
       return data;
     };
 
-    Claim.prototype.toStarData = async function(user) {
+    Claim.prototype.toStarData = async function (user) {
       const starCount = await this.countStarredByUsers();
       let starred = false;
       let watched = false;
@@ -386,7 +386,7 @@ export default function(sequelize, DataTypes, knex) {
       return { starCount, starred, watched };
     };
 
-    Claim.apiToggleStar = async function(claimId, user) {
+    Claim.apiToggleStar = async function (claimId, user) {
       const claim = await Claim.findByPk(claimId);
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
@@ -401,7 +401,7 @@ export default function(sequelize, DataTypes, knex) {
       return await claim.toStarData(user);
     };
 
-    Claim.apiToggleWatch = async function(claimId, user) {
+    Claim.apiToggleWatch = async function (claimId, user) {
       const claim = await Claim.findByPk(claimId);
       if (!claim) {
         throw new NotFoundError('Claim not found: ' + claimId);
@@ -415,7 +415,7 @@ export default function(sequelize, DataTypes, knex) {
       return { watched: !isWatched };
     };
 
-    Claim.prototype.updateGraph = function(subClaims, sources) {
+    Claim.prototype.updateGraph = function (subClaims, sources) {
       const partedSubClaims = subClaims
         ? _.partition(id => subClaims[id], _.keys(subClaims))
         : _.partition(c => c.claimClaim.isFor, this.head.subClaims);
@@ -437,7 +437,7 @@ export default function(sequelize, DataTypes, knex) {
       graph.updateClaimPoints(this.id, pointInfos);
     };
 
-    Claim.prototype.updateIndex = function(data) {
+    Claim.prototype.updateIndex = function (data) {
       data = data || this.head.toCoreData();
       search.updateClaim(data);
     };

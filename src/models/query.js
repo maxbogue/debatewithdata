@@ -63,7 +63,7 @@ function itemQuery(type, user) {
       }),
     })
     .count({ count: 'stars.id' })
-    .leftOuterJoin('stars', function() {
+    .leftOuterJoin('stars', function () {
       this.on(idField, 'stars.starrable_id').andOn(
         'stars.starrable',
         knex.raw('?', [type])
@@ -75,7 +75,7 @@ function itemQuery(type, user) {
   const commentQuery = knex(table)
     .column({ id: idField })
     .count({ count: 'comments.id' })
-    .leftOuterJoin('comments', function() {
+    .leftOuterJoin('comments', function () {
       /* eslint no-invalid-this: "off" */
       this.on(idField, 'comments.commentable_id').andOn(
         'comments.commentable',
@@ -121,10 +121,7 @@ function sortAndFilterQuery(query, sort, filters) {
 }
 
 function countQuery(query) {
-  query
-    .clearSelect()
-    .clearOrder()
-    .count('*');
+  query.clearSelect().clearOrder().count('*');
 }
 
 export default {

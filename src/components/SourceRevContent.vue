@@ -6,7 +6,7 @@
       <div
         v-if="
           safePrev.type === SourceType.ARTICLE &&
-            safeCurr.type === SourceType.ARTICLE
+          safeCurr.type === SourceType.ARTICLE
         "
       >
         <strong>Article in:</strong> <span v-html="publicationDiff"></span>
@@ -23,7 +23,7 @@
       <div
         v-if="
           safePrev.type === SourceType.AUTHORITY &&
-            safeCurr.type === SourceType.AUTHORITY
+          safeCurr.type === SourceType.AUTHORITY
         "
       >
         <strong>Authority:</strong> <span v-html="institutionDiff"></span>
@@ -40,7 +40,7 @@
       <template
         v-if="
           safePrev.type === SourceType.RESEARCH &&
-            safeCurr.type === SourceType.RESEARCH
+          safeCurr.type === SourceType.RESEARCH
         "
       >
         <div>

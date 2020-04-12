@@ -24,7 +24,7 @@ import makeTopicTopic from './topic_topic';
 import makeUser from './user';
 import makeWatch from './watch';
 
-KnexQueryBuilder.prototype.exists = function(obj) {
+KnexQueryBuilder.prototype.exists = function (obj) {
   const raw = this.client.raw;
   this.column(
     _.mapValues(

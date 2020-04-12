@@ -45,15 +45,15 @@ const TOPIC_DEPTH_3 = {
   ...STARS_AND_COMMENTS,
 };
 
-describe('Topic', function() {
+describe('Topic', function () {
   let user;
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     user = await registerAndVerifyUser();
   });
 
-  describe('.apiCreate()', function() {
-    it('happy', async function() {
+  describe('.apiCreate()', function () {
+    it('happy', async function () {
       const claimRev = await Claim.apiCreate(user, { text: BAR });
       const topicRev = await Topic.apiCreate(user, {
         id: ID,
@@ -79,7 +79,7 @@ describe('Topic', function() {
       expect(topic.headId).to.equal(topicRev.id);
     });
 
-    it('nested', async function() {
+    it('nested', async function () {
       const subTopicRev = await Topic.apiCreate(user, {
         id: ID2,
         title: TITLE2,
@@ -110,7 +110,7 @@ describe('Topic', function() {
       expect(topic.headId).to.equal(topicRev.id);
     });
 
-    it('new sub-topic', async function() {
+    it('new sub-topic', async function () {
       const topicRev = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -144,7 +144,7 @@ describe('Topic', function() {
       expect(topic.headId).to.equal(topicRev.id);
     });
 
-    it('new claim', async function() {
+    it('new claim', async function () {
       const topicRev = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -173,8 +173,8 @@ describe('Topic', function() {
     });
   });
 
-  describe('.apiUpdate()', function() {
-    it('normal update', async function() {
+  describe('.apiUpdate()', function () {
+    it('normal update', async function () {
       const c1r = await Claim.apiCreate(user, {
         text: BAZ,
       });
@@ -210,7 +210,7 @@ describe('Topic', function() {
       expect(topic.headId).to.equal(r2.id);
     });
 
-    it('new sub-topic', async function() {
+    it('new sub-topic', async function () {
       const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -249,7 +249,7 @@ describe('Topic', function() {
       expect(topic.headId).to.equal(r2.id);
     });
 
-    it('new claim', async function() {
+    it('new claim', async function () {
       const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -282,7 +282,7 @@ describe('Topic', function() {
       expect(topic.headId).to.equal(r2.id);
     });
 
-    it('no change no-op', async function() {
+    it('no change no-op', async function () {
       const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -297,7 +297,7 @@ describe('Topic', function() {
       expect(r2.parentId).to.be.null;
     });
 
-    it('baseRev', async function() {
+    it('baseRev', async function () {
       const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -335,8 +335,8 @@ describe('Topic', function() {
     });
   });
 
-  describe('.apiDelete()', function() {
-    it('normal delete', async function() {
+  describe('.apiDelete()', function () {
+    it('normal delete', async function () {
       const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -359,7 +359,7 @@ describe('Topic', function() {
       expect(topic.headId).to.equal(r2.id);
     });
 
-    it('already deleted no-op', async function() {
+    it('already deleted no-op', async function () {
       const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -374,8 +374,8 @@ describe('Topic', function() {
     });
   });
 
-  describe('.apiGet()', function() {
-    it('happy', async function() {
+  describe('.apiGet()', function () {
+    it('happy', async function () {
       const c1r = await Claim.apiCreate(user, {
         text: BAZ,
       });
@@ -416,11 +416,11 @@ describe('Topic', function() {
       });
     });
 
-    it('not found', async function() {
+    it('not found', async function () {
       await expect(Topic.apiGet('bad id')).to.be.rejectedWith(NotFoundError);
     });
 
-    it('deleted', async function() {
+    it('deleted', async function () {
       await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -448,8 +448,8 @@ describe('Topic', function() {
     });
   });
 
-  describe('.apiGetAll()', function() {
-    it('two topics', async function() {
+  describe('.apiGetAll()', function () {
+    it('two topics', async function () {
       const t1r = await Topic.apiCreate(
         user,
         {
@@ -501,7 +501,7 @@ describe('Topic', function() {
       });
     });
 
-    it('roots only', async function() {
+    it('roots only', async function () {
       const t1r = await Topic.apiCreate(
         user,
         {
@@ -535,7 +535,7 @@ describe('Topic', function() {
       });
     });
 
-    it('excludes deleted', async function() {
+    it('excludes deleted', async function () {
       const t1r = await Topic.apiCreate(
         user,
         {
@@ -574,8 +574,8 @@ describe('Topic', function() {
     });
   });
 
-  describe('.apiGetForTrail()', function() {
-    it('happy', async function() {
+  describe('.apiGetForTrail()', function () {
+    it('happy', async function () {
       const claimRev = await TestClaim.create(user);
       // Not a root topic.
       const t2r = await Topic.apiCreate(user, {
@@ -664,8 +664,8 @@ describe('Topic', function() {
     });
   });
 
-  describe('.apiGetRevs()', function() {
-    it('with sub-topic and claim', async function() {
+  describe('.apiGetRevs()', function () {
+    it('with sub-topic and claim', async function () {
       const r1 = await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,
@@ -747,15 +747,15 @@ describe('Topic', function() {
       });
     });
 
-    it('bad id', async function() {
+    it('bad id', async function () {
       await expect(Topic.apiGetRevs('bad id')).to.be.rejectedWith(
         NotFoundError
       );
     });
   });
 
-  describe('.apiToggleStar()', function() {
-    it('happy', async function() {
+  describe('.apiToggleStar()', function () {
+    it('happy', async function () {
       await Topic.apiCreate(user, {
         id: ID,
         title: TITLE,

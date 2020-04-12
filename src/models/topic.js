@@ -25,7 +25,7 @@ const hydrateTopics = _.flow(
   })
 );
 
-export default function(sequelize, DataTypes, knex) {
+export default function (sequelize, DataTypes, knex) {
   const Topic = sequelize.define('topic', {
     id: {
       type: DataTypes.TEXT,
@@ -40,7 +40,7 @@ export default function(sequelize, DataTypes, knex) {
     },
   });
 
-  Topic.associate = function(models) {
+  Topic.associate = function (models) {
     Topic.Head = Topic.belongsTo(models.TopicRev, {
       as: 'head',
       foreignKey: {
@@ -86,8 +86,8 @@ export default function(sequelize, DataTypes, knex) {
     });
   };
 
-  Topic.postAssociate = function(models) {
-    Topic.INCLUDE = function(n) {
+  Topic.postAssociate = function (models) {
+    Topic.INCLUDE = function (n) {
       return {
         include: [
           {
@@ -98,9 +98,9 @@ export default function(sequelize, DataTypes, knex) {
       };
     };
 
-    Topic.apiCreate = async function(user, data, isRoot = false, transaction) {
+    Topic.apiCreate = async function (user, data, isRoot = false, transaction) {
       if (!transaction) {
-        return await sequelize.transaction(function(t) {
+        return await sequelize.transaction(function (t) {
           return Topic.apiCreate(user, data, isRoot, t);
         });
       }
@@ -124,9 +124,9 @@ export default function(sequelize, DataTypes, knex) {
       }
     };
 
-    Topic.apiUpdate = async function(id, user, data, transaction) {
+    Topic.apiUpdate = async function (id, user, data, transaction) {
       if (!transaction) {
-        return await sequelize.transaction(function(t) {
+        return await sequelize.transaction(function (t) {
           return Topic.apiUpdate(id, user, data, t);
         });
       }
@@ -153,9 +153,9 @@ export default function(sequelize, DataTypes, knex) {
       return models.TopicRev.createForApi(topic, user, data, transaction);
     };
 
-    Topic.apiDelete = async function(id, user, msg, transaction) {
+    Topic.apiDelete = async function (id, user, msg, transaction) {
       if (!transaction) {
-        return await sequelize.transaction(function(t) {
+        return await sequelize.transaction(function (t) {
           return Topic.apiDelete(id, user, msg, t);
         });
       }
@@ -187,7 +187,7 @@ export default function(sequelize, DataTypes, knex) {
       return topicRev;
     };
 
-    Topic.prototype.fillData = async function(data, depth, user) {
+    Topic.prototype.fillData = async function (data, depth, user) {
       if (data.topics[this.id] && data.topics[this.id].depth >= depth) {
         // This topic has already been loaded with at least as much depth.
         return;
@@ -277,7 +277,7 @@ export default function(sequelize, DataTypes, knex) {
       })
     );
 
-    Topic.apiGet = async function(id, user) {
+    Topic.apiGet = async function (id, user) {
       const topic = await Topic.findByPk(id, Topic.INCLUDE(3));
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
@@ -287,12 +287,12 @@ export default function(sequelize, DataTypes, knex) {
       return data;
     };
 
-    Topic.apiSetIsRoot = async function(id, isRoot) {
+    Topic.apiSetIsRoot = async function (id, isRoot) {
       const topic = await Topic.findByPk(id);
       await topic.update({ isRoot });
     };
 
-    Topic.apiGetAll = async function({ user, filters, sort, page } = {}) {
+    Topic.apiGetAll = async function ({ user, filters, sort, page } = {}) {
       page = page || 1;
 
       const filterFn = query =>
@@ -325,7 +325,7 @@ export default function(sequelize, DataTypes, knex) {
       };
     };
 
-    Topic.apiGetForTrail = async function(ids, user) {
+    Topic.apiGetForTrail = async function (ids, user) {
       const filterFn = query => query.whereIn('i.id', ids);
       const flatTopics = await Topic.itemQuery(user, filterFn);
       const topics = Topic.processQueryResults(flatTopics);
@@ -334,7 +334,7 @@ export default function(sequelize, DataTypes, knex) {
       };
     };
 
-    Topic.apiGetRevs = async function(topicId, user) {
+    Topic.apiGetRevs = async function (topicId, user) {
       const topicRevs = await models.TopicRev.findAll({
         where: { topicId },
         order: [['createdAt', 'DESC']],
@@ -356,7 +356,7 @@ export default function(sequelize, DataTypes, knex) {
       return data;
     };
 
-    Topic.prototype.toStarData = async function(user) {
+    Topic.prototype.toStarData = async function (user) {
       const starCount = await this.countStarredByUsers();
       let starred = false;
       let watched = false;
@@ -367,7 +367,7 @@ export default function(sequelize, DataTypes, knex) {
       return { starCount, starred, watched };
     };
 
-    Topic.apiToggleStar = async function(id, user) {
+    Topic.apiToggleStar = async function (id, user) {
       const topic = await Topic.findByPk(id);
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + id);
@@ -382,7 +382,7 @@ export default function(sequelize, DataTypes, knex) {
       return await topic.toStarData(user);
     };
 
-    Topic.apiToggleWatch = async function(topicId, user) {
+    Topic.apiToggleWatch = async function (topicId, user) {
       const topic = await Topic.findByPk(topicId);
       if (!topic) {
         throw new NotFoundError('Topic not found: ' + topicId);
@@ -396,7 +396,7 @@ export default function(sequelize, DataTypes, knex) {
       return { watched: !isWatched };
     };
 
-    Topic.prototype.updateGraph = function(subTopics, claims) {
+    Topic.prototype.updateGraph = function (subTopics, claims) {
       subTopics = subTopics || this.head.subTopics;
       claims = claims || this.head.claims;
       const topicInfos = subTopics.map(Graph.toTopicInfo);
@@ -404,7 +404,7 @@ export default function(sequelize, DataTypes, knex) {
       graph.updateTopicChildren(this.id, [...topicInfos, ...claimInfos]);
     };
 
-    Topic.prototype.updateIndex = function(data) {
+    Topic.prototype.updateIndex = function (data) {
       data = data || this.head.toCoreData();
       search.updateTopic(data);
     };

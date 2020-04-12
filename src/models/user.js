@@ -36,7 +36,7 @@ function hashPassword(password) {
   return bcrypt.hash(password, 10);
 }
 
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
   const User = sequelize.define('user', {
     id: {
       type: DataTypes.INTEGER,
@@ -84,7 +84,7 @@ export default function(sequelize, DataTypes) {
     },
   });
 
-  User.associate = function(models) {
+  User.associate = function (models) {
     User.belongsToMany(models.Claim, {
       as: 'starredClaims',
       through: {
@@ -98,11 +98,11 @@ export default function(sequelize, DataTypes) {
     });
   };
 
-  User.postAssociate = function() {
-    User.register = async function(username, password, email) {
+  User.postAssociate = function () {
+    User.register = async function (username, password, email) {
       username = validateUsername(username);
       const passwordHash = await hashPassword(password);
-      return sequelize.transaction(async function(transaction) {
+      return sequelize.transaction(async function (transaction) {
         try {
           return await User.create(
             { username, passwordHash, email },
@@ -127,7 +127,7 @@ export default function(sequelize, DataTypes) {
       });
     };
 
-    User.login = async function(username, password) {
+    User.login = async function (username, password) {
       const user = await User.findOne({ where: { username } });
       if (!user) {
         throw new AuthError('Invalid user.');
@@ -139,7 +139,7 @@ export default function(sequelize, DataTypes) {
       return user;
     };
 
-    User.verifyToken = async function(authToken) {
+    User.verifyToken = async function (authToken) {
       let decoded;
       try {
         decoded = jwt.verify(authToken, config.get('secretKey'));
@@ -157,7 +157,7 @@ export default function(sequelize, DataTypes) {
       return user;
     };
 
-    User.prototype.genAuthToken = function(exp = '7d') {
+    User.prototype.genAuthToken = function (exp = '7d') {
       if (this.emailVerificationToken) {
         throw new AuthError('Email verification required.');
       }
@@ -172,7 +172,7 @@ export default function(sequelize, DataTypes) {
       });
     };
 
-    User.prototype.sendVerificationEmail = async function(transport) {
+    User.prototype.sendVerificationEmail = async function (transport) {
       const url =
         ROOT_URL + '/verify-email?token=' + this.emailVerificationToken;
 
@@ -191,7 +191,7 @@ export default function(sequelize, DataTypes) {
       });
     };
 
-    User.verifyEmail = async function(emailVerificationToken) {
+    User.verifyEmail = async function (emailVerificationToken) {
       if (!emailVerificationToken) {
         throw new AuthError('Null email verification token.');
       }
@@ -203,7 +203,7 @@ export default function(sequelize, DataTypes) {
       return user;
     };
 
-    User.forgotPassword = async function(email) {
+    User.forgotPassword = async function (email) {
       const user = await User.findOne({ where: { email } });
       if (!user) {
         return null;
@@ -215,7 +215,7 @@ export default function(sequelize, DataTypes) {
       return user;
     };
 
-    User.prototype.sendForgotPasswordEmail = async function(transport) {
+    User.prototype.sendForgotPasswordEmail = async function (transport) {
       const url = ROOT_URL + '/reset-password?token=' + this.passwordResetToken;
 
       if (!transport) {
@@ -235,7 +235,7 @@ export default function(sequelize, DataTypes) {
       });
     };
 
-    User.resetPassword = async function(passwordResetToken, password) {
+    User.resetPassword = async function (passwordResetToken, password) {
       const user = await User.findOne({
         where: {
           passwordResetToken,

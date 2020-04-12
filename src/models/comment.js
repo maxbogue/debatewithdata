@@ -2,7 +2,7 @@ import { ForbiddenError, NotFoundError } from '@/api/error';
 
 import { genRevId } from './utils';
 
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
   const Comment = sequelize.define('comment', {
     id: {
       type: DataTypes.TEXT,
@@ -30,7 +30,7 @@ export default function(sequelize, DataTypes) {
     },
   });
 
-  Comment.associate = function(models) {
+  Comment.associate = function (models) {
     Comment.belongsTo(models.User, {
       foreignKey: {
         name: 'userId',
@@ -41,8 +41,8 @@ export default function(sequelize, DataTypes) {
     });
   };
 
-  Comment.postAssociate = function(models) {
-    Comment.prototype.toData = function() {
+  Comment.postAssociate = function (models) {
+    Comment.prototype.toData = function () {
       return {
         id: this.id,
         text: this.text,
@@ -51,7 +51,7 @@ export default function(sequelize, DataTypes) {
       };
     };
 
-    Comment.apiAdd = async function(Item, itemId, user, text) {
+    Comment.apiAdd = async function (Item, itemId, user, text) {
       const item = await Item.findByPk(itemId);
       if (!item) {
         throw new NotFoundError(Item.name + ' not found: ' + itemId);
@@ -62,7 +62,7 @@ export default function(sequelize, DataTypes) {
       });
     };
 
-    Comment.apiDelete = async function(Item, itemId, user, commentId) {
+    Comment.apiDelete = async function (Item, itemId, user, commentId) {
       const item = await Item.findByPk(itemId);
       if (!item) {
         throw new NotFoundError(Item.name + ' not found: ' + itemId);
@@ -77,14 +77,14 @@ export default function(sequelize, DataTypes) {
       await comment.update({ deleted: true });
     };
 
-    Comment.apiGet = async function(commentId) {
+    Comment.apiGet = async function (commentId) {
       const comment = await Comment.findByPk(commentId, {
         include: [models.User],
       });
       return comment.toData();
     };
 
-    Comment.apiGetAll = async function(Item, itemId) {
+    Comment.apiGetAll = async function (Item, itemId) {
       const item = await Item.findByPk(itemId);
       if (!item) {
         throw new NotFoundError(Item.name + ' not found: ' + itemId);

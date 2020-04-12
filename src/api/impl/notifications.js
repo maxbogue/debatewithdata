@@ -6,10 +6,7 @@ import { Claim, knex, Source, Topic } from '@/models';
 import q from '@/models/query';
 
 function getUpdated(query, until) {
-  query
-    .where('h.created_at', '<', until)
-    .where('w.watched', true)
-    .limit(100);
+  query.where('h.created_at', '<', until).where('w.watched', true).limit(100);
 }
 
 const Items = [Topic, Claim, Source];

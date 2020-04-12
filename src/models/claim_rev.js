@@ -3,7 +3,7 @@ import { validateClaim } from '@/common/validate';
 
 import { genRevId } from './utils';
 
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
   const ClaimRev = sequelize.define('claim_rev', {
     id: {
       type: DataTypes.TEXT,
@@ -30,7 +30,7 @@ export default function(sequelize, DataTypes) {
     },
   });
 
-  ClaimRev.associate = function(models) {
+  ClaimRev.associate = function (models) {
     ClaimRev.belongsTo(models.User, {
       foreignKey: {
         name: 'userId',
@@ -72,8 +72,8 @@ export default function(sequelize, DataTypes) {
     });
   };
 
-  ClaimRev.postAssociate = function(models) {
-    ClaimRev.INCLUDE = function(n, includeUser = false) {
+  ClaimRev.postAssociate = function (models) {
+    ClaimRev.INCLUDE = function (n, includeUser = false) {
       if (n < 1) {
         throw new Error('Must include at least 1 tier.');
       }
@@ -94,7 +94,7 @@ export default function(sequelize, DataTypes) {
       return { include };
     };
 
-    ClaimRev.createForApi = async function(claim, user, data, transaction) {
+    ClaimRev.createForApi = async function (claim, user, data, transaction) {
       const blob = await models.Blob.fromText(data.text, transaction);
       const claimRev = await models.ClaimRev.create(
         {
@@ -155,11 +155,11 @@ export default function(sequelize, DataTypes) {
       return claimRev;
     };
 
-    ClaimRev.prototype.getItemId = function() {
+    ClaimRev.prototype.getItemId = function () {
       return this.claimId;
     };
 
-    ClaimRev.prototype.toCoreData = function(recurse = true) {
+    ClaimRev.prototype.toCoreData = function (recurse = true) {
       const data = {
         id: this.claimId,
         revId: this.id,
@@ -191,7 +191,7 @@ export default function(sequelize, DataTypes) {
     };
 
     // Only called for apiGetRevs.
-    ClaimRev.prototype.fillData = async function(data) {
+    ClaimRev.prototype.fillData = async function (data) {
       const thisData = this.toCoreData();
       thisData.username = this.user.username;
       thisData.createdAt = this.createdAt;

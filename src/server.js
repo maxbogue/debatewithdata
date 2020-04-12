@@ -52,7 +52,7 @@ server.use(
   })
 );
 
-server.get('/js/:filename', function(req, res) {
+server.get('/js/:filename', function (req, res) {
   res.sendFile(path.resolve(JS_PATH, req.params.filename));
 });
 
