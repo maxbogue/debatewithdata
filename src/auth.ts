@@ -26,7 +26,7 @@ interface AuthToken {
 }
 
 export default abstract class Auth {
-  public getUserFromToken(authToken: string): User | null {
+  getUserFromToken(authToken: string): User | null {
     if (!authToken) {
       return null;
     }
@@ -45,7 +45,7 @@ export default abstract class Auth {
     };
   }
 
-  public getUser(): User | null {
+  getUser(): User | null {
     const token = this.getAuthToken();
     const user = this.getUserFromToken(token);
     if (token && !user) {
@@ -55,12 +55,12 @@ export default abstract class Auth {
     return user;
   }
 
-  public abstract getAuthToken(): string;
-  public abstract setAuthToken(authToken: string): void;
+  abstract getAuthToken(): string;
+  abstract setAuthToken(authToken: string): void;
 }
 
 export class BrowserAuth extends Auth {
-  public setAuthToken(authToken: string): void {
+  setAuthToken(authToken: string): void {
     if (authToken) {
       const encodedSession = window.btoa(JSON.stringify({ authToken }));
       Cookies.set(SESSION_COOKIE_NAME, encodedSession);
@@ -69,7 +69,7 @@ export class BrowserAuth extends Auth {
     }
   }
 
-  public getAuthToken(): string {
+  getAuthToken(): string {
     const encodedSession = Cookies.get(SESSION_COOKIE_NAME);
     if (!encodedSession) {
       return '';
@@ -80,15 +80,18 @@ export class BrowserAuth extends Auth {
 }
 
 export class ServerAuth extends Auth {
-  constructor(public authToken: string) {
-    super();
-  }
+  authToken: string;
 
-  public setAuthToken(authToken: string): void {
+  constructor(authToken: string) {
+    super();
     this.authToken = authToken;
   }
 
-  public getAuthToken(): string {
+  setAuthToken(authToken: string): void {
+    this.authToken = authToken;
+  }
+
+  getAuthToken(): string {
     return this.authToken;
   }
 }

@@ -1,57 +1,93 @@
 {
-    "env": {
-        "browser": true,
-        "node": true,
-        "es6": true,
-        "mocha": true
-    },
-    "extends": [
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "simple-import-sort"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:lodash-fp/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "block-scoped-var": ["error"],
+    "complexity": ["error"],
+    "consistent-return": ["error"],
+    "curly": ["error"],
+    "dot-notation": ["error"],
+    "eqeqeq": ["error"],
+    "guard-for-in": ["error"],
+    "linebreak-style": ["error", "unix"],
+    "max-depth": ["error", 5],
+    "no-await-in-loop": ["error"],
+    "no-bitwise": ["error"],
+    "no-caller": ["error"],
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-else-return": ["error"],
+    "no-eq-null": ["error"],
+    "no-eval": ["error"],
+    "no-extend-native": ["error"],
+    "no-extra-bind": ["error"],
+    "no-implicit-coercion": ["error"],
+    "no-implied-eval": ["error"],
+    "no-invalid-this": ["error"],
+    "no-loop-func": ["error"],
+    "no-prototype-builtins": ["error"],
+    "no-sequences": ["error"],
+    "no-shadow": ["error"],
+    "no-template-curly-in-string": ["error"],
+    "no-var": ["error"],
+    "prefer-const": ["error"],
+    "require-atomic-updates": ["off"],
+
+    "simple-import-sort/sort": "error"
+  },
+  "overrides": [
+    {
+      "files": "*.ts",
+      "parser": "@typescript-eslint/parser",
+      "plugins": [
+        "@typescript-eslint",
+        "simple-import-sort"
+      ],
+      "extends": [
         "eslint:recommended",
-        "plugin:vue/recommended",
-        "plugin:prettier/recommended",
-        "plugin:lodash-fp/recommended"
-    ],
-    "plugins": [
-      "simple-import-sort"
-    ],
-    "parserOptions": {
+        "plugin:@typescript-eslint/recommended",
+        "plugin:lodash-fp/recommended",
+        "plugin:prettier/recommended"
+      ],
+      "rules": {
+        "@typescript-eslint/array-type": ["error", "array-simple"],
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-member-accessibility": ["error", { "accessibility": "no-public" }],
+        "@typescript-eslint/indent": "off",
+        "@typescript-eslint/no-use-before-define": ["error", { "functions": false }]
+      }
+    },
+    {
+      "files": "*.vue",
+      "parser": "vue-eslint-parser",
+      "parserOptions": {
         "parser": "babel-eslint",
         "ecmaVersion": 8,
         "sourceType": "module"
-    },
-    "rules": {
-        "block-scoped-var": ["error"],
-        "complexity": ["error"],
-        "consistent-return": ["error"],
-        "curly": ["error"],
-        "dot-notation": ["error"],
-        "eqeqeq": ["error"],
-        "guard-for-in": ["error"],
-        "linebreak-style": ["error", "unix"],
-        "max-depth": ["error", 5],
-        "no-await-in-loop": ["error"],
-        "no-bitwise": ["error"],
-        "no-caller": ["error"],
-        "no-console": ["error", { "allow": ["warn", "error"] }],
-        "no-else-return": ["error"],
-        "no-eq-null": ["error"],
-        "no-eval": ["error"],
-        "no-extend-native": ["error"],
-        "no-extra-bind": ["error"],
-        "no-implicit-coercion": ["error"],
-        "no-implied-eval": ["error"],
-        "no-invalid-this": ["error"],
-        "no-loop-func": ["error"],
-        "no-prototype-builtins": ["error"],
-        "no-sequences": ["error"],
-        "no-shadow": ["error"],
-        "no-template-curly-in-string": ["error"],
-        "no-var": ["error"],
-        "prefer-const": ["error"],
-        "require-atomic-updates": ["off"],
-
-        "simple-import-sort/sort": "error",
-
+      },
+      "extends": [
+        "eslint:recommended",
+        "plugin:lodash-fp/recommended",
+        "plugin:vue/recommended",
+        "plugin:prettier/recommended"
+      ],
+      "rules": {
         "vue/attributes-order": ["off"],
         "vue/component-name-in-template-casing": ["error", "kebab-case"],
         "vue/html-closing-bracket-spacing": ["off"],
@@ -85,6 +121,9 @@
             "renderError"
           ]
         }],
-        "vue/singleline-html-element-content-newline": ["off"]
+        "vue/singleline-html-element-content-newline": ["off"],
+        "vue/valid-template-root": ["off"]
+      }
     }
+  ]
 }

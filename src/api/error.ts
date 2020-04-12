@@ -1,11 +1,18 @@
-import { ValidationError } from '@/common/validate';
 import { NextFunction, Request, Response } from 'express';
 
+import { ValidationError } from '@/common/validate';
+
 class ApiError extends Error {
-  constructor(message: string, public httpStatus: number, public name: string) {
+  readonly httpStatus: number;
+  readonly name: string;
+
+  constructor(message: string, httpStatus: number, name: string) {
     super(message);
+    this.httpStatus = httpStatus;
+    this.name = name;
   }
-  public toJson(): object {
+
+  toJson(): object {
     return { message: this.message };
   }
 }
@@ -35,11 +42,14 @@ export class NotFoundError extends ApiError {
 }
 
 export class ConflictError extends ApiError {
-  constructor(message: string, public data: object) {
+  readonly data: object;
+
+  constructor(message: string, data: object) {
     super(message, 409, 'ConflictError');
+    this.data = data;
   }
 
-  public toJson(): object {
+  toJson(): object {
     return {
       ...super.toJson(),
       data: this.data,
