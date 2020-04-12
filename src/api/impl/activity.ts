@@ -95,17 +95,15 @@ export async function getActivity({
   user?: User | null;
   limit: number;
 }) {
-  const QUERY: any = {
+  const QUERY = {
     include: {
       model: User,
       attributes: ['username'],
     },
     order: [['createdAt', 'DESC']],
     limit,
+    ...(user ? { where: { userId: user.id } } : {}),
   };
-  if (user) {
-    QUERY.where = { userId: user.id };
-  }
 
   const ITEM_ATTRS = ['id', 'deleted', 'parentId', 'createdAt'];
   const topicRevs = await TopicRev.findAll({

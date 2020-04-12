@@ -300,27 +300,15 @@ export default {
           text: seed.text || '',
         };
 
-        const topicStarred = flow(
-          this.lookupTopic,
-          this.starred
-        );
-        const topicStarCount = flow(
-          this.lookupTopic,
-          this.starCount
-        );
+        const topicStarred = flow(this.lookupTopic, this.starred);
+        const topicStarCount = flow(this.lookupTopic, this.starCount);
         this.subTopicIds = sortBy(
           [topicStarred, topicStarCount, this.stableRandom],
           seed.subTopicIds
         );
 
-        const claimStarred = flow(
-          this.lookupClaim,
-          this.starred
-        );
-        const claimStarCount = flow(
-          this.lookupClaim,
-          this.starCount
-        );
+        const claimStarred = flow(this.lookupClaim, this.starred);
+        const claimStarCount = flow(this.lookupClaim, this.starCount);
         this.claimIds = sortBy(
           [claimStarred, claimStarCount, this.stableRandom],
           seed.claimIds

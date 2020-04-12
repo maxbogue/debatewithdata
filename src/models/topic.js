@@ -266,13 +266,7 @@ export default function(sequelize, DataTypes, knex) {
 
     Topic.itemQuery = (user, filterFn = _.identity, sortFn = _.identity) =>
       Topic.wrapQueryWithJoins(
-        Topic.innerQuery(
-          user,
-          _.flow(
-            filterFn,
-            sortFn
-          )
-        )
+        Topic.innerQuery(user, _.flow(filterFn, sortFn))
       ).modify(sortFn);
 
     Topic.processQueryResults = _.flow(

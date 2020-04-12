@@ -89,7 +89,11 @@ export default {
       return col === 0 ? 'row label units' : 'column label (units)';
     },
     addTable() {
-      this.rows = [['', ''], ['', ''], ['', '']];
+      this.rows = [
+        ['', ''],
+        ['', ''],
+        ['', ''],
+      ];
       this.initialized = true;
     },
     addColumn() {

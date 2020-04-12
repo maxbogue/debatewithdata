@@ -295,13 +295,7 @@ export default function(sequelize, DataTypes, knex) {
 
     Claim.itemQuery = (user, filterFn = _.identity, sortFn = _.identity) =>
       Claim.wrapQueryWithJoins(
-        Claim.innerQuery(
-          user,
-          _.flow(
-            filterFn,
-            sortFn
-          )
-        )
+        Claim.innerQuery(user, _.flow(filterFn, sortFn))
       ).modify(sortFn);
 
     Claim.processQueryResults = _.flow(

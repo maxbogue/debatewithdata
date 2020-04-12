@@ -26,9 +26,10 @@ export async function getNotifications(user) {
   );
 
   const itemResults = await Promise.all(queries);
-  const [topics, claims, sources] = _.zip(Items, itemResults).map(
-    ([Item, flatItems]) => Item.processQueryResults(flatItems)
-  );
+  const [topics, claims, sources] = _.zip(
+    Items,
+    itemResults
+  ).map(([Item, flatItems]) => Item.processQueryResults(flatItems));
 
   const items = _.sortBy('item.updatedAt', [
     ...topics.map(item => ({ type: ItemType.TOPIC, item })),
