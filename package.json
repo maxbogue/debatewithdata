@@ -119,8 +119,6 @@
     "stylelint-processor-html": "^1.0.0",
     "stylelint-scss": "^3.16.1",
     "supertest": "^4.0.2",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.3.0",
     "typescript": "^3.8.3",
     "url-loader": "^2.3.0",
     "vue-eslint-parser": "^7.0.0",
