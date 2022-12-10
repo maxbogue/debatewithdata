@@ -32,7 +32,7 @@
     "dashify": "^2.0.0",
     "dateformat": "^3.0.3",
     "elasticlunr": "^0.9.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-promise-router": "^3.0.3",
     "js-cookie": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
